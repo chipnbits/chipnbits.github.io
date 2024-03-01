@@ -13,7 +13,7 @@ website:
         contents:
           - index.qmd
   title: "Simon Ghyselincks"
-  description: "A personal wiki by Chip, showcasing student projects and experiences."
+  description: "A personal page for Simon Ghyselincks"
   navbar:
     left:
       - text: "Home"
