@@ -1,0 +1,24 @@
+# _quarto.yml
+project:
+  type: website
+
+website:
+  title: "Simon Ghyselincks"
+  description: "A personal wiki by Chip, showcasing student projects and experiences."
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "About"
+        href: about.qmd
+      - text: "Projects"
+        href: projects.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+

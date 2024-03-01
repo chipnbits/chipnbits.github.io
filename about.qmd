@@ -1,0 +1,26 @@
+---
+title: "About Simon Ghyselincks"
+---
+
+# About Me
+
+Welcome to my personal site! I'm Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.
+
+## My Journey
+
+
+## Academics and Projects
+
+In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics. 
+
+## Looking Forward
+
+As I approach the completion of my degree, I'm excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what's possible in engineering and technology. Whether it's through further research, industry projects, or entrepreneurial ventures, I'm eager to contribute to innovative solutions that address real-world problems.
+
+## Outside the Lab
+
+Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.
+
+Feel free to [connect with me on LinkedIn](www.linkedin.com/in/simonghyselincks) or check out my [GitHub projects](https://github.com/chipnbits).
+
+
