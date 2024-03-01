@@ -1,0 +1,42 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Quarto",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
+    "crumbs": [
+      "Home",
+      "Basics",
+      "Quarto"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.\n\n\n\n\n\nIn the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics.\n\n\n\nAs I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems.\n\n\n\nThank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  },
+  {
+    "objectID": "about.html#academics-and-projects",
+    "href": "about.html#academics-and-projects",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics."
+  },
+  {
+    "objectID": "about.html#looking-forward",
+    "href": "about.html#looking-forward",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "As I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems."
+  },
+  {
+    "objectID": "about.html#outside-the-lab",
+    "href": "about.html#outside-the-lab",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  }
+]
