@@ -25,6 +25,7 @@ website:
       - text: "CV"
         href: CV.qmd
 
+        
 format:
   html:
     theme: cosmo
