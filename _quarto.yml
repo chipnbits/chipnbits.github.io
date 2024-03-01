@@ -1,6 +1,7 @@
 # _quarto.yml
+# https://quarto.org/docs/websites/website-navigation.html for more information on navigation
 project:
-  type: website
+  output-dir: docs
 
 website:
   sidebar:
@@ -20,6 +21,7 @@ website:
         href: about.qmd
       - text: "Projects"
         href: projects.qmd
+
 
 
 format:
