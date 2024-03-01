@@ -11,7 +11,12 @@
     "href": "index.html",
     "title": "Quarto",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
+    "crumbs": [
+      "Home",
+      "Basics",
+      "Quarto"
+    ]
   },
   {
     "objectID": "about.html#academics-and-projects",

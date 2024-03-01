@@ -3,6 +3,13 @@ project:
   type: website
 
 website:
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Basics"
+        contents:
+          - index.qmd
   title: "Simon Ghyselincks"
   description: "A personal wiki by Chip, showcasing student projects and experiences."
   navbar:
@@ -13,6 +20,7 @@ website:
         href: about.qmd
       - text: "Projects"
         href: projects.qmd
+
 
 format:
   html:
