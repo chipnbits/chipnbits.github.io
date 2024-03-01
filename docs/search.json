@@ -1,17 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Quarto",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
-    "crumbs": [
-      "Home",
-      "Basics",
-      "Quarto"
-    ]
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About Simon Ghyselincks",
@@ -38,5 +26,17 @@
     "title": "About Simon Ghyselincks",
     "section": "",
     "text": "Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Quarto",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
+    "crumbs": [
+      "Home",
+      "Basics",
+      "Quarto"
+    ]
   }
 ]

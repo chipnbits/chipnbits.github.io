@@ -1,6 +1,8 @@
 # _quarto.yml
+# https://quarto.org/docs/publishing/github-pages.html
 project:
   type: website
+  output-dir: docs
 
 website:
   sidebar:
