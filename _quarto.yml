@@ -23,7 +23,7 @@ website:
       - text: "Projects"
         href: projects.qmd
       - text: "CV"
-        href: cv.qmd
+        href: CV.qmd
 
 
 format:

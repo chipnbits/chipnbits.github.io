@@ -1,7 +1,7 @@
 ---
 title: "Simon Ghyselincks"
 format: html
-css: styles.css
+css: CVstyles.css
 includes:
   in-header: head.html
 ---
