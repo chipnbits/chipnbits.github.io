@@ -1,9 +1,6 @@
 ---
 title: "Simon Ghyselincks"
 format: html
-css: CVstyles.css
-includes:
-  in-header: head.html
 ---
 Vancouver, BC  
 V6T 1Z1
