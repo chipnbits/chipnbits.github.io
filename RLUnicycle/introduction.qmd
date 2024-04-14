@@ -1,11 +1,9 @@
 ---
-title: "Introduction"
+title: "Learning to Balance: A Reaction-Wheel Unicycle Robot"
 format:
   html:
     toc: false
 ---
-
-# Introduction to Learning to Balance: A Reaction-Wheel Unicycle Robot
 
 ## Project Overview
 

@@ -10,11 +10,14 @@ website:
       - section: "Basics"
         contents:
           - index.qmd
-      - section: "Learning to Balance"
+      - section: "Projects"
         contents:
-          - RLUnicycle/introduction.qmd
-          - RLUnicycle/rtpatch.qmd
-          - RLUnicycle/telemetry.qmd
+          - projects.qmd
+          - section: "Learning to Balance"
+            contents:
+              - RLUnicycle/introduction.qmd
+              - RLUnicycle/rtpatch.qmd
+              - RLUnicycle/telemetry.qmd
   title: "Simon Ghyselincks"
   description: "A personal page for Simon Ghyselincks"
   navbar:

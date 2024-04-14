@@ -1,3 +1,11 @@
 ---
-title: "Projects"
+title: "Project Home"
 ---
+
+## Learning to Balance: A Reaction Wheel Unicycle
+
+[![](RLUnicycle/learn-to-balance-cover.jpg)](RLUnicycle/introduction.qmd){.center-image width=80%}
+
+This project focuses on the development and challenges of building and controlling a reaction wheel unicycle. Performed as part of a 2-year long capstone project in the UBC Engineering Physics program, sponsored by the Engineering Physics project lab.
+
+[Explore the Learning to Balance Project](RLUnicycle/introduction.qmd)

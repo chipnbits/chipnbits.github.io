@@ -7,6 +7,7 @@
     "text": "This is a user summary document for our capstone telemetry and database server. It is intended to provide an overview of the different services that are in use for the data pipeline. The capstone project leverages the MING stack as shown in the overview diagram below.\nI recommend using a central server to manage all of these services through a Zerotier Virtual Network. This will allow you to access the services from anywhere via the internet without exposing the server to the public.\n\n\nThe Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.\nThe Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -19,6 +20,7 @@
     "text": "The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.\nThe Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -31,6 +33,7 @@
     "text": "2.1 ZeroTier Virtual Network\nZerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network.\nTo setup a network you should first create a free account at https://my.zerotier.com/. Once you have an account you can create a network and add devices to it. The network ID is a 16 digit number that is used to identify the network.\n\n\n2.1.1 Zerotier Client\nThe Zerotier client is a software that is installed on the devices that you want to connect to the network. Each device intended for the network including the server should have the client installed. Once it is installed, enter the network ID from the Zerotier website and then approve the device to the network. You may wish to set static IP addresses, especially for the server. This can all be done through the Zerotier website.\nhttps://www.zerotier.com/download/",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -43,6 +46,7 @@
     "text": "2.2 MQTT Overview\nThe robot an network is using the MQTT protocol to implement live telemetry. Topics are used on a subscriber publisher basis. All communication is routed through the Lenovo server that is acting as the broker. The Mosquitto MQTT server software is running on the Lenovo server which is the IP address used for routing messages. The default port for MQTT is 1883.\n# Define the MQTT settings\nbroker_address = \"172.22.1.1\" #Lenovo's IP address\nport = 1883\ntopic = \"robot/telemetry\"\nThe MQTT explorer offers comprehensive tools to explore available topics and more: https://mqtt-explorer.com/ This can be a very useful tool for debugging and exploring the MQTT network to check if messages are being sent and received.\nMQTT interfaces with Python, Node-Red, and Grafana to provide a comprehensive data pipeline. The MQTT broker is the central hub for all data that is being sent and received. The broker can be accessed by any device on the ZeroTier network that is subscribed to the topic.\n\n2.2.1 MQTT Summary\nMQTT is a lightweight messaging protocol that provides an efficient and cost-effective method of carrying out telemetry-based communication between devices. It’s especially popular in Internet of Things (IoT) applications due to its minimal bandwidth requirements and ease of implementation on hardware with limited processing capabilities.\n\n2.2.1.1 Key Features of MQTT:\n\nLightweight Protocol: Ideal for constrained devices and networks with limited bandwidth.\nPublish-Subscribe Model: Allows devices to publish messages to a topic and any client subscribed to that topic will receive the messages.\nReliable Message Delivery: Offers various levels of Quality of Service (QoS) to guarantee message delivery.\nMinimal Overhead: Adds only a small overhead to each message, ensuring efficient use of network resources.\nRetained Messages: Supports retaining the last message sent on a topic, making it available immediately to new subscribers.\nLast Will and Testament: Provides a means for a client to notify other clients about an abnormal disconnection.\n\n\n\n2.2.1.2 Application for our Robot\nThe Lenovo acts as a broker for all the data that is streaming out of the robot over a Wi-Fi connection to the internet. This offloads the databasing and broadcasting duty from the robot to the broker which can dedicate more resources to data management. The robot can publish data to a topic, which can be picked up by various subscribers such as the Lenovo’s Grafana server or other laptops, phones, etc that are connected to the broker and subscribed to the topic.\nMore Detailed System Diagram needed \nThe broker can duplicate the published data to many devices in real-time. Another hidden stream for the data is through Node-Red to InfluxDB where the aggregate data can be store more permanently for access to testing records at a later date. Additionally, an MQTT bridge is connected to the Pi’s Grafana server which offers an advanced dashboard service for viewing live telemetry. Note that databased telemetry can also be viewed through Grafana which is connected to InfluDB, but it is a seperate data stream from MQTT and should have a seperate dashboard.\n\n\n\n2.2.2 Publishing Messages\nA sample script for publishing messages with Paho-MQTT client Documentation to the Lenovo server/broker while connected to Zero-Tier is provided, see the mqtt.py file. The script allows for publishing a controller value or a cpu_usage data point.\nPrerequisites\n\nMQTT Broker Setup: Ensure that the MQTT broker, in this case, the Lenovo server, is up and running.\nNetwork Connection: Connect your device to the Zero-Tier network to ensure visibility and access to the broker.\nPython Environment: Make sure Python is installed on your device along with necessary libraries: paho-mqtt, json\nBroker Details: In the script, set the broker_address to the Lenovo server’s IP address and port to 1883 (default MQTT port).\nA client is formed with a ClientID that should be descriptive, we then connect to the MQTT broker A dictionary of values can be converted to JSON format using JSON dump, method. The broker is designed to work with either raw values or JSON The JSON values can be a collection of data types with a Key and Value\nThe publish method publishes the data to the desired stream where other clients can subscribe to the topic.\n\n\n\n2.2.3 Subscribing to messages:\n\nA Grafana server has been setup where some useful dashboards can be maintained. The IoT MQTT Panel for Android also offers some nice services including the ability to send messages.\nMore details on subscribing through the Paho-MQTT client can be found at https://www.emqx.com/en/blog/how-to-use-mqtt-in-python ### QoS The protocol allows for fast transmission of messages and a similar PUB/SUB model as ROS topics. Telemetry read data can be sent using QoS level 0 which only attempts a single delivery of the data and does not wait for confirmation of receipt, this is perfectly acceptable for fast streaming data that is not mission critical.\n\nFor mission critical commands such as parameter adjustments and messages to the robot, a QoS level of 2 can be tied to the message which ensures that it is delivered to the robot exactly once. This avoids duplicate commands or lost commands through the network. It is a slower communication protocol but it is not an issue for lower bandwidth messages that are orginating from control devices to the robot.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -55,6 +59,7 @@
     "text": "2.3 Grafana Live Telemetry and Database Dashboards\nGrafana is a powerful open-source platform for creating dashboards and visualizing time-series data. It is particularly well-suited for monitoring and analyzing real-time data. Grafana supports a wide range of data sources and can be used to display both live and historical data in a variety of formats, including graphs, tables, and gauges. Think of it as graph nirvana.\nWhen it comes to viewing the telemetry data, a plugin can be installed to function as a bridge between the MQTT broker and the Grafana server. https://grafana.com/grafana/plugins/grafana-mqtt-datasource/\nTo setup Grafana, install the software on the Lenovo server first. The default port for Grafana is 3000. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 3000.\nOnce you have logged in, you can add a data source by selecting MQTT from the list of available data sources if you have correctly installed the plugin. The panel will listen to all messages on a particular topic and display them in a graph or table format.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -67,6 +72,7 @@
     "text": "2.4 InfluxDB Databasing\nThe database can be accessed through Python API, through Grafana, or even a direct viewer. The database is also to be installed on the Lenovo server. The default port for InfluxDB is 8086. The database can be accessed through a web browser by navigating to the IP address of the Lenovo server on port 8086.\nMQTT gives livestream data but if we want data storage and permanence between runs it needs to be databased. InfluxDB offers this service along with data manipulation services and a special query language. It also includes a data explorer through the web interface.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -79,6 +85,7 @@
     "text": "2.5 Node Red\nNode Red is a flow-based open source development tool for visual programming developed by IBM. It is used for wiring together hardware devices, APIs, and online services in new and interesting ways. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.\nFor this application Node Red is used to bridge the MQTT broker to the InfluxDB database. This allows for the data to be stored in a database for later access. The data can be manipulated and stored in a more permanent format.\nThe Node Red server is installed on the Lenovo server. The default port for Node Red is 1880. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 1880.\n\n2.5.1 Node Red Dashboard\n\n\n\nNode Red Dashboard\n\n\nThe Node Red dashboard is an additional feature that is accessed through the Node Red server. It allows for the creation of custom dashboards that can be used to provide a GUI for a robotics project. The GUI can be used to connect directly to incoming signals and also produce outgoing command signals that can be sent to the robot.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "Telemetry and Database System"
     ]
@@ -86,49 +93,53 @@
   {
     "objectID": "RLUnicycle/introduction.html",
     "href": "RLUnicycle/introduction.html",
-    "title": "Introduction",
+    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
     "section": "",
-    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.\n\n\n\n\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.\n\n\n\n\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
+    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
-      "Introduction"
+      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
     ]
   },
   {
     "objectID": "RLUnicycle/introduction.html#project-overview",
     "href": "RLUnicycle/introduction.html#project-overview",
-    "title": "Introduction",
+    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
     "section": "",
     "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
-      "Introduction"
+      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
     ]
   },
   {
     "objectID": "RLUnicycle/introduction.html#the-challenge",
     "href": "RLUnicycle/introduction.html#the-challenge",
-    "title": "Introduction",
-    "section": "",
-    "text": "Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.",
+    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "section": "The Challenge",
+    "text": "The Challenge\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\nThe Technical Approach\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
-      "Introduction"
+      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
     ]
   },
   {
     "objectID": "RLUnicycle/introduction.html#looking-ahead",
     "href": "RLUnicycle/introduction.html#looking-ahead",
-    "title": "Introduction",
-    "section": "",
-    "text": "As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
+    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\nEngage with Us\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
-      "Introduction"
+      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
     ]
   },
   {
@@ -179,6 +190,30 @@
     "text": "This browser does not support PDFs. Please download the PDF to view it: &lt;a href=\"path/to/your/CV.pdf\"&gt;Download PDF&lt;/a&gt;."
   },
   {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Project Home",
+    "section": "",
+    "text": "This project focuses on the development and challenges of building and controlling a reaction wheel unicycle. Performed as part of a 2-year long capstone project in the UBC Engineering Physics program, sponsored by the Engineering Physics project lab.\nExplore the Learning to Balance Project",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Project Home"
+    ]
+  },
+  {
+    "objectID": "projects.html#learning-to-balance-a-reaction-wheel-unicycle",
+    "href": "projects.html#learning-to-balance-a-reaction-wheel-unicycle",
+    "title": "Project Home",
+    "section": "",
+    "text": "This project focuses on the development and challenges of building and controlling a reaction wheel unicycle. Performed as part of a 2-year long capstone project in the UBC Engineering Physics program, sponsored by the Engineering Physics project lab.\nExplore the Learning to Balance Project",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Project Home"
+    ]
+  },
+  {
     "objectID": "RLUnicycle/rtpatch.html",
     "href": "RLUnicycle/rtpatch.html",
     "title": "RT Kernel on Jetson Nano",
@@ -186,6 +221,7 @@
     "text": "The following guide is intended to provide step-by-step instructions on how to compile a real-time (RT) Linux kernel for the NVIDIA Jetson Nano. The RT kernel is based on the PREEMPT_RT patch, which adds real-time capabilities to the Linux kernel by making it fully preemptible and reducing the latency of the kernel’s interrupt handling.\nThis guide has been modified from some valuable instructions found at: https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4\n\n\nFirst download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2\n\n\n\nGo into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
     ]
@@ -198,6 +234,7 @@
     "text": "First download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
     ]
@@ -210,6 +247,7 @@
     "text": "Go into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
     ]
@@ -222,6 +260,7 @@
     "text": "2.1 Setting Python Scheduling Privileges\nNote that for this description our team is using Python 3.8 in a virtual environment, the instructions path files may change slightly if using a different version.\nThe scheduling priority is a top-level system command and is usually locked behind ‘sudo’. This is problematic when running a Python script because we don’t want to run it as sudo allowing it full access to wreak havoc on the OS. The solution is to grant only the scheduling part of ‘sudo’ to the Python interpreter:\nThis command only needs to be set once after Python 3.8 is installed (the same in use in our venv): sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.8\n\nsetcap: This is a utility that sets or changes the capabilities of a file/executable. Capabilities are a Linux feature that allow for more fine-grained access control; they provide a way to grant specific privileges to executables that normally only the root user would have.\n'cap_sys_nice=eip': This argument specifies the capabilities to be set on the file, in this case, /usr/bin/python3.8. It’s composed of three parts:\n\ncap_sys_nice: This is the specific capability being set. cap_sys_nice allows the program to raise process nice values (which can deprioritize processes) and change real-time scheduling priorities and policies, without requiring full root privileges.\ne: This stands for “effective” and means the capability is “activated” and can be used by the executable.\ni: This stands for “inheritable”, meaning this capability can be inherited by child processes created by the executable.\np: This stands for “permitted”, which means the capability is allowed for the executable. It’s a part of the set of capabilities that the executable is permitted to use.\n\n/usr/bin/python3.8: This is the path to the Python 3.8 executable. The command sets the specified capabilities on this specific file.",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
     ]
@@ -234,6 +273,7 @@
     "text": "2.2 Setting Script Specific RT\nThe ‘RT’ scheduling priority is code 99. Some imported C implementation allows for resetting the scheduling for the process. The function is wrapped in try/except block to ensure it activates.\n# Define constants for the scheduling policy\nSCHED_FIFO = 1  # FIFO real-time policy\n\nclass SchedParam(ctypes.Structure):\n    _fields_ = [('sched_priority', ctypes.c_int)]\n\ndef set_realtime_priority(priority=99):\n    libc = ctypes.CDLL('libc.so.6')\n    param = SchedParam(priority)\n    # Set the scheduling policy to FIFO and priority for the entire process (0 refers to the current process)\n    if libc.sched_setscheduler(0, SCHED_FIFO, ctypes.byref(param)) != 0:\n        raise ValueError(\"Failed to set real-time priority. Check permissions.\") \nWe run this function at the start of the script which will reassign the scheduling priority to the highest level. This can be verified to work by opening the system monitor and checking the priority of the script such as with htop.\n\n\n\nRT Priority Enabled",
     "crumbs": [
       "Home",
+      "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
     ]
