@@ -1,160 +1,5 @@
 [
   {
-    "objectID": "CV.html",
-    "href": "CV.html",
-    "title": "CV",
-    "section": "",
-    "text": "This browser does not support PDFs. Please download the PDF to view it: &lt;a href=\"path/to/your/CV.pdf\"&gt;Download PDF&lt;/a&gt;."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About Simon Ghyselincks",
-    "section": "",
-    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.\n\n\n\n\n\nIn the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics.\n\n\n\nAs I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems.\n\n\n\nThank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
-  },
-  {
-    "objectID": "about.html#academics-and-projects",
-    "href": "about.html#academics-and-projects",
-    "title": "About Simon Ghyselincks",
-    "section": "",
-    "text": "In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics."
-  },
-  {
-    "objectID": "about.html#looking-forward",
-    "href": "about.html#looking-forward",
-    "title": "About Simon Ghyselincks",
-    "section": "",
-    "text": "As I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems."
-  },
-  {
-    "objectID": "about.html#outside-the-lab",
-    "href": "about.html#outside-the-lab",
-    "title": "About Simon Ghyselincks",
-    "section": "",
-    "text": "Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Quarto",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
-    "crumbs": [
-      "Home",
-      "Basics",
-      "Quarto"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/introduction.html",
-    "href": "RLUnicycle/introduction.html",
-    "title": "Introduction",
-    "section": "",
-    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.\n\n\n\n\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.\n\n\n\n\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/introduction.html#project-overview",
-    "href": "RLUnicycle/introduction.html#project-overview",
-    "title": "Introduction",
-    "section": "",
-    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/introduction.html#the-challenge",
-    "href": "RLUnicycle/introduction.html#the-challenge",
-    "title": "Introduction",
-    "section": "",
-    "text": "Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/introduction.html#looking-ahead",
-    "href": "RLUnicycle/introduction.html#looking-ahead",
-    "title": "Introduction",
-    "section": "",
-    "text": "As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/rtpatch.html",
-    "href": "RLUnicycle/rtpatch.html",
-    "title": "RT Kernel on Jetson Nano",
-    "section": "",
-    "text": "The following guide is intended to provide step-by-step instructions on how to compile a real-time (RT) Linux kernel for the NVIDIA Jetson Nano. The RT kernel is based on the PREEMPT_RT patch, which adds real-time capabilities to the Linux kernel by making it fully preemptible and reducing the latency of the kernel’s interrupt handling.\nThis guide has been modified from some valuable instructions found at: https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4\n\n\nFirst download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2\n\n\n\nGo into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/rtpatch.html#download-source-files-and-install-packages",
-    "href": "RLUnicycle/rtpatch.html#download-source-files-and-install-packages",
-    "title": "RT Kernel on Jetson Nano",
-    "section": "",
-    "text": "First download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/rtpatch.html#apply-rt-patch",
-    "href": "RLUnicycle/rtpatch.html#apply-rt-patch",
-    "title": "RT Kernel on Jetson Nano",
-    "section": "",
-    "text": "Go into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/rtpatch.html#setting-python-scheduling-privileges",
-    "href": "RLUnicycle/rtpatch.html#setting-python-scheduling-privileges",
-    "title": "RT Kernel on Jetson Nano",
-    "section": "2.1 Setting Python Scheduling Privileges",
-    "text": "2.1 Setting Python Scheduling Privileges\nNote that for this description our team is using Python 3.8 in a virtual environment, the instructions path files may change slightly if using a different version.\nThe scheduling priority is a top-level system command and is usually locked behind ‘sudo’. This is problematic when running a Python script because we don’t want to run it as sudo allowing it full access to wreak havoc on the OS. The solution is to grant only the scheduling part of ‘sudo’ to the Python interpreter:\nThis command only needs to be set once after Python 3.8 is installed (the same in use in our venv): sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.8\n\nsetcap: This is a utility that sets or changes the capabilities of a file/executable. Capabilities are a Linux feature that allow for more fine-grained access control; they provide a way to grant specific privileges to executables that normally only the root user would have.\n'cap_sys_nice=eip': This argument specifies the capabilities to be set on the file, in this case, /usr/bin/python3.8. It’s composed of three parts:\n\ncap_sys_nice: This is the specific capability being set. cap_sys_nice allows the program to raise process nice values (which can deprioritize processes) and change real-time scheduling priorities and policies, without requiring full root privileges.\ne: This stands for “effective” and means the capability is “activated” and can be used by the executable.\ni: This stands for “inheritable”, meaning this capability can be inherited by child processes created by the executable.\np: This stands for “permitted”, which means the capability is allowed for the executable. It’s a part of the set of capabilities that the executable is permitted to use.\n\n/usr/bin/python3.8: This is the path to the Python 3.8 executable. The command sets the specified capabilities on this specific file.",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
-    "objectID": "RLUnicycle/rtpatch.html#setting-script-specific-rt",
-    "href": "RLUnicycle/rtpatch.html#setting-script-specific-rt",
-    "title": "RT Kernel on Jetson Nano",
-    "section": "2.2 Setting Script Specific RT",
-    "text": "2.2 Setting Script Specific RT\nThe ‘RT’ scheduling priority is code 99. Some imported C implementation allows for resetting the scheduling for the process. The function is wrapped in try/except block to ensure it activates.\n# Define constants for the scheduling policy\nSCHED_FIFO = 1  # FIFO real-time policy\n\nclass SchedParam(ctypes.Structure):\n    _fields_ = [('sched_priority', ctypes.c_int)]\n\ndef set_realtime_priority(priority=99):\n    libc = ctypes.CDLL('libc.so.6')\n    param = SchedParam(priority)\n    # Set the scheduling policy to FIFO and priority for the entire process (0 refers to the current process)\n    if libc.sched_setscheduler(0, SCHED_FIFO, ctypes.byref(param)) != 0:\n        raise ValueError(\"Failed to set real-time priority. Check permissions.\") \nWe run this function at the start of the script which will reassign the scheduling priority to the highest level. This can be verified to work by opening the system monitor and checking the priority of the script such as with htop.\n\n\n\nRT Priority Enabled",
-    "crumbs": [
-      "Home",
-      "Learning to Balance",
-      "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
     "objectID": "RLUnicycle/telemetry.html",
     "href": "RLUnicycle/telemetry.html",
     "title": "Telemetry and Database System",
@@ -236,6 +81,161 @@
       "Home",
       "Learning to Balance",
       "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/introduction.html",
+    "href": "RLUnicycle/introduction.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.\n\n\n\n\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.\n\n\n\n\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/introduction.html#project-overview",
+    "href": "RLUnicycle/introduction.html#project-overview",
+    "title": "Introduction",
+    "section": "",
+    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/introduction.html#the-challenge",
+    "href": "RLUnicycle/introduction.html#the-challenge",
+    "title": "Introduction",
+    "section": "",
+    "text": "Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\n\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/introduction.html#looking-ahead",
+    "href": "RLUnicycle/introduction.html#looking-ahead",
+    "title": "Introduction",
+    "section": "",
+    "text": "As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\n\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Quarto",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
+    "crumbs": [
+      "Home",
+      "Basics",
+      "Quarto"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.\n\n\n\n\n\nIn the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics.\n\n\n\nAs I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems.\n\n\n\nThank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  },
+  {
+    "objectID": "about.html#academics-and-projects",
+    "href": "about.html#academics-and-projects",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics."
+  },
+  {
+    "objectID": "about.html#looking-forward",
+    "href": "about.html#looking-forward",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "As I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems."
+  },
+  {
+    "objectID": "about.html#outside-the-lab",
+    "href": "about.html#outside-the-lab",
+    "title": "About Simon Ghyselincks",
+    "section": "",
+    "text": "Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  },
+  {
+    "objectID": "CV.html",
+    "href": "CV.html",
+    "title": "CV",
+    "section": "",
+    "text": "This browser does not support PDFs. Please download the PDF to view it: &lt;a href=\"path/to/your/CV.pdf\"&gt;Download PDF&lt;/a&gt;."
+  },
+  {
+    "objectID": "RLUnicycle/rtpatch.html",
+    "href": "RLUnicycle/rtpatch.html",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "The following guide is intended to provide step-by-step instructions on how to compile a real-time (RT) Linux kernel for the NVIDIA Jetson Nano. The RT kernel is based on the PREEMPT_RT patch, which adds real-time capabilities to the Linux kernel by making it fully preemptible and reducing the latency of the kernel’s interrupt handling.\nThis guide has been modified from some valuable instructions found at: https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4\n\n\nFirst download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2\n\n\n\nGo into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/rtpatch.html#download-source-files-and-install-packages",
+    "href": "RLUnicycle/rtpatch.html#download-source-files-and-install-packages",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "First download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/rtpatch.html#apply-rt-patch",
+    "href": "RLUnicycle/rtpatch.html#apply-rt-patch",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "Go into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/rtpatch.html#setting-python-scheduling-privileges",
+    "href": "RLUnicycle/rtpatch.html#setting-python-scheduling-privileges",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "2.1 Setting Python Scheduling Privileges",
+    "text": "2.1 Setting Python Scheduling Privileges\nNote that for this description our team is using Python 3.8 in a virtual environment, the instructions path files may change slightly if using a different version.\nThe scheduling priority is a top-level system command and is usually locked behind ‘sudo’. This is problematic when running a Python script because we don’t want to run it as sudo allowing it full access to wreak havoc on the OS. The solution is to grant only the scheduling part of ‘sudo’ to the Python interpreter:\nThis command only needs to be set once after Python 3.8 is installed (the same in use in our venv): sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.8\n\nsetcap: This is a utility that sets or changes the capabilities of a file/executable. Capabilities are a Linux feature that allow for more fine-grained access control; they provide a way to grant specific privileges to executables that normally only the root user would have.\n'cap_sys_nice=eip': This argument specifies the capabilities to be set on the file, in this case, /usr/bin/python3.8. It’s composed of three parts:\n\ncap_sys_nice: This is the specific capability being set. cap_sys_nice allows the program to raise process nice values (which can deprioritize processes) and change real-time scheduling priorities and policies, without requiring full root privileges.\ne: This stands for “effective” and means the capability is “activated” and can be used by the executable.\ni: This stands for “inheritable”, meaning this capability can be inherited by child processes created by the executable.\np: This stands for “permitted”, which means the capability is allowed for the executable. It’s a part of the set of capabilities that the executable is permitted to use.\n\n/usr/bin/python3.8: This is the path to the Python 3.8 executable. The command sets the specified capabilities on this specific file.",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "RLUnicycle/rtpatch.html#setting-script-specific-rt",
+    "href": "RLUnicycle/rtpatch.html#setting-script-specific-rt",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "2.2 Setting Script Specific RT",
+    "text": "2.2 Setting Script Specific RT\nThe ‘RT’ scheduling priority is code 99. Some imported C implementation allows for resetting the scheduling for the process. The function is wrapped in try/except block to ensure it activates.\n# Define constants for the scheduling policy\nSCHED_FIFO = 1  # FIFO real-time policy\n\nclass SchedParam(ctypes.Structure):\n    _fields_ = [('sched_priority', ctypes.c_int)]\n\ndef set_realtime_priority(priority=99):\n    libc = ctypes.CDLL('libc.so.6')\n    param = SchedParam(priority)\n    # Set the scheduling policy to FIFO and priority for the entire process (0 refers to the current process)\n    if libc.sched_setscheduler(0, SCHED_FIFO, ctypes.byref(param)) != 0:\n        raise ValueError(\"Failed to set real-time priority. Check permissions.\") \nWe run this function at the start of the script which will reassign the scheduling priority to the highest level. This can be verified to work by opening the system monitor and checking the priority of the script such as with htop.\n\n\n\nRT Priority Enabled",
+    "crumbs": [
+      "Home",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
     ]
   }
 ]
