@@ -7,7 +7,8 @@ website:
     style: "docked"
     search: true
     contents:
-      - about.qmd
+      - text: "Home"
+        href: about.qmd 
 
       - section: "Projects"
         contents:
@@ -22,8 +23,6 @@ website:
   navbar:
     left:
       - text: "Home"
-        href: index.qmd
-      - text: "About"
         href: about.qmd
       - text: "Learning to Balance"
         href: RLUnicycle/introduction.qmd

@@ -6,8 +6,6 @@ format:
     embed-resources: true
 ---
 
-# About Me
-
 ![](assets/profile-pictures/park-small.jpg){.circular-crop}
 
 
@@ -18,9 +16,9 @@ Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Enginee
 
 This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](projects.qmd).
 
-## Looking Forward
+<!-- ## Looking Forward
 
-I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three! 
+I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!  -->
 
 ## Outside the Lab
 
