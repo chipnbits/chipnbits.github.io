@@ -134,7 +134,7 @@
     "href": "RLUnicycle/introduction.html#looking-ahead",
     "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
     "section": "Looking Ahead",
-    "text": "Looking Ahead\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.\n\nEngage with Us\nWe invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.\n\nFor more detailed information about the project development, visit the Project Development Overview section. For insights into the specific hardware and software components, check out the System Overview.",
+    "text": "Looking Ahead\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.",
     "crumbs": [
       "Home",
       "Projects",
@@ -145,13 +145,6 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Quarto",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
     "title": "Simon Ghyselincks",
     "section": "",
     "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.",
@@ -160,8 +153,8 @@
     ]
   },
   {
-    "objectID": "about.html#academics-and-projects",
-    "href": "about.html#academics-and-projects",
+    "objectID": "index.html#academics-and-projects",
+    "href": "index.html#academics-and-projects",
     "title": "Simon Ghyselincks",
     "section": "Academics and Projects",
     "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.",
@@ -170,25 +163,52 @@
     ]
   },
   {
-    "objectID": "about.html#looking-forward",
-    "href": "about.html#looking-forward",
-    "title": "About Me",
-    "section": "",
-    "text": "I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!",
-    "crumbs": [
-      "Home",
-      "About Me"
-    ]
-  },
-  {
-    "objectID": "about.html#outside-the-lab",
-    "href": "about.html#outside-the-lab",
+    "objectID": "index.html#outside-the-lab",
+    "href": "index.html#outside-the-lab",
     "title": "Simon Ghyselincks",
     "section": "Outside the Lab",
     "text": "Outside the Lab\nFeel free to connect with me on LinkedIn or check out my GitHub projects.",
     "crumbs": [
       "Home"
     ]
+  },
+  {
+    "objectID": "index.html#my-journey",
+    "href": "index.html#my-journey",
+    "title": "Simon Ghyselincks",
+    "section": "My Journey",
+    "text": "My Journey\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian Amazon working as a travel guide and translator.\nA pivotal moment came in 2018 when a back injury required me to rethink and readapt my lifestyle. This challenge reignited my intellectual interest in science and technology, propelling me to pursue a degree in engineering at the University of British Columbia (UBC). This transition, although demanding, has been deeply rewarding. It aligns with my lifelong passion for learning and my commitment to making a positive impact on the world.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "about.html#academics-and-projects",
+    "href": "about.html#academics-and-projects",
+    "title": "Simon Ghyselincks",
+    "section": "Academics and Projects",
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here."
+  },
+  {
+    "objectID": "about.html#outside-the-lab",
+    "href": "about.html#outside-the-lab",
+    "title": "Simon Ghyselincks",
+    "section": "Outside the Lab",
+    "text": "Outside the Lab\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+  },
+  {
+    "objectID": "about.html#my-journey",
+    "href": "about.html#my-journey",
+    "title": "Simon Ghyselincks",
+    "section": "My Journey",
+    "text": "My Journey\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work"
   },
   {
     "objectID": "CV.html",
@@ -284,16 +304,6 @@
       "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
-    ]
-  },
-  {
-    "objectID": "about.html#my-journey",
-    "href": "about.html#my-journey",
-    "title": "Simon Ghyselincks",
-    "section": "My Journey",
-    "text": "My Journey\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work",
-    "crumbs": [
-      "Home"
     ]
   }
 ]

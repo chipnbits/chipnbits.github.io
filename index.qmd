@@ -1,7 +1,44 @@
 ---
-title: "Quarto"
+format:
+  html:
+    html-math-method: katex
+    css: styles.css
+    embed-resources: true
 ---
 
-This is a Quarto website.
+![](assets/profile-pictures/park-small.jpg){.circular-crop}
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+
+Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.
+
+
+## Academics and Projects
+
+This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](projects.qmd).
+
+<!-- ## Looking Forward
+
+I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!  -->
+
+## Outside the Lab
+
+Feel free to [connect with me on LinkedIn](www.linkedin.com/in/simonghyselincks) or check out my [GitHub projects](https://github.com/chipnbits).
+
+## My Journey
+
+I wasn't always so academically focused. In fact, I had a ten year career in forestry where I planted over *2 million* trees along with a variety of other projects. I also spent some years living in the Peruvian Amazon working as a travel guide and translator. 
+
+A pivotal moment came in 2018 when a back injury required me to rethink and readapt my lifestyle. This challenge reignited my intellectual interest in science and technology, propelling me to pursue a degree in engineering at the University of British Columbia (UBC). This transition, although demanding, has been deeply rewarding. It aligns with my lifelong passion for learning and my commitment to making a positive impact on the world.
+
+<div class="image-with-caption">
+  ![Tree Planting](assets/pastphotos/amazon.jpg "Amazon, Peru")
+  <span class="caption">Amazon, Peru</span>
+</div>
+
+<div class="image-with-caption">
+  ![Amazon Rainforest](assets/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
+  <span class="caption">Remote Helicopter Forestry Work</span>
+</div>
+
+
+

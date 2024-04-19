@@ -29,11 +29,7 @@ We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) mod
 
 As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.
 
-### Engage with Us
-
-We invite you to explore the various sections of this website to learn more about the intricate details of our project, from system dynamics and hardware design to our sophisticated software architecture. Your feedback and questions are invaluable as we continue to push the boundaries of what our robots can achieve.
-
 ---
 
-For more detailed information about the project development, visit the [Project Development Overview](./project-development-overview.qmd) section. For insights into the specific hardware and software components, check out the [System Overview](./system-overview.qmd).
+<!-- For more detailed information about the project development, visit the [Project Development Overview](./project-development-overview.qmd) section. For insights into the specific hardware and software components, check out the [System Overview](./system-overview.qmd). -->
 
