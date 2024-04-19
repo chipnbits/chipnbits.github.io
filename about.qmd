@@ -1,26 +1,46 @@
 ---
-title: "About Simon Ghyselincks"
+format:
+  html:
+    html-math-method: katex
+    css: styles.css
+    embed-resources: true
 ---
 
 # About Me
 
-Welcome to my personal site! I'm Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.
+![](assets/profile-pictures/park-small.jpg){.circular-crop}
 
-## My Journey
+
+Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.
 
 
 ## Academics and Projects
 
-In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics. 
+This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](projects.qmd).
 
 ## Looking Forward
 
-As I approach the completion of my degree, I'm excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what's possible in engineering and technology. Whether it's through further research, industry projects, or entrepreneurial ventures, I'm eager to contribute to innovative solutions that address real-world problems.
+I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three! 
 
 ## Outside the Lab
 
-Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.
-
 Feel free to [connect with me on LinkedIn](www.linkedin.com/in/simonghyselincks) or check out my [GitHub projects](https://github.com/chipnbits).
+
+## My Journey
+
+I wasn't always so academically focused. In fact, I had a ten year career in forestry where I planted over *2 million* trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator. 
+
+I came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next. 
+
+<div class="image-with-caption">
+  ![Tree Planting](assets/pastphotos/amazon.jpg "Amazon, Peru")
+  <span class="caption">Amazon, Peru</span>
+</div>
+
+<div class="image-with-caption">
+  ![Amazon Rainforest](assets/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
+  <span class="caption">Remote Helicopter Forestry Work</span>
+</div>
+
 
 

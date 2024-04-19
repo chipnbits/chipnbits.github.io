@@ -147,40 +147,51 @@
     "href": "index.html",
     "title": "Quarto",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.",
-    "crumbs": [
-      "Home",
-      "Basics",
-      "Quarto"
-    ]
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About Simon Ghyselincks",
+    "title": "About Me",
     "section": "",
-    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 4th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. My academic journey is characterized by a cross-disciplinary blend of engineering, computer science, and applied mathematics. I love coding to solve tough problems in robotics, machine learning, signals processing, and more.\n\n\n\n\n\nIn the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics.\n\n\n\nAs I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems.\n\n\n\nThank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.\n\n\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\n\n\nI am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!\n\n\n\nFeel free to connect with me on LinkedIn or check out my GitHub projects.\n\n\n\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work",
+    "crumbs": [
+      "Home",
+      "About Me"
+    ]
   },
   {
     "objectID": "about.html#academics-and-projects",
     "href": "about.html#academics-and-projects",
-    "title": "About Simon Ghyselincks",
+    "title": "About Me",
     "section": "",
-    "text": "In the classroom, my focus has been learning the fundamentals of machine learning, computational optimization, and systems controls, among other topics."
+    "text": "This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.",
+    "crumbs": [
+      "Home",
+      "About Me"
+    ]
   },
   {
     "objectID": "about.html#looking-forward",
     "href": "about.html#looking-forward",
-    "title": "About Simon Ghyselincks",
+    "title": "About Me",
     "section": "",
-    "text": "As I approach the completion of my degree, I’m excited about the future. My goal is to continue blending the theoretical with the practical, pushing the boundaries of what’s possible in engineering and technology. Whether it’s through further research, industry projects, or entrepreneurial ventures, I’m eager to contribute to innovative solutions that address real-world problems."
+    "text": "I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!",
+    "crumbs": [
+      "Home",
+      "About Me"
+    ]
   },
   {
     "objectID": "about.html#outside-the-lab",
     "href": "about.html#outside-the-lab",
-    "title": "About Simon Ghyselincks",
+    "title": "About Me",
     "section": "",
-    "text": "Thank you for visiting my site. I hope to not only share my journey with you but also to inspire and be inspired by the passionate community of learners and innovators out there.\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+    "text": "Feel free to connect with me on LinkedIn or check out my GitHub projects.",
+    "crumbs": [
+      "Home",
+      "About Me"
+    ]
   },
   {
     "objectID": "CV.html",
@@ -276,6 +287,17 @@
       "Projects",
       "Learning to Balance",
       "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "about.html#my-journey",
+    "href": "about.html#my-journey",
+    "title": "About Me",
+    "section": "",
+    "text": "I wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work",
+    "crumbs": [
+      "Home",
+      "About Me"
     ]
   }
 ]
