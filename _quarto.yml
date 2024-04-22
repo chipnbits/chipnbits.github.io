@@ -3,6 +3,21 @@ project:
   output-dir: docs
 
 website:
+  title: "Simon Ghyselincks"
+  description: "A personal page for Simon Ghyselincks"
+  page-navigation: true
+
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Learning to Balance"
+        href: content/projects/RLUnicycle/introduction.qmd
+      - text: "CV"
+        href: www/cv/CV.pdf
+      - text: "About"
+        href: content/about/biography.qmd
+
   sidebar:
     style: "docked"
     search: true
@@ -18,18 +33,7 @@ website:
               - content/projects/RLUnicycle/introduction.qmd
               - content/projects/RLUnicycle/rtpatch.qmd
               - content/projects/RLUnicycle/telemetry.qmd
-  title: "Simon Ghyselincks"
-  description: "A personal page for Simon Ghyselincks"
-  navbar:
-    left:
-      - text: "Home"
-        href: index.qmd
-      - text: "Learning to Balance"
-        href: content/projects/RLUnicycle/introduction.qmd
-      - text: "CV"
-        href: www/cv/CV.pdf
-      - text: "About"
-        href: content/about/biography.qmd
+
 
 format:
   html:

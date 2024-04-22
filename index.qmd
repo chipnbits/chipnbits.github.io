@@ -1,6 +1,21 @@
 ---
-title: ""
+title: "Simon Ghyselincks"
+sidebar: false
 toc: false
+resources: 
+  - "/www/images/profile-pictures/park-small.jpg"
+
+about: 
+    template: trestles
+    image-shape: round
+    image: /www/images/profile-pictures/park-small.jpg
+    links:
+      - icon: github
+        href: https://github.com/chipnbits
+      - icon: linkedin
+        href: https://www.linkedin.com/in/simonghyselincks/
 ---
 
-{{< include content/about/index.qmd >}}
+{{< include /content/about/overview.qmd >}}
+
+
