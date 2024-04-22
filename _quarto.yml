@@ -12,12 +12,12 @@ website:
 
       - section: "Projects"
         contents:
-          - projects.qmd
+          - content/projects/projects.qmd
           - section: "Learning to Balance"
             contents:
-              - RLUnicycle/introduction.qmd
-              - RLUnicycle/rtpatch.qmd
-              - RLUnicycle/telemetry.qmd
+              - content/projects/RLUnicycle/introduction.qmd
+              - content/projects/RLUnicycle/rtpatch.qmd
+              - content/projects/RLUnicycle/telemetry.qmd
   title: "Simon Ghyselincks"
   description: "A personal page for Simon Ghyselincks"
   navbar:
@@ -25,9 +25,9 @@ website:
       - text: "Home"
         href: index.qmd
       - text: "Learning to Balance"
-        href: RLUnicycle/introduction.qmd
+        href: content/projects/RLUnicycle/introduction.qmd
       - text: "CV"
-        href: CV.pdf
+        href: www/cv/CV.pdf
 
 format:
   html:

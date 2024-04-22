@@ -2,11 +2,11 @@
 format:
   html:
     html-math-method: katex
-    css: styles.css
+    css: /styles.css
     embed-resources: true
 ---
 
-![](assets/profile-pictures/park-small.jpg){.circular-crop}
+![](/www/images/profile-pictures/park-small.jpg){.circular-crop}
 
 
 Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.
@@ -14,7 +14,7 @@ Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Enginee
 
 ## Academics and Projects
 
-This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](projects.qmd).
+This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](/content/projects/projects.qmd).
 
 <!-- ## Looking Forward
 
@@ -31,14 +31,15 @@ I wasn't always so academically focused. In fact, I had a ten year career in for
 I came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next. 
 
 <div class="image-with-caption">
-  ![Tree Planting](assets/pastphotos/amazon.jpg "Amazon, Peru")
+  ![Tree Planting](/www/images/pastphotos/amazon.jpg "Amazon, Peru")
   <span class="caption">Amazon, Peru</span>
 </div>
 
 <div class="image-with-caption">
-  ![Amazon Rainforest](assets/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
+  ![Amazon Rainforest](/www/images/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
   <span class="caption">Remote Helicopter Forestry Work</span>
 </div>
+
 
 
 

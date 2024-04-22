@@ -9,7 +9,7 @@
 <meta name="author" content="Simon Ghyselincks, Team 2411">
 <meta name="dcterms.date" content="2024-04-13">
 
-<title>Simon Ghyselincks - RT Kernel on Jetson Nano</title>
+<title>Simon Ghyselincks - Telemetry and Database System</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,22 +59,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -104,8 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="../styles.css">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed fullcontent">
@@ -115,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Simon Ghyselincks</span>
     </a>
   </div>
@@ -126,15 +125,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../index.html" aria-current="page"> 
+    <a class="nav-link active" href="../../../index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../RLUnicycle/introduction.html"> 
+    <a class="nav-link" href="../../../content/projects/RLUnicycle/introduction.html"> 
 <span class="menu-text">Learning to Balance</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../CV.pdf"> 
+    <a class="nav-link" href="../../../www/cv/CV.pdf"> 
 <span class="menu-text">CV</span></a>
   </li>  
 </ul>
@@ -148,7 +147,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../RLUnicycle/rtpatch.html">RT Kernel on Jetson Nano</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/telemetry.html">Telemetry and Database System</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -170,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -185,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../projects.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../content/projects/projects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Project Home</span></a>
   </div>
 </li>
@@ -200,19 +199,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../content/projects/RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Learning to Balance: A Reaction-Wheel Unicycle Robot</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RLUnicycle/rtpatch.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../content/projects/RLUnicycle/rtpatch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">RT Kernel on Jetson Nano</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../RLUnicycle/telemetry.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../content/projects/RLUnicycle/telemetry.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Telemetry and Database System</span></a>
   </div>
 </li>
@@ -229,9 +228,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../RLUnicycle/rtpatch.html">RT Kernel on Jetson Nano</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/telemetry.html">Telemetry and Database System</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">RT Kernel on Jetson Nano</h1>
+<h1 class="title">Telemetry and Database System</h1>
+<p class="subtitle lead">Telemetry and Database System Documentation</p>
 </div>
 
 
@@ -260,160 +260,118 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="linux-rt-kernel-compile-guide" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Linux RT Kernel Compile Guide</h1>
-<p>The following guide is intended to provide step-by-step instructions on how to compile a real-time (RT) Linux kernel for the NVIDIA Jetson Nano. The RT kernel is based on the PREEMPT_RT patch, which adds real-time capabilities to the Linux kernel by making it fully preemptible and reducing the latency of the kernel’s interrupt handling.</p>
-<p>This guide has been modified from some valuable instructions found at: <a href="https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4">https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4</a></p>
-<section id="download-source-files-and-install-packages" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="download-source-files-and-install-packages"><span class="header-section-number">1.1</span> Download Source Files and Install Packages</h2>
-<p>First download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.</p>
-<p>You can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Source Files:</strong><br>
-<a href="https://developer.nvidia.com/embedded/linux-tegra-r3274">https://developer.nvidia.com/embedded/linux-tegra-r3274</a></p>
-</div>
-</div>
-<p>Download:</p>
+<section id="purpose" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Purpose</h1>
+<p>This is a user summary document for our capstone telemetry and database server. It is intended to provide an overview of the different services that are in use for the data pipeline. The capstone project leverages the MING stack as shown in the overview diagram below.</p>
+<p>I recommend using a central server to manage all of these services through a Zerotier Virtual Network. This will allow you to access the services from anywhere via the internet without exposing the server to the public.</p>
+<section id="hardware-recommendation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="hardware-recommendation"><span class="header-section-number">1.1</span> Hardware Recommendation</h2>
+<p>The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.</p>
+<p>The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.</p>
+</section>
+</section>
+<section id="telemetry-services-overview" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Telemetry Services Overview</h1>
+<p>Telemetry and Control Command Communications</p>
+<p><img src="https://i.imgur.com/YNNInuJ.png" class="img-fluid"></p>
+<section id="zerotier-virtual-network" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="zerotier-virtual-network"><span class="header-section-number">2.1</span> ZeroTier Virtual Network</h2>
+<p>Zerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network.</p>
+<p>To setup a network you should first create a free account at <a href="https://my.zerotier.com/">https://my.zerotier.com/</a>. Once you have an account you can create a network and add devices to it. The network ID is a 16 digit number that is used to identify the network.</p>
+<p><img src="https://i.imgur.com/mTfZ0wi.png" alt="Alternative text" width="400"></p>
+<section id="zerotier-client" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="zerotier-client"><span class="header-section-number">2.1.1</span> Zerotier Client</h3>
+<p>The Zerotier client is a software that is installed on the devices that you want to connect to the network. Each device intended for the network including the server should have the client installed. Once it is installed, enter the network ID from the Zerotier website and then approve the device to the network. You may wish to set static IP addresses, especially for the server. This can all be done through the Zerotier website.</p>
+<p><a href="https://www.zerotier.com/download/">https://www.zerotier.com/download/</a></p>
+<hr>
+</section>
+</section>
+<section id="mqtt-overview" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="mqtt-overview"><span class="header-section-number">2.2</span> MQTT Overview</h2>
+<p>The robot an network is using the MQTT protocol to implement live telemetry. Topics are used on a subscriber publisher basis. All communication is routed through the Lenovo server that is acting as the broker. The Mosquitto MQTT server software is running on the Lenovo server which is the IP address used for routing messages. The default port for MQTT is 1883.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the MQTT settings</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>broker_address <span class="op">=</span> <span class="st">"172.22.1.1"</span> <span class="co">#Lenovo's IP address</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>port <span class="op">=</span> <span class="dv">1883</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>topic <span class="op">=</span> <span class="st">"robot/telemetry"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The MQTT explorer offers comprehensive tools to explore available topics and more: https://mqtt-explorer.com/ This can be a very useful tool for debugging and exploring the MQTT network to check if messages are being sent and received.</p>
+<p>MQTT interfaces with Python, Node-Red, and Grafana to provide a comprehensive data pipeline. The MQTT broker is the central hub for all data that is being sent and received. The broker can be accessed by any device on the ZeroTier network that is subscribed to the topic.</p>
+<section id="mqtt-summary" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="mqtt-summary"><span class="header-section-number">2.2.1</span> MQTT Summary</h3>
+<p>MQTT is a lightweight messaging protocol that provides an efficient and cost-effective method of carrying out telemetry-based communication between devices. It’s especially popular in Internet of Things (IoT) applications due to its minimal bandwidth requirements and ease of implementation on hardware with limited processing capabilities.</p>
+<section id="key-features-of-mqtt" class="level4" data-number="2.2.1.1">
+<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="key-features-of-mqtt"><span class="header-section-number">2.2.1.1</span> Key Features of MQTT:</h4>
 <ul>
-<li><p>Driver Package (BSP)</p></li>
-<li><p>Sample Root File System</p></li>
-<li><p>Driver Package (BSP) Sources</p></li>
-<li><p>GCC Tool Chain can also be obtained via the command line:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li>Lightweight Protocol: Ideal for constrained devices and networks with limited bandwidth.</li>
+<li>Publish-Subscribe Model: Allows devices to publish messages to a topic and any client subscribed to that topic will receive the messages.</li>
+<li>Reliable Message Delivery: Offers various levels of Quality of Service (QoS) to guarantee message delivery.</li>
+<li>Minimal Overhead: Adds only a small overhead to each message, ensuring efficient use of network resources.</li>
+<li>Retained Messages: Supports retaining the last message sent on a topic, making it available immediately to new subscribers.</li>
+<li>Last Will and Testament: Provides a means for a client to notify other clients about an abnormal disconnection.</li>
 </ul>
-<p>Pile all the files into a single directory and install packages</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install libncurses5-dev </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install build-essential </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install bc </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install lbzip2 </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install qemu-user-static </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install python</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$HOME</span>/jetson_nano </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$HOME</span>/jetson_nano</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Extract all of the files</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Linux_for_Tegra/rootfs/ </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../../ </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xvf</span> gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tar <span class="at">-xjf</span> public_sources.tbz2 </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xjf</span> Linux_for_Tegra/source/public/kernel_src.tbz2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="apply-rt-patch" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="apply-rt-patch"><span class="header-section-number">1.2</span> Apply RT Patch</h2>
-<p>Go into extracted kernel source and apply RT patch</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> kernel/kernel-4.9/</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/rt-patch.sh</span> apply-patches</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Configure and compile:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">TEGRA_KERNEL_OUT</span><span class="op">=</span>jetson_nano_kernel </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$TEGRA_KERNEL_OUT</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">CROSS_COMPILE</span><span class="op">=</span><span class="va">$HOME</span>/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ARCH=arm64 O=<span class="va">$TEGRA_KERNEL_OUT</span> tegra_defconfig </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ARCH=arm64 O=<span class="va">$TEGRA_KERNEL_OUT</span> menuconfig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:</p>
-<blockquote class="blockquote">
-<p><em>General setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)<br>
-Kernel Features → Preemption Model: Fully Preemptible Kernel (RT)<br>
-Kernel Features → Timer frequency: 1000 HZ</em></p>
-</blockquote>
-<p>At this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!</p>
-<section id="optional-mods" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="optional-mods"><span class="header-section-number">1.2.1</span> Optional Mods</h3>
-<p>I tried to modify</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tegra210-porg-gpio-p3448-0000-b00.dtsi</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>the source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.</p>
-</section>
-<section id="compile" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="compile"><span class="header-section-number">1.2.2</span> Compile</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ARCH=arm64 O=<span class="va">$TEGRA_KERNEL_OUT</span> <span class="at">-j4</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp jetson_nano_kernel/arch/arm64/boot/Image <span class="va">$HOME</span>/jetson_nano/Linux_for_Tegra/kernel/Image</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp <span class="at">-r</span> jetson_nano_kernel/arch/arm64/boot/dts/<span class="pp">*</span> <span class="va">$HOME</span>/jetson_nano/Linux_for_Tegra/kernel/dtb/</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make ARCH=arm64 O=<span class="va">$TEGRA_KERNEL_OUT</span> modules_install INSTALL_MOD_PATH=<span class="va">$HOME</span>/jetson_nano/Linux_for_Tegra/rootfs/</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$HOME</span>/jetson_nano/Linux_for_Tegra/rootfs/</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tar <span class="at">--owner</span> root <span class="at">--group</span> root <span class="at">-cjf</span> kernel_supplements.tbz2 lib/modules</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mv kernel_supplements.tbz2  ../kernel/</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ./apply_binaries.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:</p>
-<pre><code>cd tools
-sudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300</code></pre>
-<p>It is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!</p>
-<p>Use Balena etcher to put image in <code>$HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img</code> onto the SD card</p>
+<section id="application-for-our-robot" class="level4" data-number="2.2.1.2">
+<h4 data-number="2.2.1.2" class="anchored" data-anchor-id="application-for-our-robot"><span class="header-section-number">2.2.1.2</span> Application for our Robot</h4>
+<p>The Lenovo acts as a broker for all the data that is streaming out of the robot over a Wi-Fi connection to the internet. This offloads the databasing and broadcasting duty from the robot to the broker which can dedicate more resources to data management. The robot can publish data to a topic, which can be picked up by various subscribers such as the Lenovo’s Grafana server or other laptops, phones, etc that are connected to the broker and subscribed to the topic.</p>
+<p><strong>More Detailed System Diagram needed</strong> <img src="https://i.imgur.com/SDVurr8.png" class="img-fluid"></p>
+<p>The broker can duplicate the published data to many devices in real-time. Another hidden stream for the data is through Node-Red to InfluxDB where the aggregate data can be store more permanently for access to testing records at a later date. Additionally, an MQTT bridge is connected to the Pi’s Grafana server which offers an advanced dashboard service for viewing live telemetry. Note that databased telemetry can also be viewed through Grafana which is connected to InfluDB, but it is a seperate data stream from MQTT and should have a seperate dashboard.</p>
 </section>
 </section>
-</section>
-<section id="python-in-rt" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Python in RT</h1>
-<p>The python script needs to be run with the priority changed from (20) to highest level (99) for it to be RT enabled.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Running a task at this level could lock the CPU or cause system instability.</p>
-</div>
-</div>
-<section id="setting-python-scheduling-privileges" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="setting-python-scheduling-privileges"><span class="header-section-number">2.1</span> Setting Python Scheduling Privileges</h2>
-<p>Note that for this description our team is using Python 3.8 in a virtual environment, the instructions path files may change slightly if using a different version.</p>
-<p>The scheduling priority is a top-level system command and is usually locked behind ‘sudo’. This is problematic when running a Python script because we don’t want to run it as sudo allowing it full access to wreak havoc on the OS. The solution is to grant only the scheduling part of ‘sudo’ to the Python interpreter:</p>
-<p><strong>This command only needs to be set once after Python 3.8 is installed (the same in use in our venv):</strong> <code>sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.8</code></p>
-<ol type="1">
-<li><p><strong><code>setcap</code></strong>: This is a utility that sets or changes the capabilities of a file/executable. Capabilities are a Linux feature that allow for more fine-grained access control; they provide a way to grant specific privileges to executables that normally only the root user would have.</p></li>
-<li><p><strong><code>'cap_sys_nice=eip'</code></strong>: This argument specifies the capabilities to be set on the file, in this case, <code>/usr/bin/python3.8</code>. It’s composed of three parts:</p>
+<section id="publishing-messages" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="publishing-messages"><span class="header-section-number">2.2.2</span> Publishing Messages</h3>
+<p>A sample script for publishing messages with <strong>Paho-MQTT client</strong> <a href="https://www.emqx.com/en/blog/how-to-use-mqtt-in-python">Documentation</a> to the Lenovo server/broker while connected to Zero-Tier is provided, see the mqtt.py file. The script allows for publishing a controller value or a cpu_usage data point.</p>
+<p><strong>Prerequisites</strong></p>
 <ul>
-<li><strong><code>cap_sys_nice</code></strong>: This is the specific capability being set. <code>cap_sys_nice</code> allows the program to raise process nice values (which can deprioritize processes) and change real-time scheduling priorities and policies, without requiring full root privileges.</li>
-<li><strong><code>e</code></strong>: This stands for “effective” and means the capability is “activated” and can be used by the executable.</li>
-<li><strong><code>i</code></strong>: This stands for “inheritable”, meaning this capability can be inherited by child processes created by the executable.</li>
-<li><strong><code>p</code></strong>: This stands for “permitted”, which means the capability is allowed for the executable. It’s a part of the set of capabilities that the executable is permitted to use.</li>
-</ul></li>
-<li><p><strong><code>/usr/bin/python3.8</code></strong>: This is the path to the Python 3.8 executable. The command sets the specified capabilities on this specific file.</p></li>
-</ol>
+<li><p>MQTT Broker Setup: Ensure that the MQTT broker, in this case, the Lenovo server, is up and running.</p></li>
+<li><p>Network Connection: Connect your device to the Zero-Tier network to ensure visibility and access to the broker.</p></li>
+<li><p>Python Environment: Make sure Python is installed on your device along with necessary libraries: paho-mqtt, json</p></li>
+<li><p>Broker Details: In the script, set the broker_address to the Lenovo server’s IP address and port to 1883 (default MQTT port).</p>
+<p>A client is formed with a ClientID that should be descriptive, we then connect to the MQTT broker A dictionary of values can be converted to JSON format using JSON dump, method. The broker is designed to work with either raw values or JSON The JSON values can be a collection of data types with a Key and Value</p>
+<p>The publish method publishes the data to the desired stream where other clients can subscribe to the topic.</p></li>
+</ul>
 </section>
-<section id="setting-script-specific-rt" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="setting-script-specific-rt"><span class="header-section-number">2.2</span> Setting Script Specific RT</h2>
-<p>The ‘RT’ scheduling priority is code 99. Some imported C implementation allows for resetting the scheduling for the process. The function is wrapped in try/except block to ensure it activates.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define constants for the scheduling policy</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>SCHED_FIFO <span class="op">=</span> <span class="dv">1</span> &nbsp;<span class="co"># FIFO real-time policy</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SchedParam(ctypes.Structure):</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; _fields_ <span class="op">=</span> [(<span class="st">'sched_priority'</span>, ctypes.c_int)]</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> set_realtime_priority(priority<span class="op">=</span><span class="dv">99</span>):</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    libc <span class="op">=</span> ctypes.CDLL(<span class="st">'libc.so.6'</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    param <span class="op">=</span> SchedParam(priority)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the scheduling policy to FIFO and priority for the entire process (0 refers to the current process)</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> libc.sched_setscheduler(<span class="dv">0</span>, SCHED_FIFO, ctypes.byref(param)) <span class="op">!=</span> <span class="dv">0</span>:</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Failed to set real-time priority. Check permissions."</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We run this function at the start of the script which will reassign the scheduling priority to the highest level. This can be verified to work by opening the system monitor and checking the priority of the script such as with htop.</p>
+<section id="subscribing-to-messages" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="subscribing-to-messages"><span class="header-section-number">2.2.3</span> Subscribing to messages:</h3>
+<ul>
+<li>A Grafana server has been setup where some useful dashboards can be maintained. The <strong>IoT MQTT Panel</strong> for Android also offers some nice services including the ability to send messages.</li>
+<li>More details on subscribing through the <strong>Paho-MQTT client</strong> can be found at <a href="https://www.emqx.com/en/blog/how-to-use-mqtt-in-python">https://www.emqx.com/en/blog/how-to-use-mqtt-in-python</a> ### QoS The protocol allows for fast transmission of messages and a similar PUB/SUB model as ROS topics. Telemetry read data can be sent using QoS level 0 which only attempts a single delivery of the data and does not wait for confirmation of receipt, this is perfectly acceptable for fast streaming data that is not mission critical.</li>
+</ul>
+<p>For mission critical commands such as parameter adjustments and messages to the robot, a QoS level of 2 can be tied to the message which ensures that it is delivered to the robot exactly once. This avoids duplicate commands or lost commands through the network. It is a slower communication protocol but it is not an issue for lower bandwidth messages that are orginating from control devices to the robot.</p>
+</section>
+</section>
+<section id="grafana-live-telemetry-and-database-dashboards" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="grafana-live-telemetry-and-database-dashboards"><span class="header-section-number">2.3</span> Grafana Live Telemetry and Database Dashboards</h2>
+<p><strong>Grafana</strong> is a powerful open-source platform for creating dashboards and visualizing time-series data. It is particularly well-suited for monitoring and analyzing real-time data. Grafana supports a wide range of data sources and can be used to display both live and historical data in a variety of formats, including graphs, tables, and gauges. Think of it as graph nirvana.</p>
+<p>When it comes to viewing the telemetry data, a plugin can be installed to function as a bridge between the MQTT broker and the Grafana server. https://grafana.com/grafana/plugins/grafana-mqtt-datasource/</p>
+<p>To setup Grafana, install the software on the Lenovo server first. The default port for Grafana is 3000. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 3000.</p>
+<p>Once you have logged in, you can add a data source by selecting MQTT from the list of available data sources if you have correctly installed the plugin. The panel will listen to all messages on a particular topic and display them in a graph or table format.</p>
+</section>
+<section id="influxdb-databasing" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="influxdb-databasing"><span class="header-section-number">2.4</span> InfluxDB Databasing</h2>
+<p>The database can be accessed through Python API, through Grafana, or even a direct viewer. The database is also to be installed on the Lenovo server. The default port for InfluxDB is 8086. The database can be accessed through a web browser by navigating to the IP address of the Lenovo server on port 8086.</p>
+<p>MQTT gives livestream data but if we want data storage and permanence between runs it needs to be databased. InfluxDB offers this service along with data manipulation services and a special query language. It also includes a data explorer through the web interface.</p>
+</section>
+<section id="node-red" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="node-red"><span class="header-section-number">2.5</span> Node Red</h2>
+<p>Node Red is a flow-based open source development tool for visual programming developed by IBM. It is used for wiring together hardware devices, APIs, and online services in new and interesting ways. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.</p>
+<p>For this application Node Red is used to bridge the MQTT broker to the InfluxDB database. This allows for the data to be stored in a database for later access. The data can be manipulated and stored in a more permanent format.</p>
+<p>The Node Red server is installed on the Lenovo server. The default port for Node Red is 1880. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 1880.</p>
+<section id="node-red-dashboard" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="node-red-dashboard"><span class="header-section-number">2.5.1</span> Node Red Dashboard</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="rtpatch.png" class="img-fluid figure-img"></p>
-<figcaption>RT Priority Enabled</figcaption>
+<p><img src="nodereddash.png" class="img-fluid figure-img"></p>
+<figcaption>Node Red Dashboard</figcaption>
 </figure>
 </div>
-
-
+<p>The Node Red dashboard is an additional feature that is accessed through the Node Red server. It allows for the creation of custom dashboards that can be used to provide a GUI for a robotics project. The GUI can be used to connect directly to incoming signals and also produce outgoing command signals that can be sent to the robot.</p>
 </section>
+</section>
+</section>
+<section id="conclusion" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Conclusion</h1>
+<p>These service conbined together have proven to be a powerful tool for capstone development. In addition the Lenovo server functions as a valuable workstation for the team. The services are all open source and free to use. The services are also very well documented and have a large community of users that can help with any issues that may arise. Best of luck with your capstone project!</p>
+
+
 </section>
 
 </main> <!-- /main -->
