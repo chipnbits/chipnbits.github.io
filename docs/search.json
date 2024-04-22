@@ -201,53 +201,53 @@
   {
     "objectID": "content/projects/RLUnicycle/introduction.html",
     "href": "content/projects/RLUnicycle/introduction.html",
-    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "title": "Introduction",
     "section": "",
     "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
     "crumbs": [
       "Home",
       "Projects",
       "Learning to Balance",
-      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
+      "Introduction"
     ]
   },
   {
     "objectID": "content/projects/RLUnicycle/introduction.html#project-overview",
     "href": "content/projects/RLUnicycle/introduction.html#project-overview",
-    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "title": "Introduction",
     "section": "",
     "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.\n\n\nThe primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.\n\n\n\nOur project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.",
     "crumbs": [
       "Home",
       "Projects",
       "Learning to Balance",
-      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
+      "Introduction"
     ]
   },
   {
     "objectID": "content/projects/RLUnicycle/introduction.html#the-challenge",
     "href": "content/projects/RLUnicycle/introduction.html#the-challenge",
-    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "title": "Introduction",
     "section": "The Challenge",
     "text": "The Challenge\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\nThe Technical Approach\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.",
     "crumbs": [
       "Home",
       "Projects",
       "Learning to Balance",
-      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
+      "Introduction"
     ]
   },
   {
     "objectID": "content/projects/RLUnicycle/introduction.html#looking-ahead",
     "href": "content/projects/RLUnicycle/introduction.html#looking-ahead",
-    "title": "Learning to Balance: A Reaction-Wheel Unicycle Robot",
+    "title": "Introduction",
     "section": "Looking Ahead",
     "text": "Looking Ahead\nAs we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.",
     "crumbs": [
       "Home",
       "Projects",
       "Learning to Balance",
-      "Learning to Balance: A Reaction-Wheel Unicycle Robot"
+      "Introduction"
     ]
   },
   {
