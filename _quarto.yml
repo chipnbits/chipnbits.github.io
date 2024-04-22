@@ -28,6 +28,8 @@ website:
         href: content/projects/RLUnicycle/introduction.qmd
       - text: "CV"
         href: www/cv/CV.pdf
+      - text: "About"
+        href: content/about/biography.qmd
 
 format:
   html:

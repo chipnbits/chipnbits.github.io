@@ -10,21 +10,21 @@
     ]
   },
   {
-    "objectID": "index.html#academics-and-projects",
-    "href": "index.html#academics-and-projects",
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
     "title": "Simon Ghyselincks",
-    "section": "Academics and Projects",
-    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.",
     "crumbs": [
       "Home"
     ]
   },
   {
-    "objectID": "index.html#outside-the-lab",
-    "href": "index.html#outside-the-lab",
+    "objectID": "index.html#academics-and-projects",
+    "href": "index.html#academics-and-projects",
     "title": "Simon Ghyselincks",
-    "section": "Outside the Lab",
-    "text": "Outside the Lab\nFeel free to connect with me on LinkedIn or check out my GitHub projects.",
+    "section": "Academics and Projects",
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\nFeel free to connect with me on LinkedIn or check out my GitHub.",
     "crumbs": [
       "Home"
     ]
@@ -34,7 +34,7 @@
     "href": "index.html#my-journey",
     "title": "Simon Ghyselincks",
     "section": "My Journey",
-    "text": "My Journey\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work",
+    "text": "My Journey\nRead more about my journey and past pursuits here.",
     "crumbs": [
       "Home"
     ]
@@ -129,8 +129,50 @@
     ]
   },
   {
+    "objectID": "content/about/overview.html",
+    "href": "content/about/overview.html",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "content/about/overview.html#welcome",
+    "href": "content/about/overview.html#welcome",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "content/about/overview.html#academics-and-projects",
+    "href": "content/about/overview.html#academics-and-projects",
+    "title": "Simon Ghyselincks",
+    "section": "Academics and Projects",
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\nFeel free to connect with me on LinkedIn or check out my GitHub."
+  },
+  {
+    "objectID": "content/about/overview.html#my-journey",
+    "href": "content/about/overview.html#my-journey",
+    "title": "Simon Ghyselincks",
+    "section": "My Journey",
+    "text": "My Journey\nRead more about my journey and past pursuits here."
+  },
+  {
+    "objectID": "content/about/biography.html",
+    "href": "content/about/biography.html",
+    "title": "Bio",
+    "section": "",
+    "text": "Bio\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work"
+  },
+  {
     "objectID": "content/about/index.html",
     "href": "content/about/index.html",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "content/about/index.html#welcome",
+    "href": "content/about/index.html#welcome",
     "title": "Simon Ghyselincks",
     "section": "",
     "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
@@ -140,21 +182,14 @@
     "href": "content/about/index.html#academics-and-projects",
     "title": "Simon Ghyselincks",
     "section": "Academics and Projects",
-    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here."
-  },
-  {
-    "objectID": "content/about/index.html#outside-the-lab",
-    "href": "content/about/index.html#outside-the-lab",
-    "title": "Simon Ghyselincks",
-    "section": "Outside the Lab",
-    "text": "Outside the Lab\nFeel free to connect with me on LinkedIn or check out my GitHub projects."
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\nFeel free to connect with me on LinkedIn or check out my GitHub."
   },
   {
     "objectID": "content/about/index.html#my-journey",
     "href": "content/about/index.html#my-journey",
     "title": "Simon Ghyselincks",
     "section": "My Journey",
-    "text": "My Journey\nI wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next.\n\n Amazon, Peru\n\n\n Remote Helicopter Forestry Work"
+    "text": "My Journey\nRead more about my journey and past pursuits here."
   },
   {
     "objectID": "content/CV.html",

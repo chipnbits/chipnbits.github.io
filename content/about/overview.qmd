@@ -1,0 +1,17 @@
+## Welcome
+Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more.
+
+
+## Academics and Projects
+
+This summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](/content/projects/projects.qmd).
+
+<!-- ## Looking Forward
+
+I am interested in a Masters or PhD in the field of robotics, computational science and engineering, machine learning, or the intersection of all three!  -->
+
+Feel free to connect with me on [LinkedIn](www.linkedin.com/in/simonghyselincks) or check out my [GitHub](https://github.com/chipnbits).
+
+## My Journey
+
+Read more about my journey and past pursuits [here](/content/about/biography.qmd).

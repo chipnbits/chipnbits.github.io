@@ -1,0 +1,15 @@
+# Bio
+
+I wasn't always so academically focused. In fact, I had a ten year career in forestry where I planted over *2 million* trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator. 
+
+I came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next. 
+
+<div class="image-with-caption">
+  ![Tree Planting](/www/images/pastphotos/amazon.jpg "Amazon, Peru")
+  <span class="caption">Amazon, Peru</span>
+</div>
+
+<div class="image-with-caption">
+  ![Amazon Rainforest](/www/images/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
+  <span class="caption">Remote Helicopter Forestry Work</span>
+</div>
