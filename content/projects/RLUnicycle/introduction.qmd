@@ -9,17 +9,17 @@ lightbox: true
 
 ## Project Overview
 
-Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. We are directly sponsored by the UBC Engineering Physics Project Lab.
+Welcome to our self-balancing unicycle robot capstone project! We are a team of undergraduate UBC Engineering Physics students working on our final academic checkpoint as engineering students before being released into the wild. This project is directly sponsored by the UBC Engineering Physics Project Lab.
 
-![Team Photo](imgs/teamphoto.png){width="100%"}
+![Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna](imgs/teamphoto.png){width="100%"}
 
 ### Objective
 
-Our goal is to design and develop a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning. The spirit of the project is to explore some of the challenges in implementing advanced control strategies on a real-world system, with a focus on the practical applications of robotics and control theory. It also presents a great opportunity to apply some fundamental physics and engineering concepts in a hands-on project.
+Our goal is to design and develop a self-balancing reaction wheel robot that can navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning. The spirit of the project is to explore some of the challenges in implementing advanced control strategies on a real-world system. This includes bridging the gap between simulated models and real applications, coordinating peripherals with low latency, and designing hardware for controllability. It also presents a great opportunity to apply some fundamental physics and engineering concepts in a hands-on challenge.
 
 ### Inspiration and Background
 
-Our work draws on previous advances made in robotics. Notably, the [Max Planck Institute’s Wheelbot project](https://sites.google.com/view/wheelbot) project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. We aim to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.
+Our work draws on previous advances made in robotics. Notably, the [Max Planck Institute’s Wheelbot](https://sites.google.com/view/wheelbot) project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. We aim to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.
 
 ## The Robot
 
@@ -42,7 +42,6 @@ of both the wheel and the robot. The unstable axes to control are roll and pitch
 
 ![Side View Roll Axis](imgs/cadsideview2.png){width="50%" group="ourbot"}
 :::
-
 
 ## The Challenge
 
