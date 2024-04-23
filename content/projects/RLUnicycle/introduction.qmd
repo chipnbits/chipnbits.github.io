@@ -3,31 +3,91 @@ title: "Introduction"
 format:
   html:
     toc: false
+lightbox: true
+
 ---
 
 ## Project Overview
 
-Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.
+Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. This project is sponsored by the UBC Engineering Physics Project Lab.
+
+![Team Photo](imgs/teamphoto.png){width="100%"}
 
 ### Objective
 
-The primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.
+Our goal is to design and develop from scratch a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning.
 
 ### Inspiration and Background
 
-Our project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.
+Our work draws on advances made in previous robotics projects. Notably, the [Max Planck Institute’s Wheelbot project](https://sites.google.com/view/wheelbot) project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.
+
+::: {style="display: grid;grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));grid-gap: 1em;"}
+![Wheelbot](imgs/wheelbot.png){group="Inspiration"}
+
+![Wheelbot](imgs/wheelbot.png){group="Inspiration"}
+:::
+
+## The Robot
+
+The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all
+mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating
+a compact and efficient design intended to allow self-erection from a position resting on its resetting legs.
+The Jetson Nano acts as an autonomous controller that reads the sensors and reacts to the environment
+using the motors.
+
+![](imgs/labeledcad.png){width="70%"}
+
+Much like a unicycle, it balances on one wheel, with side-to-side stability provided by the roll wheel
+and direction controlled by a yaw wheel. The mechanism of balancing and steering relies on a reaction
+torque produced by spinning the reaction wheels. When a motor applies torque to one of the flywheels,
+an equal and opposite torque acts on the robot’s body, with the net effect altering the angular motion
+of both the wheel and the robot. The unstable axes are roll and pitch, where tipping occurs.
+
+::: {style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-gap: 1em;"}
+![Side View Pitch Axis](imgs/cadsideview1.png){width="50%" group="ourbot"}
+
+![Side View Roll Axis](imgs/cadsideview2.png){width="50%" group="ourbot"}
+:::
+
 
 ## The Challenge
 
 Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.
 
-### The Technical Approach
+### Prototyping and Progress
 
-We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.
+We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively. With the completion of a function 2-DOF underactuated model, we are now moving towards the development of a full-scale 3-axis robot prototype.
+
+::: {style="display: grid; grid-template-columns: repeat(2, minmax(60px, 1fr)); grid-gap: 1em;"}
+![3-Axis Partial Build](imgs/progress/progress1.jpg){style="width: 56%; height: auto;" group="progress"}
+
+![With Prototype](imgs/progress/progress5.jpg){style="width: 100%; height: auto;" group="progress"}
+:::
+
+
+::: {style="display: grid; grid-template-columns: repeat(3, minmax(60px, 1fr)); grid-gap: 1em;"}
+![RWIP Model](imgs/progress/progress2.jpg){group="progress"}
+
+![](imgs/progress/progress3.jpg){group="progress"}
+
+![](imgs/progress/progress4.jpg){group="progress"}
+:::
 
 ## Looking Ahead
 
-As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.
+The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.
+
+## Development Pages
+
+Explore the detailed development of specific components of our project:
+
+| Component        | Description                                         |
+|------------------|-----------------------------------------------------|
+| [Real-Time Kernel](rtkernel/rtpatch.qmd) | Dive into how we handle real-time constraints on the Jetson Nano. |
+| [Telemetry](telemetry/telemetry.qmd)        | Discover how our system communicates and processes real-time data. |
+| [Dynamics and Control](dynamics/dynamics.qmd)         | Learn about the dynamic modeling and control of our robot prototype. | 
+
+
 
 ---
 

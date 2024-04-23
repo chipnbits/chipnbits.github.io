@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
-<link href="../../../content/projects/RLUnicycle/rtpatch.html" rel="next">
+<link href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" rel="next">
 <link href="../../../content/projects/projects.html" rel="prev">
 <script src="../../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
@@ -41,6 +41,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -91,11 +94,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../../../index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/projects/RLUnicycle/introduction.html"> 
+    <a class="nav-link active" href="../../../content/projects/RLUnicycle/introduction.html" aria-current="page"> 
 <span class="menu-text">Learning to Balance</span></a>
   </li>  
   <li class="nav-item">
@@ -104,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../../content/about/biography.html"> 
-<span class="menu-text">About</span></a>
+<span class="menu-text">Bio</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -137,12 +140,6 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Home</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
@@ -175,14 +172,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/rtpatch.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">RT Kernel on Jetson Nano</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/telemetry.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Telemetry and Database System</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../content/projects/RLUnicycle/dynamics/dynamics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dynamics and Control</span></a>
   </div>
 </li>
       </ul>
@@ -219,31 +222,131 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="project-overview" class="level2">
 <h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
-<p>Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia.</p>
+<p>Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. This project is sponsored by the UBC Engineering Physics Project Lab.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/teamphoto.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Team Photo"><img src="imgs/teamphoto.png" class="img-fluid figure-img" style="width:100.0%" alt="Team Photo"></a></p>
+<figcaption>Team Photo</figcaption>
+</figure>
+</div>
 <section id="objective" class="level3">
 <h3 class="anchored" data-anchor-id="objective">Objective</h3>
-<p>The primary goal of our two-year capstone project, sponsored by the UBC Engineering Physics Project Lab, is to integrate robotics, control engineering, and machine learning. We aim to enhance the capabilities of traditional self-balancing robots by incorporating a Reinforcement Learning (RL) algorithm for advanced control and navigation.</p>
+<p>Our goal is to design and develop from scratch a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning.</p>
 </section>
 <section id="inspiration-and-background" class="level3">
 <h3 class="anchored" data-anchor-id="inspiration-and-background">Inspiration and Background</h3>
-<p>Our project draws on a rich history of robotics and control theory, building upon previous capstones that focused on classical control mechanisms and RL applications in robotics. Notably, the Max Planck Institute’s Wheelbot project has served as a significant source of inspiration, providing insights into compact self-balancing robots.</p>
+<p>Our work draws on advances made in previous robotics projects. Notably, the <a href="https://sites.google.com/view/wheelbot">Max Planck Institute’s Wheelbot project</a> project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.</p>
+<div style="display: grid;grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));grid-gap: 1em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/wheelbot.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="Inspiration" title="Wheelbot"><img src="imgs/wheelbot.png" class="img-fluid figure-img" alt="Wheelbot"></a></p>
+<figcaption>Wheelbot</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/wheelbot.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="Inspiration" title="Wheelbot"><img src="imgs/wheelbot.png" class="img-fluid figure-img" alt="Wheelbot"></a></p>
+<figcaption>Wheelbot</figcaption>
+</figure>
+</div>
+</div>
 </section>
+</section>
+<section id="the-robot" class="level2">
+<h2 class="anchored" data-anchor-id="the-robot">The Robot</h2>
+<p>The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating a compact and efficient design intended to allow self-erection from a position resting on its resetting legs. The Jetson Nano acts as an autonomous controller that reads the sensors and reacts to the environment using the motors.</p>
+<p><a href="imgs/labeledcad.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="imgs/labeledcad.png" class="img-fluid" style="width:70.0%"></a></p>
+<p>Much like a unicycle, it balances on one wheel, with side-to-side stability provided by the roll wheel and direction controlled by a yaw wheel. The mechanism of balancing and steering relies on a reaction torque produced by spinning the reaction wheels. When a motor applies torque to one of the flywheels, an equal and opposite torque acts on the robot’s body, with the net effect altering the angular motion of both the wheel and the robot. The unstable axes are roll and pitch, where tipping occurs.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-gap: 1em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/cadsideview1.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="ourbot" title="Side View Pitch Axis"><img src="imgs/cadsideview1.png" class="img-fluid figure-img" style="width:50.0%" alt="Side View Pitch Axis"></a></p>
+<figcaption>Side View Pitch Axis</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/cadsideview2.png" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="ourbot" title="Side View Roll Axis"><img src="imgs/cadsideview2.png" class="img-fluid figure-img" style="width:50.0%" alt="Side View Roll Axis"></a></p>
+<figcaption>Side View Roll Axis</figcaption>
+</figure>
+</div>
+</div>
 </section>
 <section id="the-challenge" class="level2">
 <h2 class="anchored" data-anchor-id="the-challenge">The Challenge</h2>
 <p>Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.</p>
-<section id="the-technical-approach" class="level3">
-<h3 class="anchored" data-anchor-id="the-technical-approach">The Technical Approach</h3>
-<p>We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively.</p>
+<section id="prototyping-and-progress" class="level3">
+<h3 class="anchored" data-anchor-id="prototyping-and-progress">Prototyping and Progress</h3>
+<p>We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively. With the completion of a function 2-DOF underactuated model, we are now moving towards the development of a full-scale 3-axis robot prototype.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(60px, 1fr)); grid-gap: 1em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/progress/progress1.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="progress" title="3-Axis Partial Build"><img src="imgs/progress/progress1.jpg" class="img-fluid figure-img" style="width: 56%; height: auto;" alt="3-Axis Partial Build"></a></p>
+<figcaption>3-Axis Partial Build</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/progress/progress5.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="progress" title="With Prototype"><img src="imgs/progress/progress5.jpg" class="img-fluid figure-img" style="width: 100%; height: auto;" alt="With Prototype"></a></p>
+<figcaption>With Prototype</figcaption>
+</figure>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(60px, 1fr)); grid-gap: 1em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/progress/progress2.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="progress" title="RWIP Model"><img src="imgs/progress/progress2.jpg" class="img-fluid figure-img" alt="RWIP Model"></a></p>
+<figcaption>RWIP Model</figcaption>
+</figure>
+</div>
+<p><a href="imgs/progress/progress3.jpg" class="lightbox" data-gallery="progress"><img src="imgs/progress/progress3.jpg" class="img-fluid"></a></p>
+<p><a href="imgs/progress/progress4.jpg" class="lightbox" data-gallery="progress"><img src="imgs/progress/progress4.jpg" class="img-fluid"></a></p>
+</div>
 </section>
 </section>
 <section id="looking-ahead" class="level2">
 <h2 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h2>
-<p>As we move forward, we will focus on building a physical prototype and enhancing our telemetry and data visualization capabilities to refine our design and control algorithms. The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.</p>
+<p>The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.</p>
+</section>
+<section id="development-pages" class="level2">
+<h2 class="anchored" data-anchor-id="development-pages">Development Pages</h2>
+<p>Explore the detailed development of specific components of our project:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html">Real-Time Kernel</a></td>
+<td>Dive into how we handle real-time constraints on the Jetson Nano.</td>
+</tr>
+<tr class="even">
+<td><a href="../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry</a></td>
+<td>Discover how our system communicates and processes real-time data.</td>
+</tr>
+<tr class="odd">
+<td><a href="../../../content/projects/RLUnicycle/dynamics/dynamics.html">Dynamics and Control</a></td>
+<td>Learn about the dynamic modeling and control of our robot prototype.</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <!-- For more detailed information about the project development, visit the [Project Development Overview](./project-development-overview.qmd) section. For insights into the specific hardware and software components, check out the [System Overview](./system-overview.qmd). -->
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Team Photo</span>
+<span class="glightbox-desc lightbox-desc-2">Wheelbot</span>
+<span class="glightbox-desc lightbox-desc-3">Wheelbot</span>
+<span class="glightbox-desc lightbox-desc-5">Side View Pitch Axis</span>
+<span class="glightbox-desc lightbox-desc-6">Side View Roll Axis</span>
+<span class="glightbox-desc lightbox-desc-7">3-Axis Partial Build</span>
+<span class="glightbox-desc lightbox-desc-8">With Prototype</span>
+<span class="glightbox-desc lightbox-desc-9">RWIP Model</span>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -641,12 +744,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../content/projects/RLUnicycle/rtpatch.html" class="pagination-link" aria-label="RT Kernel on Jetson Nano">
+      <a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="pagination-link" aria-label="RT Kernel on Jetson Nano">
         <span class="nav-page-text">RT Kernel on Jetson Nano</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","loop":false,"openEffect":"zoom","descPosition":"bottom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 

@@ -1,15 +1,28 @@
-# Bio
+---
+title: "Bio"
+lightbox: true
+---
 
-I wasn't always so academically focused. In fact, I had a ten year career in forestry where I planted over *2 million* trees along with a variety of other projects. I also spent some years living in the Peruvian working as a travel guide and translator. 
+I wasn't always so academically focused. In fact, I had a ten year career in forestry where I planted over *2 million* trees along with a variety of other projects. I also spent some years living in the Peruvian Amazon working as a travel guide and translator. 
 
 I came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next. 
 
-<div class="image-with-caption">
-  ![Tree Planting](/www/images/pastphotos/amazon.jpg "Amazon, Peru")
-  <span class="caption">Amazon, Peru</span>
-</div>
 
-<div class="image-with-caption">
-  ![Amazon Rainforest](/www/images/pastphotos/heliwork.jpg "Remote Helicopter Forestry Work")
-  <span class="caption">Remote Helicopter Forestry Work</span>
-</div>
+## Some Past Adventures
+
+::: {style="display: grid;grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));grid-gap: 1em;"}
+
+
+![Sta. Clautilde, Rio Napo, Peru](/www/images/pastphotos/amazon.jpg "Riverside of Rio Napo on solo canoe trip through Amazon, Peru"){group="gallery1"}
+
+![Tarapoto, San Martin, Peru](/www/images/pastphotos/machete.jpg "Holding machete outside Tarapoto, Garden of Peace"){group="gallery1"}
+
+![Remote Helicopter Forestry Work](/www/images/pastphotos/heliwork.jpg "Remote helicopter forestry work in Northern Alberta"){group="gallery1"}
+
+![Everest Base Camp](/www/images/pastphotos/everest.jpg "Standng by glacier at Mt Everest base camp"){group="gallery1"}
+
+![Dirtbiking in Myanmar](/www/images/pastphotos/moto.png "Motorbike on dirtroad in rural myanmar"){group="gallery1"}
+
+![Sailing to Mexico from Victoria](/www/images/pastphotos/sailing.jpg "On deck of sailing boat Maistral anchored off of Cabo San Lucas"){group="gallery1"}
+
+:::

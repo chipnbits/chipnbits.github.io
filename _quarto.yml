@@ -15,26 +15,22 @@ website:
         href: content/projects/RLUnicycle/introduction.qmd
       - text: "CV"
         href: www/cv/CV.pdf
-      - text: "About"
+      - text: "Bio"
         href: content/about/biography.qmd
 
   sidebar:
     style: "docked"
     search: true
     contents:
-      - text: "Home"
-        href:  index.qmd 
-
       - section: "Projects"
         contents:
           - content/projects/projects.qmd
           - section: "Learning to Balance"
             contents:
               - content/projects/RLUnicycle/introduction.qmd
-              - content/projects/RLUnicycle/rtpatch.qmd
-              - content/projects/RLUnicycle/telemetry.qmd
-
-
+              - content/projects/RLUnicycle/rtkernel/rtpatch.qmd
+              - content/projects/RLUnicycle/telemetry/telemetry.qmd
+              - content/projects/RLUnicycle/dynamics/dynamics.qmd
 format:
   html:
     theme: cosmo
