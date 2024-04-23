@@ -11,11 +11,9 @@ about:
     image: /www/images/profile-pictures/park-small.jpg
     links:
       - icon: github
-        href: https://github.com/chipnbits
+        href: "https://github.com/chipnbits"
       - icon: linkedin
-        href: https://www.linkedin.com/in/simonghyselincks/
+        href: "https://www.linkedin.com/in/simonghyselincks/"
 ---
 
 {{< include /content/about/overview.qmd >}}
-
-

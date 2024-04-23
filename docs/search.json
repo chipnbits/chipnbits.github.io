@@ -1,0 +1,493 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "index.html#welcome",
+    "href": "index.html#welcome",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "index.html#academics-and-projects",
+    "href": "index.html#academics-and-projects",
+    "title": "Simon Ghyselincks",
+    "section": "Academics and Projects",
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\nFeel free to connect with me on LinkedIn or check out my GitHub."
+  },
+  {
+    "objectID": "index.html#my-journey",
+    "href": "index.html#my-journey",
+    "title": "Simon Ghyselincks",
+    "section": "My Journey",
+    "text": "My Journey\nRead more about my journey and past pursuits here."
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/rtkernel/rtpatch.html",
+    "href": "content/projects/RLUnicycle/rtkernel/rtpatch.html",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "The following guide is intended to provide step-by-step instructions on how to compile a real-time (RT) Linux kernel for the NVIDIA Jetson Nano. The RT kernel is based on the PREEMPT_RT patch, which adds real-time capabilities to the Linux kernel by making it fully preemptible and reducing the latency of the kernel’s interrupt handling.\nThis guide has been modified from some valuable instructions found at: https://forums.developer.nvidia.com/t/applying-a-preempt-rt-patch-to-jetpack-4-5-on-jetson-nano/168428/4\n\n\nFirst download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2\n\n\n\nGo into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/rtkernel/rtpatch.html#download-source-files-and-install-packages",
+    "href": "content/projects/RLUnicycle/rtkernel/rtpatch.html#download-source-files-and-install-packages",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "First download the BSP from the NVIDIA website. The BSP contains the kernel source code, device tree files, and other necessary files for building the kernel. The BSP also contains the sample root filesystem, which is used to create the final image for the Jetson Nano. You may wish to look up the most recent version of the Tegra for Linux, in this case we are using R32.7.4.\nYou can download all of these files onto a Linux machine specifically running Ubuntu 18.04. Another option that has been tested is compiling on the Jetson Nano itself which is running the correct version of Linux by default. For our project we installed 18.04 on a laptop and compiled the kernel there.\n\n\n\n\n\n\nNote\n\n\n\nSource Files:\nhttps://developer.nvidia.com/embedded/linux-tegra-r3274\n\n\nDownload:\n\nDriver Package (BSP)\nSample Root File System\nDriver Package (BSP) Sources\nGCC Tool Chain can also be obtained via the command line:\nwget http://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz\n\nPile all the files into a single directory and install packages\nsudo apt-get update \nsudo apt-get install libncurses5-dev \nsudo apt-get install build-essential \nsudo apt-get install bc \nsudo apt-get install lbzip2 \nsudo apt-get install qemu-user-static \nsudo apt-get install python\n\nmkdir $HOME/jetson_nano \ncd $HOME/jetson_nano\nExtract all of the files\nsudo tar xpf jetson-210_linux_r32.7.4_aarch64.tbz2\ncd Linux_for_Tegra/rootfs/ \nsudo tar xpf ../../tegra_linux_sample-root-filesystem_r32.7.4_aarch64.tbz2\ncd ../../ \ntar -xvf gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz \nsudo tar -xjf public_sources.tbz2 \ntar -xjf Linux_for_Tegra/source/public/kernel_src.tbz2",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/rtkernel/rtpatch.html#apply-rt-patch",
+    "href": "content/projects/RLUnicycle/rtkernel/rtpatch.html#apply-rt-patch",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "",
+    "text": "Go into extracted kernel source and apply RT patch\ncd kernel/kernel-4.9/\n./scripts/rt-patch.sh apply-patches\nConfigure and compile:\nTEGRA_KERNEL_OUT=jetson_nano_kernel \nmkdir $TEGRA_KERNEL_OUT \nexport CROSS_COMPILE=$HOME/jetson_nano/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig \nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT menuconfig\nThe menu config opens an old school BIOS menu. Set the proper settings for the RT kernel:\n\nGeneral setup → Timer subsystem → Timer tick handling → Full dynticks system (tickless)\nKernel Features → Preemption Model: Fully Preemptible Kernel (RT)\nKernel Features → Timer frequency: 1000 HZ\n\nAt this point you can go tamper with device tree files (.dtsi) or other things, next step is the compile stage!\n\n\nI tried to modify\ntegra210-porg-gpio-p3448-0000-b00.dtsi \nthe source file, found using a find file function in terminal. It did not fix things. In general the P3450 model requires the p3448-0000-3449-b00 series of files. This was confirmed by looking at all the source configs and scripts.\n\n\n\nmake ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4\n\nsudo cp jetson_nano_kernel/arch/arm64/boot/Image $HOME/jetson_nano/Linux_for_Tegra/kernel/Image\nsudo cp -r jetson_nano_kernel/arch/arm64/boot/dts/* $HOME/jetson_nano/Linux_for_Tegra/kernel/dtb/\nsudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install INSTALL_MOD_PATH=$HOME/jetson_nano/Linux_for_Tegra/rootfs/\n\ncd $HOME/jetson_nano/Linux_for_Tegra/rootfs/\nsudo tar --owner root --group root -cjf kernel_supplements.tbz2 lib/modules\nsudo mv kernel_supplements.tbz2  ../kernel/\n\ncd ..\nsudo ./apply_binaries.sh\nThe image creator requires the device model. For the 4GB Jetson nano it is -r 300. This will select the correct dtb:\ncd tools\nsudo ./jetson-disk-image-creator.sh -o jetson_nano.img -b jetson-nano -r 300\nIt is crucial to select the correct device tree since it will not boot otherwise. If you are unsure of which to select, follow through the source cocde in the jetson-disk-image-creator.sh to find what the different flags do. Or try the NVIDIA forums but good luck over there!\nUse Balena etcher to put image in $HOME/jetson_nano/Linux_for_Tegra/tools/jetson_nano.img onto the SD card",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/rtkernel/rtpatch.html#setting-python-scheduling-privileges",
+    "href": "content/projects/RLUnicycle/rtkernel/rtpatch.html#setting-python-scheduling-privileges",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "2.1 Setting Python Scheduling Privileges",
+    "text": "2.1 Setting Python Scheduling Privileges\nNote that for this description our team is using Python 3.8 in a virtual environment, the instructions path files may change slightly if using a different version.\nThe scheduling priority is a top-level system command and is usually locked behind ‘sudo’. This is problematic when running a Python script because we don’t want to run it as sudo allowing it full access to wreak havoc on the OS. The solution is to grant only the scheduling part of ‘sudo’ to the Python interpreter:\nThis command only needs to be set once after Python 3.8 is installed (the same in use in our venv): sudo setcap 'cap_sys_nice=eip' /usr/bin/python3.8\n\nsetcap: This is a utility that sets or changes the capabilities of a file/executable. Capabilities are a Linux feature that allow for more fine-grained access control; they provide a way to grant specific privileges to executables that normally only the root user would have.\n'cap_sys_nice=eip': This argument specifies the capabilities to be set on the file, in this case, /usr/bin/python3.8. It’s composed of three parts:\n\ncap_sys_nice: This is the specific capability being set. cap_sys_nice allows the program to raise process nice values (which can deprioritize processes) and change real-time scheduling priorities and policies, without requiring full root privileges.\ne: This stands for “effective” and means the capability is “activated” and can be used by the executable.\ni: This stands for “inheritable”, meaning this capability can be inherited by child processes created by the executable.\np: This stands for “permitted”, which means the capability is allowed for the executable. It’s a part of the set of capabilities that the executable is permitted to use.\n\n/usr/bin/python3.8: This is the path to the Python 3.8 executable. The command sets the specified capabilities on this specific file.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/rtkernel/rtpatch.html#setting-script-specific-rt",
+    "href": "content/projects/RLUnicycle/rtkernel/rtpatch.html#setting-script-specific-rt",
+    "title": "RT Kernel on Jetson Nano",
+    "section": "2.2 Setting Script Specific RT",
+    "text": "2.2 Setting Script Specific RT\nThe ‘RT’ scheduling priority is code 99. Some imported C implementation allows for resetting the scheduling for the process. The function is wrapped in try/except block to ensure it activates.\n# Define constants for the scheduling policy\nSCHED_FIFO = 1  # FIFO real-time policy\n\nclass SchedParam(ctypes.Structure):\n    _fields_ = [('sched_priority', ctypes.c_int)]\n\ndef set_realtime_priority(priority=99):\n    libc = ctypes.CDLL('libc.so.6')\n    param = SchedParam(priority)\n    # Set the scheduling policy to FIFO and priority for the entire process (0 refers to the current process)\n    if libc.sched_setscheduler(0, SCHED_FIFO, ctypes.byref(param)) != 0:\n        raise ValueError(\"Failed to set real-time priority. Check permissions.\") \nWe run this function at the start of the script which will reassign the scheduling priority to the highest level. This can be verified to work by opening the system monitor and checking the priority of the script such as with htop.\n\n\n\nRT Priority Enabled",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "RT Kernel on Jetson Nano"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html",
+    "title": "Dynamics and Control",
+    "section": "",
+    "text": "The following is a demonstration of the derivation for the equations of motion for a single degree of freedom reaction wheel inverted pendulum. The approach used is energy methods via the Lagrangian using classical mechanics.\nAn automated derivation sequence using MATLAB is presented, which allows for parsing the equations of motion for an arbitrary system such as a 4-DOF unicycle robot. The code for the auto-derivation has been tested by hand against known solutions in the literature, as explored by (Brevik 2017), (Montoya and Gil-González 2020).",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#mass-and-center-of-mass-measurements",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#mass-and-center-of-mass-measurements",
+    "title": "Dynamics and Control",
+    "section": "Mass and Center of Mass Measurements",
+    "text": "Mass and Center of Mass Measurements\nThe mass and center of mass (CM) were measured using a lab scale and a balancing method, respectively.\n\nFlywheel: The wheel and rings mass (denoted as \\(m_w\\)) was measured to be 346g. The CM of the wheel from the pendulum hinge (denoted as \\(l_w\\)) is 180mm. This was measured in CAD and also with a ruler.\nPendulum and Motor: The combined mass of the pendulum and motor with stator (denoted as \\(m_p\\)) was measured to be 531g. The CM of the pendulum with motor and stator (denoted as \\(l_p\\)) is 100mm. The pendulum CM is found by balancing the apparatus with removed flywheel overtop of a fulcrum and finding the stable resting point position.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#inertia-calculations",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#inertia-calculations",
+    "title": "Dynamics and Control",
+    "section": "Inertia Calculations",
+    "text": "Inertia Calculations\nThe moment of inertia for each component was calculated using the parallel axis theorem and the physical dimensions provided by CAD models and direct measurement.\n\nWheel Inertia\nThe wheel inertia (denoted as \\(I_w\\)) was found by comparing the CAD weight to the measured weight of the flywheel to find agreement: \\[I_w = 725\\ \\text{kg}\\cdot\\text{mm}^2\\] In particular the metal rings were weighed and set to be the same weight in CAD which is the most influential part of the moment in question.\n\n\nPendulum Inertia\nThe pendulum moment of inertia (denoted as \\(I_p\\)) is a composite value derived from the inertia of individual components:\n\nBattery: The battery contributes an inertia of: \\[I_{\\text{battery}} = \\frac{1}{12} \\cdot 0.185 \\cdot (70^2 + 35^2) + 0.185 \\cdot 50^2 = 446\\ \\text{kg}\\cdot\\text{mm}^2\\]\nPendulum Arm: The corrected inertia for the pendulum arm is: \\[I_{\\text{arm}} = 346\\ \\text{kg}\\cdot\\text{mm}^2 + 0.102 \\cdot 45^2 = 552\\ \\text{kg}\\cdot\\text{mm}^2\\]\nMotor and Mount: The combined inertia for the motor and mount is: \\[I_{\\text{motor}} = 0.5 \\cdot 0.206 \\cdot 30^2 + 0.206 \\cdot 75^2 = 1251.75\\ \\text{kg}\\cdot\\text{mm}^2\\]\n\nThe total pendulum inertia is then calculated as the sum of the components: \\[I_p = I_{\\text{battery}} + I_{\\text{arm}} + I_{\\text{motor}} = 2250\\ \\text{kg}\\cdot\\text{mm}^2\\]",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#kinetic-energy",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#kinetic-energy",
+    "title": "Dynamics and Control",
+    "section": "Kinetic Energy",
+    "text": "Kinetic Energy\n\\[\\begin{aligned}\nT &= T_p+T_w \\\\\nT_p &= \\frac{1}{2}(\\underbrace{I_p + m_pl_p^2}_{\\text{Parallel Axis Theorem}})\\dot{\\varphi}^2\\\\\nT_w&=\\frac{1}{2}m_w(\\underbrace{l_w\\dot{\\varphi}}_{\\text{Speed of CM}})^2 +  \\frac{1}{2}I_w(\\underbrace{\\dot{\\varphi}+\\dot{\\theta}}_{\\text{net rotation earth frame}})^2\\\\\nT_{net} &= \\frac{1}{2} \\left(I_p + m_p l_p^2 + I_w + m_w l_w^2\\right) \\dot{\\varphi}^2 + \\frac{1}{2} I_w (\\dot{\\varphi} + \\dot{\\theta})^2 \\\\\n&= \\frac{1}{2} \\left(I_p + m_p l_p^2\\right) \\dot{\\varphi}^2 + \\frac{1}{2} I_w \\left(\\dot{\\varphi}^2 + 2\\dot{\\varphi}\\dot{\\theta} + \\dot{\\theta}^2\\right)\\\\\nT_{net}&=\\frac{1}{2} [\\dot{\\varphi}, \\dot{\\theta}] \\begin{bmatrix}\n    I_p + m_pl_p^2 + I_w + m_wl_w^2 & I_w \\\\\n    I_w & I_w\n\\end{bmatrix} \\begin{bmatrix}\n    \\dot{\\varphi} \\\\\n\\dot{\\theta}\n\\end{bmatrix}\n\\end{aligned}\\]\nThis gives the form using the inertia matrix M, note the matrix is always symmetric.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#potential-energy",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#potential-energy",
+    "title": "Dynamics and Control",
+    "section": "Potential Energy",
+    "text": "Potential Energy\nThe potential energy is taken by projecting the position of the center of masses onto the vertical axis using \\(\\cos(\\varphi)\\), noting that the angle \\(\\theta\\) has no impact on the potential since the wheel is radially symmetric. \\[U = (m_pl_p + m_wl_w)g \\cos (\\varphi) = m_0 \\cos (\\varphi)\\] We can simplify future equations by assigning an equivalent variable \\(m_0 = (m_p l_p + m_w l_w)g\\)\nThis gives the complete Lagrangian \\[\\mathcal{L}(\\varphi,\\theta,\\dot \\varphi,\\dot \\theta)= KE - PE = \\frac{1}{2}\\mathbf{\\dot q}^{T}\\mathbf{M}\\mathbf{\\dot q}-m_0cos(\\varphi)\\]",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#matlab-derivation",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#matlab-derivation",
+    "title": "Dynamics and Control",
+    "section": "Matlab Derivation",
+    "text": "Matlab Derivation\nThe required files to run this code are included at https://github.com/Team-2411-RL-Unicycle/pid-control The automated E-L solver uses a modified version of a file made by (Veng 2023). It is incorporated into the RWIPpid_derivation.m file. The derivation technique is validated against the equations derived by (Brevik 2017).\nThe first step is to define symbolic variables for all of the parameters, states, and inputs\nsyms mp lp Ip mw lw Iw real\nparams = [mp, lp, Ip, mw, lw, Iw];\n% Define numerical values for the parameters\nvalues = [.531, 0.100, 0.002250, .346, 0.180, 0.000725];\ng=9.81;\n% State variables\nsyms phi theta dphi dtheta real\nq = [phi, theta];\ndq = [dphi, dtheta];\n% Input\nsyms tau real\n\n% Potential energy mass\nm0 = (mp*lp + mw*lw)*g; % Effective U=mgh for combined parts\n% Mass matrix\nM = [(Ip + mp*lp^2 + Iw +mw*lw^2), Iw;\n    Iw, Iw];\nlagrangian = (1/2)*([dphi, dtheta])*M*([dphi, dtheta]') - m0 * cos(phi);\n% Non-conservative forces in each coordinate q\nQ = [0, tau];\nThe Lagrangian and its non-conservative forces are fully defined now. The equations are solved using the modified imported library and the solution equations for each second time derivative is solved giving \\(\\frac{d}{dt}\\dot{q}\\), these solutions can be packed into a single array to form a matrix.\n[eqs, ddq] = EulerLagrange(q,dq,lagrangian,Q);\n% Explicit equations:\nexp_eqs = ddq == eqs;\n% Solve equations to isolate ddphi and ddtheta\nddqSolutions = solve(ddq == eqs, ddq);\n% Convert solutions to cell array\nddqSolutionEquations = struct2cell(ddqSolutions) ;\nddqArray = [ddqSolutionEquations{:}].';",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#derived-equations-of-motion",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#derived-equations-of-motion",
+    "title": "Dynamics and Control",
+    "section": "Derived Equations of Motion",
+    "text": "Derived Equations of Motion\nOnce we have \\(n\\) 2nd order ODEs for \\(n\\) general coordinates and their \\(n\\) general time derivatives we have enough to make a first order system of ODEs that characterize the system. The time-domain non-linearized result from the derivation is given below.\n\\[\\frac{d}{dt}\\vec{x} = \\vec{G}(\\vec{x}, t) = \\begin{bmatrix}\nd\\varphi \\\\\nd\\theta \\\\\n\\frac{g_0 l_p m_p \\sin(\\phi) - \\tau + g_0 l_w m_w \\sin(\\phi)}{m_p l_p^2 + m_w l_w^2 + I_p} \\\\\n\\frac{m_p \\tau l_p^2 - I_w g_0 m_p \\sin(\\phi) l_p + m_w \\tau l_w^2 - I_w g_0 m_w \\sin(\\phi) l_w + I_p \\tau + I_w \\tau}{I_w (m_p l_p^2 + m_w l_w^2 + I_p)}\n\\end{bmatrix}, \\quad x = \\begin{bmatrix}\n\\varphi \\\\ \\theta \\\\ \\dot{\\varphi} \\\\ \\dot{\\theta}\n\\end{bmatrix}\\]\nNote that there is no explicit time dependence in the function \\(G\\) the inverted pendulum dynamics and rigid body characteristics are constant over time. From inspection of the solutions we see that \\(\\theta\\), the angle of the wheel does not play a role in the function \\(G\\) and can be removed entirely if desired.\nThese system dynamics can be used to create a time-domain non-linear simulation using Euler’s method to get numerical solutions. Friction can be added as a damping coefficient \\(\\beta\\) such that we superimpose \\(\\ddot{\\varphi} = - \\beta \\dot{\\varphi}\\) onto the solution for example.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#linearization",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#linearization",
+    "title": "Dynamics and Control",
+    "section": "Linearization",
+    "text": "Linearization\nWe wish to convert \\[\\vec{G}(\\vec{x}, t) \\approx Ax + Bu\\] via linearization about the operating point. We choose the upright position as the target and note that \\(\\varphi\\) is the only variable present in \\(G\\). \\(\\hat{\\vec{x}}=0\\) is the chosen linearization point:\n\\[\\frac{d}{dt}\\vec{x} \\approx \\hat{\\vec{x}} + \\left. \\text{Jacobian}\\{\\vec{G}(\\vec{x}, t)\\} \\right|_{\\vec{x}=\\hat{\\vec{x}}} (\\vec{x}-\\hat{\\vec{x}}) = \\left. \\Big(A\\Big) \\right|_{\\vec{x}=\\hat{\\vec{x}}} \\vec{x}\\]\nWe perform a similar linearization to get the effect of the system inputs by taking the Jacobian with respect to \\(\\tau\\). The two combined give the cannonical \\(\\frac{d}{dt}x = Ax + Bu\\) of controls engineering. The final step is to take the Laplace transform of the entire equation and then solve for the transfer function between the system inputs \\(u\\) or in this case \\(\\tau\\) and the observables we want (mainly the system state \\(x\\)) but this generalizes to any observable that is a function of \\(x\\) and \\(u\\)\nState Vector \\[{\\mathbf{x}} =\n\\begin{bmatrix}\n    x_1 \\\\\n    x_2 \\\\\n    \\vdots\n\\end{bmatrix}\\] Input Vector \\[{\\mathbf{u}} =\n\\begin{bmatrix}\n    u_1 \\\\\n    u_2 \\\\\n    \\vdots\n\\end{bmatrix}\\] Output Vector \\[{\\mathbf{y}} =\n\\begin{bmatrix}\n    y_1 \\\\\n    y_2 \\\\\n    \\vdots\n\\end{bmatrix}\\]\nState Equation \\[\\dot{\\mathbf{x}} =\n\\begin{bmatrix}\n    \\dot{x}_1 \\\\\n    \\dot{x}_2 \\\\\n    \\vdots\n\\end{bmatrix}\n= \\mathbf{A}{\\mathbf{x}} + \\mathbf{B}{\\mathbf{u}}\\] Output Equation \\[{\\mathbf{y}} = \\mathbf{C}{\\mathbf{x}} + \\mathbf{D}{\\mathbf{u}}\\]\nState Transition Matrix \\[\\mathbf{\\Phi} = (s\\mathbf{I} - \\mathbf{A})^{-1}\\] Transfer Functions \\[\\frac{{\\mathbf{y}}}{{\\mathbf{u}}} = \\mathbf{C}\\mathbf{\\Phi}\\mathbf{B} + \\mathbf{D}\\]\nWe solve for the transfer matrix \\(y = Gu\\) at \\(x=0\\), noting that in our case \\(y=x\\)",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#matlab-derivation-1",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#matlab-derivation-1",
+    "title": "Dynamics and Control",
+    "section": "MATLAB Derivation",
+    "text": "MATLAB Derivation\n% Phi, dPhi, dTheta\nX = [q(1)' ; dq']\n% The inputs are non-zero entries of Q (non-conservative forces)\nU = Q(Q ~= 0);\n% Vector functionn for the derivative of the state vector\ndX = [dphi; ddqArray]\n\n% Compute the Jacobian matrices to get nonlinear state matrices dX = Ax + Bu\nA = jacobian(dX, X);\nB = jacobian(dX, U);\n\n% Substitute or linearize about an equilibrium point\n% Define equilibrium point (for example, all zeros)\nx0 = [0; 0; 0];\n% Substitute equilibrium values x0 into A and B\nAeq = subs(A, X, x0)\nBeq = subs(B, X, x0)\n\n% U to X transfer function\n% dX = Ax + Bu implies  sX = Ax + Bu, solve for x = Gtf*u\nsyms s\nGtf = (s*eye(length(X)) - Aeq)^(-1)*Beq",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#system-transfer-function",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#system-transfer-function",
+    "title": "Dynamics and Control",
+    "section": "System Transfer Function",
+    "text": "System Transfer Function\n\\[\\begin{pmatrix}\n\\varphi(s)\\\\\n\\dot{\\varphi}(s)\\\\\n\\dot\\theta(s)\n\\end{pmatrix}=\n\\begin{pmatrix}\n-\\frac{1}{{m_p l_p^2 s^2 - g_0 m_p l_p + m_w l_w^2 s^2 - g_0 m_w l_w + I_p s^2}} \\\\\n-\\frac{s}{{m_p l_p^2 s^2 - g_0 m_p l_p + m_w l_w^2 s^2 - g_0 m_w l_w + I_p s^2}} \\\\\n\\frac{{m_p l_p^2 + m_w l_w^2 + I_p + I_w}}{{I_w s (m_p l_p^2 + m_w l_w^2 + I_p)}} + \\frac{{g_0 l_p m_p + g_0 l_w m_w}}{{s (m_p l_p^2 + m_w l_w^2 + I_p)(m_p l_p^2 s^2 - g_0 m_p l_p + m_w l_w^2 s^2 - g_0 m_w l_w + I_p s^2)}}\n\\end{pmatrix}\n\\tau(s)\\]\nWe note that for our control problem we are trying to control the angle \\(\\varphi\\) using torque, so the function of interest is the upper row equation:\n\\[\\varphi(s) = \\Big(-\\frac{1}{{m_p l_p^2 s^2 - g_0 m_p l_p + m_w l_w^2 s^2 - g_0 m_w l_w + I_p s^2}}\\Big) \\tau(s)\\]\nOr rearranging we see that we have function of the form \\(\\frac{1}{s^2+a^2}\\): \\[\\varphi(s) = \\left(-\\frac{1}{s^2(m_p l_p^2 + m_w l_w^2 + I_p) - m_0}\\right) \\tau(s)\\]\nThis is a function with one pole in the RH plane making it unstable.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#pd-controller-for-pendulum-angle",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#pd-controller-for-pendulum-angle",
+    "title": "Dynamics and Control",
+    "section": "PD Controller for Pendulum Angle",
+    "text": "PD Controller for Pendulum Angle\nThe PD Controller for \\(\\varphi\\) is tuned using the assumption that the torque requests have little delay before reaching the intended value. This is because the motor controller is running at 100 times faster than the main control loop frequency of 100Hz. Thus we model the feedback loop of Controller -&gt; \\(G(s)\\) -&gt; \\(H(s)\\) Sensor Fusion. The sensor fusion and torque request mechanism are modeled as a delay of one \\(100Hz\\) control cycle.\nA PD controller is selected because of the dynamic setpoint that is being controlled by the cascade arrangement. If we were to include an I term then the controller would not be memoryless and would have undesirable response characteristics to the dynamic \\(\\varphi\\) setpoint being requested by the higher level controller. The PD control model is a robust choice for a controller for this robot state parameter, (Brevik 2017).\nThe MATLAB pid tuner is used to get feasible starting values based on this loop. The experimental parameters applied to the robot were found to closely match the predicted values.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/dynamics/dynamics.html#pi-controller-for-wheel-velocity",
+    "href": "content/projects/RLUnicycle/dynamics/dynamics.html#pi-controller-for-wheel-velocity",
+    "title": "Dynamics and Control",
+    "section": "PI Controller for Wheel Velocity",
+    "text": "PI Controller for Wheel Velocity\nThe PI controller is tuned heuristically once a good underlying PD controller for the angle is found. A starting value of around \\(K_p = 0.1\\) was found to be helpful. Blending of integral term with a corresponding reduction of \\(P\\) is one approach to further tuning.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Dynamics and Control"
+    ]
+  },
+  {
+    "objectID": "content/CV.html",
+    "href": "content/CV.html",
+    "title": "CV",
+    "section": "",
+    "text": "This browser does not support PDFs. Please download the PDF to view it: &lt;a href=\"path/to/your/CV.pdf\"&gt;Download PDF&lt;/a&gt;."
+  },
+  {
+    "objectID": "content/about/biography.html",
+    "href": "content/about/biography.html",
+    "title": "Bio",
+    "section": "",
+    "text": "I wasn’t always so academically focused. In fact, I had a ten year career in forestry where I planted over 2 million trees along with a variety of other projects. I also spent some years living in the Peruvian Amazon working as a travel guide and translator.\nI came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. It has been a challenging but rewarding journey, and I am excited to see where it takes me next."
+  },
+  {
+    "objectID": "content/about/biography.html#some-past-adventures",
+    "href": "content/about/biography.html#some-past-adventures",
+    "title": "Bio",
+    "section": "Some Past Adventures",
+    "text": "Some Past Adventures\n\n\n\n\nSta. Clautilde, Rio Napo, Peru\n\n\n\n\n\nTarapoto, San Martin, Peru\n\n\n\n\n\nRemote Helicopter Forestry Work\n\n\n\n\n\nEverest Base Camp\n\n\n\n\n\nDirtbiking in Myanmar\n\n\n\n\n\nSailing to Mexico from Victoria\n\n\n\n\n\n\nSta. Clautilde, Rio Napo, Peru\nTarapoto, San Martin, Peru\nRemote Helicopter Forestry Work\nEverest Base Camp\nDirtbiking in Myanmar\nSailing to Mexico from Victoria"
+  },
+  {
+    "objectID": "content/about/overview.html",
+    "href": "content/about/overview.html",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "content/about/overview.html#welcome",
+    "href": "content/about/overview.html#welcome",
+    "title": "Simon Ghyselincks",
+    "section": "",
+    "text": "Welcome to my personal site! I’m Simon Ghyselincks, currently a 5th-year Engineering Physics student at the University of British Columbia (UBC), with a minor in Computer Science. I am studying a cross-disciplinary blend of engineering, computer science, and applied mathematics. What I really love is coding to solve tough problems in robotics, machine learning, signal processing, and more."
+  },
+  {
+    "objectID": "content/about/overview.html#academics-and-projects",
+    "href": "content/about/overview.html#academics-and-projects",
+    "title": "Simon Ghyselincks",
+    "section": "Academics and Projects",
+    "text": "Academics and Projects\nThis summer 2024 I will be working in a reasearch position to develop a GNN for modeling weather patterns and predicting extreme weather events. I am also continuing to develop our Engineering Physics capstone project “Learning to Balance” which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects here.\n\nFeel free to connect with me on LinkedIn or check out my GitHub."
+  },
+  {
+    "objectID": "content/about/overview.html#my-journey",
+    "href": "content/about/overview.html#my-journey",
+    "title": "Simon Ghyselincks",
+    "section": "My Journey",
+    "text": "My Journey\nRead more about my journey and past pursuits here."
+  },
+  {
+    "objectID": "content/projects/projects.html",
+    "href": "content/projects/projects.html",
+    "title": "Project Home",
+    "section": "",
+    "text": "This project focuses on the development and challenges of building and controlling a reaction wheel unicycle. Performed as part of a 2-year long capstone project in the UBC Engineering Physics program, sponsored by the Engineering Physics project lab.\nExplore the Learning to Balance Project",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Project Home"
+    ]
+  },
+  {
+    "objectID": "content/projects/projects.html#learning-to-balance-a-reaction-wheel-unicycle",
+    "href": "content/projects/projects.html#learning-to-balance-a-reaction-wheel-unicycle",
+    "title": "Project Home",
+    "section": "",
+    "text": "This project focuses on the development and challenges of building and controlling a reaction wheel unicycle. Performed as part of a 2-year long capstone project in the UBC Engineering Physics program, sponsored by the Engineering Physics project lab.\nExplore the Learning to Balance Project",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Project Home"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html",
+    "href": "content/projects/RLUnicycle/introduction.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. This project is sponsored by the UBC Engineering Physics Project Lab.\n\n\n\nTeam Photo\n\n\n\n\nOur goal is to design and develop from scratch a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning.\n\n\n\nOur work draws on advances made in previous robotics projects. Notably, the Max Planck Institute’s Wheelbot project project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html#project-overview",
+    "href": "content/projects/RLUnicycle/introduction.html#project-overview",
+    "title": "Introduction",
+    "section": "",
+    "text": "Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. This project is sponsored by the UBC Engineering Physics Project Lab.\n\n\n\nTeam Photo\n\n\n\n\nOur goal is to design and develop from scratch a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning.\n\n\n\nOur work draws on advances made in previous robotics projects. Notably, the Max Planck Institute’s Wheelbot project project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html#the-robot",
+    "href": "content/projects/RLUnicycle/introduction.html#the-robot",
+    "title": "Introduction",
+    "section": "The Robot",
+    "text": "The Robot\nThe robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating a compact and efficient design intended to allow self-erection from a position resting on its resetting legs. The Jetson Nano acts as an autonomous controller that reads the sensors and reacts to the environment using the motors.\n\nMuch like a unicycle, it balances on one wheel, with side-to-side stability provided by the roll wheel and direction controlled by a yaw wheel. The mechanism of balancing and steering relies on a reaction torque produced by spinning the reaction wheels. When a motor applies torque to one of the flywheels, an equal and opposite torque acts on the robot’s body, with the net effect altering the angular motion of both the wheel and the robot. The unstable axes are roll and pitch, where tipping occurs.\n\n\n\n\nSide View Pitch Axis\n\n\n\n\n\nSide View Roll Axis",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html#the-challenge",
+    "href": "content/projects/RLUnicycle/introduction.html#the-challenge",
+    "title": "Introduction",
+    "section": "The Challenge",
+    "text": "The Challenge\nRobotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.\n\nPrototyping and Progress\nWe have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively. With the completion of a function 2-DOF underactuated model, we are now moving towards the development of a full-scale 3-axis robot prototype.\n\n\n\n\n3-Axis Partial Build\n\n\n\n\n\nWith Prototype\n\n\n\n\n\n\n\nRWIP Model",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html#looking-ahead",
+    "href": "content/projects/RLUnicycle/introduction.html#looking-ahead",
+    "title": "Introduction",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nThe insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/introduction.html#development-pages",
+    "href": "content/projects/RLUnicycle/introduction.html#development-pages",
+    "title": "Introduction",
+    "section": "Development Pages",
+    "text": "Development Pages\nExplore the detailed development of specific components of our project:\n\n\n\nComponent\nDescription\n\n\n\n\nReal-Time Kernel\nDive into how we handle real-time constraints on the Jetson Nano.\n\n\nTelemetry\nDiscover how our system communicates and processes real-time data.\n\n\nDynamics and Control\nLearn about the dynamic modeling and control of our robot prototype.\n\n\n\n\n\n\n\n\nTeam Photo\nSide View Pitch Axis\nSide View Roll Axis\n3-Axis Partial Build\nWith Prototype\nRWIP Model",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html",
+    "title": "Telemetry and Database System",
+    "section": "",
+    "text": "This is a user summary document for our capstone telemetry and database server. It is intended to provide an overview of the different services that are in use for the data pipeline. The capstone project leverages the MING stack as shown in the overview diagram below.\nI recommend using a central server to manage all of these services through a Zerotier Virtual Network. This will allow you to access the services from anywhere via the internet without exposing the server to the public.\n\n\nThe Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.\nThe Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#hardware-recommendation",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#hardware-recommendation",
+    "title": "Telemetry and Database System",
+    "section": "",
+    "text": "The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.\nThe Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#zerotier-virtual-network",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#zerotier-virtual-network",
+    "title": "Telemetry and Database System",
+    "section": "2.1 ZeroTier Virtual Network",
+    "text": "2.1 ZeroTier Virtual Network\nZerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network.\nTo setup a network you should first create a free account at https://my.zerotier.com/. Once you have an account you can create a network and add devices to it. The network ID is a 16 digit number that is used to identify the network.\n\n\n2.1.1 Zerotier Client\nThe Zerotier client is a software that is installed on the devices that you want to connect to the network. Each device intended for the network including the server should have the client installed. Once it is installed, enter the network ID from the Zerotier website and then approve the device to the network. You may wish to set static IP addresses, especially for the server. This can all be done through the Zerotier website.\nhttps://www.zerotier.com/download/",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#mqtt-overview",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#mqtt-overview",
+    "title": "Telemetry and Database System",
+    "section": "2.2 MQTT Overview",
+    "text": "2.2 MQTT Overview\nThe robot an network is using the MQTT protocol to implement live telemetry. Topics are used on a subscriber publisher basis. All communication is routed through the Lenovo server that is acting as the broker. The Mosquitto MQTT server software is running on the Lenovo server which is the IP address used for routing messages. The default port for MQTT is 1883.\n# Define the MQTT settings\nbroker_address = \"172.22.1.1\" #Lenovo's IP address\nport = 1883\ntopic = \"robot/telemetry\"\nThe MQTT explorer offers comprehensive tools to explore available topics and more: https://mqtt-explorer.com/ This can be a very useful tool for debugging and exploring the MQTT network to check if messages are being sent and received.\nMQTT interfaces with Python, Node-Red, and Grafana to provide a comprehensive data pipeline. The MQTT broker is the central hub for all data that is being sent and received. The broker can be accessed by any device on the ZeroTier network that is subscribed to the topic.\n\n2.2.1 MQTT Summary\nMQTT is a lightweight messaging protocol that provides an efficient and cost-effective method of carrying out telemetry-based communication between devices. It’s especially popular in Internet of Things (IoT) applications due to its minimal bandwidth requirements and ease of implementation on hardware with limited processing capabilities.\n\n2.2.1.1 Key Features of MQTT:\n\nLightweight Protocol: Ideal for constrained devices and networks with limited bandwidth.\nPublish-Subscribe Model: Allows devices to publish messages to a topic and any client subscribed to that topic will receive the messages.\nReliable Message Delivery: Offers various levels of Quality of Service (QoS) to guarantee message delivery.\nMinimal Overhead: Adds only a small overhead to each message, ensuring efficient use of network resources.\nRetained Messages: Supports retaining the last message sent on a topic, making it available immediately to new subscribers.\nLast Will and Testament: Provides a means for a client to notify other clients about an abnormal disconnection.\n\n\n\n2.2.1.2 Application for our Robot\nThe Lenovo acts as a broker for all the data that is streaming out of the robot over a Wi-Fi connection to the internet. This offloads the databasing and broadcasting duty from the robot to the broker which can dedicate more resources to data management. The robot can publish data to a topic, which can be picked up by various subscribers such as the Lenovo’s Grafana server or other laptops, phones, etc that are connected to the broker and subscribed to the topic.\nMore Detailed System Diagram needed \nThe broker can duplicate the published data to many devices in real-time. Another hidden stream for the data is through Node-Red to InfluxDB where the aggregate data can be store more permanently for access to testing records at a later date. Additionally, an MQTT bridge is connected to the Pi’s Grafana server which offers an advanced dashboard service for viewing live telemetry. Note that databased telemetry can also be viewed through Grafana which is connected to InfluDB, but it is a seperate data stream from MQTT and should have a seperate dashboard.\n\n\n\n2.2.2 Publishing Messages\nA sample script for publishing messages with Paho-MQTT client Documentation to the Lenovo server/broker while connected to Zero-Tier is provided, see the mqtt.py file. The script allows for publishing a controller value or a cpu_usage data point.\nPrerequisites\n\nMQTT Broker Setup: Ensure that the MQTT broker, in this case, the Lenovo server, is up and running.\nNetwork Connection: Connect your device to the Zero-Tier network to ensure visibility and access to the broker.\nPython Environment: Make sure Python is installed on your device along with necessary libraries: paho-mqtt, json\nBroker Details: In the script, set the broker_address to the Lenovo server’s IP address and port to 1883 (default MQTT port).\nA client is formed with a ClientID that should be descriptive, we then connect to the MQTT broker A dictionary of values can be converted to JSON format using JSON dump, method. The broker is designed to work with either raw values or JSON The JSON values can be a collection of data types with a Key and Value\nThe publish method publishes the data to the desired stream where other clients can subscribe to the topic.\n\n\n\n2.2.3 Subscribing to messages:\n\nA Grafana server has been setup where some useful dashboards can be maintained. The IoT MQTT Panel for Android also offers some nice services including the ability to send messages.\nMore details on subscribing through the Paho-MQTT client can be found at https://www.emqx.com/en/blog/how-to-use-mqtt-in-python ### QoS The protocol allows for fast transmission of messages and a similar PUB/SUB model as ROS topics. Telemetry read data can be sent using QoS level 0 which only attempts a single delivery of the data and does not wait for confirmation of receipt, this is perfectly acceptable for fast streaming data that is not mission critical.\n\nFor mission critical commands such as parameter adjustments and messages to the robot, a QoS level of 2 can be tied to the message which ensures that it is delivered to the robot exactly once. This avoids duplicate commands or lost commands through the network. It is a slower communication protocol but it is not an issue for lower bandwidth messages that are orginating from control devices to the robot.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#grafana-live-telemetry-and-database-dashboards",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#grafana-live-telemetry-and-database-dashboards",
+    "title": "Telemetry and Database System",
+    "section": "2.3 Grafana Live Telemetry and Database Dashboards",
+    "text": "2.3 Grafana Live Telemetry and Database Dashboards\nGrafana is a powerful open-source platform for creating dashboards and visualizing time-series data. It is particularly well-suited for monitoring and analyzing real-time data. Grafana supports a wide range of data sources and can be used to display both live and historical data in a variety of formats, including graphs, tables, and gauges. Think of it as graph nirvana.\nWhen it comes to viewing the telemetry data, a plugin can be installed to function as a bridge between the MQTT broker and the Grafana server. https://grafana.com/grafana/plugins/grafana-mqtt-datasource/\nTo setup Grafana, install the software on the Lenovo server first. The default port for Grafana is 3000. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 3000.\nOnce you have logged in, you can add a data source by selecting MQTT from the list of available data sources if you have correctly installed the plugin. The panel will listen to all messages on a particular topic and display them in a graph or table format.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#influxdb-databasing",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#influxdb-databasing",
+    "title": "Telemetry and Database System",
+    "section": "2.4 InfluxDB Databasing",
+    "text": "2.4 InfluxDB Databasing\nThe database can be accessed through Python API, through Grafana, or even a direct viewer. The database is also to be installed on the Lenovo server. The default port for InfluxDB is 8086. The database can be accessed through a web browser by navigating to the IP address of the Lenovo server on port 8086.\nMQTT gives livestream data but if we want data storage and permanence between runs it needs to be databased. InfluxDB offers this service along with data manipulation services and a special query language. It also includes a data explorer through the web interface.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  },
+  {
+    "objectID": "content/projects/RLUnicycle/telemetry/telemetry.html#node-red",
+    "href": "content/projects/RLUnicycle/telemetry/telemetry.html#node-red",
+    "title": "Telemetry and Database System",
+    "section": "2.5 Node Red",
+    "text": "2.5 Node Red\nNode Red is a flow-based open source development tool for visual programming developed by IBM. It is used for wiring together hardware devices, APIs, and online services in new and interesting ways. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.\nFor this application Node Red is used to bridge the MQTT broker to the InfluxDB database. This allows for the data to be stored in a database for later access. The data can be manipulated and stored in a more permanent format.\nThe Node Red server is installed on the Lenovo server. The default port for Node Red is 1880. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 1880.\n\n2.5.1 Node Red Dashboard\n\n\n\nNode Red Dashboard\n\n\nThe Node Red dashboard is an additional feature that is accessed through the Node Red server. It allows for the creation of custom dashboards that can be used to provide a GUI for a robotics project. The GUI can be used to connect directly to incoming signals and also produce outgoing command signals that can be sent to the robot.",
+    "crumbs": [
+      "Home",
+      "Projects",
+      "Learning to Balance",
+      "Telemetry and Database System"
+    ]
+  }
+]
