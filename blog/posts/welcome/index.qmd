@@ -6,18 +6,74 @@ description: >-
   Find out more about the tools I'm using to create this blog.
 categories:
     - Quarto
-image: imgs/one.png
+    - Julia
+image: imgs/heart.gif
 draft: false
 
-execute:
-  engine: julia
+jupyter: julia-1.9
 
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
 
 Welcome to the first post on my new website.
 
-This year I have been learning more publishing and coding techniques that are designed to make sharing technical easier, more visual, and more interactive. Micheal Friedlander, who teaches CPSC 406 at UBC, is a proponent of using Julia and Quarto for teaching and research. Taking some inspiration from his work along with some inspiration from [Patrick Altmeyer](https://www.paltmeyer.com/blog/), I have decided to start my own blog using Quarto.
+This year I have been learning more publishing and coding techniques that are designed to make sharing technical work easier, more visual, and more interactive. Micheal Friedlander, who teaches CPSC 406 at UBC, is a proponent of using Julia and Quarto for teaching and research. Taking some inspiration from his work along with [Patrick Altmeyer](https://www.paltmeyer.com/blog/)'s website, I have decided to start my own blog using Quarto.
 
 [Quarto](https://quarto.org/) is a scientific and technical publishing system built on Pandoc. It is designed to make it easy to write and publish technical content, such as research papers, books, and reports. One of its main features is that it allows for writing content in markdown along with code chunks in Julia, Python, R, and other languages. In addition, Quarto supports a wide range of output formats, including HTML, PDF, and Word. It has the great convenience of being able to port writing from [Obsidian](https://obsidian.md/) or in [Latex](https://www.latex-project.org/) to a blog post or html with minimal effort.
 
 I'm excited to use this new tool to share my work and ideas, especially as I continue to learn more about data science, machine learning, and optimization. I hope you find the content here useful and/or interesting.
+
+## Examples of Julia Code and Plots
+
+Here is a snail-like surface that is parametrically defined. Despite living in 3D space, a surface can be two dimensional in the sense that we can specify any location on it using just two coordinates. Think about the surface of the earth that we live on.
+
+```{julia}
+#| label: fig-snail
+#| fig-cap: "Surface Plot Example"
+
+using Plots
+
+# Your plotting code here
+u = range(0, stop=6π, length=100)
+v = range(0, stop=2π, length=30)
+s1(u, v) = 2 * (1 - exp(u / (6 * π))) * cos(u) * cos(v / 2)^2
+s2(u, v) = 2 * (-1 + exp(u / (6 * π))) * sin(u) * cos(v / 2)^2
+s3(u, v) = 1 - 0.71 * exp(u / (3 * π)) - sin(v) + exp(u / (6 * π)) * sin(v)
+
+xs, ys, zs = s1.(u, v'), s2.(u, v'), s3.(u, v')
+surface(xs, ys, zs, color=cgrad(:acton), alpha=0.5, legend=false)
+```
+
+This code is an example of the animation features included in the Julia Plot library found at [Julia Plots Package](https://docs.juliaplots.org/stable/animations/) that can be used to create a gif. The gif below shows a parametric plot of a heart. Note just how compact the code is for creating this gif and the natural expression that the code has. This is the power of Julia.
+
+```{julia}
+#| label: fig-heart
+#| fig-cap: "Heart Animation Example"
+
+using Plots
+
+@userplot CirclePlot
+@recipe function f(cp::CirclePlot)
+    x, y, i = cp.args
+    n = length(x)
+    inds = circshift(1:n, 1 - i)
+    linewidth --> range(0, 10, length = n)
+    seriesalpha --> range(0, 1, length = n)
+    aspect_ratio --> 1
+    label --> false
+    x[inds], y[inds]
+end
+
+n = 400
+t = range(0, 2π, length = n)
+x = 16sin.(t).^3
+y = 13cos.(t) .- 5cos.(2t) .- 2cos.(3t) .- cos.(4t)
+
+anim = @animate for i ∈ 1:n
+    circleplot(x, y, i, line_z = 1:n, cbar = false, c = :reds, framestyle = :none)
+end every 5
+gif(anim, "anim_fps15.gif", fps = 15, show_msg = false)
+```
