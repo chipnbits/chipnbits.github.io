@@ -21,12 +21,6 @@ Our goal is to design and develop from scratch a self-balancing reaction wheel r
 
 Our work draws on advances made in previous robotics projects. Notably, the [Max Planck Institute’s Wheelbot project](https://sites.google.com/view/wheelbot) project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.
 
-::: {style="display: grid;grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));grid-gap: 1em;"}
-![Wheelbot](imgs/wheelbot.png){group="Inspiration"}
-
-![Wheelbot](imgs/wheelbot.png){group="Inspiration"}
-:::
-
 ## The Robot
 
 The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all
