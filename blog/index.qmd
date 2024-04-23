@@ -1,5 +1,6 @@
 ---
 title: "Posts"
+sidebar: false
 listing:
   contents: posts
   sort: "date desc"

@@ -3,6 +3,8 @@
 author:
   - name: Simon Ghyselincks
 
+sidebar: false
+
 crossref:
   fig-prefix: Figure
   tbl-prefix: Table
