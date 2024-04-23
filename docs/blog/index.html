@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simon Ghyselincks - Introduction</title>
+<title>Simon Ghyselincks - Posts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,27 +23,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../../">
-<link href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" rel="next">
-<link href="../../../content/projects/projects.html" rel="prev">
-<script src="../../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,19 +68,77 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
 
-<link rel="stylesheet" href="../../../styles.css">
+    const options = {
+      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-subtitle","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed fullcontent">
+<body class="nav-sidebar docked nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Simon Ghyselincks</span>
     </a>
   </div>
@@ -94,23 +149,23 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../../index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../../content/projects/RLUnicycle/introduction.html" aria-current="page"> 
+    <a class="nav-link active" href="../content/projects/RLUnicycle/introduction.html" aria-current="page"> 
 <span class="menu-text">Learning to Balance</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../blog/index.html"> 
+    <a class="nav-link" href="../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../www/cv/CV.pdf"> 
+    <a class="nav-link" href="../www/cv/CV.pdf"> 
 <span class="menu-text">CV</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../content/about/biography.html"> 
+    <a class="nav-link" href="../content/about/biography.html"> 
 <span class="menu-text">Bio</span></a>
   </li>  
 </ul>
@@ -124,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Introduction</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Posts</li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -155,40 +210,40 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/projects.html" class="sidebar-item-text sidebar-link">
+  <a href="../content/projects/projects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Project Home</span></a>
   </div>
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
  <span class="menu-text">Learning to Balance</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link active">
+  <a href="../content/projects/RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="sidebar-item-text sidebar-link">
+  <a href="../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">RT Kernel on Jetson Nano</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link">
+  <a href="../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Telemetry and Database System</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../content/projects/RLUnicycle/dynamics/dynamics.html" class="sidebar-item-text sidebar-link">
+  <a href="../content/projects/RLUnicycle/dynamics/dynamics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Dynamics and Control</span></a>
   </div>
 </li>
@@ -201,13 +256,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quarto">Quarto <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../content/projects/RLUnicycle/introduction.html">Introduction</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introduction</h1>
+<h1 class="title">Posts</h1>
 </div>
 
 
@@ -224,120 +281,45 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="project-overview" class="level2">
-<h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
-<p>Welcome to our project on developing a self-balancing unicycle robot! This project is a collaborative effort by Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna as part of ENPH 459 at the University of British Columbia. This project is sponsored by the UBC Engineering Physics Project Lab.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/teamphoto.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Team Photo"><img src="imgs/teamphoto.png" class="img-fluid figure-img" style="width:100.0%" alt="Team Photo"></a></p>
-<figcaption>Team Photo</figcaption>
-</figure>
-</div>
-<section id="objective" class="level3">
-<h3 class="anchored" data-anchor-id="objective">Objective</h3>
-<p>Our goal is to design and develop from scratch a self-balancing reaction wheel robot that can also navigate autonomously and be used as a platform to compare traditional control methods with reinforcement learning.</p>
-</section>
-<section id="inspiration-and-background" class="level3">
-<h3 class="anchored" data-anchor-id="inspiration-and-background">Inspiration and Background</h3>
-<p>Our work draws on advances made in previous robotics projects. Notably, the <a href="https://sites.google.com/view/wheelbot">Max Planck Institute’s Wheelbot project</a> project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. Our project aims to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.</p>
-</section>
-</section>
-<section id="the-robot" class="level2">
-<h2 class="anchored" data-anchor-id="the-robot">The Robot</h2>
-<p>The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating a compact and efficient design intended to allow self-erection from a position resting on its resetting legs. The Jetson Nano acts as an autonomous controller that reads the sensors and reacts to the environment using the motors.</p>
-<p><a href="imgs/labeledcad.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="imgs/labeledcad.png" class="img-fluid" style="width:70.0%"></a></p>
-<p>Much like a unicycle, it balances on one wheel, with side-to-side stability provided by the roll wheel and direction controlled by a yaw wheel. The mechanism of balancing and steering relies on a reaction torque produced by spinning the reaction wheels. When a motor applies torque to one of the flywheels, an equal and opposite torque acts on the robot’s body, with the net effect altering the angular motion of both the wheel and the robot. The unstable axes are roll and pitch, where tipping occurs.</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-gap: 1em;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/cadsideview1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="ourbot" title="Side View Pitch Axis"><img src="imgs/cadsideview1.png" class="img-fluid figure-img" style="width:50.0%" alt="Side View Pitch Axis"></a></p>
-<figcaption>Side View Pitch Axis</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/cadsideview2.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="ourbot" title="Side View Roll Axis"><img src="imgs/cadsideview2.png" class="img-fluid figure-img" style="width:50.0%" alt="Side View Roll Axis"></a></p>
-<figcaption>Side View Roll Axis</figcaption>
-</figure>
-</div>
-</div>
-</section>
-<section id="the-challenge" class="level2">
-<h2 class="anchored" data-anchor-id="the-challenge">The Challenge</h2>
-<p>Robotics often confronts complex dynamics that are difficult to model precisely. Traditional control systems, while reliable under predictable conditions, may falter with unexpected disturbances. This project explores how Reinforcement Learning can enable our unicycle robot to adapt through trial and error, improving its decision-making capabilities in a dynamic environment.</p>
-<section id="prototyping-and-progress" class="level3">
-<h3 class="anchored" data-anchor-id="prototyping-and-progress">Prototyping and Progress</h3>
-<p>We have initiated our project with a Reaction Wheel Inverted Pendulum (RWIP) model to understand and tackle the unstable roll axis dynamics. Our efforts so far have included the application of both a traditional PID controller and an RL controller, with the latter showing promising results in handling dynamic disturbances aggressively yet effectively. With the completion of a function 2-DOF underactuated model, we are now moving towards the development of a full-scale 3-axis robot prototype.</p>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(60px, 1fr)); grid-gap: 1em;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/progress/progress1.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="progress" title="3-Axis Partial Build"><img src="imgs/progress/progress1.jpg" class="img-fluid figure-img" style="width: 56%; height: auto;" alt="3-Axis Partial Build"></a></p>
-<figcaption>3-Axis Partial Build</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/progress/progress5.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-6" data-gallery="progress" title="With Prototype"><img src="imgs/progress/progress5.jpg" class="img-fluid figure-img" style="width: 100%; height: auto;" alt="With Prototype"></a></p>
-<figcaption>With Prototype</figcaption>
-</figure>
-</div>
-</div>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(60px, 1fr)); grid-gap: 1em;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="imgs/progress/progress2.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="progress" title="RWIP Model"><img src="imgs/progress/progress2.jpg" class="img-fluid figure-img" alt="RWIP Model"></a></p>
-<figcaption>RWIP Model</figcaption>
-</figure>
-</div>
-<p><a href="imgs/progress/progress3.jpg" class="lightbox" data-gallery="progress"><img src="imgs/progress/progress3.jpg" class="img-fluid"></a></p>
-<p><a href="imgs/progress/progress4.jpg" class="lightbox" data-gallery="progress"><img src="imgs/progress/progress4.jpg" class="img-fluid"></a></p>
-</div>
-</section>
-</section>
-<section id="looking-ahead" class="level2">
-<h2 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h2>
-<p>The insights gained from the RWIP will guide the development of the full-scale robot, with the eventual integration of state-space models for sophisticated control strategies and enhanced point-to-point navigation.</p>
-</section>
-<section id="development-pages" class="level2">
-<h2 class="anchored" data-anchor-id="development-pages">Development Pages</h2>
-<p>Explore the detailed development of specific components of our project:</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html">Real-Time Kernel</a></td>
-<td>Dive into how we handle real-time constraints on the Jetson Nano.</td>
-</tr>
-<tr class="even">
-<td><a href="../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry</a></td>
-<td>Discover how our system communicates and processes real-time data.</td>
-</tr>
-<tr class="odd">
-<td><a href="../../../content/projects/RLUnicycle/dynamics/dynamics.html">Dynamics and Control</a></td>
-<td>Learn about the dynamic modeling and control of our robot prototype.</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<!-- For more detailed information about the project development, visit the [Project Development Overview](./project-development-overview.qmd) section. For insights into the specific hardware and software components, check out the [System Overview](./system-overview.qmd). -->
 
 
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-1">Team Photo</span>
-<span class="glightbox-desc lightbox-desc-3">Side View Pitch Axis</span>
-<span class="glightbox-desc lightbox-desc-4">Side View Roll Axis</span>
-<span class="glightbox-desc lightbox-desc-5">3-Axis Partial Build</span>
-<span class="glightbox-desc lightbox-desc-6">With Prototype</span>
-<span class="glightbox-desc lightbox-desc-7">RWIP Model</span>
-</div>
-</section>
 
-</main> <!-- /main -->
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-left" data-index="0" data-categories="Quarto" data-listing-date-sort="1713769200000" data-listing-file-modified-sort="1713857320979" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="206">
+<div class="thumbnail">
+<p><a href="../blog/posts/welcome/index.html" class="no-external"></a></p><a href="../blog/posts/welcome/index.html" class="no-external">
+<p><img src="../blog/posts/welcome/imgs/one.png" class="thumbnail-image"></p>
+</a><p><a href="../blog/posts/welcome/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../blog/posts/welcome/index.html" class="no-external">Welcome</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../blog/posts/welcome/index.html" class="no-external">A first post using Quarto</a>
+</div>
+<div class="listing-description">
+<a href="../blog/posts/welcome/index.html" class="no-external">Find out more about the tools I’m using to create this blog.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="../blog/posts/welcome/index.html" class="no-external">
+<div class="listing-date">
+Apr 22, 2024
+</div>
+<div class="listing-reading-time">
+2 min
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -725,18 +707,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="../../../content/projects/projects.html" class="pagination-link" aria-label="Project Home">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Project Home</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="pagination-link" aria-label="RT Kernel on Jetson Nano">
-        <span class="nav-page-text">RT Kernel on Jetson Nano</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -764,31 +734,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"descPosition":"bottom","closeEffect":"zoom","selector":".lightbox"});
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
-    }
-  });
-
-};
-          </script>
 
 
 

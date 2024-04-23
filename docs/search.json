@@ -270,6 +270,20 @@
     "text": "Some Past Adventures\n\n\n\n\nSta. Clautilde, Rio Napo, Peru\n\n\n\n\n\nTarapoto, San Martin, Peru\n\n\n\n\n\nRemote Helicopter Forestry Work\n\n\n\n\n\nEverest Base Camp\n\n\n\n\n\nDirtbiking in Myanmar\n\n\n\n\n\nSailing to Mexico from Victoria\n\n\n\n\n\n\nSta. Clautilde, Rio Napo, Peru\nTarapoto, San Martin, Peru\nRemote Helicopter Forestry Work\nEverest Base Camp\nDirtbiking in Myanmar\nSailing to Mexico from Victoria"
   },
   {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Welcome\n\n\nA first post using Quarto\n\n\nFind out more about the tools I’m using to create this blog.\n\n\n\n\n\nApr 22, 2024\n\n\n2 min\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/welcome/index.html",
+    "href": "blog/posts/welcome/index.html",
+    "title": "Welcome",
+    "section": "",
+    "text": "Welcome to the first post on my new website.\nThis year I have been learning more publishing and coding techniques that are designed to make sharing technical easier, more visual, and more interactive. Micheal Friedlander, who teaches CPSC 406 at UBC, is a proponent of using Julia and Quarto for teaching and research. Taking some inspiration from his work along with some inspiration from Patrick Altmeyer, I have decided to start my own blog using Quarto.\nQuarto is a scientific and technical publishing system built on Pandoc. It is designed to make it easy to write and publish technical content, such as research papers, books, and reports. One of its main features is that it allows for writing content in markdown along with code chunks in Julia, Python, R, and other languages. In addition, Quarto supports a wide range of output formats, including HTML, PDF, and Word. It has the great convenience of being able to port writing from Obsidian or in Latex to a blog post or html with minimal effort.\nI’m excited to use this new tool to share my work and ideas, especially as I continue to learn more about data science, machine learning, and optimization. I hope you find the content here useful and/or interesting."
+  },
+  {
     "objectID": "content/about/overview.html",
     "href": "content/about/overview.html",
     "title": "Simon Ghyselincks",

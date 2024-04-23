@@ -1,0 +1,8 @@
+# options specified here will apply to all posts in this folder
+
+author:
+  - name: Simon Ghyselincks
+
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table

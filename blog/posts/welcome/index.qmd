@@ -1,0 +1,23 @@
+---
+title: "Welcome"
+subtitle: "A first post using Quarto"
+date: 2024-04-22
+description: >-
+  Find out more about the tools I'm using to create this blog.
+categories:
+    - Quarto
+image: imgs/one.png
+draft: false
+
+execute:
+  engine: julia
+
+---
+
+Welcome to the first post on my new website.
+
+This year I have been learning more publishing and coding techniques that are designed to make sharing technical easier, more visual, and more interactive. Micheal Friedlander, who teaches CPSC 406 at UBC, is a proponent of using Julia and Quarto for teaching and research. Taking some inspiration from his work along with some inspiration from [Patrick Altmeyer](https://www.paltmeyer.com/blog/), I have decided to start my own blog using Quarto.
+
+[Quarto](https://quarto.org/) is a scientific and technical publishing system built on Pandoc. It is designed to make it easy to write and publish technical content, such as research papers, books, and reports. One of its main features is that it allows for writing content in markdown along with code chunks in Julia, Python, R, and other languages. In addition, Quarto supports a wide range of output formats, including HTML, PDF, and Word. It has the great convenience of being able to port writing from [Obsidian](https://obsidian.md/) or in [Latex](https://www.latex-project.org/) to a blog post or html with minimal effort.
+
+I'm excited to use this new tool to share my work and ideas, especially as I continue to learn more about data science, machine learning, and optimization. I hope you find the content here useful and/or interesting.
