@@ -10,7 +10,9 @@ categories:
 image: imgs/heart.gif
 draft: false
 
-jupyter: julia-1.9
+execute:
+  jupyter: "julia-1.9"
+  cache: true
 
 format:
   html:

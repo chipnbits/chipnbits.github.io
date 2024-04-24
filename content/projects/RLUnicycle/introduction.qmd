@@ -24,7 +24,8 @@ Our work draws on previous advances made in robotics. Notably, the [Max Planck I
 
 ## The Robot
 
-<div id="stl_viewer"></div>
+<!-- https://docs.github.com/en/repositories/working-with-files/using-files/working-with-non-code-files -->
+<script src="https://embed.github.com/view/3d/chipnbits/chipnbits.github.io/master/content/projects/RLUnicycle/robot.stl"></script>
 
 The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all
 mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating
