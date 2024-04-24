@@ -3,6 +3,7 @@ title: "Introduction"
 format:
   html:
     toc: false
+    include-in-header: three-js-header.html
 lightbox: true
 
 ---
@@ -22,6 +23,8 @@ Our goal is to design and develop a self-balancing reaction wheel robot that can
 Our work draws on previous advances made in robotics. Notably, the [Max Planck Institute’s Wheelbot](https://sites.google.com/view/wheelbot) project has served as a significant source of inspiration, many of our design choices and control strategies are influenced by their work. We aim to build on their development with a more advanced control and motor system that can navigate autonomously and adapt to dynamic disturbances using reinforcement learning.
 
 ## The Robot
+
+<div id="stl_viewer"></div>
 
 The robot is composed of two reaction wheels, a single drive wheel, a controller, and a battery, all
 mounted on a 3D printed PLA frame. It has a total height of 30cm and a weight of 1.25kg, incorporating
