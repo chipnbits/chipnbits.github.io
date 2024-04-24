@@ -3,7 +3,6 @@ title: "Introduction"
 format:
   html:
     toc: false
-    include-in-header: three-js-header.html
 lightbox: true
 
 ---
