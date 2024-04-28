@@ -107,6 +107,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../styles.css">
 </head>
@@ -212,13 +241,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Welcome to the first post on my new website.</p>
-<p>This year I have been learning more publishing and coding techniques that are designed to make sharing technical work easier, more visual, and more interactive. Micheal Friedlander, who teaches CPSC 406 at UBC, is a proponent of using Julia and Quarto for teaching and research. Taking some inspiration from his work along with <a href="https://www.paltmeyer.com/blog/">Patrick Altmeyer</a>’s website, I have decided to start my own blog using Quarto.</p>
+<p>This year, I have been expanding my knowledge of publishing and coding techniques that are designed to make sharing technical work easier, more visual, and more interactive. [Michael Friedlander]{https://friedlander.io/}, who teaches CPSC 406 Computational Optimization at UBC, is an advocate for using Julia and Quarto in teaching and research. Drawing inspiration from his work along with <a href="https://www.paltmeyer.com/blog/">Patrick Altmeyer</a>’s website, I have decided to start my own blog using Quarto.</p>
 <p><a href="https://quarto.org/">Quarto</a> is a scientific and technical publishing system built on Pandoc. It is designed to make it easy to write and publish technical content, such as research papers, books, and reports. One of its main features is that it allows for writing content in markdown along with code chunks in Julia, Python, R, and other languages. In addition, Quarto supports a wide range of output formats, including HTML, PDF, and Word. It has the great convenience of being able to port writing from <a href="https://obsidian.md/">Obsidian</a> or in <a href="https://www.latex-project.org/">Latex</a> to a blog post or html with minimal effort.</p>
 <p>I’m excited to use this new tool to share my work and ideas, especially as I continue to learn more about data science, machine learning, and optimization. I hope you find the content here useful and/or interesting.</p>
 <section id="examples-of-julia-code-and-plots" class="level2">
 <h2 class="anchored" data-anchor-id="examples-of-julia-code-and-plots">Examples of Julia Code and Plots</h2>
-<p>Here is a snail-like surface that is parametrically defined. Despite living in 3D space, a surface can be two dimensional in the sense that we can specify any location on it using just two coordinates. Think about the surface of the earth that we live on.</p>
+<p>Here’s a parametrically defined, snail-like surface. Although it exists in 3D space, the surface is two-dimensional in that any location on it can be specified using just two coordinates—similar to how we navigate the surface of the Earth. You van see this incorporated as the two parameters <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> in the code below. These two coordinates map into 3D space that is defined by the functions <span class="math inline">\(s1\)</span>, <span class="math inline">\(s2\)</span>, and <span class="math inline">\(s3\)</span> giving a vector <span class="math display">\[\mathbf{s}(u,v) = \begin{bmatrix}s1(u,v) \\ s2(u,v) \\ s3(u,v)\end{bmatrix}\]</span></p>
+<p>The surface is then plotted using the <code>surface</code> function from the Julia Plots package.</p>
+<p>Note the usage of the vectorized operation of the functions <span class="math inline">\(s1\)</span>, <span class="math inline">\(s2\)</span>, and <span class="math inline">\(s3\)</span> to create the vectors <code>xs</code>, <code>ys</code>, and <code>zs</code>. The passing of the input vectors <code>u</code> and <code>v'</code> creates the required meshgrid for the surface plot.</p>
 <div id="cell-fig-snail" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
