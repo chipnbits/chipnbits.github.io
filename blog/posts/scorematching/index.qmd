@@ -3,7 +3,7 @@ title: "Score Matching for Density Estimation"
 subtitle: "A first post using Quarto"
 date: 2024-05-22
 description: >-
-  Score matching is a method for estimating the density of a distribution. It is a non-parametric method that uses the score function of the distribution to estimate the density. In this post, I will explain the score matching method and show how it can be used to estimate the density of a distribution, as well as some of its limitations.
+  Score matching is a method for indirectly estimating the probability density function of a distribution. In this post, I will explain the score matching method as well as some of its limitations.
 categories:
     - Optimization
     - Score Matching
@@ -23,19 +23,20 @@ format:
 ---
 # Big Idea
 
-Denoising Autoencoders (DAE) are a type of neural network that is trained to reconstruct the input data from a noisy version of the input. The DAE is trained to minimize the reconstruction error between the input and the output. The DAE can be used to learn the score function of a distribution, which has been shown to be the kernel density estimate using the noise kernel and the original non-noisy data sample points.
+Denoising Autoencoders (DAE) are a type of machine learning model that is trained to reconstruct the input data from a noisy or corrupted version of the input. The DAE is trained to take an sample such as an image with unwanted noise and restore it to the original sample. 
 
-Learning the DAE parameters is equivalent to learning the score function for the kernel density estimator or KDE. The score function is an operator defined as:
+In the process of learning the denoising parameters, the DAE also can learn the score function the underlying distribution of noisy samples, which is a kernel density estimate of the true distribution.
 
-$$ s(f(x;\theta)) = \nabla_x \log f(x;\theta) $$
+The score function is an operator defined as:
+$$ s(f(x)) = \nabla_x \log f(x) $$
 
-Where $f(x;\theta)$ is the density function of the distribution and $\theta$ are the parameters of the density function.
+Where $f(x)$ is the density function or PDF of the distribution.
 
-By learning a score function for a model, we can reverse the score operation to obtain the density function. This is the idea behind score matching, which is a method for estimating the density of a distribution indirectly by matching the gradient of the log-distribution of both as closely as possible.
+By learning a score function for a model, we can reverse the score operation to obtain the original density function it was derived from. This is the idea behind score matching, where we indirectly find the the pdf of a distribution by matching the score of a proposed model $p(x;\theta)$ to the score of the true distribution $q(x)$. 
 
 Another benefit of learning the score function of a distribution is that it can be used to move from less probable regions of the distribution to more probable regions using gradient ascent. This is useful when it comes to generative models, where we want to generate new samples from the distribution that are more probable.
 
-However one of the challenges with score matching is that the score function is not always well-defined, especially in regions of low probability. This can make it difficult to learn the score function accurately in these regions.
+However one of the challenges is that the score function is not always well-defined, especially in regions of low probability where there are sparse samples. This can make it difficult to learn the score function accurately in these regions.
 
 This post explores some of those limitations and how increasing the bandwidth of the noise kernel in the DAE can help to stabilize the score function in regions of low probability.
 
@@ -105,7 +106,7 @@ scatter([x for (x, y) in points], [y for (x, y) in points], label="Sampled Point
      xticks=[-3, 3], yticks=[-3, 3])
 ```
 
-From this sampling of points we can visualize some of the key concepts of score matching. The score function is the gradient of the log-density function. In the case of the gaussian we extract the gradient of the Energy function exponential term. 
+From this sampling of points we can visualize the effect of the choice of noise bandwidth on the kernel density estimate.
 
 ```{julia}
 using Plots, Distributions, ForwardDiff
@@ -199,7 +200,7 @@ p1 = heatmap(
 scatter!(p1, x_points, y_points, label="Sampled Points", color=:red, ms=2)
 
 
-# Plot the Parzen density estimate
+# Plot the kernel density estimate
 p2 = heatmap(
     parzen.x, parzen.y, parzen.density,
     c=cgrad(:davos, rev=true),
@@ -209,7 +210,7 @@ p2 = heatmap(
     xticks=[-3, 3], yticks=[-3, 3]
 )
 
-# Scatter plot of the sampled points on top of the Parzen density estimate
+# Scatter plot of the sampled points on top of the kernel density estimate
 scatter!(p2, x_points,  y_points, label="Sampled Points", color=:red, ms=2)
 
 # Arrange the plots side by side
@@ -247,7 +248,7 @@ gif(anim, "parzen_density_animation_with_gradients.gif", fps=2,show_msg = false)
 
 Now we can compute the score of the kernel density estimate to see how it changes with the bandwidth. The score function of the distribution is numerically unstable at regions of sparse data. Recalling that the score is the gradient of the log-density funtion, when the density is very low the function approaches negative infinity. Within the limits of numerical precision, taking the log of the density function will result in a negative infinity in sparse and low probability regions. Higher bandwidths of KDE using the Gaussian kernel for example, spread out both the discrete sampling and the true distribution over space. This extends the region of numerical stability for a higher bandwidth.
 
-
+The regions with poor numerical stability can be seen as noise artifacts and missing data in the partial derivatives of the log-density function. Some of these artifacts may also propogate from the fourier transform calculations that the kernel density estimate uses.
 
 ```{julia}
 using Plots, Distributions, KernelDensity, ForwardDiff
@@ -295,7 +296,7 @@ anim = @animate for bw in bandwidths
         kde_result.x, kde_result.y, grad_x',
         c=cgrad(:davos, rev=true),
         aspect_ratio=:equal,
-        xlabel="x", ylabel="y", title="Gradient of Log-Density wrt x \n Bandwidth = $(round(bw[1],digits=2))",
+        xlabel="x", ylabel="y", title="Partial Derivative of Log-Density wrt x \n Bandwidth = $(round(bw[1],digits=2))",
         xlims=boundary, ylims=boundary
     )
 
@@ -306,7 +307,7 @@ anim = @animate for bw in bandwidths
         kde_result.x, kde_result.y, grad_y',
         c=cgrad(:davos, rev=true),
         aspect_ratio=:equal,
-        xlabel="x", ylabel="y", title="Gradient of Log-Density wrt y \n Bandwidth = $(round(bw[1],digits=2))",
+        xlabel="x", ylabel="y", title="Partial Derivative of Log-Density wrt y \n Bandwidth = $(round(bw[1],digits=2))",
         xlims=boundary, ylims=boundary
     )
 
@@ -316,10 +317,10 @@ anim = @animate for bw in bandwidths
     plot(p1, p2, layout = @layout([a b]), size=(800, 400))
 end
 # Save the animation as a GIF
-gif(anim, "parzen_density_gradient_animation_with_gradients.gif", fps=2, show_msg=false)
+gif(anim, "parzen_density_partials.gif", fps=2, show_msg=false)
 ```
 
-And combining the gradient overtop of the ground truth distribution that is modeled with the kernel density estimate, starting with the larger bandwidths and moving to the smaller bandwidths, we can see that the region of numerical stability is extended with the larger bandwidths. For a random point in the sample space
+And combining the gradient overtop of the ground truth distribution that is modeled with the kernel density estimate, starting with the larger bandwidths and moving to the smaller bandwidths, we can see that the region of numerical stability is extended with the larger bandwidths. The larger bandwidths also remove some of the precision in the model, with larger bandwidths the model approaches a single gaussian distribution.
 
 ```{julia}
 # Define the range of bandwidths for the animation
