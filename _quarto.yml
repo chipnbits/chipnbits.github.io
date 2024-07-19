@@ -6,6 +6,7 @@ website:
   title: "Simon Ghyselincks"
   description: "A personal page for Simon Ghyselincks"
   site-url: "https://chipnbits.github.io"
+  site-path: "/"
   page-navigation: true
 
   navbar:
