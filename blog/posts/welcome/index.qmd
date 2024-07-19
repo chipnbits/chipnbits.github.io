@@ -11,7 +11,7 @@ image: imgs/heart.gif
 draft: false
 
 execute:
-  jupyter: "julia-1.9"
+  jupyter: julia-1.10 
   cache: true
 
 format:

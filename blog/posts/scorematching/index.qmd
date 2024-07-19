@@ -1,7 +1,7 @@
 ---
 title: "Score Matching for Density Estimation"
-subtitle: "A first post using Quarto"
-date: 2024-05-22
+subtitle: "Estimation of the probability density function using score matching"
+date: 2024-06-22
 description: >-
   Score matching is a method for indirectly estimating the probability density function of a distribution. In this post, I will explain the score matching method as well as some of its limitations.
 categories:
@@ -13,15 +13,122 @@ image: imgs\parzen_density_animation_with_gradients.gif
 draft: false
 
 execute:
-  jupyter: "julia-1.9"
+  jupyter: julia-1.10 
   cache: true
+  cache-refresh: true  # Only re-execute cells that have changed
+  cache-path: .jupyter_cache  # Directory to store cache files
 
 format:
   html:
     code-fold: true
     code-summary: "Show the code"
+
+bibliography: references.bib
 ---
-# Big Idea
+# The Problem of Density Estimation
+
+When working with a set of data, one of the tasks that we often want to do is to estimate the underlying probability density function (PDF) of the data. Knowing the probability distribution is a powerful tool that allows to make predictions, generate new samples, and understand the data better. For example, we may have a coin and want to know the probability of getting heads or tails. We can flip the coin many times and count the number of heads and tails to estimate the probability of each outcome. However, when it comes to higher dimensional spaces that are continuous in distribution, the problem of estimating the PDF in this way becomes intractable. 
+
+For example, with a set of small images such as the CIFAR-10 dataset, the images are 32x32 pixels with 3 color channels. The number of dimensions in the data space is 32x32x3 = 3072. With 8-bit images the number of all possible unique images is $255^{3072}$, which is an incomprehensibly large number. The 60,000 images that are included in CIFAR-10 represent but a tiny fraction of samples in the space of all possible images. 
+
+![Sample of the cifar 10 dataset](imgs/cifar10.png)
+*Figure 1: Sample images from the CIFAR-10 dataset* [@krizhevsky2009learning]
+
+To demonstrate the issue with random image generation in such a sparsely populated space, we can generate a random 32x32 image with 3 color channels and display it.
+```{julia}
+using Plots, Images
+
+# Generate 6 random images and display them in a grid
+plots = []
+for i in 1:6
+    # Generate a random 32x32 3-channel image
+    im = rand(3, 32, 32)
+    im = colorview(RGB, im)
+    p = plot(im, showaxis=false, showgrid=false, title="Random Image $i")
+    push!(plots, p)
+end
+
+# Create a plot with a 2x3 grid layout
+plot_grid = plot(plots..., layout=(2, 3), size=(800, 400))
+```
+
+Yes we have successfuly generated random 32x32 color images, but they are not very useful or interesting.
+
+If there were some way to learn the underlying distribution of the data, we could generate new samples that are realistic (probable) but that have never been seen before by sampling from higher probability regions of the learned distribution. So how do recent developments in machine learning manage to generate new and plausible samples from high dimensional data sets? 
+
+One of the techniques that has been developed is called generative modeling. Generative models are a class of machine learning models that are trained to learn the underlying distribution of the data. Once the model has learned the distribution, it can generate new samples that are similar to the training data.
+
+One of the powerful techniques that allows for learning a probability distribution is score matching.
+
+# Parameter Estimation
+
+Let us take a moment to consider the problem of fitting a model to data in the most simple sense. Suppose that we have a set of data points and want to fit a linear model by drawing a line through it. One of the techniques that can be used is to minimize the sum of the squared errors between the data points and the line. This is known as the method of least squares.
+
+We have model $f(x) = \hat y = mx + b$ with free parameters $\theta = {m, b}$ and data points $(x_i, y_i)$. The objective is to find the parameters $\theta$ that minimize the sum of the squared errors $J$ between the predicted values $\hat y_i$ and the true values $y_i$.:
+$$  \text{arg}\min_{m,b} J(m,b) = \text{arg}\min_{m,b} \sum_{i=1}^{n} (\hat y_i - y_i)^2 $$
+
+We could use some calculus at this point to solve the minimization problem but more general matrix methods can be used to solve the problem.
+
+\begin{align*}
+    X &= \begin{bmatrix} 1 & x_1 \\ 1 & x_2 \\ \vdots & \vdots \\ 1 & x_n \end{bmatrix} , \quad  \vec{y} = \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix} , \quad \vec{\theta} &= \begin{bmatrix} b \\ m \end{bmatrix} \\
+    \text{arg}\min_{\vec{\theta}} J(\vec{\theta}) &= \text{arg}\min_{\vec{\theta}} ||\vec{\hat y} - \vec{y}||^2\\
+    \text{arg}\min_{\vec{\theta}} J(\vec{\theta}) &= \text{arg}\min_{\vec{\theta}} ||X\vec{\theta} - \vec{y}||^2
+\end{align*}
+
+The solution to this problem is well known and can be found by solving the normal equations:
+$$ X^T X \vec{\theta} = X^T \vec{y} $$
+
+An example of this optimization problem is shown below where we generate some random data points and fit a line to them.
+
+```{julia}
+using Plots, Random
+
+# Generate some random data points with correlation along a line
+Random.seed!(1234)
+n_points = 10
+x = rand(n_points)
+m_true = 0.8; b_true = -1
+y = .8* x .- 1 + 0.3 * randn(n_points)
+
+# Create the matrix X
+X = hcat(ones(n_points), x)
+
+# Solve the normal equations to find the parameters theta
+theta = X \ y
+
+# Generate x values for the complete line
+x_line = range(minimum(x) - 0.1, maximum(x) + 0.1, length=100)
+X_line = hcat(ones(length(x_line)), x_line)
+
+# Compute the y values for the line
+y_hat_line = X_line * theta
+
+# Compute the fitted values for the original data points
+y_hat = X * theta
+
+# Unpack learned parameters
+b, m = theta
+
+# Plot the data points and the fitted line
+title_text = "Fitted Line: y = $(round(m, digits=2))x + $(round(b, digits=2)) vs. \n True Line: y = $(m_true)x + $(b_true)"
+p1 = scatter(x, y, label="Data Points", color=:red, ms=5, aspect_ratio=:equal, xlabel="x", ylabel="y", title=title_text)
+plot!(p1, x_line, y_hat_line, label="Fitted Line", color=:blue)
+# Add dashed lines for residuals
+for i in 1:n_points
+    plot!(p1, [x[i], x[i]], [y[i], y_hat[i]], color=:black, linestyle=:dash, label="")
+end
+
+display(p1)
+
+```
+
+This is a simple example of parameter estimation but it shows some of the important concepts that are used in more complex models. There is an underlying distribution which is a line with some error or noise added to it. We collected some random points from the distribution and then used them in an optimization problem where we minimized the squared error between the predicted values and the true values. The best solution is the parameters $\theta$ that minimize the error. In doing so we recovered a line that is close to the one that was used to generate the data.
+
+# Estimating a Density Function
+
+When it comes to estimating denstity we are constrained by the fact that any model must sum to 1 of the entire sample space. 
+
+# Denoising Autoencoders
 
 Denoising Autoencoders (DAE) are a type of machine learning model that is trained to reconstruct the input data from a noisy or corrupted version of the input. The DAE is trained to take an sample such as an image with unwanted noise and restore it to the original sample. 
 
@@ -69,7 +176,7 @@ heatmap(
 Sampling from the distribution can be done by generating 100 random points
 
 ```{julia}
-using Plots, Distributions
+using Random, Plots, Distributions
 
 # Define the ground truth distribution
 function p(x, y)
@@ -82,6 +189,9 @@ end
 # Sample 200 points from the ground truth distribution
 n_points = 200
 points = []
+
+# Set random seed for reproducibility
+Random.seed!(1234)
 
 while length(points) < n_points
     x = rand() * 6 - 3

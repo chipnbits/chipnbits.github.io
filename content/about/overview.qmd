@@ -4,7 +4,7 @@ Welcome to my personal site! I'm Simon Ghyselincks, currently a 5th-year Enginee
 
 ## Academics and Projects
 
-This summer 2024 I am working with Eldad Haber at UBC Earth and Ocean Sciences on generative AI for geophysical applications. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](/content/projects/projects.qmd).
+This summer 2024 I am working with [Eldad Haber](https://scholar.google.ca/citations?user=NZmEIS8AAAAJ&hl=en) at UBC Earth and Ocean Sciences on generative AI for geophysical applications. Our work explores the application of recent advances in normalizing flows with stochastic interpolants to generate 3d models of the earth's crust. I am also continuing to develop our Engineering Physics capstone project "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](/content/projects/projects.qmd).
 
 <!-- ## Looking Forward
 

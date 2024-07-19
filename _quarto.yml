@@ -5,6 +5,7 @@ project:
 website:
   title: "Simon Ghyselincks"
   description: "A personal page for Simon Ghyselincks"
+  site-url: "https://chipnbits.github.io"
   page-navigation: true
 
   navbar:
@@ -48,4 +49,7 @@ format:
     css: styles.css
     toc: true
 
-jupyter: julia-1.9
+# Add custom meta tags
+html:
+  head-content: |
+    <meta name="google-site-verification" content="oMqzveOsF4PPM0WqCJoPjAAR6hFNL3f1t-6w2Ek1Y8E" />
