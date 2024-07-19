@@ -48,8 +48,5 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+    include-in-header: google-site-verification.html
 
-# Add custom meta tags
-html:
-  head-content: |
-    <meta name="google-site-verification" content="oMqzveOsF4PPM0WqCJoPjAAR6hFNL3f1t-6w2Ek1Y8E" />
