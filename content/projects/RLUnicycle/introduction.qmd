@@ -11,7 +11,7 @@ lightbox: true
 
 Welcome to our self-balancing unicycle robot capstone project! We are a team of undergraduate UBC Engineering Physics students working on our final academic checkpoint as engineering students before being released into the wild. This project is directly sponsored by the UBC Engineering Physics Project Lab.
 
-![Tristan Lee, Kyle Mackenzie, Simon Ghyselincks, Jackson Fraser, and Julian Lapenna](imgs/teamphoto.png){width="100%"}
+![Tristan Lee, Julian Lapenna, Kyle Mackenzie, Jackson Fraser, and Simon Ghyselincks](imgs/teamphoto.png){width="100%"}
 
 ### Objective
 
