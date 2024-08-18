@@ -17,8 +17,8 @@ website:
         href: content/projects/RLUnicycle/introduction.qmd
       - text: "Blog" 
         href: blog/index.qmd
-      - text: "CV"
-        href: www/cv/CV.pdf
+      # - text: "CV"
+      #   href: www/cv/CV.pdf
       - text: "Bio"
         href: content/about/biography.qmd
 
