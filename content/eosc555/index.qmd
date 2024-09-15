@@ -1,0 +1,13 @@
+---
+title: "Lecture Notes"
+sidebar: false
+listing:
+  contents: lectures
+  sort: "date desc"
+  type: default
+  categories: true
+  fields: [image, date, title, description, reading-time]
+  image-align: left
+  feed: true
+
+---

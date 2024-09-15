@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://chipnbits.github.io/index.html</loc>
-    <lastmod>2024-04-23T19:51:36.824Z</lastmod>
+    <lastmod>2024-09-15T02:15:00.846Z</lastmod>
   </url>
   <url>
     <loc>https://chipnbits.github.io/content/projects/RLUnicycle/rtkernel/rtpatch.html</loc>
@@ -11,6 +11,10 @@
   <url>
     <loc>https://chipnbits.github.io/content/projects/RLUnicycle/dynamics/dynamics.html</loc>
     <lastmod>2024-04-22T23:27:50.500Z</lastmod>
+  </url>
+  <url>
+    <loc>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/index.html</loc>
+    <lastmod>2024-09-15T05:22:16.066Z</lastmod>
   </url>
   <url>
     <loc>https://chipnbits.github.io/content/CV.html</loc>
@@ -35,6 +39,10 @@
   <url>
     <loc>https://chipnbits.github.io/content/about/overview.html</loc>
     <lastmod>2024-07-19T18:47:32.437Z</lastmod>
+  </url>
+  <url>
+    <loc>https://chipnbits.github.io/content/eosc555/index.html</loc>
+    <lastmod>2024-09-15T03:37:20.266Z</lastmod>
   </url>
   <url>
     <loc>https://chipnbits.github.io/content/projects/projects.html</loc>

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.53">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-09-14">
+<meta name="description" content="Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.">
+
+<title>Lecture 1: Introduction to Inverse Theory – Simon Ghyselincks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Simon Ghyselincks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../../content/projects/RLUnicycle/introduction.html" aria-current="page"> 
+<span class="menu-text">Learning to Balance</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../content/eosc555/index.html"> 
+<span class="menu-text">EOSC 555</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../content/about/biography.html"> 
+<span class="menu-text">Bio</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lecture 1: Introduction to Inverse Theory</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Projects</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/projects/projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Home</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Learning to Balance</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/projects/RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RT Kernel on Jetson Nano</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Telemetry and Database System</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../content/projects/RLUnicycle/dynamics/dynamics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dynamics and Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-is-inverse-theory" id="toc-what-is-inverse-theory" class="nav-link active" data-scroll-target="#what-is-inverse-theory">What is Inverse Theory?</a>
+  <ul class="collapse">
+  <li><a href="#example-the-triathlon-problem" id="toc-example-the-triathlon-problem" class="nav-link" data-scroll-target="#example-the-triathlon-problem">Example: The Triathlon Problem</a></li>
+  <li><a href="#the-singular-value-decomposition" id="toc-the-singular-value-decomposition" class="nav-link" data-scroll-target="#the-singular-value-decomposition">The Singular Value Decomposition</a>
+  <ul class="collapse">
+  <li><a href="#the-pseudoinverse" id="toc-the-pseudoinverse" class="nav-link" data-scroll-target="#the-pseudoinverse">The Pseudoinverse</a></li>
+  </ul></li>
+  <li><a href="#least-squares" id="toc-least-squares" class="nav-link" data-scroll-target="#least-squares">Least Squares</a>
+  <ul class="collapse">
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lecture 1: Introduction to Inverse Theory</h1>
+<p class="subtitle lead">Least Squares and the SVD</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Optimization</div>
+    <div class="quarto-category">Inverse Theory</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Torch</div>
+    <div class="quarto-category">SVD</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 14, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="what-is-inverse-theory" class="level1">
+<h1>What is Inverse Theory?</h1>
+<p>Inverse theory is a set of mathematical techniques used to infer the properties of a physical system from observations of its output. It is a fundamental tool in many scientific disciplines, including geophysics, seismology, and medical imaging. Inverse theory is used to solve a wide range of problems, such as:</p>
+<ul>
+<li><strong>Parameter Estimation</strong>: Determining the values of unknown parameters in a model that best fit the observed data.</li>
+<li><strong>System Identification</strong>: Identifying the structure and dynamics of a system from input-output data.</li>
+<li><strong>Image Reconstruction</strong>: Reconstructing an image or object from noisy or incomplete measurements.</li>
+</ul>
+<p>What many of these tasks have in common is that we are working with incomplete information. There is a <em>forward</em> problem that has generated the data that we observe <span class="math inline">\(\vec{b}\)</span> from a set of input data <span class="math inline">\(\vec{x}\)</span>, and we want to infer the <em>inverse</em> problem that generated the data. However the inverse problem is often ill-posed, meaning that there are multiple solutions that can fit the data equally well. Inverse theory provides a framework for finding the best solution to these problems.</p>
+<p>The forward problem can be described for example as a differetial equation or operator <span class="math inline">\(L\)</span> that takes in some measured parameters <span class="math inline">\(u\)</span> with model parameters <span class="math inline">\(x\)</span> :</p>
+<p><span class="math display">\[ L(x)[u] = q \iff u = L^{-1}(x)[q] \]</span></p>
+<p>For example making measurements of an electromagnetic field in correspondence to conductivity values that are underground we have:</p>
+<p><span class="math display">\[ \nabla \sigma \nabla u = q + \text{BC}\]</span></p>
+<p>We measure the <span class="math inline">\(u\)</span> at some points and use that to try and form an estimate of the conductivity <span class="math inline">\(\sigma\)</span>. The forward problem is to solve for <span class="math inline">\(u\)</span> given <span class="math inline">\(\sigma\)</span> and the inverse problem is to solve for <span class="math inline">\(\sigma\)</span> given <span class="math inline">\(u\)</span>. The forward problem is often well-posed and the inverse problem is often ill-posed.</p>
+<p>For a computational framework we can discretize the the equation so that the operator is a matrix <span class="math inline">\(A\)</span> and the data is a vector <span class="math inline">\(\vec{b}\)</span>:</p>
+<p><span class="math display">\[ \underbrace{A}_{\text{Forward Map}} \underbrace{\vec{x}}_{\text{Model Parameters}} + \epsilon = \underbrace{\vec{b}}_{\text{Observed Data}} \]</span></p>
+<p>In this case we may have a sparse set of measurements <span class="math inline">\(b\)</span> and a large set of <span class="math inline">\(x\)</span> making the problem underdetermined. The goal of inverse theory is to find the best estimate of <span class="math inline">\(x\)</span> given <span class="math inline">\(b\)</span>.</p>
+<section id="example-the-triathlon-problem" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-triathlon-problem">Example: The Triathlon Problem</h3>
+<p>To illustrate the concept of inverse theory, consider the following example:</p>
+<blockquote class="blockquote">
+<p>Suppose that you have agreed to meet a friend to watch them during a triathlon race but you showed up late and missed the start. They are expecting for you to have been there at some point during the time at which they were changing from a running phase to a cycle phase. They expect you to know the time at which they made the transition. However you only know the overall start time and finish time of the race.</p>
+<p>If the race starts at time <span class="math inline">\(t=0\)</span> and then ends at time <span class="math inline">\(t=b\)</span> how do you use this information to deduce the actual time <span class="math inline">\(t_r \in [0,b]\)</span> at which they crossed the transition zone of the race?</p>
+</blockquote>
+<p>The first restriction on feasible solutions is the domain <span class="math inline">\([0,b]\)</span> so that we know that <span class="math inline">\(0&lt;t_r&lt;b\)</span>.</p>
+<p>After this there are some other techniquest that we could use to better inform the probability of the occurence at different times. For example, we might have a good idea of their fitness level or average running speed from previous experience. Or in the abscence of this information there might be average times for the competitors that are available to further inform the problem and reduce the amount of error in the estimate.</p>
+</section>
+<section id="the-singular-value-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="the-singular-value-decomposition">The Singular Value Decomposition</h2>
+<p>For cases where the matrix <span class="math inline">\(A\)</span> is not full rank, the singular value decomposition (SVD) provides a more general framework for solving the least squares problem. The SVD decomposes the matrix <span class="math inline">\(A\)</span> into three matrices <span class="math inline">\(U\)</span>, <span class="math inline">\(\Sigma\)</span>, and <span class="math inline">\(V\)</span></p>
+<p><span class="math display">\[ A = U \Sigma V^T \]</span></p>
+<p>The matrices have the following special properties:</p>
+<ul>
+<li><em>Orthogonal Subspaces</em>: <span class="math inline">\(U\)</span> and <span class="math inline">\(V\)</span> are orthogonal matrices, meaning that <span class="math inline">\(U^TU = I\)</span> and <span class="math inline">\(V^TV = I\)</span>, that is <span class="math inline">\(U^T = U^{-1}\)</span> and $V^T = V^{-1}.</li>
+<li><em>Ordered Singular Values</em>: <span class="math inline">\(\Sigma\)</span> is a diagonal matrix with non-negative values on the diagonal, known as the singular values of <span class="math inline">\(A\)</span>. The singular values are ordered such that <span class="math inline">\(\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r\)</span>. The number of non-zero singular values is equal to the rank of <span class="math inline">\(A\)</span>.</li>
+</ul>
+<p>Supposed that we have a <span class="math inline">\(\text{rank}(A) = r\)</span> matrix <span class="math inline">\(A\)</span> which maps from <span class="math inline">\(\mathbb{R}^m\rightarrow \mathbb{R}^n\)</span>. A fundamental way to view this mapping is as a composition of three linear transformations: a rotation <span class="math inline">\(V\)</span>, a scaling <span class="math inline">\(\Sigma\)</span>, and another rotation <span class="math inline">\(U\)</span>. The orthogonal matrix <span class="math inline">\(V\)</span> has the property that all of its rows and columns are orthogonal to each other, and the vectors themselves are normalized to <span class="math inline">\(1\)</span>. To see this property of the orthogonal matrix consider that <span class="math inline">\(V^T V = I\)</span> and <span class="math inline">\(V V^T = I\)</span>:</p>
+<p><span class="math display">\[ \begin{align}
+Z = V^T V &amp;= I \\
+z_{ij} = \langle v_i, v_j \rangle &amp;= \delta_{ij} \end{align} \]</span></p>
+<p>Each of the elements of the matrix <span class="math inline">\(V^T\)</span> is the dot product of the <span class="math inline">\(i\)</span>th and <span class="math inline">\(j\)</span>th columns of <span class="math inline">\(V\)</span>. The dotproduct of all vectors against themselves is <span class="math inline">\(1\)</span> and the dotproduct of any two different vectors is <span class="math inline">\(0\)</span>. So from this we can see that all of the columns of <span class="math inline">\(V\)</span> are orthogonal to each other. The same property holds for <span class="math inline">\(U\)</span>.</p>
+<p><span class="math inline">\(V^T\)</span> by our definition of <span class="math inline">\(A\)</span> must accept a vector from <span class="math inline">\(\mathbb{R}^m\)</span> and the matrix is square, indicating an <span class="math inline">\(m \times m\)</span> matrix. The matrix <span class="math inline">\(U\)</span> must output a vector in <span class="math inline">\(\mathbb{R}^n\)</span> and the matrix is square, indicating an <span class="math inline">\(n \times n\)</span> matrix. The matrix <span class="math inline">\(\Sigma\)</span> must be <span class="math inline">\(n \times m\)</span> to map from <span class="math inline">\(\mathbb{R}^m\)</span> to <span class="math inline">\(\mathbb{R}^n\)</span>.</p>
+<p>In all its glory:</p>
+<p><span class="math display">\[
+\begin{aligned}
+A_{n \times m} &amp;= U_{n \times n} \, \Sigma_{n \times m} \, V^T_{m \times m} \\
+&amp;= \left[ \begin{array}{ccc|ccc}
+\mathbf{u}_1 &amp; \cdots &amp; \mathbf{u}_r &amp; \mathbf{u}_{r+1} &amp; \cdots &amp; \mathbf{u}_n
+\end{array} \right]_{n \times n}
+\left[ \begin{array}{ccc}
+\sigma_1 &amp;  &amp;  \\
+&amp; \ddots &amp;  \\
+&amp;  &amp; \sigma_r \\
+0 &amp; \cdots &amp; 0 \\
+\vdots &amp; \ddots &amp; \vdots \\
+0 &amp; \cdots &amp; 0
+\end{array} \right]_{n \times m}
+\left[ \begin{array}{ccc|ccc}
+\mathbf{v}^T_1 \\
+\vdots \\
+\mathbf{v}^T_r \\
+\mathbf{v}^T_{r+1} \\
+\vdots \\
+  \mathbf{v}^T_m
+\end{array} \right]_{m \times m}
+\end{aligned}
+\]</span></p>
+<p>In this case the first <span class="math inline">\(r\)</span> columns of <span class="math inline">\(U\)</span> are the range of <span class="math inline">\(A\)</span>, the rest of <span class="math inline">\(U\)</span> is filled with its orthogonal complement. The first <span class="math inline">\(r\)</span> columns of <span class="math inline">\(V\)</span> are the domain of <span class="math inline">\(A\)</span>, the rest of <span class="math inline">\(V\)</span> is filled with its orthogonal complement. These are the four fundamental subspaces of the matrix <span class="math inline">\(A\)</span>, more information on this can be found at: <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">Wikipedia: SVD</a></p>
+<p>The matrices as shown above are for a rectangular <span class="math inline">\(A\)</span> where <span class="math inline">\(n&gt;m\)</span> but the same properties hold for all <span class="math inline">\(n,m\)</span>. Some of the singular values <span class="math inline">\(\sigma_i\)</span> may be zero, in which case the matrix <span class="math inline">\(A\)</span> is not full rank.</p>
+<p>Another way to decompose the SVD is to write it as a sum of outer products that are scaled by the diagonal matrix of singular values:</p>
+<p><span class="math display">\[ A = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^T \]</span></p>
+<p>If <span class="math inline">\(\sigma_i&gt;0\)</span> then <span class="math inline">\(v_i\)</span> is not in the null space of <span class="math inline">\(A\)</span> because <span class="math inline">\(A v_i = \sigma_i u_i\)</span>. If <span class="math inline">\(\sigma_i = 0\)</span> then <span class="math inline">\(v_i\)</span> is in the null space of <span class="math inline">\(A\)</span> because <span class="math inline">\(A v_i = 0\)</span>.</p>
+<section id="the-pseudoinverse" class="level3">
+<h3 class="anchored" data-anchor-id="the-pseudoinverse">The Pseudoinverse</h3>
+<p>Back to the task of inverting <span class="math inline">\(Ax + \epsilon = b\)</span> we can apply the SVD decomposition:</p>
+<p><span class="math display">\[\begin{align}
+U \Sigma V^T x + \epsilon &amp;= b \\
+\Sigma V^T x +&amp;= U^T (b-\epsilon) \\
+V \Sigma^{-1} U^T (b-\epsilon) &amp;= x\\
+A^+ (b-\epsilon) &amp;= \hat{x}
+\end{align}\]</span></p>
+<p>Where <span class="math inline">\(A^+ = V \Sigma^{-1} U^T\)</span> is the pseudoinverse of <span class="math inline">\(A\)</span>. The pseudoinverse is a generalization of the matrix inverse for non-square matrices. We recover a square matrix by removing all of the absent or zero singular values from <span class="math inline">\(\Sigma\)</span> and inverting the rest, giving an <span class="math inline">\(r \times r\)</span> diagonal matrix whose inverse is simply the inverse of each element.</p>
+<p><span class="math display">\[ \left[ \begin{array}{ccc}
+\sigma_1 &amp;  &amp;  \\
+&amp; \ddots &amp;  \\
+&amp;  &amp; \sigma_r \\
+0 &amp; \cdots &amp; 0 \\
+\vdots &amp; \ddots &amp; \vdots \\
+0 &amp; \cdots &amp; 0
+\end{array} \right]_{n \times m}
+\rightarrow \left[ \begin{array}{ccc}
+\sigma_1^{-1} &amp;  &amp;  \\
+  &amp; \ddots &amp;  \\
+  &amp;  &amp; \sigma_r^{-1} \\
+  \end{array} \right]_{r \times r}\]</span></p>
+<p>Then <span class="math display">\[\hat{x} = \sum_i^N \sigma_i^{-1} \mathbf{u}_i^T (b-\epsilon) \mathbf{v}_i\]</span> is the solution to the least squares problem. This can be solved also as a truncated sum since <span class="math inline">\(0&lt;N&lt;r\)</span>. In actual practice with real world measurement we end up with many singular values that may be effectively <span class="math inline">\(0\)</span> by nature of being very small relative to the noise in the data and the largest single value. We have that the solution <span class="math inline">\(\hat{x}\)</span> is a sum of <span class="math inline">\(v_i\)</span> components that form an orthogonal basis <span class="math inline">\(\hat{x} = \sum_i \beta_i v_i\)</span> where <span class="math inline">\(\beta_i = \frac{u_i^T (b-\epsilon)}{\sigma_i}\)</span>. These small singular values blow up in size when inverted and so extra truncation is often necessary to avoid numerical instability and excessive amplification of noise <span class="math inline">\(\epsilon\)</span>.</p>
+</section>
+</section>
+<section id="least-squares" class="level2">
+<h2 class="anchored" data-anchor-id="least-squares">Least Squares</h2>
+<p>Least squares and matrix inversion is a classic starting point for understanding inverse theory. Suppose that we have input data <span class="math inline">\(\vec{x}\)</span> and output data <span class="math inline">\(\vec{b}\)</span> that are related by a linear system of equations: <span class="math display">\[Ax = b\]</span> where <span class="math inline">\(A\)</span> is a matrix of coefficients. In many cases, the system is overdetermined, meaning that there are more equations than unknowns. In this case, there is no exact solution to the system, and we must find the best solution that minimizes the error between the observed data <span class="math inline">\(\vec{b}\)</span> and the predicted data <span class="math inline">\(A\vec{x}\)</span>. In the simplest form of inversion that we can attempt, we can solve the least squares solution. In this case we reject all of the observed data that is from the null space of <span class="math inline">\(A\)</span> assuming a zero value for each of those parameters.</p>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<p>Let <span class="math inline">\(A\)</span> be a <span class="math inline">\(3 \times 2\)</span> matrix and <span class="math inline">\(\vec{b}\)</span> be a <span class="math inline">\(3 \times 1\)</span> vector. The <span class="math inline">\(\vec{x}\)</span> that we are trying to solve for is a <span class="math inline">\(2 \times 1\)</span> vector. The system of equations is given by:</p>
+<p><span class="math display">\[ A = \begin{bmatrix}  \vec{a}_1 \\ \vec{a}_2 \\ a_3 \end{bmatrix} \quad \vec{x} = \begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} \]</span></p>
+<p>In this case we have an <em>overdetermined</em> system with three eqautions, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: <span class="math inline">\(A: \mathbb{R}^2 \rightarrow \mathbb{R}^3\)</span>. In this case there is no exact solution to the system for any <span class="math inline">\(b\)</span> that is not in the column space of <span class="math inline">\(A\)</span>.</p>
+<p>Instead we can solve for the least squares solution <span class="math inline">\(\vec{x}_{LS}\)</span> by minimizing the error between the observed data <span class="math inline">\(\vec{b}\)</span> and the predicted data <span class="math inline">\(A\vec{x}\)</span> from the forward model.</p>
+<p><span class="math display">\[ \vec{x}_{LS} = \arg \min_{\vec{x}} ||A\vec{x} - \vec{b}||_2^2 \]</span></p>
+<p>We want to find the argument that minimizes the function <span class="math inline">\(f(\vec{x}) = ||A\vec{x} - \vec{b}||_2^2\)</span>. By first order optimality conditions, the gradient of the function must be zero at the minimum.</p>
+<p><span class="math display">\[ \begin{align}
+\nabla f(\vec{x}) &amp;= 0 \\
+\nabla ||A\vec{x} - \vec{b}||_2^2 &amp;= 0 \\
+\nabla (A\vec{x} - \vec{b})^T (A\vec{x} - \vec{b}) &amp;= 0 \\
+\nabla \left( \vec{x}^T A^T A \vec{x} - 2 \vec{b}^T A \vec{x} + \vec{b}^T \vec{b} \right) &amp;= 0 \\
+2 A^T A \vec{x} - 2 A^T \vec{b} &amp;= 0 \\
+A^T A \vec{x} &amp;= A^T \vec{b} \\
+\vec{x}_{LS} &amp;= (A^T A)^{-1} A^T \vec{b}
+\end{align} \]</span></p>
+<p>This is known as the normal equations for the least squares solution. We take a note of caution here that <span class="math inline">\(A^T A\)</span> must be invertible for this solution to exist. If <span class="math inline">\(A\)</span> is not full rank then the matrix <span class="math inline">\(A^T A\)</span> will not be invertible and other methods must be used.</p>
+<p>We call the difference between the observed data and the predicted data the residual.</p>
+<p><span class="math inline">\(r = \vec{b} - A\vec{x}_{LS}\)</span></p>
+<p>Using this information, what we really want to minimize is the sum of the squares of the residuals: <span class="math inline">\(||r||_2^2\)</span>. This is the same as the sum of the squares of the errors in the data.</p>
+<p>There is an altogether informative way to think about the minimization problem purely in terms of linear algebra and subspaces to derive the same normal equations.</p>
+<div style="display: block; margin-left: auto; margin-right: auto; width: 50%; text-align: center;">
+<img src="imgs/ls-sol.svg" alt="" width="300">
+<p>
+<em>Least Squares Visual</em>
+</p>
+</div>
+<p>We have the range of <span class="math inline">\(A\)</span> or image of <span class="math inline">\(A\)</span> as the subspace of <span class="math inline">\(\mathbb{R}^3\)</span> that is spanned by the columns of <span class="math inline">\(A\)</span>. This subspace is rank <span class="math inline">\(2\)</span> because there are only two columns in <span class="math inline">\(A\)</span>, <span class="math inline">\(R(A) \subset \mathbb{R}^3\)</span>. The inaccessible parts of <span class="math inline">\(\mathbb{R}^3\)</span> are in the orthogonal complement of <span class="math inline">\(R(A)\)</span>, <span class="math inline">\(R(A)^\perp\)</span>. Recalling that <span class="math inline">\(R(A)^\perp = N(A^T)\)</span> we can diagram the solution to least squares as a minimization of the error vector <span class="math inline">\(r\)</span> in the orthogonal complement of <span class="math inline">\(R(A)\)</span>.</p>
+<p>As seen the <span class="math inline">\(r\)</span> vector is perpendicular to the <span class="math inline">\(x_{LS}\)</span> solution, the projection of <span class="math inline">\(r\)</span> onto <span class="math inline">\(R(A)\)</span> is zero. Since it is in a null space of <span class="math inline">\(A^T\)</span> then <span class="math inline">\(A^T r = 0\)</span>.</p>
+<p><span class="math display">\[ \begin{align} A^T \left ( Ax_{LS} - b \right ) &amp;= 0\\
+A^T A x_{LS} &amp;= A^T b \\
+\end {align} \]</span></p>
+<p>So we recover the normal equations without using any of the machinery of calculus.</p>
+<p>For a review on the four fundamental subspaces of a matrix see the UBC Math 307 notes on the topic: <a href="https://ubcmath.github.io/MATH307/orthogonality/complement.html">Math 307</a></p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2024, Simon Ghyselincks</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://chipnbits.github.io/">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/chipnbits">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

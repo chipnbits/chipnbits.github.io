@@ -19,6 +19,8 @@ website:
         href: blog/index.qmd
       # - text: "CV"
       #   href: www/cv/CV.pdf
+      - text: "EOSC 555"  # New navigation item
+        href: content/eosc555/index.qmd
       - text: "Bio"
         href: content/about/biography.qmd
 

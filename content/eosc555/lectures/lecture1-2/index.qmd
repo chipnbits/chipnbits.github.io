@@ -1,0 +1,214 @@
+---
+title: "Lecture 1: Introduction to Inverse Theory"
+subtitle: "Least Squares and the SVD"
+date: 2024-09-14
+description: >-
+  Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.
+categories:
+  - Optimization
+  - Inverse Theory
+  - Python
+  - Torch
+  - SVD
+
+image: imgs/ls-sol.svg
+draft: false
+
+execute:
+  kernel: ml
+  cache: true
+  cache-refresh: true
+  cache-path: .jupyter_cache
+
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+
+editor: 
+  render-on-save: false
+---
+
+# What is Inverse Theory?
+
+Inverse theory is a set of mathematical techniques used to infer the properties of a physical system from observations of its output. It is a fundamental tool in many scientific disciplines, including geophysics, seismology, and medical imaging. Inverse theory is used to solve a wide range of problems, such as:
+
+-   **Parameter Estimation**: Determining the values of unknown parameters in a model that best fit the observed data.
+-   **System Identification**: Identifying the structure and dynamics of a system from input-output data.
+-   **Image Reconstruction**: Reconstructing an image or object from noisy or incomplete measurements.
+
+What many of these tasks have in common is that we are working with incomplete information. There is a *forward* problem that has generated the data that we observe $\vec{b}$ from a set of input data $\vec{x}$, and we want to infer the *inverse* problem that generated the data. However the inverse problem is often ill-posed, meaning that there are multiple solutions that can fit the data equally well. Inverse theory provides a framework for finding the best solution to these problems.
+
+The forward problem can be described for example as a differetial equation or operator $L$ that takes in some measured parameters $u$ with model parameters $x$ :
+
+$$ L(x)[u] = q \iff u = L^{-1}(x)[q] $$
+
+For example making measurements of an electromagnetic field in correspondence to conductivity values that are underground we have:
+
+$$ \nabla \sigma \nabla u = q + \text{BC}$$
+
+We measure the $u$ at some points and use that to try and form an estimate of the conductivity $\sigma$. The forward problem is to solve for $u$ given $\sigma$ and the inverse problem is to solve for $\sigma$ given $u$. The forward problem is often well-posed and the inverse problem is often ill-posed.
+
+For a computational framework we can discretize the the equation so that the operator is a matrix $A$ and the data is a vector $\vec{b}$:
+
+$$ \underbrace{A}_{\text{Forward Map}} \underbrace{\vec{x}}_{\text{Model Parameters}} + \epsilon = \underbrace{\vec{b}}_{\text{Observed Data}} $$
+
+In this case we may have a sparse set of measurements $b$ and a large set of $x$ making the problem underdetermined. The goal of inverse theory is to find the best estimate of $x$ given $b$.
+
+### Example: The Triathlon Problem
+
+To illustrate the concept of inverse theory, consider the following example:
+
+> Suppose that you have agreed to meet a friend to watch them during a triathlon race but you showed up late and missed the start. They are expecting for you to have been there at some point during the time at which they were changing from a running phase to a cycle phase. They expect you to know the time at which they made the transition. However you only know the overall start time and finish time of the race.
+>
+> If the race starts at time $t=0$ and then ends at time $t=b$ how do you use this information to deduce the actual time $t_r \in [0,b]$ at which they crossed the transition zone of the race?
+
+The first restriction on feasible solutions is the domain $[0,b]$ so that we know that $0<t_r<b$. 
+
+After this there are some other techniquest that we could use to better inform the probability of the occurence at different times. For example, we might have a good idea of their fitness level or average running speed from previous experience. Or in the abscence of this information there might be average times for the competitors that are available to further inform the problem and reduce the amount of error in the estimate.
+
+
+## The Singular Value Decomposition
+For cases where the matrix $A$ is not full rank, the singular value decomposition (SVD) provides a more general framework for solving the least squares problem. The SVD decomposes the matrix $A$ into three matrices $U$, $\Sigma$, and $V$
+
+$$ A = U \Sigma V^T $$
+
+ The matrices have the following special properties:
+
+-  *Orthogonal Subspaces*: $U$ and $V$ are orthogonal matrices, meaning that $U^TU = I$ and $V^TV = I$, that is $U^T = U^{-1}$ and $V^T = V^{-1}.
+-  *Ordered Singular Values*: $\Sigma$ is a diagonal matrix with non-negative values on the diagonal, known as the singular values of $A$. The singular values are ordered such that $\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r$. The number of non-zero singular values is equal to the rank of $A$.
+
+Supposed that we have a $\text{rank}(A) = r$ matrix $A$ which maps from $\mathbb{R}^m\rightarrow \mathbb{R}^n$. A fundamental way to view this mapping is as a composition of three linear transformations: a rotation $V$, a scaling $\Sigma$, and another rotation $U$. The orthogonal matrix $V$ has the property that all of its rows and columns are orthogonal to each other, and the vectors themselves are normalized to $1$. To see this property of the orthogonal matrix consider that $V^T V = I$ and $V V^T = I$:
+
+$$ \begin{align}
+Z = V^T V &= I \\
+z_{ij} = \langle v_i, v_j \rangle &= \delta_{ij} \end{align} $$
+
+Each of the elements of the matrix $V^T$ is the dot product of the $i$th and $j$th columns of $V$. The dotproduct of all vectors against themselves is $1$ and the dotproduct of any two different vectors is $0$. So from this we can see that all of the columns of $V$ are orthogonal to each other. The same property holds for $U$.
+
+$V^T$ by our definition of $A$ must accept a vector from $\mathbb{R}^m$ and the matrix is square, indicating an $m \times m$ matrix. The matrix $U$ must output a vector in $\mathbb{R}^n$ and the matrix is square, indicating an $n \times n$ matrix. The matrix $\Sigma$ must be $n \times m$ to map from $\mathbb{R}^m$ to $\mathbb{R}^n$. 
+
+In all its glory:
+
+$$
+\begin{aligned}
+A_{n \times m} &= U_{n \times n} \, \Sigma_{n \times m} \, V^T_{m \times m} \\
+&= \left[ \begin{array}{ccc|ccc}
+\mathbf{u}_1 & \cdots & \mathbf{u}_r & \mathbf{u}_{r+1} & \cdots & \mathbf{u}_n
+\end{array} \right]_{n \times n}
+\left[ \begin{array}{ccc}
+\sigma_1 &  &  \\
+ & \ddots &  \\
+ &  & \sigma_r \\
+0 & \cdots & 0 \\
+\vdots & \ddots & \vdots \\
+0 & \cdots & 0
+\end{array} \right]_{n \times m}
+\left[ \begin{array}{ccc|ccc}
+\mathbf{v}^T_1 \\
+\vdots \\ 
+\mathbf{v}^T_r \\
+\mathbf{v}^T_{r+1} \\
+ \vdots \\
+  \mathbf{v}^T_m
+\end{array} \right]_{m \times m}
+\end{aligned}
+$$
+
+In this case the first $r$ columns of $U$ are the range of $A$, the rest of $U$ is filled with its orthogonal complement. The first $r$ columns of $V$ are the domain of $A$, the rest of $V$ is filled with its orthogonal complement. These are the four fundamental subspaces of the matrix $A$, more information on this can be found at:
+[Wikipedia: SVD](https://en.wikipedia.org/wiki/Singular_value_decomposition)
+
+The matrices as shown above are for  a rectangular $A$ where $n>m$ but the same properties hold for all $n,m$. Some of the singular values $\sigma_i$ may be zero, in which case the matrix $A$ is not full rank. 
+
+Another way to decompose the SVD is to write it as a sum of outer products that are scaled by the diagonal matrix of singular values:
+
+$$ A = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^T $$
+
+If $\sigma_i>0$ then $v_i$ is not in the null space of $A$ because $A v_i = \sigma_i u_i$. If $\sigma_i = 0$ then $v_i$ is in the null space of $A$ because $A v_i = 0$. 
+
+### The Pseudoinverse
+Back to the task of inverting $Ax + \epsilon = b$ we can apply the SVD decomposition:
+
+$$\begin{align}
+U \Sigma V^T x + \epsilon &= b \\
+\Sigma V^T x +&= U^T (b-\epsilon) \\
+V \Sigma^{-1} U^T (b-\epsilon) &= x\\
+A^+ (b-\epsilon) &= \hat{x}
+\end{align}$$
+
+Where $A^+ = V \Sigma^{-1} U^T$ is the pseudoinverse of $A$. The pseudoinverse is a generalization of the matrix inverse for non-square matrices. We recover a square matrix by removing all of the absent or zero singular values from $\Sigma$ and inverting the rest, giving an $r \times r$ diagonal matrix whose inverse is simply the inverse of each element.
+
+$$ \left[ \begin{array}{ccc}
+\sigma_1 &  &  \\
+ & \ddots &  \\
+ &  & \sigma_r \\
+0 & \cdots & 0 \\
+\vdots & \ddots & \vdots \\
+0 & \cdots & 0
+\end{array} \right]_{n \times m}
+ \rightarrow \left[ \begin{array}{ccc}
+\sigma_1^{-1} &  &  \\
+  & \ddots &  \\
+  &  & \sigma_r^{-1} \\
+  \end{array} \right]_{r \times r}$$
+
+Then $$\hat{x} = \sum_i^N \sigma_i^{-1} \mathbf{u}_i^T (b-\epsilon) \mathbf{v}_i$$ is the solution to the least squares problem. This can be solved also as a truncated sum since $0<N<r$. In actual practice with real world measurement we end up with many singular values that may be effectively $0$ by nature of being very small relative to the noise in the data and the largest single value. We have that the solution $\hat{x}$ is a sum of $v_i$ components that form an orthogonal basis $\hat{x} = \sum_i \beta_i v_i$ where $\beta_i = \frac{u_i^T (b-\epsilon)}{\sigma_i}$. These small singular values blow up in size when inverted and so extra truncation is often necessary to avoid numerical instability and excessive amplification of noise $\epsilon$.
+
+## Least Squares
+
+Least squares and matrix inversion is a classic starting point for understanding inverse theory. Suppose that we have input data $\vec{x}$ and output data $\vec{b}$ that are related by a linear system of equations:
+$$Ax = b$$
+where $A$ is a matrix of coefficients. In many cases, the system is overdetermined, meaning that there are more equations than unknowns. In this case, there is no exact solution to the system, and we must find the best solution that minimizes the error between the observed data $\vec{b}$ and the predicted data $A\vec{x}$. In the simplest form of inversion that we can attempt, we can solve the least squares solution. In this case we reject all of the observed data that is from the null space of $A$ assuming a zero value for each of those parameters.
+
+### Example
+
+Let $A$ be a $3 \times 2$ matrix and $\vec{b}$ be a $3 \times 1$ vector. The $\vec{x}$ that we are trying to solve for is a $2 \times 1$ vector. The system of equations is given by:
+
+$$ A = \begin{bmatrix}  \vec{a}_1 \\ \vec{a}_2 \\ a_3 \end{bmatrix} \quad \vec{x} = \begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} $$
+
+In this case we have an *overdetermined* system with three eqautions, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: $A: \mathbb{R}^2 \rightarrow \mathbb{R}^3$. In this case there is no exact solution to the system for any $b$ that is not in the column space of $A$.
+
+Instead we can solve for the least squares solution $\vec{x}_{LS}$ by minimizing the error between the observed data $\vec{b}$ and the predicted data $A\vec{x}$ from the forward model.
+
+$$ \vec{x}_{LS} = \arg \min_{\vec{x}} ||A\vec{x} - \vec{b}||_2^2 $$
+
+We want to find the argument that minimizes the function $f(\vec{x}) = ||A\vec{x} - \vec{b}||_2^2$. By first order optimality conditions, the gradient of the function must be zero at the minimum.
+
+$$ \begin{align}
+\nabla f(\vec{x}) &= 0 \\
+\nabla ||A\vec{x} - \vec{b}||_2^2 &= 0 \\
+\nabla (A\vec{x} - \vec{b})^T (A\vec{x} - \vec{b}) &= 0 \\
+\nabla \left( \vec{x}^T A^T A \vec{x} - 2 \vec{b}^T A \vec{x} + \vec{b}^T \vec{b} \right) &= 0 \\
+2 A^T A \vec{x} - 2 A^T \vec{b} &= 0 \\
+A^T A \vec{x} &= A^T \vec{b} \\
+\vec{x}_{LS} &= (A^T A)^{-1} A^T \vec{b}
+\end{align} $$
+
+This is known as the normal equations for the least squares solution. We take a note of caution here that $A^T A$ must be invertible for this solution to exist. If $A$ is not full rank then the matrix $A^T A$ will not be invertible and other methods must be used.
+
+We call the difference between the observed data and the predicted data the residual.
+
+$r = \vec{b} - A\vec{x}_{LS}$
+
+Using this information, what we really want to minimize is the sum of the squares of the residuals: $||r||_2^2$. This is the same as the sum of the squares of the errors in the data.
+
+There is an altogether informative way to think about the minimization problem purely in terms of linear algebra and subspaces to derive the same normal equations.
+
+<div style="display: block; margin-left: auto; margin-right: auto; width: 50%; text-align: center;">
+  <img src="imgs/ls-sol.svg" alt="" width="300" />
+  <p><em>Least Squares Visual</em></p>
+</div>
+
+We have the range of $A$ or image of $A$ as the subspace of $\mathbb{R}^3$ that is spanned by the columns of $A$. This subspace is rank $2$ because there are only two columns in $A$, $R(A) \subset \mathbb{R}^3$. The inaccessible parts of $\mathbb{R}^3$ are in the orthogonal complement of $R(A)$, $R(A)^\perp$. Recalling that $R(A)^\perp = N(A^T)$ we can diagram the solution to least squares as a minimization of the error vector $r$ in the orthogonal complement of $R(A)$.
+
+As seen the $r$ vector is perpendicular to the $x_{LS}$ solution, the projection of $r$ onto $R(A)$ is zero. Since it is in a null space of $A^T$ then $A^T r = 0$.
+
+$$ \begin{align} A^T \left ( Ax_{LS} - b \right ) &= 0\\
+A^T A x_{LS} &= A^T b \\
+\end {align} $$
+
+So we recover the normal equations without using any of the machinery of calculus.
+
+For a review on the four fundamental subspaces of a matrix see the UBC Math 307 notes on the topic: [Math 307](https://ubcmath.github.io/MATH307/orthogonality/complement.html)
+
+

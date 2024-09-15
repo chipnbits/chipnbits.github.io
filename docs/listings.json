@@ -5,5 +5,11 @@
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
     ]
+  },
+  {
+    "listing": "/content/eosc555/index.html",
+    "items": [
+      "/content/eosc555/lectures/lecture1-2/index.html"
+    ]
   }
 ]
