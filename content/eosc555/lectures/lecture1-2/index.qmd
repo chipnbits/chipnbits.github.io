@@ -164,9 +164,9 @@ where $A$ is a matrix of coefficients. In many cases, the system is overdetermin
 
 Let $A$ be a $3 \times 2$ matrix and $\vec{b}$ be a $3 \times 1$ vector. The $\vec{x}$ that we are trying to solve for is a $2 \times 1$ vector. The system of equations is given by:
 
-$$ A = \begin{bmatrix}  \vec{a}_1 \\ \vec{a}_2 \\ a_3 \end{bmatrix} \quad \vec{x} = \begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} $$
+$$ A = \begin{bmatrix}  \vec{a}_1 & \vec{a}_2 \end{bmatrix} \quad \vec{x} = \begin{bmatrix} x_1 \\ x_2  \end{bmatrix}  \quad \vec{b} = \begin{bmatrix} b_1 \\ b_2 \\ b_3 \end{bmatrix} $$
 
-In this case we have an *overdetermined* system with three eqautions, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: $A: \mathbb{R}^2 \rightarrow \mathbb{R}^3$. In this case there is no exact solution to the system for any $b$ that is not in the column space of $A$.
+In this case we have an *overdetermined* system with three equations, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: $A: \mathbb{R}^2 \rightarrow \mathbb{R}^3$. In this case there is no exact solution to the system for any $b$ that is not in the column space of $A$.
 
 Instead we can solve for the least squares solution $\vec{x}_{LS}$ by minimizing the error between the observed data $\vec{b}$ and the predicted data $A\vec{x}$ from the forward model.
 
