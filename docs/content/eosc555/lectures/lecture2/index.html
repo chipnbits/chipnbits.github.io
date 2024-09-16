@@ -359,7 +359,7 @@ window.Quarto = {
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="e6d07c3b" class="cell" data-execution_count="1">
+<div id="e6d07c3b" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -389,7 +389,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <span class="math display">\[f(x) = \exp\left(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)\]</span></p>
 <p>where <span class="math inline">\(\mu\)</span> is the mean vector, <span class="math inline">\(x\)</span> is a position vector, and <span class="math inline">\(\Sigma\)</span> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <span class="math inline">\(C\)</span> as the inverse of the covariance matrix and working with a <span class="math inline">\(\mu=0\)</span> value.</p>
-<div id="cell-mv-plot" class="cell" data-execution_count="2">
+<div id="cell-mv-plot" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multivariate_gaussian(pos, mean, cov):</span>
@@ -470,7 +470,7 @@ S_x &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; 0 &amp; 1 \\ -2 &amp; 0 &amp; 2 
 S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0 \\ 1 &amp; 2 &amp; 1 \end{bmatrix}
 \end{align}\]</span></p>
 <p>These operators act like edge detection or derivatives. The <span class="math inline">\(n_0\)</span>, <span class="math inline">\(n_x\)</span>, and <span class="math inline">\(n_y\)</span> parameters are used to scale the gaussian and the derivatives.</p>
-<div id="cbc998ee" class="cell" data-execution_count="3">
+<div id="cbc998ee" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> gaussianConv(nn.Module):</span>

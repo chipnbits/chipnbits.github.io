@@ -46,7 +46,7 @@
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="e6d07c3b" class="cell" data-execution_count="1">
+<div id="e6d07c3b" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -126,7 +126,7 @@ font-style: inherit;">import</span> torch.fft</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D%20(x-%5Cmu)%5ET%20%5CSigma%5E%7B-1%7D%20(x-%5Cmu)%5Cright)"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmu"> is the mean vector, <img src="https://latex.codecogs.com/png.latex?x"> is a position vector, and <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <img src="https://latex.codecogs.com/png.latex?C"> as the inverse of the covariance matrix and working with a <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> value.</p>
-<div id="cell-mv-plot" class="cell" data-execution_count="2">
+<div id="cell-mv-plot" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
@@ -422,7 +422,7 @@ font-style: inherit;">'tight'</span>)</span>
 <p>We can compute the MV gaussian from the inverse covariance matrix <img src="https://latex.codecogs.com/png.latex?C"> with a mean of <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> along with a dimensional scaling metric <img src="https://latex.codecogs.com/png.latex?t">. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AS_x%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%200%20&amp;%201%20%5C%5C%20-2%20&amp;%200%20&amp;%202%20%5C%5C%20-1%20&amp;%200%20&amp;%201%20%5Cend%7Bbmatrix%7D%20%5C%5C%0AS_y%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%20-2%20&amp;%20-1%20%5C%5C%200%20&amp;%200%20&amp;%200%20%5C%5C%201%20&amp;%202%20&amp;%201%20%5Cend%7Bbmatrix%7D%0A%5Cend%7Balign%7D"></p>
 <p>These operators act like edge detection or derivatives. The <img src="https://latex.codecogs.com/png.latex?n_0">, <img src="https://latex.codecogs.com/png.latex?n_x">, and <img src="https://latex.codecogs.com/png.latex?n_y"> parameters are used to scale the gaussian and the derivatives.</p>
-<div id="cbc998ee" class="cell" data-execution_count="3">
+<div id="cbc998ee" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
@@ -891,7 +891,7 @@ font-style: inherit;">return</span> PSF, center</span></code></pre></div>
   <category>SVD</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</guid>
   <pubDate>Sun, 15 Sep 2024 07:00:00 GMT</pubDate>
-  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png"/>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="138" width="144"/>
 </item>
 <item>
   <title>Lecture 1: Introduction to Inverse Theory</title>
