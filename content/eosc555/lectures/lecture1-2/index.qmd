@@ -2,6 +2,7 @@
 title: "Lecture 1: Introduction to Inverse Theory"
 subtitle: "Least Squares and the SVD"
 date: 2024-09-14
+author: "Simon Ghyselincks"
 description: >-
   Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.
 categories:

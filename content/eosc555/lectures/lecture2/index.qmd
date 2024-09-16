@@ -1,0 +1,252 @@
+---
+title: "Lecture 2: Image Denoising with SVD"
+subtitle: "Applications of Least Squares and SVD"
+date: 2024-09-15
+author: "Simon Ghyselincks"
+description: >-
+    Image denoising and deblurring are important techniques in signal processing and recovery. I this coding exercise, we will explore the application of least squares, SVD, and the pseudoinverse to denoise and deblur images.
+categories:
+  - Optimization
+  - Inverse Theory
+  - Python
+  - Torch
+  - SVD
+
+image: imgs/gaussian_plot.png
+draft: false
+
+execute:
+  kernel: python3
+  cache: true
+  cache-refresh: true
+  cache-path: .jupyter_cache
+
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+
+editor: 
+  render-on-save: false
+---
+
+# Image Denoising and Deblurring
+
+The motivation for the exercise comes from a real world problem. The Hubble space telescope when launched had a defect in its mirror. This defect caused the images to be blurred. The problem was initially addressed by using signal processing techniques to remove the aberrations from the images.
+
+### Point Spread Function
+
+For such an image processing problem, we can consider the continuous incoming light as striking a 2D mirror that distorts the light, followed by a 2D sensor that captures the light. In this context we suppose that we have a noise kernel or a point spread function (PSF) that describes the distortion of the light at the mirror. The point spread function, being a convolution kernel, behaves as a Green's function for the system in the continuous case:
+
+$$ \vec{b}(x,y) = \int_{\mathcal{X}} \int_{\mathcal{Y}} \vec{G}(x - x', y - y') \vec{u}(x',y') \, dx' dy' $$
+
+where $\vec{b}(x,y)$ is the blurred image data that is recovered at the sensor, $\vec{u}(x',y')$ is the true image data, and $\vec{G}(x,y)$ is the point spread function.
+
+In the special case that the point spread function is $\delta(x-x',y-y')$, then the image data is not distorted and the sensor captures the true image data. However our experiment is to consider cases where there could be even severe distortions and see how this impacts the proposition of recovering the true image data, $\vec{u}(x',y')$ from our sensor data, $\vec{b}(x,y)$.
+
+#### Discrete PSF
+
+The discrete analog of the continuous PSF can be more conveniently treated with we essentially flatten the the 2D mesh into a 1D vector, a common operation for signal processing. The unflattened case we have:
+
+$$ b_{ij} = \sum_{k=1}^{n} \sum_{l=1}^{m} \Delta x \Delta y G(x_i - x_k, y_j - y_l) u_{kl} $$
+
+
+where $b$ is the blurred image data at the sensor, $u$ is the true image data, and $G$ is the discrete point spread function. If we flatten the 2D mesh into a 1D vector we can represent this as a 1D convolution operation:
+$$ \vec{b} = \vec{G} * \vec{u} $$
+
+Since this is a convolution operation, we can process it much more quickly by leveraging the convolution theorem.
+
+$$\begin{align}
+\mathcal{F}(\vec{b}) &= \mathcal{F}(\vec{G} * \vec{u}) \\
+\mathcal{F}(\vec{b}) &= \mathcal{F}(\vec{G}) \mathcal{F}(\vec{u}) \\
+\vec{b} &= \mathcal{F}^{-1}(\mathcal{F}(\vec{G}) \odot \mathcal{F}(\vec{u}))
+\end{align}
+$$
+
+The $\odot$ hadamard product is element-wise multiplication, the discrete analog of multiplication of two functions except over an array.
+
+### Matrix Representation of Convolution Operation
+
+If we flatten the data down into a 1D vector then it is possible to construct a matrix operator that performs the convolution. This is a Toeplitz matrix, a matrix where each descending diagonal from left to right is constant, so that the row vectors represent a sliding window of the convolution kernel. We can flatten out the PSF and construct the matrix using it as the first row entry and then shifting the PSF to the right to fill out the rest of the rows. 
+
+# Code Implementation
+
+```{python}
+import matplotlib.pyplot as plt
+import matplotlib
+#matplotlib.use('TkAgg')
+import numpy as np
+import torch.optim
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.optim import Adam
+import copy
+
+import seaborn as sns
+
+import math
+import os
+import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+import torch.fft
+```
+
+We start off by introducing a point spread function within the torch framework. In the case we work with a parameterized gaussian kernel.
+
+### Gaussian Example
+
+The multivariate extension of the gaussian function is given by:
+$$f(x) = \exp\left(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)$$
+
+where $\mu$ is the mean vector, $x$ is a position vector, and $\Sigma$ is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using $C$ as the inverse of the covariance matrix and working with a $\mu=0$ value. 
+
+```{python}
+#| label: mv-plot
+#| fig-cap: "Plot"
+
+def multivariate_gaussian(pos, mean, cov):
+    """Return the multivariate Gaussian distribution on array pos."""
+    n = mean.shape[0]
+    diff = pos - mean
+    # Compute the exponent
+    exponent = -0.5 * np.einsum('...k,kl,...l->...', diff, np.linalg.inv(cov), diff)
+    # Compute the normalization factor
+    norm_factor = np.sqrt((2 * np.pi) ** n * np.linalg.det(cov))
+    # Return the Gaussian function
+    return np.exp(exponent) / norm_factor
+
+# Define the grid limits and resolution
+X, Y = np.mgrid[-5:5:0.05, -5:5:0.05]
+pos = np.dstack((X, Y))
+
+# Parameters
+mean = np.array([0, 0])
+eigenvalues = np.array([1, 2])  # Example eigenvalues
+principal_axis = np.array([1, 1])  # Example principal axis
+
+# Normalize the principal axis
+principal_axis = principal_axis / np.linalg.norm(principal_axis)
+
+# Create the covariance matrix
+D = np.diag(eigenvalues)
+orthogonal_complement = np.array([-principal_axis[1], principal_axis[0]])
+Q = np.column_stack((principal_axis, orthogonal_complement))
+cov = Q @ D @ Q.T
+
+# Compute the Gaussian function over the grid
+Z = multivariate_gaussian(pos, mean, cov)
+
+# Contour plot
+plt.figure(figsize=(6, 6))
+plt.contourf(X, Y, Z, levels=20, cmap='viridis')
+plt.title('Continuous Multivariate Gaussian Distribution with Eigenvectors')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.axis('equal')
+
+# Plot the eigenvectors
+eigvals, eigvecs = np.linalg.eigh(cov)
+
+# Scale factor for visualization
+scale_factor = 2
+
+# Origin at the mean
+origin = mean
+
+# Plot eigenvectors
+for i in range(len(eigvals)):
+    eigval = eigvals[i]
+    eigvec = eigvecs[:, i]
+    # Scale eigenvector by the square root of the eigenvalue
+    vector = eigvec * np.sqrt(eigval) * scale_factor
+    plt.quiver(*origin, vector[0], vector[1], angles='xy', scale_units='xy', scale=1, color='red', linewidth=2)
+
+plt.savefig('imgs/gaussian_plot.png', dpi=300, bbox_inches='tight')
+plt.show()
+```
+
+### Extending to Combination of Gaussian and Derivative
+
+We can compute the MV gaussian from the inverse covariance matrix $C$ with a mean of $\mu=0$ along with a dimensional scaling metric $t$. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.
+
+$$\begin{align}
+S_x &= \frac{1}{4} \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix} \\
+S_y &= \frac{1}{4} \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{bmatrix}
+\end{align}$$
+
+These operators act like edge detection or derivatives. The $n_0$, $n_x$, and $n_y$ parameters are used to scale the gaussian and the derivatives.
+
+```{python}
+class gaussianConv(nn.Module):
+    """
+    A PyTorch module that applies a Gaussian convolution to an input image using 
+    a parameterized Gaussian Point Spread Function (PSF). The PSF is derived 
+    from a covariance matrix and the derivatives of the Gaussian are computed 
+    for edge-detection.
+
+    Args:
+        C (torch.Tensor): Covariance matrix used to define the shape of the Gaussian.
+        t (float, optional): The scaling factor for the Gaussian, default is np.exp(5).
+        n0 (float, optional): Scaling factor for the original PSF, default is 1.
+        nx (float, optional): Scaling factor for the derivative along the x-axis, default is 1.
+        ny (float, optional): Scaling factor for the derivative along the y-axis, default is 1.
+    """
+    def __init__(self, C, t=np.exp(5), n0=1, nx=1,  ny=1):
+        super(gaussianConv, self).__init__()
+
+        self.C  = C
+        self.t  = t
+        self.n0 = n0
+        self.nx = nx
+        self.ny = ny
+
+    def forward(self, I):
+
+        P, center = self.psfGauss(I.shape[-1], I.device)
+
+        S = torch.fft.fft2(torch.roll(P, shifts=center, dims=[2,3]))
+        B = torch.real(torch.fft.ifft2(S * torch.fft.fft2(I)))
+
+        return B
+
+    def psfGauss(self, dim, device='cpu'):
+        # Square conv kenel mxn
+        m = dim
+        n = dim
+
+        # Create a meshgrid then expand to B,C,X,Y
+        x = torch.arange(-m//2+1,m//2+1, device=device)
+        y = torch.arange(-n//2+1,n//2+1, device=device)
+        X, Y = torch.meshgrid(x,y, indexing='ij')
+        X    = X.unsqueeze(0).unsqueeze(0)
+        Y    = Y.unsqueeze(0).unsqueeze(0)
+
+        # Use C as inverse covariance matrix
+        cx, cy, cxy = self.C[0,0], self.C[1,1], self.C[0,1]
+
+        # Apply gaussian across the mesh
+        PSF = torch.exp(-self.t*(cx*X**2 + cy*Y**2 + 2*cxy*X*Y) )
+        # Normalize to sum to 1
+        PSF0 = PSF / torch.sum(PSF.abs())
+
+        # Derivative kernels over gaussian
+        Kdx   = torch.tensor([[-1, 0, 1],[-2, 0, 2],[-1, 0, 1]])/4
+        Kdy   = torch.tensor([[-1, -2, -1],[0, 0, 0],[1, 2, 1]])/4
+        Kdx   = Kdx.unsqueeze(0).unsqueeze(0).to(device)
+        Kdy   = Kdy.unsqueeze(0).unsqueeze(0).to(device)
+
+        # Perform the convolution to get the derivatives
+        PSFdx = F.conv2d(PSF0, Kdx, padding=dim//2)
+        PSFdy = F.conv2d(PSF0, Kdy, padding=dim//2)
+
+        PSF = self.n0*PSF0 + self.nx*PSFdx + self.ny*PSFdy
+        # Get center ready for output.
+        center = [1-m//2, 1-n//2]
+
+        return PSF, center
+```
+
+
