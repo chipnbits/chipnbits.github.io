@@ -158,6 +158,14 @@ Kdy = np.array([[-1, -2, -1],
 Zdx = convolve(Z, Kdx, mode='constant', cval=0.0)
 Zdy = convolve(Z, Kdy, mode='constant', cval=0.0)
 
+
+plt.contourf(X, Y, Z, levels=20, cmap='viridis')
+plt.title('Gaussian Distribution')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.axis('equal')
+plt.savefig('figure.png', dpi=300, bbox_inches='tight')
+
 # Plot the Gaussian and its derivatives
 plt.figure(figsize=(7.5, 2.5))
 

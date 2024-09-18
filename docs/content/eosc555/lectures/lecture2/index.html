@@ -368,7 +368,7 @@ window.Quarto = {
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="c9d634e2" class="cell" data-execution_count="1">
+<div id="5fb0add1" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -398,7 +398,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <span class="math display">\[f(x) = \exp\left(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)\]</span></p>
 <p>where <span class="math inline">\(\mu\)</span> is the mean vector, <span class="math inline">\(x\)</span> is a position vector, and <span class="math inline">\(\Sigma\)</span> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <span class="math inline">\(C\)</span> as the inverse of the covariance matrix and working with a <span class="math inline">\(\mu=0\)</span> value.</p>
-<div id="cell-mv-plot" class="cell" data-execution_count="2">
+<div id="mv-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> convolve</span>
@@ -453,41 +453,56 @@ window.Quarto = {
 <span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>Zdx <span class="op">=</span> convolve(Z, Kdx, mode<span class="op">=</span><span class="st">'constant'</span>, cval<span class="op">=</span><span class="fl">0.0</span>)</span>
 <span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>Zdy <span class="op">=</span> convolve(Z, Kdy, mode<span class="op">=</span><span class="st">'constant'</span>, cval<span class="op">=</span><span class="fl">0.0</span>)</span>
 <span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Gaussian and its derivatives</span></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">2.5</span>))</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Gaussian</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Z, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Gaussian Distribution'</span>)</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X-axis'</span>)</span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y-axis'</span>)</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Z, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Gaussian Distribution'</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X-axis'</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y-axis'</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'figure.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Gaussian and its derivatives</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">2.5</span>))</span>
 <span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the derivative in x</span></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Zdx, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdBu'</span>)</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Derivative in X (Sobel Filter)'</span>)</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Gaussian</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Z, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Gaussian Distribution'</span>)</span>
 <span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X-axis'</span>)</span>
 <span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y-axis'</span>)</span>
 <span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
 <span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the derivative in y</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Zdy, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdBu'</span>)</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Derivative in Y (Sobel Filter)'</span>)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the derivative in x</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Zdx, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdBu'</span>)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Derivative in X (Sobel Filter)'</span>)</span>
 <span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X-axis'</span>)</span>
 <span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y-axis'</span>)</span>
 <span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
 <span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the derivative in y</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>plt.contourf(X, Y, Zdy, levels<span class="op">=</span><span class="dv">20</span>, cmap<span class="op">=</span><span class="st">'RdBu'</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Derivative in Y (Sobel Filter)'</span>)</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'X-axis'</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Y-axis'</span>)</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div id="mv-plot" class="quarto-figure quarto-figure-center anchored">
+<div id="mv-plot-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/mv-plot-output-1.png" width="748" height="230" class="figure-img"></p>
+<p><img src="index_files/figure-html/mv-plot-output-1.png" width="587" height="449" class="figure-img"></p>
 <figcaption>Multivariate Gaussian and its Derivatives</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/mv-plot-output-2.png" id="mv-plot-2" width="748" height="230" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -502,7 +517,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 \end{align}
 \]</span></p>
 <p>These operators act like edge detection or derivatives. The <span class="math inline">\(n_0\)</span>, <span class="math inline">\(n_x\)</span>, and <span class="math inline">\(n_y\)</span> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="cd613ffc" class="cell" data-execution_count="3">
+<div id="d9df7698" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> gaussianConv(nn.Module):</span>
@@ -776,7 +791,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="1b906a7d" class="cell" data-execution_count="8">
+<div id="b84466de" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b_forward <span class="op">=</span> Amv(x)</span>
@@ -813,7 +828,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <span class="math inline">\(A\mathbf{x} = \mathbf{b}\)</span> with our known <span class="math inline">\(A\)</span> and <span class="math inline">\(\mathbf{b}\)</span>, and we want to recover <span class="math inline">\(\mathbf{x}\)</span>. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="3ed077cf" class="cell" data-execution_count="10">
+<div id="f2d9dff2" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(Amat.to(torch.float64))</span>
@@ -873,7 +888,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <span class="math inline">\(U\)</span>.</p>
-<div id="06c04732" class="cell" data-execution_count="13">
+<div id="4351e3dc" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -891,7 +906,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <span class="math inline">\(V\)</span>. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="7140a38d" class="cell" data-execution_count="14">
+<div id="15c4ec33" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -1047,7 +1062,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised-recovery" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="461" class="figure-img"></p>
+<p><img src="index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="460" class="figure-img"></p>
 <figcaption>Pseudoinverse Recovery of the Original Image with Noise.</figcaption>
 </figure>
 </div>

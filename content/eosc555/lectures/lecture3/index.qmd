@@ -1,0 +1,36 @@
+---
+title: "Lecture 3: Image Denoising with Gradient Descent and Early Stopping"
+subtitle: "A derivation of least squares gradient descent and ODE analysis"
+date: 2024-09-17
+author: "Simon Ghyselincks"
+description: >-
+    In continuation of Lecture 2, we now look at an alternative approach to image denoising using gradient descent and early stopping. We will derive the least squares gradient descent algorithm and analyze it as an ordinary differential equation.
+categories:
+  - Optimization
+  - Inverse Theory
+  - Python
+  - Torch
+  - Adjoint
+
+# image: imgs/gaussian_plot.png
+draft: false
+
+execute:
+  kernel: python3
+  cache: true
+  cache-refresh: true
+  cache-path: .jupyter_cache
+
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+
+editor: 
+  render-on-save: false
+---
+
+## Derivations of Linear Algebra Gradients
+
+Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful "vector" derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector $\mathbf{x}$ is generally denoted as $\nabla_{\mathbf{x}}$ or alternatively $\partial_{\mathbf{x}}$, somewhat of an abuse of notation.
+
