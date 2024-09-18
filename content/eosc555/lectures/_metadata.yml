@@ -1,0 +1,16 @@
+# options specified here will apply to all posts in this folder
+
+author:
+  - name: Simon Ghyselincks
+
+sidebar: false
+
+execute:
+  kernel: python3
+  cache: true
+  cache-refresh: true
+  cache-path: .jupyter_cache
+
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Table

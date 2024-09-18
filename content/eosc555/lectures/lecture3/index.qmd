@@ -15,12 +15,6 @@ categories:
 # image: imgs/gaussian_plot.png
 draft: false
 
-execute:
-  kernel: python3
-  cache: true
-  cache-refresh: true
-  cache-path: .jupyter_cache
-
 format:
   html:
     code-fold: true
@@ -33,4 +27,6 @@ editor:
 ## Derivations of Linear Algebra Gradients
 
 Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful "vector" derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector $\mathbf{x}$ is generally denoted as $\nabla_{\mathbf{x}}$ or alternatively $\partial_{\mathbf{x}}$, somewhat of an abuse of notation.
+
+
 

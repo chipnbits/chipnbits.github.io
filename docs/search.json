@@ -249,6 +249,20 @@
     ]
   },
   {
+    "objectID": "content/eosc555/lectures/lecture3/index.html",
+    "href": "content/eosc555/lectures/lecture3/index.html",
+    "title": "Lecture 3: Image Denoising with Gradient Descent and Early Stopping",
+    "section": "",
+    "text": "Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful “vector” derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector \\(\\mathbf{x}\\) is generally denoted as \\(\\nabla_{\\mathbf{x}}\\) or alternatively \\(\\partial_{\\mathbf{x}}\\), somewhat of an abuse of notation."
+  },
+  {
+    "objectID": "content/eosc555/lectures/lecture3/index.html#derivations-of-linear-algebra-gradients",
+    "href": "content/eosc555/lectures/lecture3/index.html#derivations-of-linear-algebra-gradients",
+    "title": "Lecture 3: Image Denoising with Gradient Descent and Early Stopping",
+    "section": "",
+    "text": "Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful “vector” derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector \\(\\mathbf{x}\\) is generally denoted as \\(\\nabla_{\\mathbf{x}}\\) or alternatively \\(\\partial_{\\mathbf{x}}\\), somewhat of an abuse of notation."
+  },
+  {
     "objectID": "content/eosc555/lectures/lecture1-2/index.html",
     "href": "content/eosc555/lectures/lecture1-2/index.html",
     "title": "Lecture 1: Introduction to Inverse Theory",

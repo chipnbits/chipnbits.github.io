@@ -9,5 +9,4 @@ listing:
   fields: [image, date, title, description, reading-time]
   image-align: left
   feed: true
-
 ---
