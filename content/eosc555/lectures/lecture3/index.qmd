@@ -75,7 +75,7 @@ For this one let $y=Ax$ and we can index each element of the vector $y$ as $y_i 
 
 The Jacobian will contain the partial derivatives:
 
-$$\frac{\vec{z}}{\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} & \frac{\partial z_1}{\partial x_2} & \cdots & \frac{\partial z_1}{\partial x_n} \\
+$$\frac{d\vec{z}}{d\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} & \frac{\partial z_1}{\partial x_2} & \cdots & \frac{\partial z_1}{\partial x_n} \\
 \frac{\partial z_2}{\partial x_1} & \frac{\partial z_2}{\partial x_2} & \cdots & \frac{\partial z_2}{\partial x_n} \\
 \vdots & \vdots & \ddots & \vdots \\
 \frac{\partial z_n}{\partial x_1} & \frac{\partial z_n}{\partial x_2} & \cdots & \frac{\partial z_n}{\partial x_n} \end{bmatrix}
@@ -87,7 +87,7 @@ $$
 \begin{align*}
 z_i &= y_i^2 = \left( \sum_j A_{ij} x_j \right)^2\\
 \frac{\partial}{\partial x_j} y_i^2 &= 2 y_i \frac{\partial y_i}{\partial x_j} = 2 y_i A_{ij}\\
-\frac{\vec{z}}{\vec{x}} &= 2 \begin{bmatrix} y_1 A_{1j} & y_1 A_{2j} & \cdots & y_1 A_{nj} \\
+\frac{d\vec{z}}{d\vec{x}} &= 2 \begin{bmatrix} y_1 A_{1j} & y_1 A_{2j} & \cdots & y_1 A_{nj} \\
 y_2 A_{1j} & y_2 A_{2j} & \cdots & y_2 A_{nj} \\
 \vdots & \vdots & \ddots & \vdots \\
 y_n A_{1j} & y_n A_{2j} & \cdots & y_n A_{nj} \end{bmatrix}\\
@@ -113,7 +113,7 @@ $$
 Returning to the first-order optimality condition we have:
 $$A^\top A x = A^\top b$$
 
-At which point it is in question if $A^\top A$ is invertible. The invertibility of $A^\top A$ is determined by the rank of $A$. The rank of A for a non-square matrix is the number of independent columns. If we examine $A^\top Ax = 0$ then we see that this is only true where the range of $A$ is in the nullspace of $A^\top$. But $N(A^\top) = R(A)^\perp$ so they are orthogonal subspaces and will never coincide unless $Ax=0$. So then $A^\top A x = 0 $ implies that $Ax = 0$ which means that if the null space of $A=\{0\}$ then the null space of $A^\top A = \{0\}$ and $A^\top A$ is invertible. Since $A^\top A$ is symmetric and positive definite, it is invertible.
+At which point it is in question if $A^\top A$ is invertible. The invertibility of $A^\top A$ is determined by the rank of $A$. The rank of A for a non-square matrix is the number of independent columns. If we examine $A^\top Ax = 0$ then we see that this is only true where the range of $A$ is in the nullspace of $A^\top$. But $N(A^\top) = R(A)^\perp$ so they are orthogonal subspaces and will never coincide unless $Ax=0$. So then $A^\top A x = 0$ implies that $Ax = 0$ which means that if the null space of $A=\{0\}$ then the null space of $A^\top A = \{0\}$ and $A^\top A$ is invertible. Since $A^\top A$ is symmetric and positive definite, it is invertible.
 
 
 $A^\top A$ is invertible $\iff$ $A$ is full rank, that is all the columns are independent. For non-square matrices, an $m>n$ matrix that is wide will trivially not satisfy this condition. A tall matrix $m<n$ will satisfy the condition if the columns are independent. 
@@ -129,7 +129,7 @@ Where $\alpha$ is the learning rate, which can be dependent on the problem and t
 $$ \begin{align}
 x_{k+1} &= x_k - \alpha (A^\top A x_k - A^\top b)\\
 \frac{x_{k+1}-x_k}{\alpha} &= A^\top b - A^\top A x_k\\
-lim_{\alpha \to 0} \frac{x_{k+1}-x_k}{\alpha} &= \frac{dx}{dt} = A^\top (b -A x), \quad x(0) = x_0
+\lim_{\alpha \to 0} \frac{x_{k+1}-x_k}{\alpha} &= \frac{dx}{dt} = A^\top (b -A x), \quad x(0) = x_0
 \end{align}
 $$
 
@@ -156,7 +156,7 @@ A^TA &= V \Sigma^2 V^\top\\
 \end{align}
 $$
 
-Now let $z = V^top x$ and $\hat b = U ^ \top b$ then we have:
+Now let $z = V^\top x$ and $\hat b = U ^ \top b$ then we have:
 
 $$\begin{align}
 \frac{d}{dt} (V^\top x) &= \Sigma \hat b - \Sigma^2 (V^\top x)\\
@@ -172,7 +172,7 @@ $$
 z_h' + \lambda^2 z_h &= 0\\
 z_h &= c e^{-\lambda^2 t}\\
 z_p' + \lambda^2 z_p &= \lambda \hat b\\
-z_p &= D \hat b 
+z_p &= D \hat b \\
 \lambda^2 D \hat b &= \lambda \hat b\\
 D &= \frac{1}{\lambda}\\
 z_p &= \frac{1}{\lambda} \hat b
@@ -228,7 +228,7 @@ T = t[np.newaxis, :]
 singular_vals_t = St(T)
 
 # Initialize the plot
-plt.figure(figsize=(12, 6))
+plt.figure(figsize=(7.5, 4))
 
 # Create a color palette
 palette = sns.color_palette("husl", len(S))
@@ -253,7 +253,10 @@ plt.title('Time Evolution of Pseudo Inverse in Gradient Flow', fontsize=16)
 plt.legend(title='Inverse Singular Vals', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.xlim(t[0], t[-1] + 0.1)
 plt.tight_layout()
+plt.savefig('imgs/pseudo_inverse_time_evolution.png')
 plt.show()
+
+
 
 ```
 

@@ -280,7 +280,7 @@ window.Quarto = {
 <p>Another form of interest is the hadamard product of two vectors. <span class="math display">\[\phi(x) = (Ax)^2 = Ax \odot Ax\]</span></p>
 <p>For this one let <span class="math inline">\(y=Ax\)</span> and we can index each element of the vector <span class="math inline">\(y\)</span> as <span class="math inline">\(y_i = \sum_j A_{ij} x_j\)</span>. The hadamard product is a vector <span class="math inline">\(z\)</span> where <span class="math inline">\(z_i = y_i^2\)</span>, we can compute the jacobian since now we are taking the gradient with respect to a vector.</p>
 <p>The Jacobian will contain the partial derivatives:</p>
-<p><span class="math display">\[\frac{\vec{z}}{\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} &amp; \frac{\partial z_1}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_1}{\partial x_n} \\
+<p><span class="math display">\[\frac{d\vec{z}}{d\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} &amp; \frac{\partial z_1}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_1}{\partial x_n} \\
 \frac{\partial z_2}{\partial x_1} &amp; \frac{\partial z_2}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_2}{\partial x_n} \\
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
 \frac{\partial z_n}{\partial x_1} &amp; \frac{\partial z_n}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_n}{\partial x_n} \end{bmatrix}
@@ -290,7 +290,7 @@ window.Quarto = {
 \begin{align*}
 z_i &amp;= y_i^2 = \left( \sum_j A_{ij} x_j \right)^2\\
 \frac{\partial}{\partial x_j} y_i^2 &amp;= 2 y_i \frac{\partial y_i}{\partial x_j} = 2 y_i A_{ij}\\
-\frac{\vec{z}}{\vec{x}} &amp;= 2 \begin{bmatrix} y_1 A_{1j} &amp; y_1 A_{2j} &amp; \cdots &amp; y_1 A_{nj} \\
+\frac{d\vec{z}}{d\vec{x}} &amp;= 2 \begin{bmatrix} y_1 A_{1j} &amp; y_1 A_{2j} &amp; \cdots &amp; y_1 A_{nj} \\
 y_2 A_{1j} &amp; y_2 A_{2j} &amp; \cdots &amp; y_2 A_{nj} \\
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
 y_n A_{1j} &amp; y_n A_{2j} &amp; \cdots &amp; y_n A_{nj} \end{bmatrix}\\
@@ -311,7 +311,7 @@ y_n A_{1j} &amp; y_n A_{2j} &amp; \cdots &amp; y_n A_{nj} \end{bmatrix}\\
 \end{align*}
 \]</span></p>
 <p>Returning to the first-order optimality condition we have: <span class="math display">\[A^\top A x = A^\top b\]</span></p>
-<p>At which point it is in question if <span class="math inline">\(A^\top A\)</span> is invertible. The invertibility of <span class="math inline">\(A^\top A\)</span> is determined by the rank of <span class="math inline">\(A\)</span>. The rank of A for a non-square matrix is the number of independent columns. If we examine <span class="math inline">\(A^\top Ax = 0\)</span> then we see that this is only true where the range of <span class="math inline">\(A\)</span> is in the nullspace of <span class="math inline">\(A^\top\)</span>. But <span class="math inline">\(N(A^\top) = R(A)^\perp\)</span> so they are orthogonal subspaces and will never coincide unless <span class="math inline">\(Ax=0\)</span>. So then $A^A x = 0 $ implies that <span class="math inline">\(Ax = 0\)</span> which means that if the null space of <span class="math inline">\(A=\{0\}\)</span> then the null space of <span class="math inline">\(A^\top A = \{0\}\)</span> and <span class="math inline">\(A^\top A\)</span> is invertible. Since <span class="math inline">\(A^\top A\)</span> is symmetric and positive definite, it is invertible.</p>
+<p>At which point it is in question if <span class="math inline">\(A^\top A\)</span> is invertible. The invertibility of <span class="math inline">\(A^\top A\)</span> is determined by the rank of <span class="math inline">\(A\)</span>. The rank of A for a non-square matrix is the number of independent columns. If we examine <span class="math inline">\(A^\top Ax = 0\)</span> then we see that this is only true where the range of <span class="math inline">\(A\)</span> is in the nullspace of <span class="math inline">\(A^\top\)</span>. But <span class="math inline">\(N(A^\top) = R(A)^\perp\)</span> so they are orthogonal subspaces and will never coincide unless <span class="math inline">\(Ax=0\)</span>. So then <span class="math inline">\(A^\top A x = 0\)</span> implies that <span class="math inline">\(Ax = 0\)</span> which means that if the null space of <span class="math inline">\(A=\{0\}\)</span> then the null space of <span class="math inline">\(A^\top A = \{0\}\)</span> and <span class="math inline">\(A^\top A\)</span> is invertible. Since <span class="math inline">\(A^\top A\)</span> is symmetric and positive definite, it is invertible.</p>
 <p><span class="math inline">\(A^\top A\)</span> is invertible <span class="math inline">\(\iff\)</span> <span class="math inline">\(A\)</span> is full rank, that is all the columns are independent. For non-square matrices, an <span class="math inline">\(m&gt;n\)</span> matrix that is wide will trivially not satisfy this condition. A tall matrix <span class="math inline">\(m&lt;n\)</span> will satisfy the condition if the columns are independent.</p>
 </section>
 </section>
@@ -323,7 +323,7 @@ y_n A_{1j} &amp; y_n A_{2j} &amp; \cdots &amp; y_n A_{nj} \end{bmatrix}\\
 <p><span class="math display">\[ \begin{align}
 x_{k+1} &amp;= x_k - \alpha (A^\top A x_k - A^\top b)\\
 \frac{x_{k+1}-x_k}{\alpha} &amp;= A^\top b - A^\top A x_k\\
-lim_{\alpha \to 0} \frac{x_{k+1}-x_k}{\alpha} &amp;= \frac{dx}{dt} = A^\top (b -A x), \quad x(0) = x_0
+\lim_{\alpha \to 0} \frac{x_{k+1}-x_k}{\alpha} &amp;= \frac{dx}{dt} = A^\top (b -A x), \quad x(0) = x_0
 \end{align}
 \]</span></p>
 <p>This ODE is the continuous version of the gradient descent algorithm, also known as the <em>gradient flow</em>. Since this a linear first-order ODE we can solve it analytically. The general method for a linear system ODE would be to find the homogeneous solution and the particular solution:</p>
@@ -345,7 +345,7 @@ A^TA &amp;= V \Sigma^2 V^\top\\
 \frac{d}{dt}x &amp;= V \Sigma U^\top b - V \Sigma^2 V^\top U x\\
 \end{align}
 \]</span></p>
-<p>Now let <span class="math inline">\(z = V^top x\)</span> and <span class="math inline">\(\hat b = U ^ \top b\)</span> then we have:</p>
+<p>Now let <span class="math inline">\(z = V^\top x\)</span> and <span class="math inline">\(\hat b = U ^ \top b\)</span> then we have:</p>
 <p><span class="math display">\[\begin{align}
 \frac{d}{dt} (V^\top x) &amp;= \Sigma \hat b - \Sigma^2 (V^\top x)\\
 \frac{d}{dt} z &amp;= \Sigma \hat b - \Sigma^2 z\\
@@ -358,7 +358,7 @@ z' + \Sigma^2 z &amp;= \Sigma \hat b\\
 z_h' + \lambda^2 z_h &amp;= 0\\
 z_h &amp;= c e^{-\lambda^2 t}\\
 z_p' + \lambda^2 z_p &amp;= \lambda \hat b\\
-z_p &amp;= D \hat b
+z_p &amp;= D \hat b \\
 \lambda^2 D \hat b &amp;= \lambda \hat b\\
 D &amp;= \frac{1}{\lambda}\\
 z_p &amp;= \frac{1}{\lambda} \hat b
@@ -375,7 +375,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <span class="math inline">\(A\)</span> from earlier:</p>
 <p><span class="math inline">\(x = V \Sigma^{-1} U^\top b\)</span> except in this case there is a time dependence. At the limit as <span class="math inline">\(t \rightarrow \infty\)</span> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
 <p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
-<div id="0c79bd8f" class="cell" data-execution_count="1">
+<div id="77600f2e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -404,7 +404,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>singular_vals_t <span class="op">=</span> St(T)</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the plot</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="dv">4</span>))</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a color palette</span></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>palette <span class="op">=</span> sns.color_palette(<span class="st">"husl"</span>, <span class="bu">len</span>(S))</span>
@@ -429,12 +429,13 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">'Inverse Singular Vals'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.05</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>plt.xlim(t[<span class="dv">0</span>], t[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.1</span>)</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'imgs/pseudo_inverse_time_evolution.png'</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-2-output-1.png" width="1139" height="566" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-2-output-1.png" width="703" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
