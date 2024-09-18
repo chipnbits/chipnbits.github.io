@@ -23,8 +23,354 @@
 <section id="derivations-of-linear-algebra-gradients" class="level2">
 <h2 class="anchored" data-anchor-id="derivations-of-linear-algebra-gradients">Derivations of Linear Algebra Gradients</h2>
 <p>Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful “vector” derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D"> is generally denoted as <img src="https://latex.codecogs.com/png.latex?%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D"> or alternatively <img src="https://latex.codecogs.com/png.latex?%5Cpartial_%7B%5Cmathbf%7Bx%7D%7D">, somewhat of an abuse of notation.</p>
+<section id="a-warmup" class="level4">
+<h4 class="anchored" data-anchor-id="a-warmup">1. A Warmup</h4>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cphi(x)%20=%20a%5E%5Ctop%20x%20=%20%5Csum_i%20a_i%20x_i"></p>
+<p>This is a vector dotproduct and the gradient is simply the vector <img src="https://latex.codecogs.com/png.latex?a">. There is a subtlety here in that the vector is usually transposed to be a column vector, but this is not always the case. Some people in the field of statistics prefer to use row vector, this can cause some confusion. The general convention is a column vector.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cphi%20=%20a"></p>
+</section>
+<section id="matrix-vector-multiplication" class="level4">
+<h4 class="anchored" data-anchor-id="matrix-vector-multiplication">2. Matrix Vector Multiplication</h4>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cphi(x)%20=%20Ax"></p>
+<p>Based on the previous process we are expecting to potentially get <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop"> as the gradient, however the transpose does not occur in this case because we are not returning a vector that needs to be reshaped into a column form.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cphi%20=%20A"></p>
+</section>
+<section id="quadratic-forms" class="level4">
+<h4 class="anchored" data-anchor-id="quadratic-forms">3. Quadratic Forms</h4>
+<p>Often we may encounter quadratic linear functions that are of the form: <img src="https://latex.codecogs.com/png.latex?%20%5Cphi(x)%20=%20x%5E%5Ctop%20A%20x"></p>
+<p>One way to determine the gradient is to expand the expression and evaluate for a single <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cpartial%7D%7B%5Cpartial%20x_i%7D"> term. This method can be found at <a href="https://www.cs.ubc.ca/~schmidtm/Courses/340-F16/linearQuadraticGradients.pdf">Mark Schmidt Notes</a> Instead we can apply a chain rule for matrix differentiation that is based on the product rule for differentiation. The chain rule for matrix differentiation is as follows:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bd%20f(g,h)%7D%7Bd%20x%7D%20=%20%5Cfrac%7Bd%20(g(x)%5E%5Ctop)%7D%7Bd%20x%7D%20%5Cfrac%7B%5Cpartial%20f(g,h)%7D%7B%5Cpartial%20g%7D%20+%20%5Cfrac%7Bd%20(h(x)%5E%5Ctop)%7D%7Bd%20x%7D%20%5Cfrac%7B%5Cpartial%20f(g,h)%7D%7B%5Cpartial%20h%7D"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%20%7Balign*%7D%0A%5Cphi(x)%20&amp;=%20x%5E%5Ctop%20A%20x%20%5C%5C%0A%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cphi%20&amp;=%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20(x%5E%5Ctop%20A%20x)%20%5C%5C%0A&amp;=%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20x%5E%5Ctop%20(A%20x)%20=%20%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20x%5E%5Ctop%20y%5C%5C%0A&amp;=%20(%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20x)%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20x%5E%5Ctop%20y%20+%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20y%5E%5Ctop%20%5Cnabla_%7B%5Cmathbf%7By%7D%7D%20x%5E%5Ctop%20y%5C%5C%0A&amp;=%20I%20y%20+%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20(x%5E%5Ctop%20A%5E%5Ctop)%20x%5C%5C%0A&amp;=%20(A%20x)%20+%20A%5E%5Ctop%20x%5C%5C%0A&amp;=%20(A%20+%20A%5E%5Ctop)%20x%0A%5Cend%20%7Balign*%7D%0A"></p>
+<p>This fits with the generalization for a scalar quadratic form where we end up with <img src="https://latex.codecogs.com/png.latex?(cx%5E2)'%20=%20(c%20+%20c%5E%5Ctop)x%20=%202cx"> where <img src="https://latex.codecogs.com/png.latex?c"> is a scalar.</p>
+</section>
+<section id="hadamard-product" class="level4">
+<h4 class="anchored" data-anchor-id="hadamard-product">4. Hadamard Product</h4>
+<p>Another form of interest is the hadamard product of two vectors. <img src="https://latex.codecogs.com/png.latex?%5Cphi(x)%20=%20(Ax)%5E2%20=%20Ax%20%5Codot%20Ax"></p>
+<p>For this one let <img src="https://latex.codecogs.com/png.latex?y=Ax"> and we can index each element of the vector <img src="https://latex.codecogs.com/png.latex?y"> as <img src="https://latex.codecogs.com/png.latex?y_i%20=%20%5Csum_j%20A_%7Bij%7D%20x_j">. The hadamard product is a vector <img src="https://latex.codecogs.com/png.latex?z"> where <img src="https://latex.codecogs.com/png.latex?z_i%20=%20y_i%5E2">, we can compute the jacobian since now we are taking the gradient with respect to a vector.</p>
+<p>The Jacobian will contain the partial derivatives:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B%5Cvec%7Bz%7D%7D%7B%5Cvec%7Bx%7D%7D%20=%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B%5Cpartial%20z_1%7D%7B%5Cpartial%20x_1%7D%20&amp;%20%5Cfrac%7B%5Cpartial%20z_1%7D%7B%5Cpartial%20x_2%7D%20&amp;%20%5Ccdots%20&amp;%20%5Cfrac%7B%5Cpartial%20z_1%7D%7B%5Cpartial%20x_n%7D%20%5C%5C%0A%5Cfrac%7B%5Cpartial%20z_2%7D%7B%5Cpartial%20x_1%7D%20&amp;%20%5Cfrac%7B%5Cpartial%20z_2%7D%7B%5Cpartial%20x_2%7D%20&amp;%20%5Ccdots%20&amp;%20%5Cfrac%7B%5Cpartial%20z_2%7D%7B%5Cpartial%20x_n%7D%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0A%5Cfrac%7B%5Cpartial%20z_n%7D%7B%5Cpartial%20x_1%7D%20&amp;%20%5Cfrac%7B%5Cpartial%20z_n%7D%7B%5Cpartial%20x_2%7D%20&amp;%20%5Ccdots%20&amp;%20%5Cfrac%7B%5Cpartial%20z_n%7D%7B%5Cpartial%20x_n%7D%20%5Cend%7Bbmatrix%7D%0A"></p>
+<p>If we can recover this then we have the gradient of the hadamard product.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Az_i%20&amp;=%20y_i%5E2%20=%20%5Cleft(%20%5Csum_j%20A_%7Bij%7D%20x_j%20%5Cright)%5E2%5C%5C%0A%5Cfrac%7B%5Cpartial%7D%7B%5Cpartial%20x_j%7D%20y_i%5E2%20&amp;=%202%20y_i%20%5Cfrac%7B%5Cpartial%20y_i%7D%7B%5Cpartial%20x_j%7D%20=%202%20y_i%20A_%7Bij%7D%5C%5C%0A%5Cfrac%7B%5Cvec%7Bz%7D%7D%7B%5Cvec%7Bx%7D%7D%20&amp;=%202%20%5Cbegin%7Bbmatrix%7D%20y_1%20A_%7B1j%7D%20&amp;%20y_1%20A_%7B2j%7D%20&amp;%20%5Ccdots%20&amp;%20y_1%20A_%7Bnj%7D%20%5C%5C%0Ay_2%20A_%7B1j%7D%20&amp;%20y_2%20A_%7B2j%7D%20&amp;%20%5Ccdots%20&amp;%20y_2%20A_%7Bnj%7D%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0Ay_n%20A_%7B1j%7D%20&amp;%20y_n%20A_%7B2j%7D%20&amp;%20%5Ccdots%20&amp;%20y_n%20A_%7Bnj%7D%20%5Cend%7Bbmatrix%7D%5C%5C%0A&amp;=%202%20%5Ccdot%20%5Ctext%7Bdiag%7D(%5Cvec%7By%7D)A%5C%5C%0A&amp;=%202%20%5Ccdot%20%5Ctext%7Bdiag%7D(Ax)A%0A%5Cend%7Balign*%7D%0A"></p>
+</section>
+<section id="least-squares-gradient" class="level4">
+<h4 class="anchored" data-anchor-id="least-squares-gradient">5. Least Squares Gradient</h4>
+<p>We look at taking the gradient of the expansion of least squares to find the gradient for this optimization objective.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cphi(x)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%7C%7CAx%20-%20b%7C%7C%5E2%20=%20%5Cfrac%7B1%7D%7B2%7D%20(x%5E%5Ctop%20A%5E%5Ctop%20A%20x%20-%202%20b%5E%5Ctop%20A%20x%20+%20b%5E%5Ctop%20b)"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign*%7D%0A%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cphi%20&amp;=%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%7D%20(x%5E%5Ctop%20A%5E%5Ctop%20A%20x%20-%202%20b%5E%5Ctop%20A%20x%20+%20b%5E%5Ctop%20b)%20%5Cright)%5C%5C%0A&amp;=%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%7D%20x%5E%5Ctop%20A%5E%5Ctop%20A%20x%20%5Cright)%20-%20%5Cnabla_%7B%5Cmathbf%7Bx%7D%7D%20%5Cleft(%20b%5E%5Ctop%20A%20x%20%5Cright)%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B2%7D%20(A%5E%5Ctop%20A%20+%20A%5E%5Ctop%20A)%20x%20-%20A%5E%5Ctop%20b%5C%5C%0A&amp;=%20A%5E%5Ctop%20A%20x%20-%20A%5E%5Ctop%20b%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Returning to the first-order optimality condition we have: <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A%20x%20=%20A%5E%5Ctop%20b"></p>
+<p>At which point it is in question if <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A"> is invertible. The invertibility of <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A"> is determined by the rank of <img src="https://latex.codecogs.com/png.latex?A">. The rank of A for a non-square matrix is the number of independent columns. If we examine <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20Ax%20=%200"> then we see that this is only true where the range of <img src="https://latex.codecogs.com/png.latex?A"> is in the nullspace of <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop">. But <img src="https://latex.codecogs.com/png.latex?N(A%5E%5Ctop)%20=%20R(A)%5E%5Cperp"> so they are orthogonal subspaces and will never coincide unless <img src="https://latex.codecogs.com/png.latex?Ax=0">. So then $A^A x = 0 $ implies that <img src="https://latex.codecogs.com/png.latex?Ax%20=%200"> which means that if the null space of <img src="https://latex.codecogs.com/png.latex?A=%5C%7B0%5C%7D"> then the null space of <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A%20=%20%5C%7B0%5C%7D"> and <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A"> is invertible. Since <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A"> is symmetric and positive definite, it is invertible.</p>
+<p><img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop%20A"> is invertible <img src="https://latex.codecogs.com/png.latex?%5Ciff"> <img src="https://latex.codecogs.com/png.latex?A"> is full rank, that is all the columns are independent. For non-square matrices, an <img src="https://latex.codecogs.com/png.latex?m%3En"> matrix that is wide will trivially not satisfy this condition. A tall matrix <img src="https://latex.codecogs.com/png.latex?m%3Cn"> will satisfy the condition if the columns are independent.</p>
+</section>
+</section>
+<section id="gradient-descent-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-descent-analysis">Gradient Descent Analysis</h2>
+<p>The standard form of the gradient descent algorithm comes from the field of optimization and can be written as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20x_%7Bk+1%7D%20=%20x_k%20-%20%5Calpha%20%5Cnabla_x%20%5Cphi(x_k)"></p>
+<p>Where <img src="https://latex.codecogs.com/png.latex?%5Calpha"> is the learning rate, which can be dependent on the problem and the gradient. Substituting the gradient of the least squares problem we have:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0Ax_%7Bk+1%7D%20&amp;=%20x_k%20-%20%5Calpha%20(A%5E%5Ctop%20A%20x_k%20-%20A%5E%5Ctop%20b)%5C%5C%0A%5Cfrac%7Bx_%7Bk+1%7D-x_k%7D%7B%5Calpha%7D%20&amp;=%20A%5E%5Ctop%20b%20-%20A%5E%5Ctop%20A%20x_k%5C%5C%0Alim_%7B%5Calpha%20%5Cto%200%7D%20%5Cfrac%7Bx_%7Bk+1%7D-x_k%7D%7B%5Calpha%7D%20&amp;=%20%5Cfrac%7Bdx%7D%7Bdt%7D%20=%20A%5E%5Ctop%20(b%20-A%20x),%20%5Cquad%20x(0)%20=%20x_0%0A%5Cend%7Balign%7D%0A"></p>
+<p>This ODE is the continuous version of the gradient descent algorithm, also known as the <em>gradient flow</em>. Since this a linear first-order ODE we can solve it analytically. The general method for a linear system ODE would be to find the homogeneous solution and the particular solution:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0Ax'%20+%20A%5E%5Ctop%20A%20x%20&amp;=%20A%5E%5Ctop%20b%5C%5C%0A%5Ctext%7BGuess:%7D%20x%20&amp;=%20v%20e%5E%7B%5Clambda%20t%7D%5C%5C%0A%5Clambda%20v%20e%5E%7B%5Clambda%20t%7D%20+%20A%5E%5Ctop%20A%20v%20e%5E%7B%5Clambda%20t%7D%20&amp;=%20A%5E%5Ctop%20b%20e%5E%7B%5Clambda%20t%7D%5C%5C%0A%5Clambda%20v%20+%20A%5E%5Ctop%20A%20v%20&amp;=%200%20%5Cqquad%20%5Ctext%7BHomogeneous%7D%5C%5C%0A(%5Clambda%20I%20+%20A%5E%5Ctop%20A)%20v%20&amp;=%200%5C%5C%0A%5Clambda%20&amp;=%20%5Ctext%7Beigenvalues%20of%20%7D%20A%5E%5Ctop%20A,%20%5Cquad%20v%20=%20%5Ctext%7Beigenvectors%20of%20%7D%20A%5E%5Ctop%20A%0A%5Cend%7Balign%7D%0A"></p>
+<p>Before continuing further with this line, we can see that the solutions will be closely related to the SVD because it contains the information on these eigenvalues and vectors. So we can try to solve the ODE with the SVD.</p>
+<section id="solving-the-ode-with-svd" class="level4">
+<h4 class="anchored" data-anchor-id="solving-the-ode-with-svd">Solving the ODE with SVD</h4>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AA%20&amp;=%20U%20%5CSigma%20V%5E%5Ctop%5C%5C%0AA%5ETA%20&amp;=%20V%20%5CSigma%5E2%20V%5E%5Ctop%5C%5C%0A%5Cfrac%7Bd%7D%7Bdt%7Dx%20&amp;=%20V%20%5CSigma%20U%5E%5Ctop%20b%20-%20V%20%5CSigma%5E2%20V%5E%5Ctop%20U%20x%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
+<p>Now let <img src="https://latex.codecogs.com/png.latex?z%20=%20V%5Etop%20x"> and <img src="https://latex.codecogs.com/png.latex?%5Chat%20b%20=%20U%20%5E%20%5Ctop%20b"> then we have:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0A%5Cfrac%7Bd%7D%7Bdt%7D%20(V%5E%5Ctop%20x)%20&amp;=%20%5CSigma%20%5Chat%20b%20-%20%5CSigma%5E2%20(V%5E%5Ctop%20x)%5C%5C%0A%5Cfrac%7Bd%7D%7Bdt%7D%20z%20&amp;=%20%5CSigma%20%5Chat%20b%20-%20%5CSigma%5E2%20z%5C%5C%0Az'%20+%20%5CSigma%5E2%20z%20&amp;=%20%5CSigma%20%5Chat%20b%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
+<p>At this stage since everything has been diagonalized, all of the equations are decoupled and independent so we can solve for the <img src="https://latex.codecogs.com/png.latex?%5Clambda_i"> cases independently. We find the homogeneous <img src="https://latex.codecogs.com/png.latex?z_h"> and particular <img src="https://latex.codecogs.com/png.latex?z_p"> solutions:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Az_h'%20+%20%5Clambda%5E2%20z_h%20&amp;=%200%5C%5C%0Az_h%20&amp;=%20c%20e%5E%7B-%5Clambda%5E2%20t%7D%5C%5C%0Az_p'%20+%20%5Clambda%5E2%20z_p%20&amp;=%20%5Clambda%20%5Chat%20b%5C%5C%0Az_p%20&amp;=%20D%20%5Chat%20b%0A%5Clambda%5E2%20D%20%5Chat%20b%20&amp;=%20%5Clambda%20%5Chat%20b%5C%5C%0AD%20&amp;=%20%5Cfrac%7B1%7D%7B%5Clambda%7D%5C%5C%0Az_p%20&amp;=%20%5Cfrac%7B1%7D%7B%5Clambda%7D%20%5Chat%20b%0A%5Cend%7Balign%7D%0A"></p>
+<p>So the general solution for the <img src="https://latex.codecogs.com/png.latex?i%5E%7Bth%7D"> component is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?z_i%20=%20c_i%20e%5E%7B-%5Clambda_i%5E2%20t%7D%20+%20%5Cfrac%7B1%7D%7B%5Clambda_i%7D%20%5Chat%20b_i"></p>
+<p>Supposing that we start at <img src="https://latex.codecogs.com/png.latex?x=0"> then we have <img src="https://latex.codecogs.com/png.latex?z=0"> at all elements and can solve the coefficients <img src="https://latex.codecogs.com/png.latex?c_i">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?c_i%20=%20-%5Cfrac%7B1%7D%7B%5Clambda_i%7D%20%5Chat%20b_i"></p>
+<p>Then putting it all back together with all the equations we have that</p>
+<p><img src="https://latex.codecogs.com/png.latex?Z%20=%20%5Ctext%7Bdiag%7D%5Cleft(%20%5Clambda_i%5E%7B-1%7D%20(1%20-%20%5Cexp%20(-%5Clambda_i%20t))%20%5Cright)%20%5Chat%20b"></p>
+<p>Substituting back in for <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?b"> we get:</p>
+<p><img src="https://latex.codecogs.com/png.latex?x%20=%20V%20%5Ctext%7Bdiag%7D%5Cleft(%20%5Clambda_i%5E%7B-1%7D%20(1%20-%20%5Cexp%20(-%5Clambda_i%20t))%20%5Cright)%20U%5E%5Ctop%20b"></p>
+<p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <img src="https://latex.codecogs.com/png.latex?A"> from earlier:</p>
+<p><img src="https://latex.codecogs.com/png.latex?x%20=%20V%20%5CSigma%5E%7B-1%7D%20U%5E%5Ctop%20b"> except in this case there is a time dependence. At the limit as <img src="https://latex.codecogs.com/png.latex?t%20%5Crightarrow%20%5Cinfty"> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
+<p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
+<div id="0c79bd8f" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Seed for reproducibility</span></span>
+<span id="cb1-6">np.random.seed(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a 5x10 matrix A with random values</span></span>
+<span id="cb1-8">A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a vector b of size 5 with random values</span></span>
+<span id="cb1-10">b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb1-11"></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the SVD of A</span></span>
+<span id="cb1-13">U, S, Vt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.svd(A, full_matrices<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb1-14"></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a time dependent vector of the singular values</span></span>
+<span id="cb1-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> St(t):</span>
+<span id="cb1-17">    Sdim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> S[:, np.newaxis]</span>
+<span id="cb1-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>Sdim<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>t)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> Sdim</span>
+<span id="cb1-19"></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the time evolution of the values and plot them on a log scale y axis with a linear time x axis</span></span>
+<span id="cb1-21">t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb1-22">T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> t[np.newaxis, :]</span>
+<span id="cb1-23"></span>
+<span id="cb1-24">singular_vals_t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> St(T)</span>
+<span id="cb1-25"></span>
+<span id="cb1-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize the plot</span></span>
+<span id="cb1-27">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb1-28"></span>
+<span id="cb1-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a color palette</span></span>
+<span id="cb1-30">palette <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> sns.color_palette(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"husl"</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(S))</span>
+<span id="cb1-31"></span>
+<span id="cb1-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the singular values and their asymptotes</span></span>
+<span id="cb1-33"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(S)):</span>
+<span id="cb1-34">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the time evolution of each singular value</span></span>
+<span id="cb1-35">    sns.lineplot(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>t, y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>singular_vals_t[i, :], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'$1/S_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$ '</span>)</span>
+<span id="cb1-36">    </span>
+<span id="cb1-37">    Sinv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>S[i]</span>
+<span id="cb1-38"></span>
+<span id="cb1-39">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add a horizontal asymptote at the original singular value</span></span>
+<span id="cb1-40">    plt.axhline(y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>Sinv, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-41">    </span>
+<span id="cb1-42">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate the asymptote with the singular value</span></span>
+<span id="cb1-43">    plt.text(t[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>, Sinv, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>Sinv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], va<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'center'</span>)</span>
+<span id="cb1-44"></span>
+<span id="cb1-45"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Configure plot aesthetics</span></span>
+<span id="cb1-46">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Time'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-47">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Inverse Singular Vals'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-48">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Time Evolution of Pseudo Inverse in Gradient Flow'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb1-49">plt.legend(title<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Inverse Singular Vals'</span>, bbox_to_anchor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.05</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'upper left'</span>)</span>
+<span id="cb1-50">plt.xlim(t[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], t[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)</span>
+<span id="cb1-51">plt.tight_layout()</span>
+<span id="cb1-52">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture3/index_files/figure-html/cell-2-output-1.png" width="1139" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So we can use early stopping to prevent the flow from reaching the optimal point, a very useful technique. When it comes to inverse theory, often we are not interested in the optimal solution, but more interested in getting somewhere close that is not too noisy. This method differs from the thresholded pseudoinverse from the previous lecture, in that it allows some blending of the the smaller singular values, but their propensity for blowing up is controlled by the time exponent and early stopping.</p>
 
 
+</section>
 </section>
 
  ]]></description>
@@ -35,6 +381,7 @@
   <category>Adjoint</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture3/</guid>
   <pubDate>Tue, 17 Sep 2024 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/pseudo_inverse_time_evolution.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
   <title>Lecture 2: Image Denoising with SVD</title>

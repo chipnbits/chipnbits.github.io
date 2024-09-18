@@ -23,6 +23,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -158,6 +192,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#derivations-of-linear-algebra-gradients" id="toc-derivations-of-linear-algebra-gradients" class="nav-link active" data-scroll-target="#derivations-of-linear-algebra-gradients">Derivations of Linear Algebra Gradients</a></li>
+  <li><a href="#gradient-descent-analysis" id="toc-gradient-descent-analysis" class="nav-link" data-scroll-target="#gradient-descent-analysis">Gradient Descent Analysis</a></li>
   </ul>
 </nav>
     </div>
@@ -211,8 +246,203 @@ window.Quarto = {
 <section id="derivations-of-linear-algebra-gradients" class="level2">
 <h2 class="anchored" data-anchor-id="derivations-of-linear-algebra-gradients">Derivations of Linear Algebra Gradients</h2>
 <p>Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful “vector” derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector <span class="math inline">\(\mathbf{x}\)</span> is generally denoted as <span class="math inline">\(\nabla_{\mathbf{x}}\)</span> or alternatively <span class="math inline">\(\partial_{\mathbf{x}}\)</span>, somewhat of an abuse of notation.</p>
+<section id="a-warmup" class="level4">
+<h4 class="anchored" data-anchor-id="a-warmup">1. A Warmup</h4>
+<p><span class="math display">\[\phi(x) = a^\top x = \sum_i a_i x_i\]</span></p>
+<p>This is a vector dotproduct and the gradient is simply the vector <span class="math inline">\(a\)</span>. There is a subtlety here in that the vector is usually transposed to be a column vector, but this is not always the case. Some people in the field of statistics prefer to use row vector, this can cause some confusion. The general convention is a column vector.</p>
+<p><span class="math display">\[\nabla_{\mathbf{x}} \phi = a\]</span></p>
+</section>
+<section id="matrix-vector-multiplication" class="level4">
+<h4 class="anchored" data-anchor-id="matrix-vector-multiplication">2. Matrix Vector Multiplication</h4>
+<p><span class="math display">\[\phi(x) = Ax\]</span></p>
+<p>Based on the previous process we are expecting to potentially get <span class="math inline">\(A^\top\)</span> as the gradient, however the transpose does not occur in this case because we are not returning a vector that needs to be reshaped into a column form.</p>
+<p><span class="math display">\[\nabla_{\mathbf{x}} \phi = A\]</span></p>
+</section>
+<section id="quadratic-forms" class="level4">
+<h4 class="anchored" data-anchor-id="quadratic-forms">3. Quadratic Forms</h4>
+<p>Often we may encounter quadratic linear functions that are of the form: <span class="math display">\[ \phi(x) = x^\top A x\]</span></p>
+<p>One way to determine the gradient is to expand the expression and evaluate for a single <span class="math inline">\(\frac{\partial}{\partial x_i}\)</span> term. This method can be found at <a href="https://www.cs.ubc.ca/~schmidtm/Courses/340-F16/linearQuadraticGradients.pdf">Mark Schmidt Notes</a> Instead we can apply a chain rule for matrix differentiation that is based on the product rule for differentiation. The chain rule for matrix differentiation is as follows:</p>
+<p><span class="math display">\[\frac{d f(g,h)}{d x} = \frac{d (g(x)^\top)}{d x} \frac{\partial f(g,h)}{\partial g} + \frac{d (h(x)^\top)}{d x} \frac{\partial f(g,h)}{\partial h}\]</span></p>
+<p><span class="math display">\[ \begin {align*}
+\phi(x) &amp;= x^\top A x \\
+\nabla_{\mathbf{x}} \phi &amp;= \nabla_{\mathbf{x}} (x^\top A x) \\
+&amp;= \nabla_{\mathbf{x}} x^\top (A x) =  \nabla_{\mathbf{x}} x^\top y\\
+&amp;= (\nabla_{\mathbf{x}} x) \nabla_{\mathbf{x}} x^\top y + \nabla_{\mathbf{x}} y^\top \nabla_{\mathbf{y}} x^\top y\\
+&amp;= I y + \nabla_{\mathbf{x}} (x^\top A^\top) x\\
+&amp;= (A x) + A^\top x\\
+&amp;= (A + A^\top) x
+\end {align*}
+\]</span></p>
+<p>This fits with the generalization for a scalar quadratic form where we end up with <span class="math inline">\((cx^2)' = (c + c^\top)x = 2cx\)</span> where <span class="math inline">\(c\)</span> is a scalar.</p>
+</section>
+<section id="hadamard-product" class="level4">
+<h4 class="anchored" data-anchor-id="hadamard-product">4. Hadamard Product</h4>
+<p>Another form of interest is the hadamard product of two vectors. <span class="math display">\[\phi(x) = (Ax)^2 = Ax \odot Ax\]</span></p>
+<p>For this one let <span class="math inline">\(y=Ax\)</span> and we can index each element of the vector <span class="math inline">\(y\)</span> as <span class="math inline">\(y_i = \sum_j A_{ij} x_j\)</span>. The hadamard product is a vector <span class="math inline">\(z\)</span> where <span class="math inline">\(z_i = y_i^2\)</span>, we can compute the jacobian since now we are taking the gradient with respect to a vector.</p>
+<p>The Jacobian will contain the partial derivatives:</p>
+<p><span class="math display">\[\frac{\vec{z}}{\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} &amp; \frac{\partial z_1}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_1}{\partial x_n} \\
+\frac{\partial z_2}{\partial x_1} &amp; \frac{\partial z_2}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_2}{\partial x_n} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial z_n}{\partial x_1} &amp; \frac{\partial z_n}{\partial x_2} &amp; \cdots &amp; \frac{\partial z_n}{\partial x_n} \end{bmatrix}
+\]</span></p>
+<p>If we can recover this then we have the gradient of the hadamard product.</p>
+<p><span class="math display">\[
+\begin{align*}
+z_i &amp;= y_i^2 = \left( \sum_j A_{ij} x_j \right)^2\\
+\frac{\partial}{\partial x_j} y_i^2 &amp;= 2 y_i \frac{\partial y_i}{\partial x_j} = 2 y_i A_{ij}\\
+\frac{\vec{z}}{\vec{x}} &amp;= 2 \begin{bmatrix} y_1 A_{1j} &amp; y_1 A_{2j} &amp; \cdots &amp; y_1 A_{nj} \\
+y_2 A_{1j} &amp; y_2 A_{2j} &amp; \cdots &amp; y_2 A_{nj} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+y_n A_{1j} &amp; y_n A_{2j} &amp; \cdots &amp; y_n A_{nj} \end{bmatrix}\\
+&amp;= 2 \cdot \text{diag}(\vec{y})A\\
+&amp;= 2 \cdot \text{diag}(Ax)A
+\end{align*}
+\]</span></p>
+</section>
+<section id="least-squares-gradient" class="level4">
+<h4 class="anchored" data-anchor-id="least-squares-gradient">5. Least Squares Gradient</h4>
+<p>We look at taking the gradient of the expansion of least squares to find the gradient for this optimization objective.</p>
+<p><span class="math display">\[\phi(x) = \frac{1}{2} ||Ax - b||^2 = \frac{1}{2} (x^\top A^\top A x - 2 b^\top A x + b^\top b)\]</span></p>
+<p><span class="math display">\[ \begin{align*}
+\nabla_{\mathbf{x}} \phi &amp;= \nabla_{\mathbf{x}} \left( \frac{1}{2} (x^\top A^\top A x - 2 b^\top A x + b^\top b) \right)\\
+&amp;= \nabla_{\mathbf{x}} \left( \frac{1}{2} x^\top A^\top A x \right) - \nabla_{\mathbf{x}} \left( b^\top A x \right)\\
+&amp;= \frac{1}{2} (A^\top A + A^\top A) x - A^\top b\\
+&amp;= A^\top A x - A^\top b\\
+\end{align*}
+\]</span></p>
+<p>Returning to the first-order optimality condition we have: <span class="math display">\[A^\top A x = A^\top b\]</span></p>
+<p>At which point it is in question if <span class="math inline">\(A^\top A\)</span> is invertible. The invertibility of <span class="math inline">\(A^\top A\)</span> is determined by the rank of <span class="math inline">\(A\)</span>. The rank of A for a non-square matrix is the number of independent columns. If we examine <span class="math inline">\(A^\top Ax = 0\)</span> then we see that this is only true where the range of <span class="math inline">\(A\)</span> is in the nullspace of <span class="math inline">\(A^\top\)</span>. But <span class="math inline">\(N(A^\top) = R(A)^\perp\)</span> so they are orthogonal subspaces and will never coincide unless <span class="math inline">\(Ax=0\)</span>. So then $A^A x = 0 $ implies that <span class="math inline">\(Ax = 0\)</span> which means that if the null space of <span class="math inline">\(A=\{0\}\)</span> then the null space of <span class="math inline">\(A^\top A = \{0\}\)</span> and <span class="math inline">\(A^\top A\)</span> is invertible. Since <span class="math inline">\(A^\top A\)</span> is symmetric and positive definite, it is invertible.</p>
+<p><span class="math inline">\(A^\top A\)</span> is invertible <span class="math inline">\(\iff\)</span> <span class="math inline">\(A\)</span> is full rank, that is all the columns are independent. For non-square matrices, an <span class="math inline">\(m&gt;n\)</span> matrix that is wide will trivially not satisfy this condition. A tall matrix <span class="math inline">\(m&lt;n\)</span> will satisfy the condition if the columns are independent.</p>
+</section>
+</section>
+<section id="gradient-descent-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-descent-analysis">Gradient Descent Analysis</h2>
+<p>The standard form of the gradient descent algorithm comes from the field of optimization and can be written as:</p>
+<p><span class="math display">\[ x_{k+1} = x_k - \alpha \nabla_x \phi(x_k)\]</span></p>
+<p>Where <span class="math inline">\(\alpha\)</span> is the learning rate, which can be dependent on the problem and the gradient. Substituting the gradient of the least squares problem we have:</p>
+<p><span class="math display">\[ \begin{align}
+x_{k+1} &amp;= x_k - \alpha (A^\top A x_k - A^\top b)\\
+\frac{x_{k+1}-x_k}{\alpha} &amp;= A^\top b - A^\top A x_k\\
+lim_{\alpha \to 0} \frac{x_{k+1}-x_k}{\alpha} &amp;= \frac{dx}{dt} = A^\top (b -A x), \quad x(0) = x_0
+\end{align}
+\]</span></p>
+<p>This ODE is the continuous version of the gradient descent algorithm, also known as the <em>gradient flow</em>. Since this a linear first-order ODE we can solve it analytically. The general method for a linear system ODE would be to find the homogeneous solution and the particular solution:</p>
+<p><span class="math display">\[ \begin{align}
+x' + A^\top A x &amp;= A^\top b\\
+\text{Guess:} x &amp;= v e^{\lambda t}\\
+\lambda v e^{\lambda t} + A^\top A v e^{\lambda t} &amp;= A^\top b e^{\lambda t}\\
+\lambda v + A^\top A v &amp;= 0 \qquad \text{Homogeneous}\\
+(\lambda I + A^\top A) v &amp;= 0\\
+\lambda &amp;= \text{eigenvalues of } A^\top A, \quad v = \text{eigenvectors of } A^\top A
+\end{align}
+\]</span></p>
+<p>Before continuing further with this line, we can see that the solutions will be closely related to the SVD because it contains the information on these eigenvalues and vectors. So we can try to solve the ODE with the SVD.</p>
+<section id="solving-the-ode-with-svd" class="level4">
+<h4 class="anchored" data-anchor-id="solving-the-ode-with-svd">Solving the ODE with SVD</h4>
+<p><span class="math display">\[\begin{align}
+A &amp;= U \Sigma V^\top\\
+A^TA &amp;= V \Sigma^2 V^\top\\
+\frac{d}{dt}x &amp;= V \Sigma U^\top b - V \Sigma^2 V^\top U x\\
+\end{align}
+\]</span></p>
+<p>Now let <span class="math inline">\(z = V^top x\)</span> and <span class="math inline">\(\hat b = U ^ \top b\)</span> then we have:</p>
+<p><span class="math display">\[\begin{align}
+\frac{d}{dt} (V^\top x) &amp;= \Sigma \hat b - \Sigma^2 (V^\top x)\\
+\frac{d}{dt} z &amp;= \Sigma \hat b - \Sigma^2 z\\
+z' + \Sigma^2 z &amp;= \Sigma \hat b\\
+\end{align}
+\]</span></p>
+<p>At this stage since everything has been diagonalized, all of the equations are decoupled and independent so we can solve for the <span class="math inline">\(\lambda_i\)</span> cases independently. We find the homogeneous <span class="math inline">\(z_h\)</span> and particular <span class="math inline">\(z_p\)</span> solutions:</p>
+<p><span class="math display">\[
+\begin{align}
+z_h' + \lambda^2 z_h &amp;= 0\\
+z_h &amp;= c e^{-\lambda^2 t}\\
+z_p' + \lambda^2 z_p &amp;= \lambda \hat b\\
+z_p &amp;= D \hat b
+\lambda^2 D \hat b &amp;= \lambda \hat b\\
+D &amp;= \frac{1}{\lambda}\\
+z_p &amp;= \frac{1}{\lambda} \hat b
+\end{align}
+\]</span></p>
+<p>So the general solution for the <span class="math inline">\(i^{th}\)</span> component is:</p>
+<p><span class="math display">\[z_i = c_i e^{-\lambda_i^2 t} + \frac{1}{\lambda_i} \hat b_i\]</span></p>
+<p>Supposing that we start at <span class="math inline">\(x=0\)</span> then we have <span class="math inline">\(z=0\)</span> at all elements and can solve the coefficients <span class="math inline">\(c_i\)</span>:</p>
+<p><span class="math display">\[c_i = -\frac{1}{\lambda_i} \hat b_i\]</span></p>
+<p>Then putting it all back together with all the equations we have that</p>
+<p><span class="math display">\[Z = \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) \hat b\]</span></p>
+<p>Substituting back in for <span class="math inline">\(x\)</span> and <span class="math inline">\(b\)</span> we get:</p>
+<p><span class="math display">\[x = V \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) U^\top b\]</span></p>
+<p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <span class="math inline">\(A\)</span> from earlier:</p>
+<p><span class="math inline">\(x = V \Sigma^{-1} U^\top b\)</span> except in this case there is a time dependence. At the limit as <span class="math inline">\(t \rightarrow \infty\)</span> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
+<p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
+<div id="0c79bd8f" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Seed for reproducibility</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">4</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 5x10 matrix A with random values</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.random.randn(<span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a vector b of size 5 with random values</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.random.randn(<span class="dv">5</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the SVD of A</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>U, S, Vt <span class="op">=</span> np.linalg.svd(A, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a time dependent vector of the singular values</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> St(t):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    Sdim <span class="op">=</span> S[:, np.newaxis]</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>Sdim<span class="op">**</span><span class="dv">2</span><span class="op">*</span>t)) <span class="op">/</span> Sdim</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the time evolution of the values and plot them on a log scale y axis with a linear time x axis</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="fl">.6</span>, <span class="dv">100</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> t[np.newaxis, :]</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>singular_vals_t <span class="op">=</span> St(T)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the plot</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a color palette</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>palette <span class="op">=</span> sns.color_palette(<span class="st">"husl"</span>, <span class="bu">len</span>(S))</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the singular values and their asymptotes</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(S)):</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot the time evolution of each singular value</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    sns.lineplot(x<span class="op">=</span>t, y<span class="op">=</span>singular_vals_t[i, :], color<span class="op">=</span>palette[i], linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f'$1/S_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">$ '</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    Sinv <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>S[i]</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add a horizontal asymptote at the original singular value</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    plt.axhline(y<span class="op">=</span>Sinv, color<span class="op">=</span>palette[i], linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotate the asymptote with the singular value</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    plt.text(t[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.02</span>, Sinv, <span class="ss">f'</span><span class="sc">{</span>Sinv<span class="sc">:.2f}</span><span class="ss">'</span>, color<span class="op">=</span>palette[i], va<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure plot aesthetics</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Time'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Inverse Singular Vals'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Time Evolution of Pseudo Inverse in Gradient Flow'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">'Inverse Singular Vals'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.05</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>plt.xlim(t[<span class="dv">0</span>], t[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.1</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-2-output-1.png" width="1139" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So we can use early stopping to prevent the flow from reaching the optimal point, a very useful technique. When it comes to inverse theory, often we are not interested in the optimal solution, but more interested in getting somewhere close that is not too noisy. This method differs from the thresholded pseudoinverse from the previous lecture, in that it allows some blending of the the smaller singular values, but their propensity for blowing up is controlled by the time exponent and early stopping.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
