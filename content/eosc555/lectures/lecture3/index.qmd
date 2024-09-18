@@ -152,7 +152,7 @@ Before continuing further with this line, we can see that the solutions will be 
 $$\begin{align}
 A &= U \Sigma V^\top\\
 A^TA &= V \Sigma^2 V^\top\\
-\frac{d}{dt}x &= V \Sigma U^\top b - V \Sigma^2 V^\top U x\\
+\frac{d}{dt}x &= V \Sigma U^\top b - V \Sigma^2 V^\top x\\
 \end{align}
 $$
 
