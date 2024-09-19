@@ -483,8 +483,137 @@ plt.axis('off')
 plt.show()
 ```
 
-
-
 ## Recovery of the Adjoint Operator using Autograd
 
-Returning to the problem from last lecture,
+In this case we were able to compute the matrix form of $A$ and use its transpose to compute the SVD, but in many cases this might be too expensive or there may not be a closed form analytic solution to the early stopping technique. In such cases we wish to recover the adjoint. The question then is how to recover the adjoint operator from the `Amv` operator? There are helpful tools available through the use of automatic differentiation to track the gradients of the forward operator and recover the adjoint operator. This is a very powerful tool that can be used to recover the adjoint operator in a very general way.
+
+By definition the adjoint has the property that:
+$$\langle Ax, v \rangle = \langle x, A^\top v \rangle$$
+
+### Explicit Computation of the Adjoint
+
+We can compute the adjoint explicitly for the `Amv` operator based on its computation from earlier. The discrete fourier transform matrix operator $F$ has the property that $F^{-1} = F^\top$ so we can use this to compute the adjoint.
+
+$$
+\begin{align}
+A(x) &= \mathcal{F}^-1 \left( \mathcal{F}(P) \odot \mathcal{F}(x) \right)\\
+&= F^\top \left( \text{diag} (F(P)) F(x) \right)\\
+A^\top(v) &= F^\top \text{diag} (F(P))^* F v\\
+\end{align}
+$$
+
+Where the hadamard operation of the two vectors has been modified to a matrix form by diagonalizing the vector $F(P)$ that is the Fourier transform of the point spread function. From this form it is posible to take the adjoint of the operator by taking the complex conjugate of the transpose of the entire operation. 
+
+### Autograd Computation of the Adjoint
+
+We start with a new function $h = v^\top A(x)$ and we wish to compute the gradient of $h$ with respect to $x$. 
+
+$$ \nabla_x h = \nabla_x (v^\top A(x)) = A^\top(v)$$
+
+The gradient of $h$ with respect to $x$ is the adjoint operator $A^\top(v)$. We can use the `torch.autograd.grad` function to compute the gradient of $h$ with respect to $x$.
+
+```{python}
+def Amv_adjoint(v):
+    x = torch.zeros(1, 1, dim, dim)
+    x.requires_grad = True
+    b = Amv(x)
+    # Compute the dot product of the forward operator with the input vector
+    h = torch.sum(b * v)
+    # Compute the gradient of the dot product with respect to the input image
+    adjoint = torch.autograd.grad(h, x, create_graph=True)[0]
+    return adjoint
+```
+
+We can use this to recover $A^\top$ for the general case if we run the operator on the set of basis vectors in the image space. This will give us the adjoint operator in the form of a matrix. We can also use it to confirm that it recovers the matrix transpose of the forward operator if we are working with a simple matrix, reusing the `Amat` matrix from earlier to take its transpose and compare it to the adjoint operator.
+
+```{python}
+Amat_adj = torch.zeros(n,n)
+
+dim = 32 # Same as earlier
+k=0
+for i in range(dim):
+  for j in range(dim):
+    e_ij = torch.zeros_like(x)
+    e_ij[:,:, i, j] = 1.0
+    y = Amv_adjoint(e_ij)
+    Amat_adj[:, k] = y.flatten()
+    k = k+1
+
+diff = torch.norm(Amat_adj - Amat.T)
+print(f'Norm of difference between adjoint and transpose: {diff:.2e}')
+```
+
+So the difference is within the bounds of numerical precison and the code appears to be working correctly.
+
+## Gradient Descent with Adjoint
+
+We can now use the defined operators (functions) from earlier to setup a simple gradient descent algorithm with a step size and early stopping to produce a recovery image that bypasses the need to compute the SVD decomposition, which may be very expensive for large matrices.
+
+```{python}
+from tqdm import tqdm
+
+def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e-6):
+    """
+    Solves the least squares problem using gradient descent with progress tracking.
+
+    Parameters:
+    - x0 (torch.Tensor): Initial guess for the solution.
+    - b (torch.Tensor): Observation vector.
+    - Amv (callable): Function to compute A @ x.
+    - Amv_adjoint (callable): Function to compute A^T @ v.
+    - max_iter (int): Maximum number of iterations.
+    - alpha (float): Learning rate.
+    - tol (float): Tolerance for convergence.
+
+    Returns:
+    - x (torch.Tensor): Approximated solution vector.
+    """
+    x = x0.clone()
+    x.requires_grad = True
+    b_noisy = b.clone() + 0.01 * torch.randn_like(b)
+
+    # Initialize the progress bar
+    with tqdm(total=max_iter, desc='Least Squares Iteration', unit='iter') as pbar:
+        for i in range(max_iter):
+            # Gradient descent update
+            residual = Amv(x) - b_noisy
+            gradient = Amv_adjoint(residual)
+            xnext = x - alpha * gradient
+
+            # Compute relative error
+            error = torch.norm(xnext - x) 
+
+            # Update the progress bar with the current error
+            pbar.set_postfix({'Error': f'{error.item():.4e}'})
+            pbar.update(1)
+
+            # Check for convergence
+            if error < tol:
+                pbar.write(f'Converged at iteration {i+1} with error {error.item():.4e}')
+                x = xnext
+                break
+
+            x = xnext
+
+    return x
+
+b = Amv(x)
+x0 = torch.zeros_like(x)
+xhat = least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1, tol=1e-6)
+
+plt.figure(figsize=(6,3))
+plt.subplot(1, 2, 1)
+plt.imshow(x[0, 0], cmap='viridis', vmin=-1, vmax=1)
+plt.title('Original Image')
+plt.axis('off')
+plt.subplot(1, 2, 2)
+plt.imshow(xhat.detach().numpy()[0, 0], cmap='viridis', vmin=-1, vmax=1)
+plt.title('Recovered Image')
+plt.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+Note that torch does have the framework to run autograd on the least squares objective itself, but for this general method we are using the adjoint to compute the gradient (and indirectly invoking autograd). This framework is the most general for when there might not be explicit analytic solutions to the least squares problem, but we have the forward operator and its adjoint.
+
+
