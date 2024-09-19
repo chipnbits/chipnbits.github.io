@@ -192,7 +192,11 @@ window.Quarto = {
    
   <ul>
   <li><a href="#derivations-of-linear-algebra-gradients" id="toc-derivations-of-linear-algebra-gradients" class="nav-link active" data-scroll-target="#derivations-of-linear-algebra-gradients">Derivations of Linear Algebra Gradients</a></li>
-  <li><a href="#gradient-descent-analysis" id="toc-gradient-descent-analysis" class="nav-link" data-scroll-target="#gradient-descent-analysis">Gradient Descent Analysis</a></li>
+  <li><a href="#gradient-descent-analysis" id="toc-gradient-descent-analysis" class="nav-link" data-scroll-target="#gradient-descent-analysis">Gradient Descent Analysis</a>
+  <ul class="collapse">
+  <li><a href="#example-for-image-recovery-using-analytic-solution" id="toc-example-for-image-recovery-using-analytic-solution" class="nav-link" data-scroll-target="#example-for-image-recovery-using-analytic-solution">Example for Image Recovery using Analytic Solution</a></li>
+  </ul></li>
+  <li><a href="#recovery-of-the-adjoint-operator-using-autograd" id="toc-recovery-of-the-adjoint-operator-using-autograd" class="nav-link" data-scroll-target="#recovery-of-the-adjoint-operator-using-autograd">Recovery of the Adjoint Operator using Autograd</a></li>
   </ul>
 </nav>
     </div>
@@ -375,7 +379,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <span class="math inline">\(A\)</span> from earlier:</p>
 <p><span class="math inline">\(x = V \Sigma^{-1} U^\top b\)</span> except in this case there is a time dependence. At the limit as <span class="math inline">\(t \rightarrow \infty\)</span> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
 <p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
-<div id="77600f2e" class="cell" data-execution_count="2">
+<div id="6b11b3da" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -441,9 +445,253 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 </div>
 </div>
 <p>So we can use early stopping to prevent the flow from reaching the optimal point, a very useful technique. When it comes to inverse theory, often we are not interested in the optimal solution, but more interested in getting somewhere close that is not too noisy. This method differs from the thresholded pseudoinverse from the previous lecture, in that it allows some blending of the the smaller singular values, but their propensity for blowing up is controlled by the time exponent and early stopping.</p>
-
-
 </section>
+<section id="example-for-image-recovery-using-analytic-solution" class="level3">
+<h3 class="anchored" data-anchor-id="example-for-image-recovery-using-analytic-solution">Example for Image Recovery using Analytic Solution</h3>
+<p>Referring back to the problem of estimating the original image based on a noisy point spread function. We can monitor the time evolution of the estimate using gradient flow. Some code below defines the problem again, with recovery of the SVD decomposition for the 32x32 image, which will be used to solve the ODE for the gradient flow.</p>
+<div id="2dd1f6f1" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#matplotlib.use('TkAgg')</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.optim <span class="im">import</span> Adam</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.fft</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> gaussianConv(nn.Module):</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">    A PyTorch module that applies a Gaussian convolution to an input image using </span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">    a parameterized Gaussian Point Spread Function (PSF). The PSF is derived </span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">    from a covariance matrix and the derivatives of the Gaussian are computed </span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">    for edge detection.</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">        C (torch.Tensor): Inverse of covariance matrix used to define the shape of the Gaussian.</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">        t (float, optional): Scaling factor for the Gaussian, default is np.exp(5).</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">        n0 (float, optional): Scaling factor for the original PSF, default is 1.</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">        nx (float, optional): Scaling factor for the derivative along the x-axis, default is 1.</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">        ny (float, optional): Scaling factor for the derivative along the y-axis, default is 1.</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, C, t<span class="op">=</span>np.exp(<span class="dv">5</span>), n0<span class="op">=</span><span class="dv">1</span>, nx<span class="op">=</span><span class="dv">1</span>, ny<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(gaussianConv, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.C <span class="op">=</span> C</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.t <span class="op">=</span> t</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n0 <span class="op">=</span> n0</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.nx <span class="op">=</span> nx</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ny <span class="op">=</span> ny</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, image):</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        P, center <span class="op">=</span> <span class="va">self</span>.psfGauss(image.shape[<span class="op">-</span><span class="dv">1</span>], image.device)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        P_shifted <span class="op">=</span> torch.roll(P, shifts<span class="op">=</span>center, dims<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">3</span>])</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> torch.fft.fft2(P_shifted)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        I_fft <span class="op">=</span> torch.fft.fft2(image)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        B_fft <span class="op">=</span> S <span class="op">*</span> I_fft</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        B <span class="op">=</span> torch.real(torch.fft.ifft2(B_fft))</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> B</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> psfGauss(<span class="va">self</span>, dim, device<span class="op">=</span><span class="st">'cpu'</span>):</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> dim</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>        n <span class="op">=</span> dim</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a meshgrid of (X, Y) coordinates</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.arange(<span class="op">-</span>m <span class="op">//</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, m <span class="op">//</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, device<span class="op">=</span>device)</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> torch.arange(<span class="op">-</span>n <span class="op">//</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, n <span class="op">//</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span>, device<span class="op">=</span>device)</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        X, Y <span class="op">=</span> torch.meshgrid(x, y, indexing<span class="op">=</span><span class="st">'ij'</span>)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> X.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)  <span class="co"># Shape: (1, 1, m, n)</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        Y <span class="op">=</span> Y.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)  <span class="co"># Shape: (1, 1, m, n)</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>        cx, cy, cxy <span class="op">=</span> <span class="va">self</span>.C[<span class="dv">0</span>, <span class="dv">0</span>], <span class="va">self</span>.C[<span class="dv">1</span>, <span class="dv">1</span>], <span class="va">self</span>.C[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>        PSF <span class="op">=</span> torch.exp(<span class="op">-</span><span class="va">self</span>.t <span class="op">*</span> (cx <span class="op">*</span> X <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> cy <span class="op">*</span> Y <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> cxy <span class="op">*</span> X <span class="op">*</span> Y))</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        PSF0 <span class="op">=</span> PSF <span class="op">/</span> torch.<span class="bu">sum</span>(PSF.<span class="bu">abs</span>())</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        Kdx <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>                            [<span class="op">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>],</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>                            [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>PSF0.dtype, device<span class="op">=</span>device) <span class="op">/</span> <span class="dv">4</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>        Kdy <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>                            [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>                            [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>PSF0.dtype, device<span class="op">=</span>device) <span class="op">/</span> <span class="dv">4</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>        Kdx <span class="op">=</span> Kdx.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)  <span class="co"># Shape: (1, 1, 3, 3)</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>        Kdy <span class="op">=</span> Kdy.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)  <span class="co"># Shape: (1, 1, 3, 3)</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>        PSFdx <span class="op">=</span> F.conv2d(PSF0, Kdx, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>        PSFdy <span class="op">=</span> F.conv2d(PSF0, Kdy, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>        PSF_combined <span class="op">=</span> <span class="va">self</span>.n0 <span class="op">*</span> PSF0 <span class="op">+</span> <span class="va">self</span>.nx <span class="op">*</span> PSFdx <span class="op">+</span> <span class="va">self</span>.ny <span class="op">*</span> PSFdy</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>        center <span class="op">=</span> [<span class="dv">1</span> <span class="op">-</span> m <span class="op">//</span> <span class="dv">2</span>, <span class="dv">1</span> <span class="op">-</span> n <span class="op">//</span> <span class="dv">2</span>]</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> PSF_combined, center</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>dim <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.zeros(<span class="dv">1</span>, <span class="dv">1</span>, dim, dim)</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>x[:,:, <span class="dv">12</span>:<span class="dv">14</span>, <span class="dv">12</span>:<span class="dv">14</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>x[:,:, <span class="dv">10</span>:<span class="dv">12</span>, <span class="dv">10</span>:<span class="dv">12</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> torch.tensor([[<span class="dv">1</span>, <span class="dv">0</span>],[<span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>Amv <span class="op">=</span> gaussianConv(C, t<span class="op">=</span><span class="fl">0.1</span>,n0<span class="op">=</span><span class="dv">1</span>, nx<span class="op">=</span><span class="fl">0.1</span>,  ny<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span>(<span class="bu">len</span>(x.flatten()))</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>Amat <span class="op">=</span> torch.zeros(n,n)</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>k<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(x.shape[<span class="op">-</span><span class="dv">2</span>]):</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(x.shape[<span class="op">-</span><span class="dv">1</span>]):</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>    e_ij <span class="op">=</span> torch.zeros_like(x)</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>    e_ij[:,:, i, j] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> Amv(e_ij)</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>    Amat[:, k] <span class="op">=</span> y.flatten()</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> k<span class="op">+</span><span class="dv">1</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(Amat.to(torch.float64))</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> Amv(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now that we have the matrix form of the forward operator <code>Amat</code> defined, along with the forward result <code>b</code> and the the decomposition <code>U, S, V</code> we can run the pseudo-inverse gradient flow method as before. So in this case we will be computing:</p>
+<p><span class="math display">\[ x = V \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) U^\top b\]</span></p>
+<p>Since these represents an evolution over time, an animation can be created to show the time evolution of the image recovery, along with the effect of continuing into a region where noise is amplified and dominates.</p>
+<p>Recalling the original and distorted images with a small amount of noise <span class="math inline">\(\epsilon\)</span> are as follows:</p>
+<div id="b91990c7" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(x[<span class="dv">0</span>, <span class="dv">0</span>], cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Original Image'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>b_noisy <span class="op">=</span> b<span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> torch.randn_like(b)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>plt.imshow(b_noisy[<span class="dv">0</span>, <span class="dv">0</span>], cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Distorted Image'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="549" height="288" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The distorted image has had much of its intensity spread out diffusely, so it is only visible as a faint outline. The noise is also visible in the image as a grainy texture. The gradient flow method will attempt to recover the original image from this distorted image.</p>
+<div id="d6c89c1c" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> animation</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>b_flat <span class="op">=</span> b.flatten().to(torch.float64)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>x_flat <span class="op">=</span> x.flatten().to(torch.float64)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>b_noisy <span class="op">=</span> b_flat <span class="op">+</span> <span class="fl">0.001</span> <span class="op">*</span> torch.randn_like(b_flat)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xhat(t):</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    Sinv_t <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> torch.exp(<span class="op">-</span>S<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> t)) <span class="op">/</span> S</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    A_pinv <span class="op">=</span> V <span class="op">@</span> torch.diag(Sinv_t) <span class="op">@</span> U.T</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    xhat <span class="op">=</span> A_pinv <span class="op">@</span> b_noisy</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xhat</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Time evolution parameters</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>num_frames <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>t_vals <span class="op">=</span> np.logspace(<span class="dv">0</span>, <span class="dv">6</span>, num_frames)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the plot</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> ax.imshow(np.zeros((dim, dim)), cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Time Evolution of Pseudo-Inverse Gradient Flow'</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the error text</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>error_text <span class="op">=</span> ax.text(<span class="fl">0.02</span>, <span class="fl">0.95</span>, <span class="st">''</span>, transform<span class="op">=</span>ax.transAxes, color<span class="op">=</span><span class="st">'blue'</span>, fontsize<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                     verticalalignment<span class="op">=</span><span class="st">'top'</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>time_text <span class="op">=</span> ax.text(<span class="fl">0.5</span>, <span class="fl">0.95</span>, <span class="st">''</span>, transform<span class="op">=</span>ax.transAxes, color<span class="op">=</span><span class="st">'blue'</span>, fontsize<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                        verticalalignment<span class="op">=</span><span class="st">'top'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize containers to track min error and best time</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>tracking <span class="op">=</span> {<span class="st">'min_error'</span>: <span class="bu">float</span>(<span class="st">'inf'</span>), <span class="st">'best_t'</span>: <span class="fl">0.0</span>}</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Animation update function</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> update_frame(t):</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute time-dependent singular values</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    Sinv_t <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> torch.exp(<span class="op">-</span>S <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> t)) <span class="op">/</span> S</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct the pseudoinverse of Amat at time t</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    A_pinv <span class="op">=</span> V <span class="op">@</span> torch.diag(Sinv_t) <span class="op">@</span> U.t()</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reconstruct the image estimate x(t)</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    xt <span class="op">=</span> A_pinv <span class="op">@</span> b_noisy</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the relative error</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> torch.norm(x_flat <span class="op">-</span> xt) <span class="op">/</span> torch.norm(x_flat)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Update min_error and best_t if current error is lower</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> error.item() <span class="op">&lt;</span> tracking[<span class="st">'min_error'</span>]:</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        tracking[<span class="st">'min_error'</span>] <span class="op">=</span> error.item()</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        tracking[<span class="st">'best_t'</span>] <span class="op">=</span> t</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape to image dimensions</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    x_image <span class="op">=</span> xt.reshape(dim, dim).detach().numpy()</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Update the image data</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    im.set_data(x_image)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Update the error text</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    error_text.set_text(<span class="ss">f'Relative Error: </span><span class="sc">{</span>error<span class="sc">.</span>item()<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    time_text.set_text(<span class="ss">f'Time: </span><span class="sc">{</span>t<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [im, error_text, time_text]</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the animation</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>ani <span class="op">=</span> animation.FuncAnimation(fig, update_frame, frames<span class="op">=</span>t_vals, blit<span class="op">=</span><span class="va">True</span>, interval<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>ani.save(<span class="st">'imgs/gradient_flow.gif'</span>, writer<span class="op">=</span><span class="st">'pillow'</span>, fps<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>plt.close(fig)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><img src="imgs/gradient_flow.gif" class="img-fluid" width="600"></p>
+<p>And we saved the best time that was discovered for the recovery (with prior knowledge of the ground truth). So we can inspect that image, this was the best that we could do with the gradient flow method.</p>
+<div id="b5b40469" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>best_img <span class="op">=</span> get_xhat(tracking[<span class="st">'best_t'</span>]).reshape(dim, dim).detach().numpy()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(best_img <span class="op">/</span> np.<span class="bu">max</span>(np.<span class="bu">abs</span>(best_img)), cmap<span class="op">=</span><span class="st">'viridis'</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'Best Reconstruction at t=</span><span class="sc">{</span>tracking[<span class="st">"best_t"</span>]<span class="sc">:.2f}</span><span class="ch">\n</span><span class="ss">Relative Error: </span><span class="sc">{</span>tracking[<span class="st">"min_error"</span>]<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="463" height="501" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="recovery-of-the-adjoint-operator-using-autograd" class="level2">
+<h2 class="anchored" data-anchor-id="recovery-of-the-adjoint-operator-using-autograd">Recovery of the Adjoint Operator using Autograd</h2>
+<p>Returning to the problem from last lecture,</p>
+
+
 </section>
 
 </main> <!-- /main -->
