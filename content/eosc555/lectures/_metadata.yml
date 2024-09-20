@@ -11,8 +11,8 @@ format:
     toc-depth: 3
     code-fold: true
     code-summary: "Show the code"
-  ipynb:
-    execute: false
+  # ipynb:
+  #   execute: false
 
 execute:
   kernel: python3
