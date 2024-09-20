@@ -17,7 +17,7 @@ format:
 execute:
   kernel: python3
   cache: true
-  cache-refresh: true
+  cache-refresh: false
   cache-path: .jupyter_cache
 
 crossref:

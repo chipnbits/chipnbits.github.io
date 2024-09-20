@@ -1,0 +1,23 @@
+::: {.hidden}
+$$
+\def\argmin{\operatorname*{argmin}}
+\def\bmat#1{\begin{bmatrix}#1\end{bmatrix}}
+\def\Diag{\mathbf{Diag}}
+\def\ip#1{\langle #1 \rangle}
+
+\def\maximize#1{\displaystyle\maxim_{#1}}
+
+\def\minimize#1{\displaystyle\minim_{#1}}
+\def\norm#1{\|#1\|}
+\def\proj{\mathbf{proj}}
+\def\R{\mathbb R}
+\def\Re{\mathbb R}
+\def\Rn{\R^n}
+\def\rank{\mathbf{rank}}
+\def\range{{\mathbf{range}}}
+\def\span{{\mathbf{span}}}
+\def\textt#1{\quad\text{#1}\quad}
+\def\trace{\mathbf{trace}}
+\def\bf#1{\mathbf{#1}}
+$$
+:::

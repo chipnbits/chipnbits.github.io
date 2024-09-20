@@ -10,7 +10,678 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Tue, 17 Sep 2024 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 20 Sep 2024 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Lecture 4: Regularization and the Conjugate Gradient Methods</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture4/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="hidden">
+<p>$$ </p>
+<p>$$</p>
+</div>
+<section id="tikhnov-regularization" class="level2">
+<h2 class="anchored" data-anchor-id="tikhnov-regularization">Tikhnov Regularization</h2>
+<p>We have looked at the least squares formulation for solving inverse problems:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20%5C%7CA%20x%20-%20b%5C%7C%5E2%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?A%20%5Cin%20%5Cmathbb%20R%5E%7Bm%20%5Ctimes%20n%7D"> is a linear operator, <img src="https://latex.codecogs.com/png.latex?x%20%5Cin%20%5Cmathbb%20R%5En"> is the unknown model, and <img src="https://latex.codecogs.com/png.latex?b%20%5Cin%20%5Cmathbb%20R%5Em"> is the data.</p>
+<p>The least squares problem is often ill-posed, meaning that the solution is not unique or stable. If there are more unknowns than equations, such as the case when <img src="https://latex.codecogs.com/png.latex?n%20%3E%20m">, then the problem is underdetermined and there are infinitely many solutions.</p>
+<p>We can return to unique solutions by adding a regularization term to the selection of the <img src="https://latex.codecogs.com/png.latex?x"> that we want to minimize. The Tikhonov regularization technique adds a penalty term to the least squares problem:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20%5C%7CA%20x%20-%20b%5C%7C%5E2%20+%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Clambda%20%5C%7CLx%5C%7C%5E2%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?L%20%5Cin%20%5Cmathbb%20R%5E%7Bn%20%5Ctimes%20n%7D"> is a regularization matrix. The regularization matrix <img src="https://latex.codecogs.com/png.latex?L"> is often chosen to be the identity matrix, but other choices are possible.</p>
+<section id="uniqueness" class="level4">
+<h4 class="anchored" data-anchor-id="uniqueness">Uniqueness</h4>
+<p>To check the uniqueness of the solution, we can rewrite the problem as a quadratic form:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20x%5ET%20A%5ET%20A%20x%20-%20b%5ET%20A%20x%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Clambda%20x%5ET%20L%5ET%20L%20x%20"> <img src="https://latex.codecogs.com/png.latex?%20=%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20x%5ET%20H%20x%20-%20b%5ET%20A%20x%20+%20%5Cfrac%7B1%7D%7B2%7D%5C%7Cb%5C%7C%5E2"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?H%20=%20A%5ET%20A%20+%20%5Clambda%20L%5ET%20L"> is the Hessian matrix which is symmetric and positive semi-definite by spectral theorem. If we choose an appropriate <img src="https://latex.codecogs.com/png.latex?%5Clambda">, then the Hessian matrix is positive definite and the problem is well-posed. In the case where <img src="https://latex.codecogs.com/png.latex?L=I">, the Hessian becomes full rank for <img src="https://latex.codecogs.com/png.latex?%5Clambda%20%3E%200"> and the problem is well-posed. The quality that <img src="https://latex.codecogs.com/png.latex?H%20%5Csucc%200"> means that the matrix is invertible.</p>
+</section>
+<section id="solution" class="level4">
+<h4 class="anchored" data-anchor-id="solution">Solution</h4>
+<p>The unique solution is given by by the first order optimatility condition:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0A(A%5ET%20A%20+%20%5Clambda%20L%5ET%20L)%20%5Cmathbf%7Bx%7D_%7B%5Ctext%7BRLS%7D%7D%20-%20A%5ET%20b&amp;=%200%20%5C%5C%0A%5Cmathbf%7Bx%7D_%7B%5Ctext%7BRLS%7D%7D%20&amp;=%20(A%5ET%20A%20+%20%5Clambda%20L%5ET%20L)%5E%7B-1%7D%20A%5ET%20b%0A%5Cend%7Balign%7D%0A"></p>
+</section>
+<section id="svd-decomposition" class="level4">
+<h4 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h4>
+<p>The solution can be written in terms of the singular value decomposition of <img src="https://latex.codecogs.com/png.latex?A">, and with the assumption that <img src="https://latex.codecogs.com/png.latex?L=I">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0AA%20&amp;=%20U%20%5CSigma%20V%5ET%20%5C%5C%0AA%5ET%20A%20&amp;=%20V%20%5CSigma%5ET%20%5CSigma%20V%5ET%20%5C%5C%0A%5Cmathbf%7Bx%7D_%7B%5Ctext%7BRLS%7D%7D%20&amp;=%20%5Cleft(%20V%20%5CSigma%5E2%20V%5ET%20+%20%5Clambda%20I%20%5Cright)%5E%7B-1%7D%20V%20%5CSigma%5ET%20U%5ET%20b%20%5C%5C%0A&amp;=%20%5Cleft(%20V%20%5CSigma%5E2%20V%5ET%20+%20%5Clambda%20I%20V%20V%5ET%20%5Cright)%5E%7B-1%7D%20V%20%5CSigma%5ET%20U%5ET%20b%5C%5C%0A&amp;=%20V%20%5Cleft(%20%5CSigma%5E2%20+%20%5Clambda%20I%20%5Cright)%5E%7B-1%7D%20%5CSigma%5ET%20U%5ET%20b%5C%5C%0A&amp;=%20V%20%5Cmathbf%7BDiag%7D%5Cleft(%20%5Cfrac%7B%5Csigma_i%7D%7B%5Csigma_i%5E2%20+%20%5Clambda%7D%20%5Cright)%20U%5ET%20b%5C%5C%0A&amp;=%20%5Csum%20_i%20%5E%20n%20%5Cfrac%7B%5Csigma_i%7D%7B%5Csigma_i%5E2%20+%20%5Clambda%7D%20%5Clangle%20u_i,%20b%20%5Crangle%20v_i%0A%5Cend%7Balign%7D%0A"></p>
+<p>This form is more readily comparable to some of the other methods that we have see so far, which are presented in the table below:</p>
+</section>
+</section>
+<section id="comparison-of-least-squares-methods" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-least-squares-methods">Comparison of Least Squares Methods</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tikhonov</td>
+<td><img src="https://latex.codecogs.com/png.latex?x_%7B%5Ctext%7BRLS%7D%7D%20=%20%5Csum%20_i%20%5E%20n%20%5Cfrac%7B%5Csigma_i%7D%7B%5Csigma_i%5E2%20+%20%5Clambda%7D%20%5Clangle%20u_i,%20b%20%5Crangle%20v_i"></td>
+</tr>
+<tr class="even">
+<td>Thresholded SVD</td>
+<td><img src="https://latex.codecogs.com/png.latex?x_%7B%5Ctext%7BTSVD%7D%7D%20=%20%5Csum%20_i%20%5E%20n%20h(%5Csigma_i)%20%5Clangle%20u_i,%20b%20%5Crangle%20v_i"></td>
+</tr>
+<tr class="odd">
+<td>Gradient Flow</td>
+<td><img src="https://latex.codecogs.com/png.latex?x_%7B%5Ctext%7BSDF%7D%7D%20=%20%5Csum%20_i%20%5E%20n%20%5Cfrac%7B%5Cexp(-%5Csigma_i%5E2%20t)%20-%201%7D%7B%5Csigma_i%7D%20%5Clangle%20u_i,%20b%20%5Crangle%20v_i"></td>
+</tr>
+</tbody>
+</table>
+<p>As we can see all three methods have a similar form and offer some mechanism for controlling the noise induced by the small singular values of <img src="https://latex.codecogs.com/png.latex?A">.</p>
+<div id="cell-comp-plot" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> generate_ill_conditioned_matrix(m, n, condition_number):   </span>
+<span id="cb1-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate random orthogonal matrices U and V</span></span>
+<span id="cb1-7">    U, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.qr(np.random.randn(m, m))</span>
+<span id="cb1-8">    V, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.qr(np.random.randn(n, n))</span>
+<span id="cb1-9">    </span>
+<span id="cb1-10">    sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>condition_number, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(m, n))    </span>
+<span id="cb1-11">    Sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.diag(sigma)    </span>
+<span id="cb1-12">    A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> U <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> Sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> V[:<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(m, n), :]</span>
+<span id="cb1-13">    </span>
+<span id="cb1-14">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> A, sigma</span>
+<span id="cb1-15"></span>
+<span id="cb1-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Seed for reproducibility</span></span>
+<span id="cb1-17">np.random.seed(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb1-18">A, S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> generate_ill_conditioned_matrix(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e3</span>)</span>
+<span id="cb1-19"></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a vector b of size 5 with random values</span></span>
+<span id="cb1-21">b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb1-22"></span>
+<span id="cb1-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the SVD of A</span></span>
+<span id="cb1-24">U, S, Vt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.svd(A, full_matrices<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)</span>
+<span id="cb1-25">V <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Vt.T</span>
+<span id="cb1-26">U <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> U  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Already in proper shape</span></span>
+<span id="cb1-27"></span>
+<span id="cb1-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Number of singular values</span></span>
+<span id="cb1-29">n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(S)</span>
+<span id="cb1-30"></span>
+<span id="cb1-31"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define parameters for each method</span></span>
+<span id="cb1-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Gradient Flow</span></span>
+<span id="cb1-33">t_values <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb1-34"></span>
+<span id="cb1-35"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Tikhonov Regularization</span></span>
+<span id="cb1-36">lambda_values <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb1-37"></span>
+<span id="cb1-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Thresholded SVD</span></span>
+<span id="cb1-39">threshold_values <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(S), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb1-40"></span>
+<span id="cb1-41"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute scaling factors for each method</span></span>
+<span id="cb1-42"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Gradient Flow Scaling</span></span>
+<span id="cb1-43"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gradient_flow_scaling(sigma, t):</span>
+<span id="cb1-44">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> t)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> sigma</span>
+<span id="cb1-45"></span>
+<span id="cb1-46">gradient_scalings <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([gradient_flow_scaling(s, t_values) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> s <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> S])</span>
+<span id="cb1-47"></span>
+<span id="cb1-48"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Tikhonov Scaling</span></span>
+<span id="cb1-49"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> tikhonov_scaling(sigma, lambd):</span>
+<span id="cb1-50">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> lambd)</span>
+<span id="cb1-51"></span>
+<span id="cb1-52">tikhonov_scalings <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([tikhonov_scaling(s, lambda_values) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> s <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> S])</span>
+<span id="cb1-53"></span>
+<span id="cb1-54"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Thresholded SVD Scaling</span></span>
+<span id="cb1-55"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> tsvd_scaling(sigma, threshold):</span>
+<span id="cb1-56">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> np.where(sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> threshold, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb1-57"></span>
+<span id="cb1-58">tsvd_scalings <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([tsvd_scaling(s, threshold_values) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> s <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> S])</span>
+<span id="cb1-59"></span>
+<span id="cb1-60"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize the plot with 3 subplots</span></span>
+<span id="cb1-61">fig, axes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>))</span>
+<span id="cb1-62"></span>
+<span id="cb1-63"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define a color palette</span></span>
+<span id="cb1-64">palette <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> sns.color_palette(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"husl"</span>, n)</span>
+<span id="cb1-65"></span>
+<span id="cb1-66"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot Gradient Flow</span></span>
+<span id="cb1-67">ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> axes[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb1-68"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n):</span>
+<span id="cb1-69">    ax.plot(t_values, gradient_scalings[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$'</span> )</span>
+<span id="cb1-70">    ax.axhline(y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>S[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-71">ax.set_yscale(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'log'</span>)</span>
+<span id="cb1-72">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Time (t)'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-73">ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Scaling Factor'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-74">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient Flow'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb1-75">ax.legend()</span>
+<span id="cb1-76">ax.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-77"></span>
+<span id="cb1-78"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot Tikhonov Regularization</span></span>
+<span id="cb1-79">ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> axes[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb1-80"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n):</span>
+<span id="cb1-81">    ax.plot(lambda_values, tikhonov_scalings[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$'</span> )</span>
+<span id="cb1-82">    ax.axhline(y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>S[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-83">ax.set_yscale(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'log'</span>)</span>
+<span id="cb1-84">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Regularization Parameter (λ)'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-85">ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Scaling Factor'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-86">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Tikhonov Regularization'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb1-87">ax.legend()</span>
+<span id="cb1-88">ax.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-89"></span>
+<span id="cb1-90"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot Thresholded SVD</span></span>
+<span id="cb1-91">ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> axes[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]</span>
+<span id="cb1-92"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(n):</span>
+<span id="cb1-93">    ax.plot(threshold_values, tsvd_scalings[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">$'</span>)</span>
+<span id="cb1-94">    ax.axhline(y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>S[i], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>palette[i], linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-95">ax.set_yscale(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'log'</span>)</span>
+<span id="cb1-96">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Threshold (τ)'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-97">ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Scaling Factor'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb1-98">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Thresholded SVD'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb1-99">ax.legend()</span>
+<span id="cb1-100">ax.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-101"></span>
+<span id="cb1-102"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust layout and add a legend</span></span>
+<span id="cb1-103">plt.tight_layout()</span>
+<span id="cb1-104">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="comp-plot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture4/index_files/figure-html/comp-plot-output-1.png" width="469" height="1430" class="figure-img"></p>
+<figcaption>Evolution of scaling factors for three different methods</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="solving-least-squares-using-conjugate-gradient" class="level2">
+<h2 class="anchored" data-anchor-id="solving-least-squares-using-conjugate-gradient">Solving Least Squares Using Conjugate Gradient</h2>
+<p>A detailed explanation of this method can be found at <a href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">Wikipedia</a></p>
+<section id="conjugate-vectors-definition" class="level4">
+<h4 class="anchored" data-anchor-id="conjugate-vectors-definition">Conjugate Vectors Definition</h4>
+<p>A set of vectors <img src="https://latex.codecogs.com/png.latex?%5C%7B%20p_1,%20p_2,%20%5Cldots,%20p_n%20%5C%7D"> is said to be <strong>conjugate with respect to</strong> a matrix <img src="https://latex.codecogs.com/png.latex?A"> if:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Clangle%20p_i,%20A%20p_j%20%5Crangle%20=%200%20%5Cquad%20%5Ctext%7Bfor%20all%20%7D%20i%20%5Cneq%20j%0A"></p>
+<p>This is a generalization of the concept of orthoganality to non-symmetric matrices.</p>
+<p><strong>Standard Orthogonality:</strong> When $ A = I $ (the identity matrix), the definition reduces to the standard concept of orthogonality. For a symmetric <img src="https://latex.codecogs.com/png.latex?A"> we also have an orthogonal decomposition of eigenvectors by spectral theorem.</p>
+<hr>
+<p>Back to the problem of least squares, we can express the solution $ x $ as a linear combination of conjugate vectors:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ax%20=%20x_0%20+%20%5Csum_%7Bi=1%7D%5En%20%5Calpha_i%20p_i%0A"></p>
+<p>where:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?x_0"> is an initial guess (can be zero).</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Calpha_i"> are scalar coefficients.</li>
+<li><img src="https://latex.codecogs.com/png.latex?p_i"> are conjugate vectors with respect to <img src="https://latex.codecogs.com/png.latex?A">.</li>
+</ul>
+<p>To recover the coefficients of <img src="https://latex.codecogs.com/png.latex?%5Calpha_i"> we can use a projection in the weighted space of <img src="https://latex.codecogs.com/png.latex?A">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0AA%20x_0%20+%20%5Csum_%7Bi=1%7D%5En%20%5Calpha_i%20A%20p_i%20&amp;=%20b%5C%5C%0Ar%20&amp;=%20b%20-%20A%20x_0%5C%5C%0A%5Csum_%7Bi=1%7D%5En%20%5Calpha_i%20A%20p_i%20&amp;=%20r%5C%5C%0A%5Clangle%20p_i,%20%5Csum_%7Bi=1%7D%5En%20%5Calpha_i%20A%20p_i%20%5Crangle%20&amp;=%20%5Clangle%20p_i,%20r%20%5Crangle%5C%5C%0A%5Calpha_i%20%5Clangle%20p_i,%20A%20p_i%20%5Crangle%20&amp;=%20%5Clangle%20p_i,%20r%20%5Crangle%5C%5C%0A%5Calpha_i%20&amp;=%20%5Cfrac%7B%5Clangle%20p_i,%20r%20%5Crangle%7D%7B%5Clangle%20p_i,%20A%20p_i%20%5Crangle%7D%0A%5Cend%7Balign%7D%0A"> In the case where <img src="https://latex.codecogs.com/png.latex?x_0"> is zero, then this reduces to <img src="https://latex.codecogs.com/png.latex?%20%5Calpha_i%20=%20%5Cfrac%7B%5Clangle%20p_i,%20b%20%5Crangle%7D%7B%5Clangle%20p_i,%20A%20p_i%20%5Crangle%7D%20"></p>
+</section>
+<section id="algorithm-steps" class="level3">
+<h3 class="anchored" data-anchor-id="algorithm-steps">Algorithm Steps</h3>
+<p><strong>Initialize:</strong></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?x%20=%20x_0"></li>
+<li><img src="https://latex.codecogs.com/png.latex?r_0%20=%20b%20-%20A%20x_0"></li>
+<li><img src="https://latex.codecogs.com/png.latex?p_0%20=%20r_0"></li>
+</ul>
+<p><strong>For <img src="https://latex.codecogs.com/png.latex?i%20=%200,1,%202,%20%5Cldots">:</strong></p>
+<ol type="1">
+<li><p><strong>Compute <img src="https://latex.codecogs.com/png.latex?%5Calpha_i">:</strong></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Calpha_i%20=%20%5Cfrac%7B%5Clangle%20r_i,%20r_i%20%5Crangle%7D%7B%5Clangle%20p_i,%20A%20p_i%20%5Crangle%7D%0A"></p></li>
+<li><p><strong>Update Solution <img src="https://latex.codecogs.com/png.latex?x">:</strong></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ax_%7Bi+1%7D%20=%20x_%7Bi%7D%20+%20%5Calpha_i%20p_i%0A"></p></li>
+<li><p><strong>Update Residual <img src="https://latex.codecogs.com/png.latex?r">:</strong></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ar_%7Bi+1%7D%20=%20r_%7Bi%7D%20-%20%5Calpha_i%20A%20p_i%0A"></p></li>
+<li><p><strong>Check for Convergence:</strong></p>
+<ul>
+<li>If <img src="https://latex.codecogs.com/png.latex?%5C%7C%20r_%7Bi+1%7D%20%5C%7C"> is small enough, stop.</li>
+</ul></li>
+<li><p><strong>Compute <img src="https://latex.codecogs.com/png.latex?%5Cbeta_i">:</strong></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbeta_i%20=%20%5Cfrac%7B%5Clangle%20r_%7Bi+1%7D,%20r_%7Bi+1%7D%5Crangle%7D%7B%5Clangle%20r_i,r_i%20%5Crangle%7D%0A"></p></li>
+<li><p><strong>Update Conjugate Direction <img src="https://latex.codecogs.com/png.latex?p_%7Bi+1%7D">:</strong></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ap_%7Bi+1%7D%20=%20r_%7Bi+1%7D%20+%20%5Cbeta_i%20p_i%0A"></p></li>
+</ol>
+<hr>
+<p>The method can be seen better if we trace through the minimization problem for fixed <img src="https://latex.codecogs.com/png.latex?x"> and with variable <img src="https://latex.codecogs.com/png.latex?%5Calpha">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A&amp;%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20%5C%7CA%20(x+%5Calpha%20p)%20-%20b%5C%7C%5E2%20%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B2%7Dr%5ET%20r%20+%20%5Calpha%20%5Clangle%20r,%20A%20p%20%5Crangle%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Calpha%5E2%20%5Clangle%20p,%20A%5ET%20A%20p%20%5Crangle%20%5C%5C%0A0%20&amp;=%20%5Clangle%20r,%20A%20p%20%5Crangle%20+%20%5Calpha%20%5Clangle%20p,%20A%5ET%20A%20p%20%5Crangle%20%5C%5C%0A%5Calpha%20&amp;=%20-%5Cfrac%7B%5Clangle%20r,%20A%20p%20%5Crangle%7D%7B%5C%7CA%20p%5C%7C%5E2%7D%0A%5Cend%7Balign%7D%0A"></p>
+<p>But we can also trace this through using the expansion of lest squares and removing the <img src="https://latex.codecogs.com/png.latex?%5C%7Cb%5C%7C%5E2"> term:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A&amp;%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20%5Ctilde%20x%5ET%20A%20x%20-%20%5Ctilde%20x%5ET%20b%20%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft(%20x%5ET%20A%20x%20+%202%20%5Calpha%20x%5ET%20A%20p%20+%20%5Calpha%5E2%20p%5ET%20A%20p%20%5Cright)%20-%20x%5ET%20b%20-%20%5Calpha%20p%5ET%20b%5C%5C%0A0&amp;=%20x%5ETAp%20+%20%5Calpha%20p%5ET%20A%20p%20-%20p%5ET%20b%20%5C%5C%0A%5Calpha%20&amp;=%20%5Cfrac%7Bp%5ET%20(Ax-b)%7D%7Bp%5ET%20A%20p%7D%0A%5Cend%20%7Balign%7D%0A"></p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>Optimization</category>
+  <category>Inverse Theory</category>
+  <category>Python</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture4/</guid>
+  <pubDate>Fri, 20 Sep 2024 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture4/imgs/tikhonov_regularization.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Lecture 3: Image Denoising with Gradient Descent and Early Stopping</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
