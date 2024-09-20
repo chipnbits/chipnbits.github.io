@@ -1,5 +1,5 @@
 ---
-title: "Simon Ghyselincks"
+title: "Simon Ghyselincks Personal Website"
 sidebar: false
 toc: false
 resources: 

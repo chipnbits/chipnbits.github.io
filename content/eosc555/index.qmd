@@ -1,5 +1,5 @@
 ---
-title: "Lecture Notes"
+title: "Lecture Notes For EOSC 555B: Nonlinear Inverse Theory as taught by Prof. Eldad Haber of the University of British Columbia"
 sidebar: false
 listing:
   contents: lectures
