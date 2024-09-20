@@ -15,17 +15,6 @@ categories:
 image: imgs/gaussian_plot.png
 draft: false
 
-execute:
-  kernel: python3
-  cache: true
-  cache-refresh: true
-  cache-path: .jupyter_cache
-
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
-
 editor: 
   render-on-save: false
 ---

@@ -5,6 +5,16 @@ author:
 
 sidebar: false
 
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-summary: "Show the code"
+  ipynb:
+    execute: false
+
 execute:
   kernel: python3
   cache: true

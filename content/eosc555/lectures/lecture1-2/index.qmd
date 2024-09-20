@@ -15,17 +15,6 @@ categories:
 image: imgs/ls-sol.svg
 draft: false
 
-execute:
-  kernel: ml
-  cache: true
-  cache-refresh: true
-  cache-path: .jupyter_cache
-
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
-
 editor: 
   render-on-save: false
 ---

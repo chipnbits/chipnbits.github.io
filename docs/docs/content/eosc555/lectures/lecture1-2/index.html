@@ -6,9 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Simon Ghyselincks">
-<meta name="dcterms.date" content="2024-09-14">
-<meta name="description" content="Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.">
 
 <title>Lecture 1: Introduction to Inverse Theory – Simon Ghyselincks</title>
 <style>
@@ -26,22 +23,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../../../">
-<script src="../../../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../">
+<script src="../../../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -101,17 +98,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../../../styles.css">
+<link rel="stylesheet" href="../../../../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-sidebar docked nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../../../index.html">
+    <a class="navbar-brand" href="../../../../../index.html">
     <span class="navbar-title">Simon Ghyselincks</span>
     </a>
   </div>
@@ -122,23 +119,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../../../index.html"> 
+    <a class="nav-link" href="../../../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../../content/projects/RLUnicycle/introduction.html"> 
+    <a class="nav-link active" href="../../../../../content/projects/RLUnicycle/introduction.html" aria-current="page"> 
 <span class="menu-text">Learning to Balance</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../../blog/index.html"> 
+    <a class="nav-link" href="../../../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../../content/eosc555/index.html"> 
+    <a class="nav-link" href="../../../../../content/eosc555/index.html"> 
 <span class="menu-text">EOSC 555</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../../../content/about/biography.html"> 
+    <a class="nav-link" href="../../../../../content/about/biography.html"> 
 <span class="menu-text">Bio</span></a>
   </li>  
 </ul>
@@ -147,10 +144,87 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lecture 1: Introduction to Inverse Theory</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Projects</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../content/projects/projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Project Home</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Learning to Balance</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../content/projects/RLUnicycle/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../content/projects/RLUnicycle/rtkernel/rtpatch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RT Kernel on Jetson Nano</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Telemetry and Database System</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../../content/projects/RLUnicycle/dynamics/dynamics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dynamics and Control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -178,38 +252,13 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Lecture 1: Introduction to Inverse Theory</h1>
-<p class="subtitle lead">Least Squares and the SVD</p>
-  <div class="quarto-categories">
-    <div class="quarto-category">Optimization</div>
-    <div class="quarto-category">Inverse Theory</div>
-    <div class="quarto-category">Python</div>
-    <div class="quarto-category">Torch</div>
-    <div class="quarto-category">SVD</div>
-  </div>
-  </div>
-
-<div>
-  <div class="description">
-    Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.
-  </div>
 </div>
+
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Simon Ghyselincks </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">September 14, 2024</p>
-    </div>
-  </div>
   
     
   </div>
@@ -219,6 +268,9 @@ window.Quarto = {
 </header>
 
 
+<p>Least Squares and the SVD</p>
+<p>Simon Ghyselincks<br>
+2024-09-14</p>
 <section id="what-is-inverse-theory" class="level1">
 <h1>What is Inverse Theory?</h1>
 <p>Inverse theory is a set of mathematical techniques used to infer the properties of a physical system from observations of its output. It is a fundamental tool in many scientific disciplines, including geophysics, seismology, and medical imaging. Inverse theory is used to solve a wide range of problems, such as:</p>
@@ -342,12 +394,10 @@ A^T A \vec{x} &amp;= A^T \vec{b} \\
 <p><span class="math inline">\(r = \vec{b} - A\vec{x}_{LS}\)</span></p>
 <p>Using this information, what we really want to minimize is the sum of the squares of the residuals: <span class="math inline">\(||r||_2^2\)</span>. This is the same as the sum of the squares of the errors in the data.</p>
 <p>There is an altogether informative way to think about the minimization problem purely in terms of linear algebra and subspaces to derive the same normal equations.</p>
-<div style="display: block; margin-left: auto; margin-right: auto; width: 50%; text-align: center;">
-<img src="imgs/ls-sol.svg" alt="" width="300">
+<p><img src="imgs/ls-sol.svg" alt="" width="300"></p>
 <p>
-<em>Least Squares Visual</em>
-</p>
-</div>
+</p><p><em>Least Squares Visual</em></p>
+<p></p>
 <p>We have the range of <span class="math inline">\(A\)</span> or image of <span class="math inline">\(A\)</span> as the subspace of <span class="math inline">\(\mathbb{R}^3\)</span> that is spanned by the columns of <span class="math inline">\(A\)</span>. This subspace is rank <span class="math inline">\(2\)</span> because there are only two columns in <span class="math inline">\(A\)</span>, <span class="math inline">\(R(A) \subset \mathbb{R}^3\)</span>. The inaccessible parts of <span class="math inline">\(\mathbb{R}^3\)</span> are in the orthogonal complement of <span class="math inline">\(R(A)\)</span>, <span class="math inline">\(R(A)^\perp\)</span>. Recalling that <span class="math inline">\(R(A)^\perp = N(A^T)\)</span> we can diagram the solution to least squares as a minimization of the error vector <span class="math inline">\(r\)</span> in the orthogonal complement of <span class="math inline">\(R(A)\)</span>.</p>
 <p>As seen the <span class="math inline">\(r\)</span> vector is perpendicular to the <span class="math inline">\(x_{LS}\)</span> solution, the projection of <span class="math inline">\(r\)</span> onto <span class="math inline">\(R(A)\)</span> is zero. Since it is in a null space of <span class="math inline">\(A^T\)</span> then <span class="math inline">\(A^T r = 0\)</span>.</p>
 <p><span class="math display">\[ \begin{align} A^T \left ( Ax_{LS} - b \right ) &amp;= 0\\

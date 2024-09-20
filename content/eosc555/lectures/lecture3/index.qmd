@@ -15,11 +15,6 @@ categories:
 image: imgs/gradient_flow.gif
 draft: false
 
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
-
 editor: 
   render-on-save: false
 ---
@@ -585,7 +580,7 @@ def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e
 
             # Update the progress bar with the current error
             pbar.set_postfix({'Error': f'{error.item():.4e}'})
-            pbar.update(1)
+            pbar.update(1);
 
             # Check for convergence
             if error < tol:
