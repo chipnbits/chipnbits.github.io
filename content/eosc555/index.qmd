@@ -14,4 +14,4 @@ comments:
   hypothesis: true
 ---
 
-Lecture notes for EOSC 555B: Nonlinear Inverse Theory as taught by Prof. Eldad Haber of the University of British Columbia. These notebooks cover the theory and practice of nonlinear inverse problems, with a focus on computational methods. The structure and content of these notes are based on the course taught by Prof. Haber in Fall 2024. Portions of template code originate from Prof. Haber, while I've added other numerical experiments and examples explored as part of self-study on the topics.
+Lecture notes for EOSC 555B: Nonlinear Inverse Theory of the University of British Columbia. These notebooks cover the theory and practice of nonlinear inverse problems, with a focus on computational methods. Portions of template code originate from the course instrcutor Prof. Eldad Haber, while I've added some of my own numerical experiments and examples explored as part of self-study on the topics.
