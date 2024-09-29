@@ -273,7 +273,7 @@ window.Quarto = {
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <span class="math inline">\(t_0\)</span> and initial conditions <span class="math inline">\(x_0, y_0\)</span>, with parameters <span class="math inline">\(\alpha, \beta, \gamma, \delta\)</span> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -387,7 +387,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial conditions</span></span>
@@ -434,7 +434,7 @@ window.Quarto = {
 <p>where <span class="math inline">\(\vec{x}\)</span> is the state of the system and <span class="math inline">\(\vec{p}\)</span> are the parameters. The goal is to form an esimate of <span class="math inline">\(\vec{p}\)</span>, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the <span class="math inline">\(Q\)</span> <em>sampling operator</em> which is applied to the true underlying data to give <span class="math inline">\(Qx\)</span>. If <span class="math inline">\(x\)</span> is fully given then <span class="math inline">\(Q=I\)</span>.</p>
 <p><span class="math display">\[f(\vec{x}; \vec{p}) \cong \frac{x_{n+1} - x_n}{\Delta t}\]</span></p>
 <p>and we can apply non-linear least squares to try and produce a fit. <span class="math inline">\(F(\vec{p}, x_0) = x(t, \vec{p})\)</span> and the observed data is <span class="math inline">\(Qx(t)\)</span>. We also make an assumption here that <span class="math inline">\(F\)</span> does not depend on the particular solver that we are using for the forward ODE and that all of the <span class="math inline">\(p\)</span> are physical parameters, we assume that the parameters are faithful enough.</p>
-<p><span class="math display">\[ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|\phi(\vec{p})\|^2\]</span></p>
+<p><span class="math display">\[ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(\vec{p})\|^2\]</span></p>
 <p>So what we have is a non-linear least squares problem, where we are trying to minimize some mean squared error of a function of the parameters <span class="math inline">\(p\)</span> and the data. The data is fixed for a given problem, so it is only the optimal <span class="math inline">\(p\)</span> that we are trying to find.</p>
 </section>
 <section id="minimization-of-the-objective-function" class="level2">
@@ -481,12 +481,12 @@ window.Quarto = {
 &amp;= 2 J_G(p)^T G(p)
 \end{align}
 \]</span></p>
-<p>From this stage we could apply gradient descent to find the minimum of the function. However, the function <span class="math inline">\(G(p)\)</span> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated (Newton’s Method)[https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions] addresses some of these issues, but requires computing the Hessian <span class="math inline">\(\nabla^2 \|G(p)\|^2\)</span> of the function, which can be expensive.</p>
+<p>From this stage we could apply gradient descent to find the minimum of the function. However, the function <span class="math inline">\(G(p)\)</span> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated <a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions">Newton’s Method</a> addresses some of these issues, but requires computing the Hessian <span class="math inline">\(\nabla^2 \|G(p)\|^2\)</span> of the function, which can be expensive.</p>
 <p>The true Hessian of the function is: <span class="math display">\[
 \nabla^2 \|G(p)\|^2 = 2 J_G(p)^T J_G(p) + 2 \sum_{i=1}^n G_i(p) \nabla^2 G_i(p)
 \]</span></p>
 <p>So we’d have to compute the Hessian of each of the <span class="math inline">\(G_i(p)\)</span> functions, of which there are <span class="math inline">\(n\)</span>, not good in practice. If we did have this Hessian, then the steps with Newton’s method would be:</p>
-<p><span class="math display">\[ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|)^{-1} \nabla (\|G(p_k)\|^2)\]</span></p>
+<p><span class="math display">\[ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla (\|G(p_k)\|^2)\]</span></p>
 </section>
 </section>
 <section id="gauss-newton-optimization" class="level2">
@@ -510,7 +510,7 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 \end{align}
 \]</span></p>
 <p>This could be written in a more tidy and general way, reacalling that <span class="math inline">\(G(p) = QF(p) - d\)</span> and let <span class="math inline">\(J_G(p) = QJ(p)\)</span>, then we have:</p>
-<p><span class="math display">\[ p_{k+1} = p_k - (J_G{p_k}^TJ_G{p_k})^{-1} J_G{p_k} G(p_k)\]</span></p>
+<p><span class="math display">\[ p_{k+1} = p_k - (J_G(p_k)^TJ_G(p_k))^{-1} J_G(p_k) G(p_k)\]</span></p>
 <section id="comparison-with-newtons-method" class="level4">
 <h4 class="anchored" data-anchor-id="comparison-with-newtons-method">Comparison with Newton’s Method</h4>
 <p>So this resembles a scaled gradient descent. In Newton’s method we have the Hessian, in Gauss-Newton we have the Jacobian of the function. As a comparison:</p>
@@ -560,7 +560,8 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 </tr>
 </tbody>
 </table>
-<p>The direction in Newton’s method can be rewritten as <span class="math display">\[d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
+<p>The direction of change between iterations in Newton’s method can be rewritten as <span class="math display">\[d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
+<p>While the direction in the case of Gauss-Newton is <span class="math display">\[d_k = \left(J_G(p_k)^T J(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
 <p>So we can see that the difference between the two is the omission of the computationally expensive <span class="math inline">\(\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)\)</span> terms. The Gauss-Newton method is approximating the second-order approach of Newton’s method by only considering the first-order terms inside of the norm.</p>
 <p><span class="math display">\[J_G(p_k)^T J(p_k) \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k) \approx J_G(p_k)^T J(p_k)\]</span></p>
 <p>Recall that <span class="math inline">\(G(p) = QF(p) - d\)</span> which is the difference between the observed data and the model. If the difference is small then <span class="math inline">\(G_i\)</span> is also small and the approximation is good.</p>
@@ -568,9 +569,9 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-pseudocode-number="1" data-line-number-punc=":" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
-\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_k$ of $F(p_k)$ \State Compute the transpose $J_k^T$ of the Jacobian \State Compute the residual $r_k = d - QF(p_k)$ (forward model) \State Compute the step $s_k = (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </section>
@@ -655,7 +656,7 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 <p><span class="math display">\[ \nabla_v \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k\]</span></p>
 <p>The gradient with respect to <span class="math inline">\(v\)</span> can be traced through with automatic differentiation. So we apply a chain of operations, the <code>pytorch</code> Jacobian vector product, followed by backpropagation on a surrogate <span class="math inline">\(v\)</span> that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover <span class="math inline">\(J_k^T\)</span>.</p>
 <p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <span class="math inline">\(v\)</span> contributed to the <code>jvp</code> result.</p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="3">
+<div id="jacobian-vector-product" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>

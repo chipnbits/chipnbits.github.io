@@ -384,7 +384,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <span class="math inline">\(A\)</span> from earlier:</p>
 <p><span class="math inline">\(x = V \Sigma^{-1} U^\top b\)</span> except in this case there is a time dependence. At the limit as <span class="math inline">\(t \rightarrow \infty\)</span> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
 <p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
-<div id="1bb305e6" class="cell" data-execution_count="1">
+<div id="1bb305e6" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -454,7 +454,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <section id="example-for-image-recovery-using-analytic-solution" class="level3">
 <h3 class="anchored" data-anchor-id="example-for-image-recovery-using-analytic-solution">Example for Image Recovery using Analytic Solution</h3>
 <p>Referring back to the problem of estimating the original image based on a noisy point spread function. We can monitor the time evolution of the estimate using gradient flow. Some code below defines the problem again, with recovery of the SVD decomposition for the 32x32 image, which will be used to solve the ODE for the gradient flow.</p>
-<div id="efc349f9" class="cell" data-execution_count="2">
+<div id="efc349f9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -574,7 +574,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 <p><span class="math display">\[ x = V \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) U^\top b\]</span></p>
 <p>Since these represents an evolution over time, an animation can be created to show the time evolution of the image recovery, along with the effect of continuing into a region where noise is amplified and dominates.</p>
 <p>Recalling the original and distorted images with a small amount of noise <span class="math inline">\(\epsilon\)</span> are as follows:</p>
-<div id="f0f63cb5" class="cell" data-execution_count="3">
+<div id="f0f63cb5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
@@ -599,7 +599,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 </div>
 </div>
 <p>The distorted image has had much of its intensity spread out diffusely, so it is only visible as a faint outline. The noise is also visible in the image as a grainy texture. The gradient flow method will attempt to recover the original image from this distorted image.</p>
-<div id="95a813ee" class="cell" data-execution_count="4">
+<div id="95a813ee" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> animation</span>
@@ -671,7 +671,7 @@ z_p &amp;= \frac{1}{\lambda} \hat b
 </div>
 <p><img src="imgs/gradient_flow.gif" class="img-fluid" width="600"></p>
 <p>And we saved the best time that was discovered for the recovery (with prior knowledge of the ground truth). So we can inspect that image, this was the best that we could do with the gradient flow method.</p>
-<div id="99cfb0cb" class="cell" data-execution_count="5">
+<div id="99cfb0cb" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>best_img <span class="op">=</span> get_xhat(tracking[<span class="st">'best_t'</span>]).reshape(dim, dim).detach().numpy()</span>
@@ -713,7 +713,7 @@ A^\top(v) &amp;= F^\top \text{diag} (F(P))^* F v\\
 <p>We start with a new function <span class="math inline">\(h = v^\top A(x)\)</span> and we wish to compute the gradient of <span class="math inline">\(h\)</span> with respect to <span class="math inline">\(x\)</span>.</p>
 <p><span class="math display">\[ \nabla_x h = \nabla_x (v^\top A(x)) = A^\top(v)\]</span></p>
 <p>The gradient of <span class="math inline">\(h\)</span> with respect to <span class="math inline">\(x\)</span> is the adjoint operator <span class="math inline">\(A^\top(v)\)</span>. We can use the <code>torch.autograd.grad</code> function to compute the gradient of <span class="math inline">\(h\)</span> with respect to <span class="math inline">\(x\)</span>.</p>
-<div id="16c7d667" class="cell" data-execution_count="6">
+<div id="16c7d667" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Amv_adjoint(v):</span>
@@ -728,7 +728,7 @@ A^\top(v) &amp;= F^\top \text{diag} (F(P))^* F v\\
 </details>
 </div>
 <p>We can use this to recover <span class="math inline">\(A^\top\)</span> for the general case if we run the operator on the set of basis vectors in the image space. This will give us the adjoint operator in the form of a matrix. We can also use it to confirm that it recovers the matrix transpose of the forward operator if we are working with a simple matrix, reusing the <code>Amat</code> matrix from earlier to take its transpose and compare it to the adjoint operator.</p>
-<div id="89eb340d" class="cell" data-execution_count="7">
+<div id="89eb340d" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Amat_adj <span class="op">=</span> torch.zeros(n,n)</span>
@@ -756,7 +756,7 @@ A^\top(v) &amp;= F^\top \text{diag} (F(P))^* F v\\
 <section id="gradient-descent-with-adjoint" class="level2">
 <h2 class="anchored" data-anchor-id="gradient-descent-with-adjoint">Gradient Descent with Adjoint</h2>
 <p>We can now use the defined operators (functions) from earlier to setup a simple gradient descent algorithm with a step size and early stopping to produce a recovery image that bypasses the need to compute the SVD decomposition, which may be very expensive for large matrices.</p>
-<div id="a462796b" class="cell" data-execution_count="8">
+<div id="a462796b" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>

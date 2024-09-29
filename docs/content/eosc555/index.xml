@@ -34,7 +34,7 @@
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <img src="https://latex.codecogs.com/png.latex?t_0"> and initial conditions <img src="https://latex.codecogs.com/png.latex?x_0,%20y_0">, with parameters <img src="https://latex.codecogs.com/png.latex?%5Calpha,%20%5Cbeta,%20%5Cgamma,%20%5Cdelta"> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -560,7 +560,7 @@ font-style: inherit;">'imgs/lotka_volterra.png'</span>)</span>
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
@@ -687,7 +687,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> is the state of the system and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D"> are the parameters. The goal is to form an esimate of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bp%7D">, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the <img src="https://latex.codecogs.com/png.latex?Q"> <em>sampling operator</em> which is applied to the true underlying data to give <img src="https://latex.codecogs.com/png.latex?Qx">. If <img src="https://latex.codecogs.com/png.latex?x"> is fully given then <img src="https://latex.codecogs.com/png.latex?Q=I">.</p>
 <p><img src="https://latex.codecogs.com/png.latex?f(%5Cvec%7Bx%7D;%20%5Cvec%7Bp%7D)%20%5Ccong%20%5Cfrac%7Bx_%7Bn+1%7D%20-%20x_n%7D%7B%5CDelta%20t%7D"></p>
 <p>and we can apply non-linear least squares to try and produce a fit. <img src="https://latex.codecogs.com/png.latex?F(%5Cvec%7Bp%7D,%20x_0)%20=%20x(t,%20%5Cvec%7Bp%7D)"> and the observed data is <img src="https://latex.codecogs.com/png.latex?Qx(t)">. We also make an assumption here that <img src="https://latex.codecogs.com/png.latex?F"> does not depend on the particular solver that we are using for the forward ODE and that all of the <img src="https://latex.codecogs.com/png.latex?p"> are physical parameters, we assume that the parameters are faithful enough.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%7B%5Cvec%7Bp%7D%7D%20%5Cfrac%7B1%7D%7B2%7D%5C%7CQF(p)-d%5C%7C%5E2%20=%20%5Cmin_%7Bp%7D%5C%7C%5Cphi(%5Cvec%7Bp%7D)%5C%7C%5E2"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%7B%5Cvec%7Bp%7D%7D%20%5Cfrac%7B1%7D%7B2%7D%5C%7CQF(p)-d%5C%7C%5E2%20=%20%5Cmin_%7Bp%7D%5C%7CG(%5Cvec%7Bp%7D)%5C%7C%5E2"></p>
 <p>So what we have is a non-linear least squares problem, where we are trying to minimize some mean squared error of a function of the parameters <img src="https://latex.codecogs.com/png.latex?p"> and the data. The data is fixed for a given problem, so it is only the optimal <img src="https://latex.codecogs.com/png.latex?p"> that we are trying to find.</p>
 </section>
 <section id="minimization-of-the-objective-function" class="level2">
@@ -707,10 +707,10 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <hr>
 <p>We can compute the gradient of <img src="https://latex.codecogs.com/png.latex?%5C%7CG(%5Cmathbf%7Bp%7D)%5C%7C%5E2"></p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0A%5Cnabla_p%20%5C%7CG(p)%5C%7C%5E2%20&amp;=%20%5Cnabla_p%20G(p)%5ET%20G(p)%5C%5C%0A&amp;=%20%5Csum_%7Bi=1%7D%5En%20%5Cnabla_p%20G_i(p)%5E2%5C%5C%0A&amp;=%20%5Csum_%7Bi=1%7D%5En%202%20G_i(p)%20%5Cnabla_p%20G_i(p)%5C%5C%0A&amp;=%202%20J_G(p)%5ET%20G(p)%0A%5Cend%7Balign%7D%0A"></p>
-<p>From this stage we could apply gradient descent to find the minimum of the function. However, the function <img src="https://latex.codecogs.com/png.latex?G(p)"> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated (Newton’s Method)[https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions] addresses some of these issues, but requires computing the Hessian <img src="https://latex.codecogs.com/png.latex?%5Cnabla%5E2%20%5C%7CG(p)%5C%7C%5E2"> of the function, which can be expensive.</p>
+<p>From this stage we could apply gradient descent to find the minimum of the function. However, the function <img src="https://latex.codecogs.com/png.latex?G(p)"> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated <a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions">Newton’s Method</a> addresses some of these issues, but requires computing the Hessian <img src="https://latex.codecogs.com/png.latex?%5Cnabla%5E2%20%5C%7CG(p)%5C%7C%5E2"> of the function, which can be expensive.</p>
 <p>The true Hessian of the function is: <img src="https://latex.codecogs.com/png.latex?%0A%5Cnabla%5E2%20%5C%7CG(p)%5C%7C%5E2%20=%202%20J_G(p)%5ET%20J_G(p)%20+%202%20%5Csum_%7Bi=1%7D%5En%20G_i(p)%20%5Cnabla%5E2%20G_i(p)%0A"></p>
 <p>So we’d have to compute the Hessian of each of the <img src="https://latex.codecogs.com/png.latex?G_i(p)"> functions, of which there are <img src="https://latex.codecogs.com/png.latex?n">, not good in practice. If we did have this Hessian, then the steps with Newton’s method would be:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20p_%7Bk+1%7D%20=%20p_k%20-%20(%5Cnabla%5E2%20%5C%7CG(p_k)%5C%7C)%5E%7B-1%7D%20%5Cnabla%20(%5C%7CG(p_k)%5C%7C%5E2)"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20p_%7Bk+1%7D%20=%20p_k%20-%20(%5Cnabla%5E2%20%5C%7CG(p_k)%5C%7C%5E2)%5E%7B-1%7D%20%5Cnabla%20(%5C%7CG(p_k)%5C%7C%5E2)"></p>
 </section>
 </section>
 <section id="gauss-newton-optimization" class="level2">
@@ -722,7 +722,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <p>where <img src="https://latex.codecogs.com/png.latex?A%20=%20QJ_k"> and <img src="https://latex.codecogs.com/png.latex?r_k%20=%20d%20+%20QJ_k%20p_k%20-%20QF(p_k)">. This is the normal equations for the linear least squares problem. This gives us</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Ap_%7Bk+1%7D%20&amp;=%20(A%5ET%20A)%5E%7B-1%7D%20A%5ET%20(r_k)%5C%5C%0A&amp;=%20(J_k%5ET%20Q%5ET%20Q%20J_k)%5E%7B-1%7D%20J_k%5ET%20Q%5ET%20(d%20+%20QJ_k%20p_k%20-%20QF(p_k))%5C%5C%0A&amp;=%20p_k%20+%20(J_k%5ET%20Q%5ET%20Q%20J_k)%5E%7B-1%7D%20J_k%5ET%20Q%5ET%20(d%20-%20QF(p_k))%5C%5C%0Ap_%7Bk+1%7D%20&amp;=%20p_k%20-%20(J_k%5ET%20Q%5ET%20Q%20J_k)%5E%7B-1%7D%20J_k%5ET%20Q%5ET%20(QF(p_k)%20-%20d)%5C%5C%0A%5Cend%7Balign%7D%0A"></p>
 <p>This could be written in a more tidy and general way, reacalling that <img src="https://latex.codecogs.com/png.latex?G(p)%20=%20QF(p)%20-%20d"> and let <img src="https://latex.codecogs.com/png.latex?J_G(p)%20=%20QJ(p)">, then we have:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20p_%7Bk+1%7D%20=%20p_k%20-%20(J_G%7Bp_k%7D%5ETJ_G%7Bp_k%7D)%5E%7B-1%7D%20J_G%7Bp_k%7D%20G(p_k)"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20p_%7Bk+1%7D%20=%20p_k%20-%20(J_G(p_k)%5ETJ_G(p_k))%5E%7B-1%7D%20J_G(p_k)%20G(p_k)"></p>
 <section id="comparison-with-newtons-method" class="level4">
 <h4 class="anchored" data-anchor-id="comparison-with-newtons-method">Comparison with Newton’s Method</h4>
 <p>So this resembles a scaled gradient descent. In Newton’s method we have the Hessian, in Gauss-Newton we have the Jacobian of the function. As a comparison:</p>
@@ -772,7 +772,8 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 </tr>
 </tbody>
 </table>
-<p>The direction in Newton’s method can be rewritten as <img src="https://latex.codecogs.com/png.latex?d_k%20=%20%5Cleft(J_G(p_k)%5ET%20J(p_k)%20+%20%5Csum_%7Bi=1%7D%5En%20G_i(p_k)%20%5Cnabla%5E2%20G_i(p_k)%5Cright)%5E%7B-1%7D%20J_G(p_k)%5ET%20G(p_k)"></p>
+<p>The direction of change between iterations in Newton’s method can be rewritten as <img src="https://latex.codecogs.com/png.latex?d_k%20=%20%5Cleft(J_G(p_k)%5ET%20J(p_k)%20+%20%5Csum_%7Bi=1%7D%5En%20G_i(p_k)%20%5Cnabla%5E2%20G_i(p_k)%5Cright)%5E%7B-1%7D%20J_G(p_k)%5ET%20G(p_k)"></p>
+<p>While the direction in the case of Gauss-Newton is <img src="https://latex.codecogs.com/png.latex?d_k%20=%20%5Cleft(J_G(p_k)%5ET%20J(p_k)%5Cright)%5E%7B-1%7D%20J_G(p_k)%5ET%20G(p_k)"></p>
 <p>So we can see that the difference between the two is the omission of the computationally expensive <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bi=1%7D%5En%20G_i(p)%20%5Cnabla%5E2%20G_i(p)"> terms. The Gauss-Newton method is approximating the second-order approach of Newton’s method by only considering the first-order terms inside of the norm.</p>
 <p><img src="https://latex.codecogs.com/png.latex?J_G(p_k)%5ET%20J(p_k)%20%5Csum_%7Bi=1%7D%5En%20G_i(p_k)%20%5Cnabla%5E2%20G_i(p_k)%20%5Capprox%20J_G(p_k)%5ET%20J(p_k)"></p>
 <p>Recall that <img src="https://latex.codecogs.com/png.latex?G(p)%20=%20QF(p)%20-%20d"> which is the difference between the observed data and the model. If the difference is small then <img src="https://latex.codecogs.com/png.latex?G_i"> is also small and the approximation is good.</p>
@@ -780,9 +781,9 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-pseudocode-number="1" data-line-number-punc=":" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
-\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_k$ of $F(p_k)$ \State Compute the transpose $J_k^T$ of the Jacobian \State Compute the residual $r_k = d - QF(p_k)$ (forward model) \State Compute the step $s_k = (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </section>
@@ -867,7 +868,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_v%20%5Cfrac%7Bd%7D%7Bd%20%5Cepsilon%7D%20F(p_k%20+%20%5Cepsilon%20v)%20=%20J_k"></p>
 <p>The gradient with respect to <img src="https://latex.codecogs.com/png.latex?v"> can be traced through with automatic differentiation. So we apply a chain of operations, the <code>pytorch</code> Jacobian vector product, followed by backpropagation on a surrogate <img src="https://latex.codecogs.com/png.latex?v"> that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover <img src="https://latex.codecogs.com/png.latex?J_k%5ET">.</p>
 <p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <img src="https://latex.codecogs.com/png.latex?v"> contributed to the <code>jvp</code> result.</p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="3">
+<div id="jacobian-vector-product" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
@@ -1092,7 +1093,7 @@ tensor([[2., 1.],
   <category>Gauss-Newton</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture5/</guid>
   <pubDate>Wed, 25 Sep 2024 07:00:00 GMT</pubDate>
-  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture5/imgs/lotka_volterra.png" medium="image" type="image/png" height="103" width="144"/>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
   <title>Lecture 4: Regularization and the Conjugate Gradient Methods</title>
@@ -1163,7 +1164,7 @@ tensor([[2., 1.],
 </tbody>
 </table>
 <p>As we can see all three methods have a similar form and offer some mechanism for controlling the noise induced by the small singular values of <img src="https://latex.codecogs.com/png.latex?A">.</p>
-<div id="cell-comp-plot" class="cell" data-execution_count="1">
+<div id="cell-comp-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -1857,7 +1858,7 @@ C:\Users\sghys\AppData\Local\Temp\ipykernel_10828\1786010090.py:93: SyntaxWarnin
 <p>If we stare at this long enough it begins to look a lot like the pseudoinverse of <img src="https://latex.codecogs.com/png.latex?A"> from earlier:</p>
 <p><img src="https://latex.codecogs.com/png.latex?x%20=%20V%20%5CSigma%5E%7B-1%7D%20U%5E%5Ctop%20b"> except in this case there is a time dependence. At the limit as <img src="https://latex.codecogs.com/png.latex?t%20%5Crightarrow%20%5Cinfty"> we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.</p>
 <p>For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.</p>
-<div id="1bb305e6" class="cell" data-execution_count="1">
+<div id="1bb305e6" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -2143,7 +2144,7 @@ font-style: inherit;">'imgs/pseudo_inverse_time_evolution.png'</span>)</span>
 <section id="example-for-image-recovery-using-analytic-solution" class="level3">
 <h3 class="anchored" data-anchor-id="example-for-image-recovery-using-analytic-solution">Example for Image Recovery using Analytic Solution</h3>
 <p>Referring back to the problem of estimating the original image based on a noisy point spread function. We can monitor the time evolution of the estimate using gradient flow. Some code below defines the problem again, with recovery of the SVD decomposition for the 32x32 image, which will be used to solve the ODE for the gradient flow.</p>
-<div id="efc349f9" class="cell" data-execution_count="2">
+<div id="efc349f9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -2819,7 +2820,7 @@ font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
 <p><img src="https://latex.codecogs.com/png.latex?%20x%20=%20V%20%5Ctext%7Bdiag%7D%5Cleft(%20%5Clambda_i%5E%7B-1%7D%20(1%20-%20%5Cexp%20(-%5Clambda_i%20t))%20%5Cright)%20U%5E%5Ctop%20b"></p>
 <p>Since these represents an evolution over time, an animation can be created to show the time evolution of the image recovery, along with the effect of continuing into a region where noise is amplified and dominates.</p>
 <p>Recalling the original and distorted images with a small amount of noise <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> are as follows:</p>
-<div id="f0f63cb5" class="cell" data-execution_count="3">
+<div id="f0f63cb5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">plt.figure(figsize<span class="op" style="color: #5E5E5E;
@@ -2910,7 +2911,7 @@ font-style: inherit;">'off'</span>)</span>
 </div>
 </div>
 <p>The distorted image has had much of its intensity spread out diffusely, so it is only visible as a faint outline. The noise is also visible in the image as a grainy texture. The gradient flow method will attempt to recover the original image from this distorted image.</p>
-<div id="95a813ee" class="cell" data-execution_count="4">
+<div id="95a813ee" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
@@ -3245,7 +3246,7 @@ font-style: inherit;">5</span>)</span>
 </div>
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" class="img-fluid" width="600"></p>
 <p>And we saved the best time that was discovered for the recovery (with prior knowledge of the ground truth). So we can inspect that image, this was the best that we could do with the gradient flow method.</p>
-<div id="99cfb0cb" class="cell" data-execution_count="5">
+<div id="99cfb0cb" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">best_img <span class="op" style="color: #5E5E5E;
@@ -3331,7 +3332,7 @@ font-style: inherit;">'off'</span>)</span>
 <p>We start with a new function <img src="https://latex.codecogs.com/png.latex?h%20=%20v%5E%5Ctop%20A(x)"> and we wish to compute the gradient of <img src="https://latex.codecogs.com/png.latex?h"> with respect to <img src="https://latex.codecogs.com/png.latex?x">.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_x%20h%20=%20%5Cnabla_x%20(v%5E%5Ctop%20A(x))%20=%20A%5E%5Ctop(v)"></p>
 <p>The gradient of <img src="https://latex.codecogs.com/png.latex?h"> with respect to <img src="https://latex.codecogs.com/png.latex?x"> is the adjoint operator <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop(v)">. We can use the <code>torch.autograd.grad</code> function to compute the gradient of <img src="https://latex.codecogs.com/png.latex?h"> with respect to <img src="https://latex.codecogs.com/png.latex?x">.</p>
-<div id="16c7d667" class="cell" data-execution_count="6">
+<div id="16c7d667" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
@@ -3382,7 +3383,7 @@ font-style: inherit;">return</span> adjoint</span></code></pre></div>
 </details>
 </div>
 <p>We can use this to recover <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop"> for the general case if we run the operator on the set of basis vectors in the image space. This will give us the adjoint operator in the form of a matrix. We can also use it to confirm that it recovers the matrix transpose of the forward operator if we are working with a simple matrix, reusing the <code>Amat</code> matrix from earlier to take its transpose and compare it to the adjoint operator.</p>
-<div id="89eb340d" class="cell" data-execution_count="7">
+<div id="89eb340d" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">Amat_adj <span class="op" style="color: #5E5E5E;
@@ -3468,7 +3469,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 <section id="gradient-descent-with-adjoint" class="level2">
 <h2 class="anchored" data-anchor-id="gradient-descent-with-adjoint">Gradient Descent with Adjoint</h2>
 <p>We can now use the defined operators (functions) from earlier to setup a simple gradient descent algorithm with a step size and early stopping to produce a recovery image that bypasses the need to compute the SVD decomposition, which may be very expensive for large matrices.</p>
-<div id="a462796b" class="cell" data-execution_count="8">
+<div id="a462796b" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
@@ -3830,7 +3831,7 @@ font-style: inherit;">'off'</span>)</span>
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="b680d063" class="cell" data-execution_count="1">
+<div id="b680d063" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -3910,7 +3911,7 @@ font-style: inherit;">import</span> torch.fft</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D%20(x-%5Cmu)%5ET%20%5CSigma%5E%7B-1%7D%20(x-%5Cmu)%5Cright)"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmu"> is the mean vector, <img src="https://latex.codecogs.com/png.latex?x"> is a position vector, and <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <img src="https://latex.codecogs.com/png.latex?C"> as the inverse of the covariance matrix and working with a <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> value.</p>
-<div id="mv-plot" class="cell" data-execution_count="2">
+<div id="mv-plot" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -4351,7 +4352,7 @@ font-style: inherit;">'equal'</span>)</span>
 <p>We can compute the MV gaussian from the inverse covariance matrix <img src="https://latex.codecogs.com/png.latex?C"> with a mean of <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> along with a dimensional scaling metric <img src="https://latex.codecogs.com/png.latex?t">. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AS_x%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%200%20&amp;%201%20%5C%5C%20-2%20&amp;%200%20&amp;%202%20%5C%5C%20-1%20&amp;%200%20&amp;%201%20%5Cend%7Bbmatrix%7D%20%5C%5C%0AS_y%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%20-2%20&amp;%20-1%20%5C%5C%200%20&amp;%200%20&amp;%200%20%5C%5C%201%20&amp;%202%20&amp;%201%20%5Cend%7Bbmatrix%7D%0A%5Cend%7Balign%7D%0A"></p>
 <p>These operators act like edge detection or derivatives. The <img src="https://latex.codecogs.com/png.latex?n_0">, <img src="https://latex.codecogs.com/png.latex?n_x">, and <img src="https://latex.codecogs.com/png.latex?n_y"> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="06ff00b3" class="cell" data-execution_count="3">
+<div id="06ff00b3" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
@@ -4949,7 +4950,7 @@ font-style: inherit;">return</span> PSF_combined, center</span></code></pre></di
 <section id="creating-a-toy-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-toy-dataset">Creating a Toy Dataset</h3>
 <p>Often in computational science we test our strategies on toy datasets, simplified data that allows for easier debugging and understanding of the problem at task. In this case, rather than use a real image, we construct a geometric image that will be easier to analyse visually for its correctness when it comes to denoising and deblurring. The dataset is also dimensioned to have a batch and color channel to follow some of the conventions for working with torch tensors, and later some machine learning frameworks. That is <img src="https://latex.codecogs.com/png.latex?B%20%5Ctimes%20C%20%5Ctimes%20H%20%5Ctimes%20W">, with a single sample, single channel, and a 256x256 image having dimensions <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%201%20%5Ctimes%20256%20%5Ctimes%20256">.</p>
-<div id="cell-toy-dataset" class="cell" data-execution_count="4">
+<div id="cell-toy-dataset" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">x <span class="op" style="color: #5E5E5E;
@@ -5015,7 +5016,7 @@ font-style: inherit;">0</span>,:,:])</span></code></pre></div>
 </div>
 </div>
 <p>This simple image is a high and a low signal shown as two square regions, which we will try to recover after applying a point spread function to it (the forward model). The forward model is the convolution of the image with the PSF.</p>
-<div id="cell-forward-model" class="cell" data-execution_count="5">
+<div id="cell-forward-model" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">C <span class="op" style="color: #5E5E5E;
@@ -5101,7 +5102,7 @@ font-style: inherit;">print</span>()</span></code></pre></div>
 <p>Note that we are working with a rolling PSF which has a strange effect in that it assumes a periodic boundary condition in both <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y">. When it comes to convolution, there are many different ways to treat the boundary condition, such as using zero padding or mirroring the boundary. Coding this by hand is a good exercise to understand the convolution operation, but not the purpose of this exercise.</p>
 <section id="direct-recovery-of-convolution-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="direct-recovery-of-convolution-matrix">Direct Recovery of Convolution Matrix</h4>
-<div id="cell-convolution-matrix" class="cell" data-execution_count="6">
+<div id="cell-convolution-matrix" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">dim <span class="op" style="color: #5E5E5E;
@@ -5314,7 +5315,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <p>Since the convolution operation that is being performed is linear, one way to recover the matrix operator under this assumption is to pass through the basis vectors and recover the column vectors in this fashion:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D%20a_1%20%5Cmid%20a_2%20%5Cmid%20%5Cldots%20%5Cmid%20a_n%20%5Cend%7Bbmatrix%7D%20%5Cmathbf%7Be%7D_i%20=%20%5Cmathbf%7BA%7D%20%5Cmathbf%7Be%7D_i%20%20=%20%5Cmathbf%7Ba%7D_i"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Be%7D_i"> is the <img src="https://latex.codecogs.com/png.latex?i">th basis vector.</p>
-<div id="cell-convolution-matrix-2" class="cell" data-execution_count="7">
+<div id="cell-convolution-matrix-2" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">A_conv_lin <span class="op" style="color: #5E5E5E;
@@ -5411,7 +5412,7 @@ font-style: inherit;">'Difference from Direct'</span>)</span>
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="ccc8fd9e" class="cell" data-execution_count="8">
+<div id="ccc8fd9e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">b_forward <span class="op" style="color: #5E5E5E;
@@ -5475,7 +5476,7 @@ font-style: inherit;">2</span>:]))</span></code></pre></div>
 </div>
 </div>
 <p>We can see that there are some differences between the two methods but in principle they should be the same, (Not sure where the difference is coming from). The important method is actually the one which extracts the columns, as it is more generalizable. So we will continue with that.</p>
-<div id="final-conv-matrix" class="cell" data-execution_count="9">
+<div id="final-conv-matrix" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">Amat <span class="op" style="color: #5E5E5E;
@@ -5490,7 +5491,7 @@ font-style: inherit;">=</span> A_conv_lin</span></code></pre></div>
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <img src="https://latex.codecogs.com/png.latex?A%5Cmathbf%7Bx%7D%20=%20%5Cmathbf%7Bb%7D"> with our known <img src="https://latex.codecogs.com/png.latex?A"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bb%7D">, and we want to recover <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D">. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="08f4ecd8" class="cell" data-execution_count="10">
+<div id="08f4ecd8" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">U, S, V <span class="op" style="color: #5E5E5E;
@@ -5502,7 +5503,7 @@ font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
 </details>
 </div>
 <p>Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the <img src="https://latex.codecogs.com/png.latex?10%5E%7B-6%7D"> mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.</p>
-<div id="cell-svd-decomposition" class="cell" data-execution_count="11">
+<div id="cell-svd-decomposition" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">plt.semilogy(S)</span>
@@ -5549,7 +5550,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 <section id="initial-attempt-at-pseudoinverse" class="level3">
 <h3 class="anchored" data-anchor-id="initial-attempt-at-pseudoinverse">Initial Attempt at Pseudoinverse</h3>
 <p>To recover the original image data we first naively try to invert the matrix to see what happens.</p>
-<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="12">
+<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">xhat <span class="op" style="color: #5E5E5E;
@@ -5606,7 +5607,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?U">.</p>
-<div id="7a28efa7" class="cell" data-execution_count="13">
+<div id="7a28efa7" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">n<span class="op" style="color: #5E5E5E;
@@ -5658,7 +5659,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?V">. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="f3f03ccb" class="cell" data-execution_count="14">
+<div id="f3f03ccb" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">n<span class="op" style="color: #5E5E5E;
@@ -5762,7 +5763,7 @@ font-style: inherit;">'</span>)</span>
 </div>
 </div>
 <p>These modes are the most important ones, as they contain the big-picture detail without the high frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.</p>
-<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="15">
+<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -5934,7 +5935,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <section id="adding-noise-to-the-signal" class="level3">
 <h3 class="anchored" data-anchor-id="adding-noise-to-the-signal">Adding Noise to the Signal</h3>
 <p>Now we add some noise to the signal and try least squares again for the direct solution</p>
-<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="16">
+<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -6024,7 +6025,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 </div>
 </div>
 <p>The reconstruction is not very good, the noise has been amplifed all over the image. We can try the pseudoinverse method again with the noise added to the signal.</p>
-<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="17">
+<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">Amat_noisy <span class="op" style="color: #5E5E5E;

@@ -10,7 +10,7 @@ categories:
   - Automatic Differentiation
   - Gauss-Newton
 
-image: imgs/lotka_volterra.png
+image: imgs/lotka_volterra_phase_space.png
 draft: false
 
 editor: 
@@ -199,7 +199,7 @@ $$f(\vec{x}; \vec{p}) \cong \frac{x_{n+1} - x_n}{\Delta t}$$
 
 and we can apply non-linear least squares to try and produce a fit. $F(\vec{p}, x_0) = x(t, \vec{p})$ and the observed data is $Qx(t)$. We also make an assumption here that $F$ does not depend on the particular solver that we are using for the forward ODE and that all of the $p$ are physical parameters, we assume that the parameters are faithful enough.
 
-$$ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|\phi(\vec{p})\|^2$$
+$$ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(\vec{p})\|^2$$
 
 So what we have is a non-linear least squares problem, where we are trying to minimize some mean squared error of a function of the parameters $p$ and the data. The data is fixed for a given problem, so it is only the optimal $p$ that we are trying to find.
 
@@ -258,7 +258,7 @@ $$\begin{align}
 \end{align}
 $$
 
-From this stage we could apply gradient descent to find the minimum of the function. However, the function $G(p)$ is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated (Newton's Method)[https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions] addresses some of these issues, but requires computing the Hessian $\nabla^2 \|G(p)\|^2$ of the function, which can be expensive.
+From this stage we could apply gradient descent to find the minimum of the function. However, the function $G(p)$ is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated [Newton's Method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions) addresses some of these issues, but requires computing the Hessian $\nabla^2 \|G(p)\|^2$ of the function, which can be expensive.
 
 The true Hessian of the function is:
 $$
@@ -267,7 +267,7 @@ $$
 
 So we'd have to compute the Hessian of each of the $G_i(p)$ functions, of which there are $n$, not good in practice. If we did have this Hessian, then the steps with Newton's method would be:
 
-$$ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|)^{-1} \nabla (\|G(p_k)\|^2)$$
+$$ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla (\|G(p_k)\|^2)$$
 
 ## Gauss-Newton Optimization
 
@@ -297,7 +297,7 @@ $$
 
 This could be written in a more tidy and general way, reacalling that $G(p) = QF(p) - d$ and let $J_G(p) = QJ(p)$, then we have:
 
-$$ p_{k+1} = p_k - (J_G{p_k}^TJ_G{p_k})^{-1} J_G{p_k} G(p_k)$$
+$$ p_{k+1} = p_k - (J_G(p_k)^TJ_G(p_k))^{-1} J_G(p_k) G(p_k)$$
 
 #### Comparison with Newton's Method
 
@@ -314,7 +314,10 @@ So this resembles a scaled gradient descent. In Newton's method we have the Hess
 |                       | **Scaling Matrix**                                        |
 |                       | $J_G(p_k)^T J_G(p_k)$                                 |
 
-The direction in Newton's method can be rewritten as $$d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
+The direction of change between iterations in Newton's method can be rewritten as $$d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
+
+While the direction in the case of Gauss-Newton is 
+$$d_k = \left(J_G(p_k)^T J(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
 
 So we can see that the difference between the two is the omission of the computationally expensive $\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)$ terms. The Gauss-Newton method is approximating the second-order approach of Newton's method by only considering the first-order terms inside of the norm.
 
@@ -341,10 +344,10 @@ We have derived the algorithm for the Gauss-Newton method for solving the non-li
 \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$
 \State \textbf{Initialize} $p_0$
 \For{$k = 0, 1, 2, \ldots$}
-    \State Compute the Jacobian $J_k$ of $F(p_k)$
-    \State Compute the transpose $J_k^T$ of the Jacobian
-    \State Compute the residual $r_k = d - QF(p_k)$ (forward model)
-    \State Compute the step $s_k = (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T r_k$
+    \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$
+    \State Compute the transpose $J_G^T$ of the Jacobian
+    \State Compute the residual $r_k =G(p_k)$ (forward model)
+    \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$
     \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$
     \If{$\|s_k\| < \epsilon$}
         \State \textbf{Stop}
