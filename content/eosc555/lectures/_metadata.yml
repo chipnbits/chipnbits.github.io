@@ -15,7 +15,7 @@ format:
   #   execute: false
 
 execute:
-  kernel: python3
+  kernel: ml
   cache: true
   cache-refresh: false
   cache-path: .jupyter_cache

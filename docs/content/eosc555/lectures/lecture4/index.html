@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.53">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -318,7 +318,7 @@ A^T A &amp;= V \Sigma^T \Sigma V^T \\
 </tbody>
 </table>
 <p>As we can see all three methods have a similar form and offer some mechanism for controlling the noise induced by the small singular values of <span class="math inline">\(A\)</span>.</p>
-<div id="cell-comp-plot" class="cell" data-execution_count="2">
+<div id="cell-comp-plot" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -426,10 +426,24 @@ A^T A &amp;= V \Sigma^T \Sigma V^T \\
 <span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;&gt;:69: SyntaxWarning: invalid escape sequence '\s'
+&lt;&gt;:81: SyntaxWarning: invalid escape sequence '\s'
+&lt;&gt;:93: SyntaxWarning: invalid escape sequence '\s'
+&lt;&gt;:69: SyntaxWarning: invalid escape sequence '\s'
+&lt;&gt;:81: SyntaxWarning: invalid escape sequence '\s'
+&lt;&gt;:93: SyntaxWarning: invalid escape sequence '\s'
+C:\Users\sghys\AppData\Local\Temp\ipykernel_10828\1786010090.py:69: SyntaxWarning: invalid escape sequence '\s'
+  ax.plot(t_values, gradient_scalings[i], color=palette[i], linewidth=2, label=f'$1/\sigma_{i}$' )
+C:\Users\sghys\AppData\Local\Temp\ipykernel_10828\1786010090.py:81: SyntaxWarning: invalid escape sequence '\s'
+  ax.plot(lambda_values, tikhonov_scalings[i], color=palette[i], linewidth=2, label=f'$1/\sigma_{i}$' )
+C:\Users\sghys\AppData\Local\Temp\ipykernel_10828\1786010090.py:93: SyntaxWarning: invalid escape sequence '\s'
+  ax.plot(threshold_values, tsvd_scalings[i], color=palette[i], linewidth=2, label=f'$1/\sigma_{i}$')</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div id="comp-plot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/comp-plot-output-1.png" width="469" height="1430" class="figure-img"></p>
+<p><img src="index_files/figure-html/comp-plot-output-2.png" width="469" height="1430" class="figure-img"></p>
 <figcaption>Evolution of scaling factors for three different methods</figcaption>
 </figure>
 </div>
