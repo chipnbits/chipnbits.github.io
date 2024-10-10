@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.53">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Ghyselincks, Team 2411">
-<meta name="dcterms.date" content="2024-04-13">
+<meta name="dcterms.date" content="2024-10-10">
 
-<title>Telemetry and Database System – Simon Ghyselincks</title>
+<title>Telemetry and Database Systems for Capstone – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -158,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry and Database System</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry and Database Systems for Capstone</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Telemetry and Database System</span></a>
+ <span class="menu-text">Telemetry and Database Systems for Capstone</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -239,10 +239,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry and Database System</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../content/projects/projects.html">Projects</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/introduction.html">Learning to Balance</a></li><li class="breadcrumb-item"><a href="../../../../content/projects/RLUnicycle/telemetry/telemetry.html">Telemetry and Database Systems for Capstone</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Telemetry and Database System</h1>
-<p class="subtitle lead">Telemetry and Database System Documentation</p>
+<h1 class="title">Telemetry and Database Systems for Capstone</h1>
+<p class="subtitle lead">A guide to setting up a telemetry server for robotics capstone projects</p>
 </div>
 
 
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 13, 2024</p>
+      <p class="date">October 10, 2024</p>
     </div>
   </div>
   
@@ -273,18 +273,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="purpose" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Purpose</h1>
-<p>This is a user summary document for our capstone telemetry and database server. It is intended to provide an overview of the different services that are in use for the data pipeline. The capstone project leverages the MING stack as shown in the overview diagram below.</p>
-<p>I recommend using a central server to manage all of these services through a Zerotier Virtual Network. This will allow you to access the services from anywhere via the internet without exposing the server to the public.</p>
-<section id="hardware-recommendation" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="hardware-recommendation"><span class="header-section-number">1.1</span> Hardware Recommendation</h2>
-<p>The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.</p>
-<p>The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device.</p>
+<p>This guide is designed to provide an overview of the telemetry and databasing system that is in use for our Learning to Balance, reinforcement learning unicycle project. First I will provide an overview of some hardware recommendations, then a look at the networked services that are in use, and finally a look at some of the software code and implementation through example code.</p>
+<p>The telemetry and databasing can be seen as a two way pipeline that is controlling the flow of data from sensors, motors, and control deceisions. Data from the robot is offloaded to a server in an efficient manner that takes into consideration limited processing power and the desire for a stable control loop, where it can be further processed. The server in turn manages control signals being sent to the robot which can be used to adjust parameters or send commands to the robot. By using a central server and internet connectivity to all client devices, the database, live telemetry, and control panel can be accessed from any networked computer through a browser or software API, from anywhere in the world.</p>
+<section id="hardware-recommendation-and-requirements" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="hardware-recommendation-and-requirements"><span class="header-section-number">1.1</span> Hardware Recommendation and Requirements</h2>
+<p>The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server. This type of device is capable of handling the computational loads of running multiple services at once in the context of managing, database, messaging, and control services. It can also be used as a workstation for the team.</p>
+<p>The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the devic, and it is not recommended for a server, especially when considering the cost of a refurbished Lenovo.</p>
 </section>
 </section>
 <section id="telemetry-services-overview" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Telemetry Services Overview</h1>
 <p>Telemetry and Control Command Communications</p>
-<p><img src="https://i.imgur.com/YNNInuJ.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="NetworkDiagram.drawio.svg" class="img-fluid figure-img"></p>
+<figcaption>Telemetry Overview</figcaption>
+</figure>
+</div>
 <section id="zerotier-virtual-network" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="zerotier-virtual-network"><span class="header-section-number">2.1</span> ZeroTier Virtual Network</h2>
 <p>Zerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network.</p>

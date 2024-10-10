@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.53">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -291,7 +291,7 @@ window.Quarto = {
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="b680d063" class="cell" data-execution_count="2">
+<div id="5fb0add1" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -440,7 +440,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 \end{align}
 \]</span></p>
 <p>These operators act like edge detection or derivatives. The <span class="math inline">\(n_0\)</span>, <span class="math inline">\(n_x\)</span>, and <span class="math inline">\(n_y\)</span> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="06ff00b3" class="cell" data-execution_count="4">
+<div id="d9df7698" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> gaussianConv(nn.Module):</span>
@@ -714,7 +714,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="ccc8fd9e" class="cell" data-execution_count="9">
+<div id="b84466de" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b_forward <span class="op">=</span> Amv(x)</span>
@@ -751,7 +751,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <span class="math inline">\(A\mathbf{x} = \mathbf{b}\)</span> with our known <span class="math inline">\(A\)</span> and <span class="math inline">\(\mathbf{b}\)</span>, and we want to recover <span class="math inline">\(\mathbf{x}\)</span>. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="08f4ecd8" class="cell" data-execution_count="11">
+<div id="f2d9dff2" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(Amat.to(torch.float64))</span>
@@ -770,7 +770,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The loss is </span><span class="sc">{</span>loss<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>The loss is 1.5941001880912316e-23</code></pre>
+<pre><code>The loss is 1.812403923995022e-34</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div id="svd-decomposition" class="quarto-figure quarto-figure-center anchored">
@@ -811,7 +811,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <span class="math inline">\(U\)</span>.</p>
-<div id="7a28efa7" class="cell" data-execution_count="14">
+<div id="4351e3dc" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -829,7 +829,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <span class="math inline">\(V\)</span>. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="f3f03ccb" class="cell" data-execution_count="15">
+<div id="15c4ec33" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -985,7 +985,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised-recovery" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="467" class="figure-img"></p>
+<p><img src="index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="460" class="figure-img"></p>
 <figcaption>Pseudoinverse Recovery of the Original Image with Noise.</figcaption>
 </figure>
 </div>

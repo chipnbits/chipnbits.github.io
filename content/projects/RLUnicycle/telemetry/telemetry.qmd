@@ -1,6 +1,6 @@
 ---
-title: "Telemetry and Database System"
-subtitle: "Telemetry and Database System Documentation"
+title: "Telemetry and Database Systems for Capstone"
+subtitle: "A guide to setting up a telemetry server for robotics capstone projects"
 author: "Simon Ghyselincks, Team 2411"
 date: last-modified # Adds the current date
 format:
@@ -15,20 +15,20 @@ format:
 
 # Purpose 
 
-This is a user summary document for our capstone telemetry and database server. It is intended to provide an overview of the different services that are in use for the data pipeline. The capstone project leverages the MING stack as shown in the overview diagram below. 
+This guide is designed to provide an overview of the telemetry and databasing system that is in use for our Learning to Balance, reinforcement learning unicycle project. First I will provide an overview of some hardware recommendations, then a look at the networked services that are in use, and finally a look at some of the software code and implementation through example code.
 
-I recommend using a central server to manage all of these services through a Zerotier Virtual Network. This will allow you to access the services from anywhere via the internet without exposing the server to the public. 
+The telemetry and databasing can be seen as a two way pipeline that is controlling the flow of data from sensors, motors, and control deceisions. Data from the robot is offloaded to a server in an efficient manner that takes into consideration limited processing power and the desire for a stable control loop, where it can be further processed. The server in turn manages control signals being sent to the robot which can be used to adjust parameters or send commands to the robot. By using a central server and internet connectivity to all client devices, the database, live telemetry, and control panel can be accessed from any networked computer through a browser or software API, from anywhere in the world.
 
-## Hardware Recommendation
+## Hardware Recommendation and Requirements
 
-The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server.
+The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server. This type of device is capable of handling the computational loads of running multiple services at once in the context of managing, database, messaging, and control services. It can also be used as a workstation for the team.
 
-The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the device. 
+The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the devic, and it is not recommended for a server, especially when considering the cost of a refurbished Lenovo. 
 
 # Telemetry Services Overview
 Telemetry and Control Command Communications
 
-![](https://i.imgur.com/YNNInuJ.png)
+![Telemetry Overview](NetworkDiagram.drawio.svg){fig-align="center"}
 
 ## ZeroTier Virtual Network
 Zerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network. 
