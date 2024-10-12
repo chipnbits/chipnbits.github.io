@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Ghyselincks, Team 2411">
-<meta name="dcterms.date" content="2024-10-10">
+<meta name="dcterms.date" content="2024-10-11">
 
 <title>Telemetry and Database Systems for Capstone – Simon Ghyselincks</title>
 <style>
@@ -105,12 +105,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+<meta name="mermaid-theme" content="neutral">
+<script src="../../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../../styles.css">
 </head>
 
-<body class="nav-sidebar docked nav-fixed fullcontent">
+<body class="nav-sidebar docked nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -235,7 +268,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose">Purpose</a>
+  <ul class="collapse">
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  </ul></li>
+  <li><a href="#telemetry-services-overview" id="toc-telemetry-services-overview" class="nav-link" data-scroll-target="#telemetry-services-overview">Telemetry Services Overview</a>
+  <ul class="collapse">
+  <li><a href="#zerotier-virtual-network" id="toc-zerotier-virtual-network" class="nav-link" data-scroll-target="#zerotier-virtual-network">ZeroTier Virtual Network</a></li>
+  <li><a href="#connecting-to-robot-controller-using-ssh" id="toc-connecting-to-robot-controller-using-ssh" class="nav-link" data-scroll-target="#connecting-to-robot-controller-using-ssh">Connecting to Robot Controller using SSH</a></li>
+  <li><a href="#mqtt-overview" id="toc-mqtt-overview" class="nav-link" data-scroll-target="#mqtt-overview">MQTT Overview</a></li>
+  <li><a href="#telegraf-and-influxdb" id="toc-telegraf-and-influxdb" class="nav-link" data-scroll-target="#telegraf-and-influxdb">Telegraf and InfluxDB</a></li>
+  <li><a href="#grafana-live-telemetry" id="toc-grafana-live-telemetry" class="nav-link" data-scroll-target="#grafana-live-telemetry">Grafana Live Telemetry</a></li>
+  </ul></li>
+  <li><a href="#robot-software-architecture" id="toc-robot-software-architecture" class="nav-link" data-scroll-target="#robot-software-architecture">Robot Software Architecture</a></li>
+  <li><a href="#command-management" id="toc-command-management" class="nav-link" data-scroll-target="#command-management">Command Management</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -259,7 +314,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 10, 2024</p>
+      <p class="date">October 11, 2024</p>
     </div>
   </div>
   
@@ -271,121 +326,828 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="purpose" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Purpose</h1>
+<section id="purpose" class="level1">
+<h1>Purpose</h1>
 <p>This guide is designed to provide an overview of the telemetry and databasing system that is in use for our Learning to Balance, reinforcement learning unicycle project. First I will provide an overview of some hardware recommendations, then a look at the networked services that are in use, and finally a look at some of the software code and implementation through example code.</p>
-<p>The telemetry and databasing can be seen as a two way pipeline that is controlling the flow of data from sensors, motors, and control deceisions. Data from the robot is offloaded to a server in an efficient manner that takes into consideration limited processing power and the desire for a stable control loop, where it can be further processed. The server in turn manages control signals being sent to the robot which can be used to adjust parameters or send commands to the robot. By using a central server and internet connectivity to all client devices, the database, live telemetry, and control panel can be accessed from any networked computer through a browser or software API, from anywhere in the world.</p>
-<section id="hardware-recommendation-and-requirements" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="hardware-recommendation-and-requirements"><span class="header-section-number">1.1</span> Hardware Recommendation and Requirements</h2>
-<p>The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server. This type of device is capable of handling the computational loads of running multiple services at once in the context of managing, database, messaging, and control services. It can also be used as a workstation for the team.</p>
-<p>The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the devic, and it is not recommended for a server, especially when considering the cost of a refurbished Lenovo.</p>
-</section>
-</section>
-<section id="telemetry-services-overview" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Telemetry Services Overview</h1>
-<p>Telemetry and Control Command Communications</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="NetworkDiagram.drawio.svg" class="img-fluid figure-img"></p>
+<p><img src="imgs/NetworkDiagram.drawio.svg" class="img-fluid figure-img"></p>
 <figcaption>Telemetry Overview</figcaption>
 </figure>
 </div>
-<section id="zerotier-virtual-network" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="zerotier-virtual-network"><span class="header-section-number">2.1</span> ZeroTier Virtual Network</h2>
-<p>Zerotier is a virtual network that allows for secure communication between devices over the internet. It is a VPN that allows for devices to be connected to a virtual network and communicate with each other as if they were on the same local network.</p>
-<p>To setup a network you should first create a free account at <a href="https://my.zerotier.com/">https://my.zerotier.com/</a>. Once you have an account you can create a network and add devices to it. The network ID is a 16 digit number that is used to identify the network.</p>
-<p><img src="https://i.imgur.com/mTfZ0wi.png" alt="Alternative text" width="400"></p>
-<section id="zerotier-client" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="zerotier-client"><span class="header-section-number">2.1.1</span> Zerotier Client</h3>
-<p>The Zerotier client is a software that is installed on the devices that you want to connect to the network. Each device intended for the network including the server should have the client installed. Once it is installed, enter the network ID from the Zerotier website and then approve the device to the network. You may wish to set static IP addresses, especially for the server. This can all be done through the Zerotier website.</p>
-<p><a href="https://www.zerotier.com/download/">https://www.zerotier.com/download/</a></p>
+<p>The telemetry and databasing can be seen as a two way pipeline that is controlling the flow of data from sensors, motors, and control deceisions. Data from the robot is offloaded to a server in an efficient manner that takes into consideration limited processing power and the desire for a stable control loop, where it can be further processed. The server in turn manages control signals being sent to the robot which can be used to adjust parameters or send commands to the robot. By using a central server and internet connectivity to all client devices, the database, live telemetry, and control panel can be accessed from any networked computer through a browser or software API, from anywhere in the world.</p>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>For this guide, it is assumed that the reader has some familiarity with running commands on a Linux command line and access to a terminal on their client device (e.g.&nbsp;personal laptop). This could be through WSL or VSCode on Windows, or a terminal on a Mac or Linux machine.</p>
+<p>The guide will also use Python for some of the examples, so a basic understanding of Python is recommended. However, the same libraries used are available in other languages such as C++.</p>
+<section id="hardware-recommendation-and-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="hardware-recommendation-and-requirements">Hardware Recommendation and Requirements</h3>
+<section id="server" class="level4">
+<h4 class="anchored" data-anchor-id="server">Server</h4>
+<p>The Lenovo M900 series of refurbished tiny PCs are recommended as an affordable option that meets the compute needs for a server. The SSD of the device was set to dual boot into Linux Ubuntu 22.04 for the purposes of running a server. This type of device is capable of handling the computational loads of running multiple services at once in the context of managing, database, messaging, and control services. It can also be used as a workstation for the team.</p>
+<p>The Raspberry Pi 4B 8GB with a an external SSD was tested as a configuration but the requirements are at the limits of the processing power of the devic, and it is not recommended for a server, especially when considering the cost of a refurbished Lenovo.</p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/lenovoserver.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Lenovo Server</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/chipset.png" class="img-fluid figure-img" style="width:30.0%"></p>
+<figcaption>Wifi Dongle</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="robot-wi-fi" class="level4">
+<h4 class="anchored" data-anchor-id="robot-wi-fi">Robot Wi-Fi</h4>
+<p>Our robot is using an Nvidia Jetson Nano 4GB which does not have wi-fi by default. To complicate matters further, a real time (<a href="../../../../content/projects/RLUnicycle/rtkernel/rtpatch.html">PREEMPT_RT</a>) patch has been applied to our the Linux Kernel. Many wifi dongle drivers are not compatible with the low level kernel changes made by the patch, for example the rtl8188EUS driver no longer was working after the patch.</p>
+<p>A recommended slower but reliable USB Wi-fi dongle for use with <em>outdated</em> and/or <em>patched</em> Linux kernels is the MT7601U Chipset, which was found to work without installation of any additional drivers on Ubuntu 22.04, Ubuntu 16.04 PREEMPT-RT, and Raspbian. The dongle is also very cheap and can be found on Amazon or Aliexpress.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="telemetry-services-overview" class="level1">
+<h1>Telemetry Services Overview</h1>
+<p>The telemetry and control command communications are managed through a series of services running on a central server. The client devices, server, and robot are all visibile to each other through a virtual network managed with <a href="https://www.zerotier.com/">ZeroTier</a>. This allows for secure communication between devices over the internet, without exposing their IP addresses to the public.</p>
+<p>The principal components of the software stack are as follows:</p>
+<table style="width:100%;">
+<tbody><tr>
+<td style="width:20%;">
+<img src="imgs/mqtt-logo.png">
+</td>
+<td>
+<ul>
+<li><strong><a href="https://mqtt.org/">Mosquitto MQTT Broker</a></strong>: This service is a publisher-subscriber model that allows for rapid passing of messages between devices and across topics. It is similar to the ROS topic system but is more lightweight and can be used for a wider range of applications.
+</li></ul></td>
+</tr>
+
+<tr>
+<td style="width:20%;">
+<img src="imgs/telegraf-logo.png">
+</td>
+<td>
+<ul>
+<li><strong><a href="https://www.influxdata.com/time-series-platform/telegraf/">Telegraf</a></strong>: Telegraf is a plugin-driven server agent for collecting and reporting metrics. It is a localized central switchboard for data from MQTT topics and enters them into the InfluxDB database.
+</li></ul></td>
+</tr>
+
+<tr>
+<td style="width:20%;">
+<img src="imgs/influx-logo.png">
+</td>
+<td>
+<ul>
+<li><strong><a href="https://www.influxdata.com/">InfluxDB</a></strong>: InfluxDB is a time-series database that is used to store the telemetry data that is being streamed from the robot. It has a web browser interface that can be used to explore the data, along with APIs in Python and other languages that can make queries to the database.
+</li></ul></td>
+</tr>
+
+<tr>
+<td style="width:20%;">
+<img src="imgs/grafan-logo.png">
+</td>
+<td>
+<ul>
+<li><strong><a href="https://grafana.com/">Grafana</a></strong>: Grafana is a powerful open-source platform for creating dashboards and visualizing time-series data. It supports various data sources through plugins, including InfluxDB. For live telemetry with a fast refresh rate, the MQTT plugin can be used to connect to the MQTT broker and display the data streaming in real-time.
+</li></ul></td>
+</tr>
+
+<tr>
+<td colspan="2">
+<ul>
+<li><strong><a href="https://nodered.org/">Node-Red</a></strong>: Node-Red is a flow-based open-source development tool for visual programming. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes, in our case this makes for a synchronized control panel accessible through a web browser.
+</li></ul></td>
+</tr>
+</tbody></table>
+
+<p>A simplified flowchart of the system is shown below:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  %% Customizing colors for subgraphs and nodes
+  style Robot fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Server fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+  style Clients fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+
+  Y[Robot]
+  Z[Server]
+
+  %% Define a class for black text
+  classDef blackText fill:none,color:#000,stroke:none;
+
+  subgraph Robot
+    A[IMU Sensors] --&gt;|Data| D(Control Loop)
+    B[Motors] &lt;--&gt;|Feedback| D
+    C[Controller] &lt;--&gt;|Commands| D
+    D &lt;--&gt; E(Communication Multiprocess)
+  end
+  
+  subgraph Server
+    E &lt;--&gt; F[MQTT Broker]
+    F --&gt;|Metrics| G[Telegraf]
+    G --&gt;|Write| H[InfluxDB]
+    F --&gt;|Visualization| I[Grafana]
+  end
+
+  %% Clients section coloring applied to individual floating nodes
+    I --&gt;|Live Telemetry| J[Dashboard]
+    K[Node-RED] --&gt;|Commands| F
+    L[Xbox Controller] --&gt;|Commands| F
+    H --&gt;|Data| M[Data Explorer and API]
+
+  
+  %% Styling for the floating client items
+  style J fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style K fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style L fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style M fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style Y fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Z fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Now we will take a closer look at each of these services, and how to configure them for a robotics project.</p>
+<section id="zerotier-virtual-network" class="level2">
+<h2 class="anchored" data-anchor-id="zerotier-virtual-network">ZeroTier Virtual Network</h2>
+<p>Zerotier allows all authorized devices on the network to communicate directly with eachother using assigned virtual IP address, similar to running a local network over a wifi router for example.</p>
+<p><strong>IP Addresses:</strong> When a website address is typed into a browser, the request is sent to a Domain Name Server (DNS) which translates the address into an IP address. The IP address is a unique identifier that functions similar to a postal address, marking out the exact location where that server is located on the internet. For example, open a terminal and type <code>ping google.com</code> to see the IP address of Google’s server.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">❯</span> ping google.com</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">PING</span> google.com <span class="er">(</span><span class="ex">142.251.33.78</span><span class="kw">)</span> <span class="ex">56</span><span class="er">(</span><span class="ex">84</span><span class="kw">)</span> <span class="ex">bytes</span> of data.</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">64</span> bytes from sea09s28-in-f14.1e100.net <span class="er">(</span><span class="ex">142.251.33.78</span><span class="kw">)</span><span class="bu">:</span> icmp_seq=1 ttl=114 time=21.6 ms</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The Google webpage can be accessed by typing in the IP address directly into the browser. The number is a unique identifier for that server on the internet.</p>
+<p><strong>Public and Private IP Addresses:</strong> The IP protocol reserves certain ranges of IP addresses for pivate networks. For example, the entire block of addresses <code>192.168.0.0 – 192.168.255.255</code> do not point to the wider internet, but are reserved for local devices. This is why home routers can all have the same common IP address of <code>192.168.0.1</code> without creating any conflicts. It acts as a local addressing system, like apartment numbers in a building.</p>
+<p><strong>Network Ports:</strong> Ports are used to differentiate between different services running on the same IP address. For example, a web server might be running on port 80, while an email server might be running on port 25. When typing in a website address, the browser automatically connects to the server on port 80. To connect to a different service, you can specify the port using a colon, for example <code>http://172.22.1.1:8086/</code> connects to port <code>8086</code> which is commonly used for InfluxDB.</p>
+<p><strong>Local Host:</strong> The IP address <code>http://localhost</code> is a special address that points to the local machine. It is used to access services running on the same machine, for example <code>http://localhost:3000</code> would connect to a service running on port <code>3000</code> on the local machine. It is a way to query services running on the same machine without needing to know the IP address.</p>
+<p>The clients on the ZeroTier network connect to the robot and server using their assigned virtual IP addresses managed by the ZeroTier service.</p>
+<section id="setting-up-zerotier-network" class="level3">
+<h3 class="anchored" data-anchor-id="setting-up-zerotier-network">Setting up ZeroTier Network</h3>
+<p>To setup a network you should first create a free account at <a href="https://my.zerotier.com/">https://my.zerotier.com/</a>. Bonus points if you set up a team email so that anyone on the team can login to manage the network as needed. Once you have an account you can create a network and add devices to it. The network ID is a 16 digit number that is used to identify the network.</p>
+</section>
+<section id="zerotier-client-setup" class="level3">
+<h3 class="anchored" data-anchor-id="zerotier-client-setup">ZeroTier Client Setup</h3>
+<p><em>Every</em> device intended to be part of the network, including laptops, the server, and the Jetson, should have the ZeroTier client installed. Once installed, enter the network ID from the ZeroTier website into the client, and approve the device to join the network. You may also want to assign static IP addresses, especially for critical devices like the server. This can all be managed via the ZeroTier website.</p>
+<p><strong>Installation Instructions:</strong> <a href="https://www.zerotier.com/download/">Download the ZeroTier client here</a>.</p>
+<section id="steps" class="level4">
+<h4 class="anchored" data-anchor-id="steps">Steps:</h4>
+<ol type="1">
+<li><p><strong>Download and Install the ZeroTier client</strong> for your operating system:</p></li>
+<li><p><strong>Start the ZeroTier service</strong>:</p>
+<ul>
+<li><p><strong>On Windows</strong>:</p>
+<ul>
+<li>Open the ZeroTier client, which will add an icon to the system tray.</li>
+<li>Right-click on the icon and select <code>Join Network</code>, then enter the network ID.</li>
+<li>Set the client UI to launch on startup.</li>
+</ul></li>
+<li><p><strong>On Linux</strong>: Run the following commands:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable zerotier-one</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start zerotier-one</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> zerotier-cli join YOUR_NETWORK_ID</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul></li>
+<li><p><strong>Approve the device</strong>:<br>
+Take note of the client ID and either log into the ZeroTier website or use the command-line interface to approve the device for network access.</p></li>
+<li><p><strong>Verify the connection</strong>:<br>
+After approval, you can verify the connection by pinging another connected device on the network using its assigned virtual IP address.</p></li>
+<li><p><strong>Assign a static IP (optional)</strong>:<br>
+For important devices like the server or the Jetson, assign static IP addresses through the ZeroTier web console under the <strong>Members</strong> tab. This ensures consistent IP allocation across reboots.</p></li>
+</ol>
 <hr>
 </section>
 </section>
-<section id="mqtt-overview" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="mqtt-overview"><span class="header-section-number">2.2</span> MQTT Overview</h2>
-<p>The robot an network is using the MQTT protocol to implement live telemetry. Topics are used on a subscriber publisher basis. All communication is routed through the Lenovo server that is acting as the broker. The Mosquitto MQTT server software is running on the Lenovo server which is the IP address used for routing messages. The default port for MQTT is 1883.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the MQTT settings</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>broker_address <span class="op">=</span> <span class="st">"172.22.1.1"</span> <span class="co">#Lenovo's IP address</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>port <span class="op">=</span> <span class="dv">1883</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>topic <span class="op">=</span> <span class="st">"robot/telemetry"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The MQTT explorer offers comprehensive tools to explore available topics and more: https://mqtt-explorer.com/ This can be a very useful tool for debugging and exploring the MQTT network to check if messages are being sent and received.</p>
-<p>MQTT interfaces with Python, Node-Red, and Grafana to provide a comprehensive data pipeline. The MQTT broker is the central hub for all data that is being sent and received. The broker can be accessed by any device on the ZeroTier network that is subscribed to the topic.</p>
-<section id="mqtt-summary" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="mqtt-summary"><span class="header-section-number">2.2.1</span> MQTT Summary</h3>
-<p>MQTT is a lightweight messaging protocol that provides an efficient and cost-effective method of carrying out telemetry-based communication between devices. It’s especially popular in Internet of Things (IoT) applications due to its minimal bandwidth requirements and ease of implementation on hardware with limited processing capabilities.</p>
-<section id="key-features-of-mqtt" class="level4" data-number="2.2.1.1">
-<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="key-features-of-mqtt"><span class="header-section-number">2.2.1.1</span> Key Features of MQTT:</h4>
-<ul>
-<li>Lightweight Protocol: Ideal for constrained devices and networks with limited bandwidth.</li>
-<li>Publish-Subscribe Model: Allows devices to publish messages to a topic and any client subscribed to that topic will receive the messages.</li>
-<li>Reliable Message Delivery: Offers various levels of Quality of Service (QoS) to guarantee message delivery.</li>
-<li>Minimal Overhead: Adds only a small overhead to each message, ensuring efficient use of network resources.</li>
-<li>Retained Messages: Supports retaining the last message sent on a topic, making it available immediately to new subscribers.</li>
-<li>Last Will and Testament: Provides a means for a client to notify other clients about an abnormal disconnection.</li>
-</ul>
-</section>
-<section id="application-for-our-robot" class="level4" data-number="2.2.1.2">
-<h4 data-number="2.2.1.2" class="anchored" data-anchor-id="application-for-our-robot"><span class="header-section-number">2.2.1.2</span> Application for our Robot</h4>
-<p>The Lenovo acts as a broker for all the data that is streaming out of the robot over a Wi-Fi connection to the internet. This offloads the databasing and broadcasting duty from the robot to the broker which can dedicate more resources to data management. The robot can publish data to a topic, which can be picked up by various subscribers such as the Lenovo’s Grafana server or other laptops, phones, etc that are connected to the broker and subscribed to the topic.</p>
-<p><strong>More Detailed System Diagram needed</strong> <img src="https://i.imgur.com/SDVurr8.png" class="img-fluid"></p>
-<p>The broker can duplicate the published data to many devices in real-time. Another hidden stream for the data is through Node-Red to InfluxDB where the aggregate data can be store more permanently for access to testing records at a later date. Additionally, an MQTT bridge is connected to the Pi’s Grafana server which offers an advanced dashboard service for viewing live telemetry. Note that databased telemetry can also be viewed through Grafana which is connected to InfluDB, but it is a seperate data stream from MQTT and should have a seperate dashboard.</p>
-</section>
-</section>
-<section id="publishing-messages" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" class="anchored" data-anchor-id="publishing-messages"><span class="header-section-number">2.2.2</span> Publishing Messages</h3>
-<p>A sample script for publishing messages with <strong>Paho-MQTT client</strong> <a href="https://www.emqx.com/en/blog/how-to-use-mqtt-in-python">Documentation</a> to the Lenovo server/broker while connected to Zero-Tier is provided, see the mqtt.py file. The script allows for publishing a controller value or a cpu_usage data point.</p>
-<p><strong>Prerequisites</strong></p>
-<ul>
-<li><p>MQTT Broker Setup: Ensure that the MQTT broker, in this case, the Lenovo server, is up and running.</p></li>
-<li><p>Network Connection: Connect your device to the Zero-Tier network to ensure visibility and access to the broker.</p></li>
-<li><p>Python Environment: Make sure Python is installed on your device along with necessary libraries: paho-mqtt, json</p></li>
-<li><p>Broker Details: In the script, set the broker_address to the Lenovo server’s IP address and port to 1883 (default MQTT port).</p>
-<p>A client is formed with a ClientID that should be descriptive, we then connect to the MQTT broker A dictionary of values can be converted to JSON format using JSON dump, method. The broker is designed to work with either raw values or JSON The JSON values can be a collection of data types with a Key and Value</p>
-<p>The publish method publishes the data to the desired stream where other clients can subscribe to the topic.</p></li>
-</ul>
-</section>
-<section id="subscribing-to-messages" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="subscribing-to-messages"><span class="header-section-number">2.2.3</span> Subscribing to messages:</h3>
-<ul>
-<li>A Grafana server has been setup where some useful dashboards can be maintained. The <strong>IoT MQTT Panel</strong> for Android also offers some nice services including the ability to send messages.</li>
-<li>More details on subscribing through the <strong>Paho-MQTT client</strong> can be found at <a href="https://www.emqx.com/en/blog/how-to-use-mqtt-in-python">https://www.emqx.com/en/blog/how-to-use-mqtt-in-python</a> ### QoS The protocol allows for fast transmission of messages and a similar PUB/SUB model as ROS topics. Telemetry read data can be sent using QoS level 0 which only attempts a single delivery of the data and does not wait for confirmation of receipt, this is perfectly acceptable for fast streaming data that is not mission critical.</li>
-</ul>
-<p>For mission critical commands such as parameter adjustments and messages to the robot, a QoS level of 2 can be tied to the message which ensures that it is delivered to the robot exactly once. This avoids duplicate commands or lost commands through the network. It is a slower communication protocol but it is not an issue for lower bandwidth messages that are orginating from control devices to the robot.</p>
-</section>
-</section>
-<section id="grafana-live-telemetry-and-database-dashboards" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="grafana-live-telemetry-and-database-dashboards"><span class="header-section-number">2.3</span> Grafana Live Telemetry and Database Dashboards</h2>
-<p><strong>Grafana</strong> is a powerful open-source platform for creating dashboards and visualizing time-series data. It is particularly well-suited for monitoring and analyzing real-time data. Grafana supports a wide range of data sources and can be used to display both live and historical data in a variety of formats, including graphs, tables, and gauges. Think of it as graph nirvana.</p>
-<p>When it comes to viewing the telemetry data, a plugin can be installed to function as a bridge between the MQTT broker and the Grafana server. https://grafana.com/grafana/plugins/grafana-mqtt-datasource/</p>
-<p>To setup Grafana, install the software on the Lenovo server first. The default port for Grafana is 3000. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 3000.</p>
-<p>Once you have logged in, you can add a data source by selecting MQTT from the list of available data sources if you have correctly installed the plugin. The panel will listen to all messages on a particular topic and display them in a graph or table format.</p>
-</section>
-<section id="influxdb-databasing" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="influxdb-databasing"><span class="header-section-number">2.4</span> InfluxDB Databasing</h2>
-<p>The database can be accessed through Python API, through Grafana, or even a direct viewer. The database is also to be installed on the Lenovo server. The default port for InfluxDB is 8086. The database can be accessed through a web browser by navigating to the IP address of the Lenovo server on port 8086.</p>
-<p>MQTT gives livestream data but if we want data storage and permanence between runs it needs to be databased. InfluxDB offers this service along with data manipulation services and a special query language. It also includes a data explorer through the web interface.</p>
-</section>
-<section id="node-red" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="node-red"><span class="header-section-number">2.5</span> Node Red</h2>
-<p>Node Red is a flow-based open source development tool for visual programming developed by IBM. It is used for wiring together hardware devices, APIs, and online services in new and interesting ways. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.</p>
-<p>For this application Node Red is used to bridge the MQTT broker to the InfluxDB database. This allows for the data to be stored in a database for later access. The data can be manipulated and stored in a more permanent format.</p>
-<p>The Node Red server is installed on the Lenovo server. The default port for Node Red is 1880. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 1880.</p>
-<section id="node-red-dashboard" class="level3" data-number="2.5.1">
-<h3 data-number="2.5.1" class="anchored" data-anchor-id="node-red-dashboard"><span class="header-section-number">2.5.1</span> Node Red Dashboard</h3>
+<section id="managing-ip-addresses" class="level3">
+<h3 class="anchored" data-anchor-id="managing-ip-addresses">Managing IP Addresses</h3>
+<p>Below is an example of a ZeroTier network where the server has been assigned the static IP address <code>172.22.1.1</code> on the network:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="nodereddash.png" class="img-fluid figure-img"></p>
+<p><img src="imgs/zerotier-panel.png" class="img-fluid figure-img"></p>
+<figcaption>ZeroTier Network and Access</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="connecting-to-robot-controller-using-ssh" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-robot-controller-using-ssh">Connecting to Robot Controller using SSH</h2>
+<p>Now that there is a virtual network created, it is a good time to enable remote access to the robot controller via SSH. SSH is a secure shell protocol that allows for running command line commands on a remote device. This can be very useful for managing the robot, running scripts, and updating software code. To access the controller, use the virtual IP address assigned to the robot on the ZeroTier network. It is recommended to assign a static IP address using ZeroTier UI or CLI, so that it the address does not change between reboots.</p>
+<p>For faster access to ssh devices, consider setting up an alias and or an ssh key once ssh is verified working for a device. More information on SSH can be found <a href="https://www.digitalocean.com/community/tutorials/ssh-essentials-working-with-ssh-servers-clients-and-keys.">here</a></p>
+<p><strong>Example:</strong> Our robot has the static ip address <code>172.22.0.5</code>. To connect from a linux terminal on a computer connected to the private network with zerotier client installed, run the following command:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> jetson@172.22.0.5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will attempt to login to the username <code>jetson</code> on the robot controller, which will then prompt for a user password, the same one as if logging in directly on the robot. For a controller that is running Linux, we recommend setting up different users on the system so that each team member is able to login to their own account and manage their own files and credentials. The software between user accounts can be shared using symbolic links to a central repository, or using GitHub to manage individual software branches.</p>
+<section id="vscode-server" class="level4">
+<h4 class="anchored" data-anchor-id="vscode-server">VSCode Server</h4>
+<p>The Jetson is also able to handle <a href="#vscode-server">VSCode Server</a> (https://code.visualstudio.com/docs/remote/ssh), although the outdated Ubuntu 16.04 requires running an older version of VSCode IDE to ssh in. It is important to be aware that VSCode Server is active on the Jetson when sshed in, which takes up some system resources, although in practice it has not been a performance issue. For best performance, running the robot through a simple terminal is recommended. The benefits of sshing through VSCode is that it provides a GUI interface for software development and file management on the robot, as if the user was using VSCode on their own computer.</p>
+</section>
+</section>
+<section id="mqtt-overview" class="level2">
+<h2 class="anchored" data-anchor-id="mqtt-overview">MQTT Overview</h2>
+<div class="image-wrap">
+<p><img src="imgs/mqtt-logo.png" class="img-fluid"></p>
+</div>
+<p>MQTT is a lightweight messaging protocol that provides an efficient and cost-effective method of carrying out telemetry-based communication between devices. MQTT messages are routed through the Lenovo server that is acting as the broker using Mosquitto. The robot can publish data to a topic, which can be picked up by various subscribers such as Grafana or other laptops, phones, etc that are connected to the broker and subscribed to the topic. Likewise, return commands to the robot can be sent via a command topic to the robot to turn it on or off, or adjust parameters. The default port for MQTT is <code>1883</code>.</p>
+<p>For setup, installation, and maintenance of the broker, I recommend installing MQTT Explorer on any device connected to the network. This allows for montitoring of all messaging and client connections across the system.</p>
+<p>Download from <a href="https://mqtt-explorer.com/">MQTT Explorer</a></p>
+<section id="key-features-of-mqtt" class="level4">
+<h4 class="anchored" data-anchor-id="key-features-of-mqtt">Key Features of MQTT</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 76%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Lightweight Protocol</strong></td>
+<td>Ideal for constrained devices and networks with limited bandwidth.</td>
+</tr>
+<tr class="even">
+<td><strong>Publish-Subscribe Model</strong></td>
+<td>Allows devices to publish messages to a topic and any client subscribed to that topic will receive the messages.</td>
+</tr>
+<tr class="odd">
+<td><strong>Reliable Message Delivery</strong></td>
+<td>Offers various levels of Quality of Service (QoS) to guarantee message delivery.</td>
+</tr>
+<tr class="even">
+<td><strong>Minimal Overhead</strong></td>
+<td>Adds only a small overhead to each message, ensuring efficient use of network resources.</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://i.imgur.com/SDVurr8.png" class="img-fluid"></p>
+</section>
+<section id="installing-mosquitto-mqtt-broker" class="level3">
+<h3 class="anchored" data-anchor-id="installing-mosquitto-mqtt-broker">Installing Mosquitto MQTT Broker</h3>
+<p>From the server open a terminal and run the following commands to install the MQTT broker:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install mosquitto mosquitto-clients</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable mosquitto</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start mosquitto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After installation, open up the MQTT Explorer and connect to the broker using the IP address of the server and the default port. You should see the server as a client connected to the broker.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/mqtt-explorer.png" class="img-fluid figure-img"></p>
+<figcaption>Connecting to MQTT Broker</figcaption>
+</figure>
+</div>
+<p>Once connected, some test messages can be sent through the GUI and verified that they are being received by the server.</p>
+<p>For more detailed instructions or help, consider using ChatGPT for some test commands to verify the installation is working as intended.</p>
+</section>
+<section id="interfacing-with-software" class="level3">
+<h3 class="anchored" data-anchor-id="interfacing-with-software">Interfacing with Software</h3>
+<p>MQTT interfaces with Python, Node-Red, and Grafana to provide a network of communication topics. The broker can be accessed by any device on the ZeroTier network, where messages can be sent to a topic, or action can be taken based on a message received from a topic.</p>
+<p>An example Python script for publishing messages to the MQTT broker is shown below, which publishes a test message to the topic “jetson/telemetery” every 1 second. Notice that the two key components to a successful message are the topic and the message payload. The topic is the address that the message is sent to, and the payload is the data that is being sent. The payload can be a string, a number, or a JSON object. For our project, we are using JSON objects to send data.</p>
+<p>The package is installed using pip: <code>pip install paho-mqtt</code></p>
+<div id="29fc12b4" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> paho.mqtt.client <span class="im">as</span> mqtt</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the MQTT settings</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>broker_address <span class="op">=</span> <span class="st">"172.22.1.1"</span>  <span class="co"># Lenovo's IP address (replace with your broker IP)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>port <span class="op">=</span> <span class="dv">1883</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>topic <span class="op">=</span> <span class="st">"jeston/telemetry"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MQTT client instance</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> mqtt.Client()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the callback for receiving messages</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> on_message(client, userdata, message):</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Message received on topic </span><span class="sc">{</span>message<span class="sc">.</span>topic<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>message<span class="sc">.</span>payload<span class="sc">.</span>decode()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the callback for connecting to the broker</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> on_connect(client, userdata, flags, rc):</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Connected to broker with result code "</span> <span class="op">+</span> <span class="bu">str</span>(rc))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subscribe to the topic when connected</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    client.subscribe(topic)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign the callbacks</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>client.on_message <span class="op">=</span> on_message</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>client.on_connect <span class="op">=</span> on_connect</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to the broker</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>client.<span class="ex">connect</span>(broker_address, port)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the loop to process messages</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>client.loop_start()</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Publish some test messages to the topic every second</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="bu">range</span>(<span class="dv">3</span>)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        message <span class="op">=</span> {<span class="st">"sensor"</span>: <span class="st">"temperature"</span>, <span class="st">"value"</span>: <span class="dv">20</span> <span class="op">+</span> random.random() <span class="op">*</span> <span class="dv">5</span>}</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        client.publish(topic, json.dumps(message))</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Published message: </span><span class="sc">{</span>message<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Exiting..."</span>)</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop the loop and disconnect</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>client.loop_stop()</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>client.disconnect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Published message: {'sensor': 'temperature', 'value': 24.716931987828893}</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\sghys\AppData\Local\Temp\ipykernel_35516\406674647.py:12: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+  client = mqtt.Client()</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Connected to broker with result code 0
+Published message: {'sensor': 'temperature', 'value': 20.272412564292544}
+Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 20.272412564292544}
+Published message: {'sensor': 'temperature', 'value': 23.740786448298167}
+Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 23.740786448298167}</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>&lt;MQTTErrorCode.MQTT_ERR_SUCCESS: 0&gt;</code></pre>
+</div>
+</div>
+<p>Note that in this demo script, the client is both publishing and subscribing to the same topic. In practice for the robot we are using multiple topics for different data streams and commands. A more advanced implementation to assign topics and manage data can be found at: <a href="https://github.com/Team-2411-RL-Unicycle/rl-unicycle">RLUnicycle</a></p>
+<p>This test script is useful for publishing test data when it comes to verifying the installation of InfluxDB and Grafana ahead.</p>
+<p>We are now at this stage in the setup:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  %% Customizing colors for subgraphs and nodes
+  style Robot fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Server fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+  style Clients fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+
+  Y[Robot]
+  Z[Server]
+
+  %% Define a class for black text
+  classDef blackText fill:none,color:#000,stroke:none;
+
+  subgraph Robot
+    E(Jetson)
+  end
+  
+  subgraph Server
+    E &lt;--&gt; F[MQTT Broker]
+  end
+
+  %% Clients section coloring applied to individual floating nodes
+    K[Python Script] --&gt;|Commands| F
+    L[Laptop] --&gt;|SSH| E
+    L --&gt;|MQTT Explorer| F
+    L --&gt; K
+  
+  %% Styling for the floating client items
+  style K fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style L fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style Y fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Z fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="telegraf-and-influxdb" class="level2">
+<h2 class="anchored" data-anchor-id="telegraf-and-influxdb">Telegraf and InfluxDB</h2>
+<div class="image-wrap">
+<p><img src="imgs/telegraf-logo.png" class="img-fluid"> <img src="imgs/influx-logo.png" class="img-fluid"></p>
+</div>
+<p><a href="https://docs.influxdata.com/telegraf/v1/install/">Telegraf</a> and <a href="https://docs.influxdata.com/influxdb/v2/install/">InfluxDB</a> are free an open-source products that are made by the same company, InfluxData. Telegraf is driven by a configuration file that organizes data coming in from multiple sources for processing and forwarding into the InfluxDB database. InfluxDB is a time-series database that is used to store the telemetry data that is being streamed from the robot. It has a web browser interface that can be used to explore the data, along with APIs in Python and other languages that can make queries to the database.</p>
+<p>Follow the instructions from in the links above to install both services on the server.</p>
+<section id="influxdb-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="influxdb-configuration">InfluxDB Configuration</h3>
+<p>The InfluxDB database can be accessed through a web browser by navigating to the IP address of the Lenovo server on port 8086. For example, <code>http://172.22.1.1:8086/</code>. A login process will establish a username, password, and organization. The organization is simply a way to group data together across users. A bucket is a way to group data together within an organization. For our database we have assigned the organization name as <code>Capstone</code> and the bucket name as <code>telegraf</code> but these are free to choose. Once the organization and bucket have been created, the database is ready to receive data.</p>
+</section>
+<section id="telegraf-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="telegraf-configuration">Telegraf Configuration</h3>
+<p>The Telegraf configuration file is located at <code>/etc/telegraf/telegraf.conf</code> by default. The default configuration is ~10,000 lines which are mostly commented out and pertain to services that we are not using. One way to deal with this is to make a backup of the original file and then delete all the commented out lines.</p>
+<p>Telegraf can be seen as a central messaging switchboard. To make use of it we need to connect the MQTT topics into the switchboard, and connect the output of the processing to the InfluxDB database for storage. The main changes that are suggested from the default configuration are to:</p>
+<ol type="1">
+<li>Remove the logging of server stats from the pool of inputs.</li>
+<li>Add the MQTT input plugin to the configuration file.</li>
+<li>Add the InfluxDB output plugin to the configuration file.</li>
+</ol>
+<p>A stripped down header is shown below:</p>
+<pre class="{conf}"><code># Default Header
+[global_tags]
+
+# Configuration for telegraf agent
+[agent]
+  ## Default data collection interval for all inputs
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+
+  ## Override default hostname, if empty use os.Hostname()
+  hostname = ""
+  ## If set to true, do no set the "host" tag in the telegraf agent.
+  omit_hostname = true</code></pre>
+<div class="grid">
+<div class="g-col-4">
+<p><img src="imgs/influx-api-token.png" class="img-fluid"></p>
+</div>
+<div class="g-col-8">
+<p>Now we add InfluxDB as an output plugin and MQTT as an input plugin. The MQTT plugin is used to listen to messages on a particular topic and the InfluxDB plugin is used to write the data to the database. The configuration for the MQTT plugin is shown below.</p>
+<p>Note the <strong>token</strong> above can be generated through the InfluxDB web interface.</p>
+</div>
+</div>
+<pre class="{conf}"><code>[[outputs.influxdb_v2]]
+  # localhost assumes telegraf and influxdb are on the same server
+  urls = ["http://localhost:8086"]
+  token = "api token from InfluxDB"
+  organization = "Capstone"
+  bucket = "telegraf"
+
+[[outputs.prometheus_client]]
+    listen = ":9273"
+    metric_version = 2</code></pre>
+<p>Finally the incoming messages from MQTT are processed. A very important consideration here is to fully automate the process of message conversion from JSON to adopt a robot-driven database. The core principle is that changes in the robot software and telemetry should not change either this configuration file or the database schema. In our case, all messages that are to be databased start with <code>robot/</code> and the topic indicates the data category. For example <code>robot/imu1</code> is the MQTT topic that recieves information on the imu sensor <code>{ax: 0.1, ay: 0.2, az: 0.3, gx: 0.4, gy: 0.5, gz: 0.6}</code>. Telegraph identifies that this is to be databased, removes the <code>robot/</code> prepend, records the json message <code>_measurement</code> as <code>imu1</code> and the <code>_field</code> as <code>ax</code>, <code>ay</code>, <code>az</code>, <code>gx</code>, <code>gy</code>, <code>gz</code>.</p>
+<pre class="{conf}"><code>[[processors.starlark]]
+  source = '''
+def apply(metric):
+    # Get the topic tag value (e.g., "robot/motor")
+    topic = metric.tags.get("topic")
+    
+    # Extract the part after "robot/"
+    if topic.startswith("robot/"):
+        measurement = topic.split("robot/", 1)[1]
+        # Set the new measurement based on the tail of the topic
+        metric.name = measurement
+    
+    return metric
+'''
+
+# MQTT Consumer Input Plugin
+[[inputs.mqtt_consumer]]
+  servers = ["tcp://localhost:1883"]
+
+  topics = [
+    "robot/#"  # Subscribe to all subtopics under robot/
+  ]
+  qos = 0
+  client_id = "telegraf_mqtt_consumer"
+  data_format = "json"
+  ## Use a part of the topic or JSON structure as the measurement name.
+  json_name_key = "measurement"</code></pre>
+<p>That is it for the configuration file, the other components that are recording server metrics can be eliminated to clear up the database.</p>
+</section>
+<section id="testing-the-configuration-with-data-explorer" class="level3">
+<h3 class="anchored" data-anchor-id="testing-the-configuration-with-data-explorer">Testing the Configuration with Data Explorer</h3>
+<p>Now go back to the mqtt python script and send some messages to a <code>robot/</code> topic for testing. They should now be automatically processed into the database under the scheme described. Verify the messages are passing through the MQTT broker, then verify they are reaching the InfluxDB database using the data explorer.</p>
+<p><img src="imgs/data-explorer.png" class="img-fluid"></p>
+<p>If all goes well, the data explorer will show the bucket has new data. The measurement filter will show the topic that was passed to MQTT, the field will show the keys from the passed JSON, and the data will show the values. Important to note is that InfluxDB automatically applies data operations such as aggregration to reduce the number of sample points. This can be managed using the window period on the right hand side.</p>
+<p>Influx also has its own query language, which can be previewed clicking the <code>Script Editor</code> button. This will give direct insight into how the data is being processed when a query is sent and can be edited to further finetune the settings or to be used as an API call from elsewhere (for example from a Python script to make plots).</p>
+<pre><code>from(bucket: "telegraf")
+  |&gt; range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "sensors/imu")
+  |&gt; filter(fn: (r) =&gt; r["_field"] == "accel_x")
+  |&gt; aggregateWindow(every: 100ms, fn: mean, createEmpty: false)
+  |&gt; yield(name: "mean")</code></pre>
+<p>The accel_x is being aggregated into 100ms sample periods using the mean of all values in that window. This can be removed to get the raw data, or changed to a different aggregation function. The range values can also be set to relative times to get the last 10 minutes of data for example.</p>
+<pre><code>from(bucket: "telegraf")
+  |&gt; range(start: -10m)
+  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "sensors/imu")
+  |&gt; filter(fn: (r) =&gt; r["_field"] == "accel_x")</code></pre>
+<p>Building these queries through the script editor is a good way to get the correct string to use in a Python script to make a query to the database.</p>
+</section>
+<section id="example-python-query" class="level3">
+<h3 class="anchored" data-anchor-id="example-python-query">Example Python Query</h3>
+<p>To get a feel for how this can be integrate into Python for data analysis, a simple example is shown below. This script will query the last 1 minute of data from the database and plot the acceleration data over time.</p>
+<div id="f2d9a9a9" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> influxdb_client <span class="im">import</span> InfluxDBClient</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Server IP address with InfluxDB port</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://172.22.1.1:8086"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>token <span class="op">=</span> <span class="st">"gGu-3t4Avltf6-yHamGXItRfOKBQIDLgWEfhdURE7wURQazK_yvIa8O9k0O-_doXX8Q0Acy82vVavb5AcM2Lhw=="</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>org <span class="op">=</span> <span class="st">"Capstone"</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>bucket <span class="op">=</span> <span class="st">"telegraf"</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> InfluxDBClient(url<span class="op">=</span>url, token<span class="op">=</span>token, org<span class="op">=</span>org)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Query for the last 10 minutes of data</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>last_mins <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="ss">f'''</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ss">from(bucket: "</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">")</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; range(start: -</span><span class="sc">{</span>last_mins<span class="sc">}</span><span class="ss">m)</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "sensors/imu")</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_field"] == "accel_x")</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; aggregateWindow(every: 1s, fn: mean, createEmpty: false)</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="ss">'''</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Query the data</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>query_api <span class="op">=</span> client.query_api()</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> query_api.query(org<span class="op">=</span>org, query<span class="op">=</span>query)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract values (accel_x) from query response</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [record.get_value() <span class="cf">for</span> table <span class="kw">in</span> tables <span class="cf">for</span> record <span class="kw">in</span> table.records]</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot using Seaborn</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>values, linewidth<span class="op">=</span><span class="fl">2.5</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize plot</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Acceleration Data (accel_x) Over Time'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Steps'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Acceleration (accel_x)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="telemetry_files/figure-html/cell-3-output-1.png" width="489" height="278" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This concludes the setup of the MQTT, Telegraf, and InfluxDB services. The next step is to setup Grafana for live telemetry and database dashboards.</p>
+<hr>
+<p>We are now at this stage in the setup:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  %% Customizing colors for subgraphs and nodes
+  style Robot fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Server fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+  style Clients fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+
+  Y[Robot]
+  Z[Server]
+
+  %% Define a class for black text
+  classDef blackText fill:none,color:#000,stroke:none;
+
+  subgraph Robot
+    E(Jetson)
+  end
+  
+  subgraph Server
+    E &lt;--&gt; F[MQTT Broker]
+    F --&gt;|Metrics| G[Telegraf]
+    G --&gt;|Write| H[InfluxDB]
+  end
+
+  %% Clients section coloring applied to individual floating nodes
+    K[Python Script] --&gt;|Commands| F
+    L[Laptop] --&gt;|SSH| E
+    L --&gt;|MQTT Explorer| F
+    L --&gt; K
+    H --&gt;|Data| M[Data Explorer and API]
+  
+  %% Styling for the floating client items
+  style K fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style L fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style M fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style Y fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Z fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="grafana-live-telemetry" class="level2">
+<h2 class="anchored" data-anchor-id="grafana-live-telemetry">Grafana Live Telemetry</h2>
+<p><img src="imgs/grafan-logo.png" class="img-fluid" style="width:30.0%"></p>
+<p><a href="https://grafana.com/grafana/download">Grafana</a> is a powerful open-source platform for creating dashboards and visualizing time-series data. Grafana supports a wide range of data sources and can be used to display both live and historical data. While it is able to refresh data from InfluxDB at a rate of every 5s, this is too slow for live monitoring of a dynamic system. Instead the live telemetry is pulled directly from the MQTT broker.</p>
+<p>To begin, <a href="https://grafana.com/grafana/download">download</a> and install Grafana on the server. The default port for Grafana is <code>3000</code>. Once installed, open up a web browser and navigate to <code>http://localhost:3000/</code> to access the Grafana dashboard. The default login is <code>admin</code> with the password <code>admin</code>.</p>
+<section id="adding-data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="adding-data-sources">Adding Data Sources</h3>
+<p>Grafana is primarily a visualization tool, so it needs to be provided with a pointer and credentials to the datasources that will be monitored: InfluxDB and MQTT. The InfluxDB datasource is included by default as a plugin. Note that the correct query language should be specified and it will require some credentials along with an address (http://localhost:8086).</p>
+<p>To setup Grafana, install the software on the Lenovo server first. The default port for Grafana is 3000. The program operates through a web browser and can be accessed by navigating to the IP address of the Lenovo server on port 3000.</p>
+<div class="grid">
+<div class="g-col-4">
+<p><img src="imgs/grafana-new-data.png" class="img-fluid"></p>
+</div>
+<div class="g-col-8">
+<p>What is more of interest is to view the MQTT data in real time. A plugin can be installed to connect Grafana to the Mosquitto broker: <a href="https://github.com/grafana/mqtt-datasource">Repo</a>. A simpler installation can be managed by logging into the Grafana server through a browser and navigating to <code>Add new connection</code>.</p>
+<p>Once logged in, add a data source by selecting MQTT from the list of available data sources. It will show as available if the plugin is correctly installed. Name the data source, then specify the connection which will be the MQTT broker <code>tcp://localhost:1883</code>. Add a username and password if one has been configured for the broker. Now Grafana is aware of the data stream and where to access it.</p>
+</div>
+</div>
+</section>
+<section id="creating-dashboards-and-panels" class="level3">
+<h3 class="anchored" data-anchor-id="creating-dashboards-and-panels">Creating Dashboards and Panels</h3>
+<p>Now it is time to setup a dashboard, a collection of data panels. The Grafana interface is user friendly, but we are interested in some key settings.</p>
+<ol type="1">
+<li>The window of time that is being displayed in the dashboard.</li>
+<li>The MQTT topics that are being fetched for display.</li>
+<li>The keys from the JSON that are being displayed.</li>
+</ol>
+<p>Log into the Grafana homepage from any device connected to the private network and with the server IP: <code>http://172.22.1.1:3000/</code>. Select <code>Dashboards</code> from the left hand menu and then <code>New Dashboard</code>, then <code>New -&gt; New Dashboard</code>. A prompt to select a datasource will come up, select the MQTT datasource that has been configured. Now it is in dashboard view.</p>
+<p>For this stage, it is recommended to either have a robot sensor streaming data, or a surrogate Python script sending out data to the MQTT broker so that there are live streaming messages to display.</p>
+<div class="grid">
+<div class="g-col-6">
+<p><img src="imgs/grafana-step1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+<section id="step-1-create-a-new-dashboard" class="level4 g-col-6">
+<h4 class="anchored" data-anchor-id="step-1-create-a-new-dashboard">Step 1: Create a New Dashboard</h4>
+<p>Save the newly created dashboard. Any changes to the settings are not automatically saved, so it is essential to save important changes to settings and panels periodically to avoid losing them from a page refresh. Also, change the time range of the dashboard to the last 30s to see recent data streaming in. Keep in mind that Grafana is designed for many use cases where monitoring is happening over much longer time ranges and a robot is a very dynamic system. Apply the time range.</p>
+</section>
+</div>
+<div class="grid">
+<div class="g-col-6">
+<p><img src="imgs/grafana-step2.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+<section id="step-2-add-a-visualization-panel" class="level4 g-col-6">
+<h4 class="anchored" data-anchor-id="step-2-add-a-visualization-panel">Step 2: Add a Visualization Panel</h4>
+<p>Select the <strong>Add a visualization</strong> button to make the first panel. Now, enter the MQTT topic and verify that the topic is streaming data with MQTT Explorer and the topic name. The data should begin streaming in the panel preview. Use the <strong>Query Inspector</strong> and <strong>Data</strong> tab to verify that data is being received and processed correctly if the visualization is not showing the expected data. Note that all JSON fields are shown, but it’s important to filter only the desired ones.</p>
+</section>
+</div>
+<section id="step-3-customize-the-panel" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-customize-the-panel">Step 3: Customize the Panel</h4>
+<p><img src="imgs/grafana-step3.png" class="img-fluid"> Select the <strong>Transform Data</strong> tab and then <strong>Filter fields by name</strong> option. Fields that are to be omitted can be removed from the identifier list and will not be displayed in the panel. Finally the right hand side of the panel configuration can be used to fully customize the display of data, panel title, etc.</p>
+<p>Save and apply the panel change. Now is a good time to bookmark the dashboard for easy access in the future. The live telemetry has limitations in how much data can be displayed at once, since it is sampling from a moving buffer and not storing the data like the database. Too many panels with too much data will cause the system to stutter, so the recommendation is to downsample the data to about 10Hz or less unless full sample resolution is needed.</p>
+</section>
+</section>
+<section id="notes-on-downsampling" class="level3">
+<h3 class="anchored" data-anchor-id="notes-on-downsampling">Notes on Downsampling</h3>
+<p>As of writing, I have not found an effective way to downsample the incoming data in Grafana. Telegraf has some dataprocessing that can be used to downsample data, but it would need to be rebroadcast over a new MQTT topic. The simplest solution that we have found is to simply downsample from the robot side by sending full resolution data to each of the “robot/” topics and every <span class="math inline">\(n\)</span>th message to a “downsampled/” topic. This can be done with few lines of code, does not add much overhead to the software code, and is likely the easiest solution to implement.</p>
+<hr>
+<p>We are now at this stage in the setup:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  %% Customizing colors for subgraphs and nodes
+  style Robot fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Server fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+  style Clients fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+
+  Y[Robot]
+  Z[Server]
+
+  %% Define a class for black text
+  classDef blackText fill:none,color:#000,stroke:none;
+
+  subgraph Robot
+    E(Jetson)
+  end
+  
+  subgraph Server
+    E &lt;--&gt; F[MQTT Broker]
+    F --&gt;|Metrics| G[Telegraf]
+    G --&gt;|Write| H[InfluxDB]
+    F --&gt;|Visualization| I[Grafana]
+  end
+
+  %% Clients section coloring applied to individual floating nodes
+    I --&gt;|Live Telemetry| J[Dashboard]
+    H --&gt;|Data| M[Data Explorer and API]
+
+  
+  %% Styling for the floating client items
+  style J fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style M fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style Y fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Z fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="robot-software-architecture" class="level1">
+<h1>Robot Software Architecture</h1>
+<p>An automated data pipeline now exists between the robot software system and the database and telemetry panel. But there are some considerations still to be made when it comes to handling the data within the robot controller, especially given that the control loop is sensitive to timing and delays.</p>
+<p>To address these issues, the telemetry handling and output of the robot is separated into a parallel process that is not part of the control loop. Crucially, the process is of lower priority and will not interfere or cause delays in the time-sensitive portions of the code.</p>
+<p>When it comes to software implementation two core principles are followed:</p>
+<ol type="1">
+<li><p>Data-driven design: The dataclasses within the robot system also dictate the structure of the database and communication topics. IMU data is naturally packaged into a single topic, as is motor data, etc. This makes it easy to manage the data pipeline and to ensure that the data is being processed correctly.</p></li>
+<li><p>Asynchronous processing: The telemetry process is run on a seperate core from the main control loop. In Python this is done using multiprocessing, since the Python GIL prevents a single process from running on multiple cores. The two processes communicate through two uni-directional queues, one for data out, and one for commands in.</p></li>
+</ol>
+<p>The details of the implementation can be viewed through our repository: <a href="https://github.com/Team-2411-RL-Unicycle/rl-unicycle">RLUnicycle</a>. The multiprocessing with queues are initiated in <code>main.py</code>, data packaging is handled by <code>teledata.py</code>, and the communication thread is handled by <code>mqtt.py</code>.</p>
+<section id="telemetry-data-packaging" class="level3">
+<h3 class="anchored" data-anchor-id="telemetry-data-packaging">Telemetry Data Packaging</h3>
+<p>The <code>@dataclass</code> decorator in Python is used to define structures that hold the data in fields. A method to conver them to dictionary/json is also included. A generalist debug data class is provided to allow for ad-hoc data to be sent to the telemetry system during development that has not been assigned a specific topic. The fields are coupled with the MQTT topic and the database measurement name.</p>
+<p>At the end of a control cycle, all dataclasses are packed into a single list and sent to the telemetry process. Opening the inter-process queue incurs an overhead so it is more efficient to send one single outgoing packet per control cycle.</p>
+</section>
+<section id="telemetry-process" class="level3">
+<h3 class="anchored" data-anchor-id="telemetry-process">Telemetry Process</h3>
+<p>The telemetry process is basically a wrapper around the existing Paho MQTT client. It is designed to unpack the dataclasses from the incoming queue and send them to their corresponding topics. It additionally handles downsampling the data to a lower rate for the Grafana panels. It has a standby loop that listens for incoming commands over a control topic and will route them to the control cycle through the command queue as needed. Which brings us to the final point.</p>
+</section>
+</section>
+<section id="command-management" class="level1">
+<h1>Command Management</h1>
+<p>The established connection with the robot controller also allows for remote commands to be sent in real time. The commands can be processed to adjust tuning parameters or control the robot. We have a control panel that is synchronous across all devices through a web browser using Node Red.</p>
+<section id="node-red" class="level3">
+<h3 class="anchored" data-anchor-id="node-red">Node Red</h3>
+<p>Node Red is a flow-based open source development tool for visual programming developed by IBM. It is used for wiring together hardware devices, APIs, and online services in new and interesting ways. It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.</p>
+<p>NodeRed can be installed on the server, with default port of 1880.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/nodereddash.png" class="img-fluid figure-img"></p>
 <figcaption>Node Red Dashboard</figcaption>
 </figure>
 </div>
-<p>The Node Red dashboard is an additional feature that is accessed through the Node Red server. It allows for the creation of custom dashboards that can be used to provide a GUI for a robotics project. The GUI can be used to connect directly to incoming signals and also produce outgoing command signals that can be sent to the robot.</p>
+<p>The Node Red dashboard allows for the creation of custom dashboards that can be used to provide a GUI for a robotics project.</p>
+</section>
+<section id="xbox-controller" class="level3">
+<h3 class="anchored" data-anchor-id="xbox-controller">XBox Controller</h3>
+<p>A controller can be connected through a PC to an MQTT topic using Paho-MQTT and Python. This opens up some interesting avenues for assisted control of the robot.</p>
 </section>
 </section>
-</section>
-<section id="conclusion" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Conclusion</h1>
-<p>These service conbined together have proven to be a powerful tool for capstone development. In addition the Lenovo server functions as a valuable workstation for the team. The services are all open source and free to use. The services are also very well documented and have a large community of users that can help with any issues that may arise. Best of luck with your capstone project!</p>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The setup of the Lenovo server, ZeroTier network, MQTT broker, Telegraf, InfluxDB, Grafana, and Node Red provides a powerful platform for the development of a capstone project. The services are all open source and free to use. The services are also very well documented and have a large community of users that can help with any issues that may arise.</p>
+<p>If you have successfully followed this guide, then we are here:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  %% Customizing colors for subgraphs and nodes
+  style Robot fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Server fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+  style Clients fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+
+  Y[Robot]
+  Z[Server]
+
+  %% Define a class for black text
+  classDef blackText fill:none,color:#000,stroke:none;
+
+  subgraph Robot
+    A[IMU Sensors] --&gt;|Data| D(Control Loop)
+    B[Motors] &lt;--&gt;|Feedback| D
+    C[Controller] &lt;--&gt;|Commands| D
+    D &lt;--&gt; E(Communication Multiprocess)
+  end
+  
+  subgraph Server
+    E &lt;--&gt; F[MQTT Broker]
+    F --&gt;|Metrics| G[Telegraf]
+    G --&gt;|Write| H[InfluxDB]
+    F --&gt;|Visualization| I[Grafana]
+  end
+
+  %% Clients section coloring applied to individual floating nodes
+    I --&gt;|Live Telemetry| J[Dashboard]
+    K[Node-RED] --&gt;|Commands| F
+    L[Xbox Controller] --&gt;|Commands| F
+    H --&gt;|Data| M[Data Explorer and API]
+
+  
+  %% Styling for the floating client items
+  style J fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style K fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style L fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style M fill:#F1F8E9,stroke:#A5D6A7,stroke-width:2px
+  style Y fill:#E3F2FD,stroke:#90CAF9,stroke-width:2px
+  style Z fill:#FFF8E1,stroke:#FFCC80,stroke-width:2px
+
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Best of luck with your capstone project!</p>
 
 
 </section>
