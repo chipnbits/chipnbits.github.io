@@ -6,10 +6,9 @@ date: last-modified # Adds the current date
 format:
   html:
     toc: true # Generates a table of contents
-    toc-depth: 2  # Specifies depth of sections to include in TOC
+    toc-depth: 3  # Specifies depth of sections to include in TOC
     number-sections: false  # Numbers the sections
     theme: cosmo  # Specifies a Bootstrap theme
-    highlight-style: tango  # Syntax highlighting style for code
     pandoc-args: ["--mathjax"]  # Enables MathJax for LaTeX math rendering 
 
     mermaid:
@@ -516,6 +515,8 @@ Building these queries through the script editor is a good way to get the correc
 To illustrate how this can be integrated into Python for data analysis, here is a simple example. This script queries the last one minute of data from the database and plots the acceleration data over time.
 
 ```{python}
+#| freeze: true
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt

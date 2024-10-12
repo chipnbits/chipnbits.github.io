@@ -272,21 +272,48 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul class="collapse">
+  <ul>
   <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose">Purpose</a>
   <ul class="collapse">
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a>
+  <ul class="collapse">
+  <li><a href="#hardware-recommendation-and-requirements" id="toc-hardware-recommendation-and-requirements" class="nav-link" data-scroll-target="#hardware-recommendation-and-requirements">Hardware Recommendation and Requirements</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#telemetry-services-overview" id="toc-telemetry-services-overview" class="nav-link" data-scroll-target="#telemetry-services-overview">Telemetry Services Overview</a>
   <ul class="collapse">
-  <li><a href="#zerotier-virtual-network" id="toc-zerotier-virtual-network" class="nav-link" data-scroll-target="#zerotier-virtual-network">ZeroTier Virtual Network</a></li>
+  <li><a href="#zerotier-virtual-network" id="toc-zerotier-virtual-network" class="nav-link" data-scroll-target="#zerotier-virtual-network">ZeroTier Virtual Network</a>
+  <ul class="collapse">
+  <li><a href="#setting-up-zerotier-network" id="toc-setting-up-zerotier-network" class="nav-link" data-scroll-target="#setting-up-zerotier-network">Setting up ZeroTier Network</a></li>
+  <li><a href="#zerotier-client-setup" id="toc-zerotier-client-setup" class="nav-link" data-scroll-target="#zerotier-client-setup">ZeroTier Client Setup</a></li>
+  <li><a href="#managing-ip-addresses" id="toc-managing-ip-addresses" class="nav-link" data-scroll-target="#managing-ip-addresses">Managing IP Addresses</a></li>
+  </ul></li>
   <li><a href="#connecting-to-robot-controller-using-ssh" id="toc-connecting-to-robot-controller-using-ssh" class="nav-link" data-scroll-target="#connecting-to-robot-controller-using-ssh">Connecting to Robot Controller using SSH</a></li>
-  <li><a href="#mqtt-overview" id="toc-mqtt-overview" class="nav-link" data-scroll-target="#mqtt-overview">MQTT Overview</a></li>
-  <li><a href="#telegraf-and-influxdb" id="toc-telegraf-and-influxdb" class="nav-link" data-scroll-target="#telegraf-and-influxdb">Telegraf and InfluxDB</a></li>
-  <li><a href="#grafana-live-telemetry" id="toc-grafana-live-telemetry" class="nav-link" data-scroll-target="#grafana-live-telemetry">Grafana Live Telemetry</a></li>
+  <li><a href="#mqtt-overview" id="toc-mqtt-overview" class="nav-link" data-scroll-target="#mqtt-overview">MQTT Overview</a>
+  <ul class="collapse">
+  <li><a href="#installing-mosquitto-mqtt-broker" id="toc-installing-mosquitto-mqtt-broker" class="nav-link" data-scroll-target="#installing-mosquitto-mqtt-broker">Installing Mosquitto MQTT Broker</a></li>
+  <li><a href="#interfacing-with-software" id="toc-interfacing-with-software" class="nav-link" data-scroll-target="#interfacing-with-software">Interfacing with Software</a></li>
+  </ul></li>
+  <li><a href="#telegraf-and-influxdb" id="toc-telegraf-and-influxdb" class="nav-link" data-scroll-target="#telegraf-and-influxdb">Telegraf and InfluxDB</a>
+  <ul class="collapse">
+  <li><a href="#influxdb-configuration" id="toc-influxdb-configuration" class="nav-link" data-scroll-target="#influxdb-configuration">InfluxDB Configuration</a></li>
+  <li><a href="#telegraf-configuration" id="toc-telegraf-configuration" class="nav-link" data-scroll-target="#telegraf-configuration">Telegraf Configuration</a></li>
+  <li><a href="#testing-the-configuration-with-data-explorer" id="toc-testing-the-configuration-with-data-explorer" class="nav-link" data-scroll-target="#testing-the-configuration-with-data-explorer">Testing the Configuration with Data Explorer</a></li>
+  <li><a href="#example-python-query" id="toc-example-python-query" class="nav-link" data-scroll-target="#example-python-query">Example Python Query</a></li>
+  </ul></li>
+  <li><a href="#grafana-live-telemetry" id="toc-grafana-live-telemetry" class="nav-link" data-scroll-target="#grafana-live-telemetry">Grafana Live Telemetry</a>
+  <ul class="collapse">
+  <li><a href="#adding-data-sources" id="toc-adding-data-sources" class="nav-link" data-scroll-target="#adding-data-sources">Adding Data Sources</a></li>
+  <li><a href="#creating-dashboards-and-panels" id="toc-creating-dashboards-and-panels" class="nav-link" data-scroll-target="#creating-dashboards-and-panels">Creating Dashboards and Panels</a></li>
+  <li><a href="#notes-on-downsampling" id="toc-notes-on-downsampling" class="nav-link" data-scroll-target="#notes-on-downsampling">Notes on Downsampling</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#robot-software-architecture" id="toc-robot-software-architecture" class="nav-link" data-scroll-target="#robot-software-architecture">Robot Software Architecture</a></li>
-  <li><a href="#command-management" id="toc-command-management" class="nav-link" data-scroll-target="#command-management">Command Management</a></li>
+  <li><a href="#command-management" id="toc-command-management" class="nav-link" data-scroll-target="#command-management">Command Management</a>
+  <ul class="collapse">
+  <li><a href="#node-red" id="toc-node-red" class="nav-link" data-scroll-target="#node-red">Node Red</a></li>
+  <li><a href="#xbox-controller" id="toc-xbox-controller" class="nav-link" data-scroll-target="#xbox-controller">XBox Controller</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -619,7 +646,7 @@ For important devices like the server or the Jetson, assign static IP addresses 
 <p>MQTT interfaces with Python, Node-RED, and Grafana to provide a network of communication topics. The broker can be accessed by any device on the ZeroTier network; messages can be sent to a topic, or actions can be taken based on a message received from a topic.</p>
 <p>Below is an example Python script for publishing messages to the MQTT broker. This script publishes a test message to the topic <code>jetson/telemetry</code> every second. Note that the two key components of a successful message are the topic and the message payload. The topic is the address to which the message is sent, and the payload is the data being sent. The payload can be a string, a number, or a JSON object. For our project, we use JSON objects to send data.</p>
 <p>The package is installed using pip: <code>pip install paho-mqtt</code></p>
-<div id="264f8a6b" class="cell" data-execution_count="2">
+<div id="75c79e0c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> paho.mqtt.client <span class="im">as</span> mqtt</span>
@@ -667,17 +694,19 @@ For important devices like the server or the Jetson, assign static IP addresses 
 <span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop the loop and disconnect</span></span>
 <span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>client.loop_stop()</span>
 <span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>client.disconnect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Published message: {'sensor': 'temperature', 'value': 20.3095790384297}</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\sghys\AppData\Local\Temp\ipykernel_7440\406674647.py:12: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+<pre><code>C:\Users\sghys\AppData\Local\Temp\ipykernel_15800\406674647.py:12: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
   client = mqtt.Client()</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Published message: {'sensor': 'temperature', 'value': 24.26523995878321}
-Connected to broker with result code 0
-Published message: {'sensor': 'temperature', 'value': 24.829830071617987}
-Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 24.829830071617987}
-Published message: {'sensor': 'temperature', 'value': 22.954120960982525}
-Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 22.954120960982525}</code></pre>
+<pre><code>Connected to broker with result code 0
+Published message: {'sensor': 'temperature', 'value': 23.604692472457177}
+Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 23.604692472457177}
+Published message: {'sensor': 'temperature', 'value': 22.55116248680919}
+Message received on topic jeston/telemetry: {"sensor": "temperature", "value": 22.55116248680919}</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>&lt;MQTTErrorCode.MQTT_ERR_SUCCESS: 0&gt;</code></pre>
@@ -843,53 +872,53 @@ def apply(metric):
 <section id="example-python-query" class="level3">
 <h3 class="anchored" data-anchor-id="example-python-query">Example Python Query</h3>
 <p>To illustrate how this can be integrated into Python for data analysis, here is a simple example. This script queries the last one minute of data from the database and plots the acceleration data over time.</p>
-<div id="ac0d308b" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> influxdb_client <span class="im">import</span> InfluxDBClient</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Server IP address with InfluxDB port</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://172.22.1.1:8086"</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>token <span class="op">=</span> <span class="st">"gGu-3t4Avltf6-yHamGXItRfOKBQIDLgWEfhdURE7wURQazK_yvIa8O9k0O-_doXX8Q0Acy82vVavb5AcM2Lhw=="</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>org <span class="op">=</span> <span class="st">"Capstone"</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>bucket <span class="op">=</span> <span class="st">"telegraf"</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> InfluxDBClient(url<span class="op">=</span>url, token<span class="op">=</span>token, org<span class="op">=</span>org)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Query for the last 10 minutes of data</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>last_mins <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="ss">f'''</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ss">from(bucket: "</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">")</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; range(start: -</span><span class="sc">{</span>last_mins<span class="sc">}</span><span class="ss">m)</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "sensors/imu")</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_field"] == "accel_x")</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; aggregateWindow(every: 1s, fn: mean, createEmpty: false)</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="ss">'''</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Query the data</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>query_api <span class="op">=</span> client.query_api()</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> query_api.query(org<span class="op">=</span>org, query<span class="op">=</span>query)</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract values (accel_x) from query response</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [record.get_value() <span class="cf">for</span> table <span class="kw">in</span> tables <span class="cf">for</span> record <span class="kw">in</span> table.records]</span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot using Seaborn</span></span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>values, linewidth<span class="op">=</span><span class="fl">2.5</span>)</span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize plot</span></span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Acceleration Data (accel_x) Over Time'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Steps'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Acceleration (accel_x)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="3db6b08a" class="cell" data-freeze="true" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> influxdb_client <span class="im">import</span> InfluxDBClient</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Server IP address with InfluxDB port</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://172.22.1.1:8086"</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>token <span class="op">=</span> <span class="st">"gGu-3t4Avltf6-yHamGXItRfOKBQIDLgWEfhdURE7wURQazK_yvIa8O9k0O-_doXX8Q0Acy82vVavb5AcM2Lhw=="</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>org <span class="op">=</span> <span class="st">"Capstone"</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>bucket <span class="op">=</span> <span class="st">"telegraf"</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> InfluxDBClient(url<span class="op">=</span>url, token<span class="op">=</span>token, org<span class="op">=</span>org)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Query for the last 10 minutes of data</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>last_mins <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="ss">f'''</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="ss">from(bucket: "</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">")</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; range(start: -</span><span class="sc">{</span>last_mins<span class="sc">}</span><span class="ss">m)</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "sensors/imu")</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; filter(fn: (r) =&gt; r["_field"] == "accel_x")</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  |&gt; aggregateWindow(every: 1s, fn: mean, createEmpty: false)</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="ss">'''</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Query the data</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>query_api <span class="op">=</span> client.query_api()</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> query_api.query(org<span class="op">=</span>org, query<span class="op">=</span>query)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract values (accel_x) from query response</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [record.get_value() <span class="cf">for</span> table <span class="kw">in</span> tables <span class="cf">for</span> record <span class="kw">in</span> table.records]</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot using Seaborn</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">3</span>))</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>sns.lineplot(data<span class="op">=</span>values, linewidth<span class="op">=</span><span class="fl">2.5</span>)</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize plot</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Acceleration Data (accel_x) Over Time'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Steps'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Acceleration (accel_x)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="telemetry_files/figure-html/cell-3-output-1.png" width="471" height="278" class="figure-img"></p>
+<p><img src="telemetry_files/figure-html/cell-3-output-1.png" width="481" height="278" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1082,63 +1111,63 @@ def apply(metric):
 <div id="main-entry" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> multiprocessing</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> asyncio</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> main():</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> parse_args()</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    setup_logging()</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    logger <span class="op">=</span> logging.getLogger()</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    logger.debug(<span class="st">"Logger initialized"</span>)</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        set_realtime_priority(priority<span class="op">=</span><span class="dv">99</span>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">PermissionError</span> <span class="im">as</span> e:</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f"Failed to set real-time priority: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    telemetry_queue <span class="op">=</span> multiprocessing.Queue()</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    command_queue <span class="op">=</span> multiprocessing.Queue()</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    shutdown_event <span class="op">=</span> multiprocessing.Event()</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start the MQTT process</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    mqtt_process <span class="op">=</span> multiprocessing.Process(</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>start_mqtt_process,</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(telemetry_queue, command_queue, shutdown_event),</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    mqtt_process.start()</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize and start the robot</span></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    robot <span class="op">=</span> RobotSystem(</span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>        telemetry_queue,</span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>        command_queue,</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        start_motors<span class="op">=</span><span class="kw">not</span> args.no_motors,</span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        controller_type<span class="op">=</span>args.controller,</span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        config_file<span class="op">=</span>args.config_file,</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> robot.start(shutdown_event)</span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>        logger.info(<span class="st">"Shutdown signal received"</span>)</span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>        shutdown_event.<span class="bu">set</span>()</span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>        logger.exception(<span class="ss">f"An unexpected error occurred: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">finally</span>:</span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> robot.shutdown()</span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Terminate and clean up the MQTT process</span></span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>        shutdown_event.<span class="bu">set</span>()</span>
-<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>        mqtt_process.join(timeout<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> mqtt_process.is_alive():</span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>            mqtt_process.kill()</span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>            logger.warning(</span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>                <span class="st">"MQTT process did not terminate gracefully, forcing termination."</span></span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>        logger.info(<span class="st">"Cleanup complete. Exiting program."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> multiprocessing</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> asyncio</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> main():</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> parse_args()</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    setup_logging()</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    logger <span class="op">=</span> logging.getLogger()</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    logger.debug(<span class="st">"Logger initialized"</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        set_realtime_priority(priority<span class="op">=</span><span class="dv">99</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">PermissionError</span> <span class="im">as</span> e:</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f"Failed to set real-time priority: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    telemetry_queue <span class="op">=</span> multiprocessing.Queue()</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    command_queue <span class="op">=</span> multiprocessing.Queue()</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    shutdown_event <span class="op">=</span> multiprocessing.Event()</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start the MQTT process</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    mqtt_process <span class="op">=</span> multiprocessing.Process(</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>        target<span class="op">=</span>start_mqtt_process,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        args<span class="op">=</span>(telemetry_queue, command_queue, shutdown_event),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    mqtt_process.start()</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize and start the robot</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    robot <span class="op">=</span> RobotSystem(</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        telemetry_queue,</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>        command_queue,</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>        start_motors<span class="op">=</span><span class="kw">not</span> args.no_motors,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>        controller_type<span class="op">=</span>args.controller,</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>        config_file<span class="op">=</span>args.config_file,</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> robot.start(shutdown_event)</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>        logger.info(<span class="st">"Shutdown signal received"</span>)</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>        shutdown_event.<span class="bu">set</span>()</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>        logger.exception(<span class="ss">f"An unexpected error occurred: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">finally</span>:</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> robot.shutdown()</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Terminate and clean up the MQTT process</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>        shutdown_event.<span class="bu">set</span>()</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>        mqtt_process.join(timeout<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> mqtt_process.is_alive():</span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>            mqtt_process.kill()</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>            logger.warning(</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>                <span class="st">"MQTT process did not terminate gracefully, forcing termination."</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>        logger.info(<span class="st">"Cleanup complete. Exiting program."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -1147,60 +1176,60 @@ def apply(metric):
 <p>The <code>@dataclass</code> decorator in Python is used to define structures that hold the data in fields. A method to convert them to dictionary/JSON is also included in a TelemetryData base class. A generalist debug data class is also provided to allow for ad-hoc data to be sent to the telemetry system during development that has not been assigned a specific topic. The fields are coupled with the MQTT topic and the database measurement name within the dataclass object.</p>
 <p>A sample of the abstract class and a data class for IMU data is shown below:</p>
 <p><strong>Code Example: A sample of the abstract class and a data class for IMU data.</strong></p>
-<div id="6ee253da" class="cell" data-execution_count="5">
+<div id="71f831de" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> asdict, dataclass, field</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Any, Dict</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TelemetryData(ABC):</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Abstract base class for telemetry data. All telemetry sent identifying a topic,</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">    and with the data fields as the labels for the data.</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> topic(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_data(<span class="va">self</span>):</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns a dictionary of the telemetry data excluding the topic.</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">        Uses asdict() if the subclass is a dataclass.</span></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> asdict(<span class="va">self</span>)  <span class="co"># Convert to dictionary without the topic</span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> to_mqtt(<span class="va">self</span>):</span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns the topic and the data as a tuple (topic, data).</span></span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="co">        The data does not include the topic field.</span></span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.topic, <span class="va">self</span>.get_data())  <span class="co"># Return tuple for sending to MQTT</span></span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IMUData(TelemetryData):</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Data returned from the IMU sensor"""</span></span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    accel_x: <span class="bu">float</span>  <span class="co"># 1.0 = 9.8 m/s^2</span></span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    accel_y: <span class="bu">float</span></span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    accel_z: <span class="bu">float</span></span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    gyro_x: <span class="bu">float</span>  <span class="co"># degrees per second</span></span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    gyro_y: <span class="bu">float</span></span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>    gyro_z: <span class="bu">float</span></span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> topic(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"robot/sensors/imu"</span>  <span class="co"># Class-level topic</span></span>
-<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_accel(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>:</span>
-<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.accel_x, <span class="va">self</span>.accel_y, <span class="va">self</span>.accel_z)</span>
-<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_gyro(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>:</span>
-<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.gyro_x, <span class="va">self</span>.gyro_y, <span class="va">self</span>.gyro_z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> asdict, dataclass, field</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Any, Dict</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TelemetryData(ABC):</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Abstract base class for telemetry data. All telemetry sent identifying a topic,</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">    and with the data fields as the labels for the data.</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@abstractmethod</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> topic(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_data(<span class="va">self</span>):</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns a dictionary of the telemetry data excluding the topic.</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co">        Uses asdict() if the subclass is a dataclass.</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> asdict(<span class="va">self</span>)  <span class="co"># Convert to dictionary without the topic</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> to_mqtt(<span class="va">self</span>):</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns the topic and the data as a tuple (topic, data).</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="co">        The data does not include the topic field.</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.topic, <span class="va">self</span>.get_data())  <span class="co"># Return tuple for sending to MQTT</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> IMUData(TelemetryData):</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Data returned from the IMU sensor"""</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    accel_x: <span class="bu">float</span>  <span class="co"># 1.0 = 9.8 m/s^2</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    accel_y: <span class="bu">float</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    accel_z: <span class="bu">float</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    gyro_x: <span class="bu">float</span>  <span class="co"># degrees per second</span></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    gyro_y: <span class="bu">float</span></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    gyro_z: <span class="bu">float</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> topic(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"robot/sensors/imu"</span>  <span class="co"># Class-level topic</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_accel(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>:</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.accel_x, <span class="va">self</span>.accel_y, <span class="va">self</span>.accel_z)</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_gyro(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">tuple</span>:</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (<span class="va">self</span>.gyro_x, <span class="va">self</span>.gyro_y, <span class="va">self</span>.gyro_z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -1211,17 +1240,17 @@ def apply(metric):
 <div id="data-sending" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">### SEND COMMS </span><span class="al">###</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>data_list <span class="op">=</span> [imudata, euler_angles, control_data, tele_debug_data]</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="va">self</span>._send_telemetry(data_packet<span class="op">=</span>data_list)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> _send_telemetry(</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>, data_packet: Union[List[td.TelemetryData], td.TelemetryData]</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Send telemetry data to the telemetry queue.</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.send_queue.put(data_packet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">### SEND COMMS </span><span class="al">###</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>data_list <span class="op">=</span> [imudata, euler_angles, control_data, tele_debug_data]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> <span class="va">self</span>._send_telemetry(data_packet<span class="op">=</span>data_list)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="cf">async</span> <span class="kw">def</span> _send_telemetry(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>, data_packet: Union[List[td.TelemetryData], td.TelemetryData]</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Send telemetry data to the telemetry queue.</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.send_queue.put(data_packet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -1229,59 +1258,59 @@ def apply(metric):
 <h4 class="anchored" data-anchor-id="telemetry-process-communicationmqtt.py">Telemetry Process <code>communication/mqtt.py</code></h4>
 <p>The telemetry process is essentially a wrapper around the existing Paho MQTT client. It is designed to unpack the data classes from the incoming queue and send them to their corresponding topics. It additionally handles downsampling the data to a lower rate for the Grafana panels. It has a standby loop that listens for incoming commands over a control topic and routes them to the control cycle through the command queue as needed.</p>
 <p><strong>Code Example: Parsing of TelemetryData objects and sending them to the MQTT broker.</strong></p>
-<div id="933de875" class="cell" data-execution_count="7">
+<div id="71e560e0" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> telemetry_loop(<span class="va">self</span>):</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="kw">not</span> <span class="va">self</span>.shutdown_event.is_set():</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="kw">not</span> <span class="va">self</span>.send_queue.empty():</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                    batch <span class="op">=</span> <span class="va">self</span>.send_queue.get()</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                    <span class="va">self</span>.batch_count <span class="op">+=</span> <span class="dv">1</span>  <span class="co"># Increment batch counter</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="va">self</span>.batch_count <span class="op">&gt;=</span> <span class="va">self</span>.downsample_rate:</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                        <span class="va">self</span>.batch_count <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                        is_downsampled <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                        is_downsampled <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="bu">isinstance</span>(batch, <span class="bu">list</span>):</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">for</span> telemetry_data <span class="kw">in</span> batch:</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                            <span class="va">self</span>.process_telemetry_data(telemetry_data, is_downsampled)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                        <span class="va">self</span>.process_telemetry_data(batch, is_downsampled)</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                logger.exception(<span class="ss">f"Error in telemetry_loop: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="va">self</span>.loop_time)</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_telemetry_data(</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>, telemetry_data: TelemetryData, is_downsampled: <span class="bu">bool</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that the telemetry data is an instance of the TelemetryData class</span></span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(telemetry_data, TelemetryData):</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f"Invalid telemetry data: </span><span class="sc">{</span>telemetry_data<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        topic, data <span class="op">=</span> telemetry_data.to_mqtt()</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Publish to the original topic</span></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.publish_data(topic, data)</span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># logger.debug(f"Published to {topic}: {data}")</span></span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If this is a downsampled batch, also publish to the downsampled topic</span></span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> is_downsampled:</span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>            downsampled_topic <span class="op">=</span> <span class="ss">f"downsampled/</span><span class="sc">{</span>topic<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.publish_data(downsampled_topic, data)</span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>            <span class="co"># logger.debug(f"Published to {downsampled_topic}: {data}")</span></span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>        logger.exception(<span class="ss">f"Error processing telemetry data for topic </span><span class="sc">{</span>topic<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> publish_data(<span class="va">self</span>, topic, data):</span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.client.publish(topic, json.dumps(data))</span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> telemetry_loop(<span class="va">self</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="kw">not</span> <span class="va">self</span>.shutdown_event.is_set():</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="kw">not</span> <span class="va">self</span>.send_queue.empty():</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                    batch <span class="op">=</span> <span class="va">self</span>.send_queue.get()</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                    <span class="va">self</span>.batch_count <span class="op">+=</span> <span class="dv">1</span>  <span class="co"># Increment batch counter</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="va">self</span>.batch_count <span class="op">&gt;=</span> <span class="va">self</span>.downsample_rate:</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                        <span class="va">self</span>.batch_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                        is_downsampled <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>                        is_downsampled <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="bu">isinstance</span>(batch, <span class="bu">list</span>):</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">for</span> telemetry_data <span class="kw">in</span> batch:</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>                            <span class="va">self</span>.process_telemetry_data(telemetry_data, is_downsampled)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>                        <span class="va">self</span>.process_telemetry_data(batch, is_downsampled)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>                logger.exception(<span class="ss">f"Error in telemetry_loop: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="va">self</span>.loop_time)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_telemetry_data(</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>, telemetry_data: TelemetryData, is_downsampled: <span class="bu">bool</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check that the telemetry data is an instance of the TelemetryData class</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(telemetry_data, TelemetryData):</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f"Invalid telemetry data: </span><span class="sc">{</span>telemetry_data<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>        topic, data <span class="op">=</span> telemetry_data.to_mqtt()</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Publish to the original topic</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.publish_data(topic, data)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># logger.debug(f"Published to {topic}: {data}")</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If this is a downsampled batch, also publish to the downsampled topic</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> is_downsampled:</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>            downsampled_topic <span class="op">=</span> <span class="ss">f"downsampled/</span><span class="sc">{</span>topic<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.publish_data(downsampled_topic, data)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>            <span class="co"># logger.debug(f"Published to {downsampled_topic}: {data}")</span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>        logger.exception(<span class="ss">f"Error processing telemetry data for topic </span><span class="sc">{</span>topic<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> publish_data(<span class="va">self</span>, topic, data):</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.client.publish(topic, json.dumps(data))</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>

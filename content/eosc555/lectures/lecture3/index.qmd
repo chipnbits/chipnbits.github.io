@@ -15,6 +15,9 @@ categories:
 image: imgs/gradient_flow.gif
 draft: false
 
+execute:
+  freeze: true
+
 editor: 
   render-on-save: false
 ---
