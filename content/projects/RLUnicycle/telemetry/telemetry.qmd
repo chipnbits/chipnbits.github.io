@@ -632,15 +632,6 @@ Grafana needs to be configured with data sources:
 
 ### Creating Dashboards and Panels
 
-With the data sources configured, you can set up a dashboard to visualize your data.
-
-#### Step 1: Create a New Dashboard
-
-
-
-
-### Creating Dashboards and Panels
-
 Now it is time to setup a dashboard, a collection of data panels. The Grafana interface is user friendly, but we are interested in some key settings.
 
 1. The window of time that is being displayed in the dashboard.
@@ -747,15 +738,225 @@ We follow two core principles in our software implementation:
 
 2. Asynchronous processing: The telemetry process runs on a separate core from the main control loop. In Python, this is achieved using multiprocessing since the Python Global Interpreter Lock (GIL) prevents a single process from running on multiple cores. The two processes communicate through two unidirectional queues: one for data out and one for commands in.
 
-The details of the implementation can be viewed through our repository: [RLUnicycle](https://github.com/Team-2411-RL-Unicycle/rl-unicycle). The multiprocessing with queues are initiated in `main.py`, data packaging is handled by `teledata.py`, and the communication thread is handled by `mqtt.py`.
+The details of the implementation can be viewed through our repository: [**RLUnicycle**](https://github.com/Team-2411-RL-Unicycle/rl-unicycle). The multiprocessing with queues are initiated in `main.py`, data packaging is handled by `teledata.py`, and the communication thread is handled by `mqtt.py`.
 
-### Telemetry Data Packaging
-The `@dataclass` decorator in Python is used to define structures that hold the data in fields. A method to convert them to dictionary/JSON is also included. A generalist debug data class is provided to allow for ad-hoc data to be sent to the telemetry system during development that has not been assigned a specific topic. The fields are coupled with the MQTT topic and the database measurement name.
+#### `main.py`
+The main entry point for the robot handles the asynchronous processes using data queues for input and output to send messages between the control loop and communications:
 
+**Code Example: Main entry point for the robot handling asynchronous processes.**
+```{python}
+#| eval: false
+#| label: main-entry
+#| fig-cap: "Main entry point for the robot handling asynchronous processes."
+#| code-fold: true
+
+import logging
+import argparse
+import multiprocessing
+import asyncio
+
+async def main():
+    args = parse_args()
+    setup_logging()
+    logger = logging.getLogger()
+    logger.debug("Logger initialized")
+
+    try:
+        set_realtime_priority(priority=99)
+    except PermissionError as e:
+        logger.error(f"Failed to set real-time priority: {e}")
+        return
+
+    telemetry_queue = multiprocessing.Queue()
+    command_queue = multiprocessing.Queue()
+    shutdown_event = multiprocessing.Event()
+
+    # Start the MQTT process
+    mqtt_process = multiprocessing.Process(
+        target=start_mqtt_process,
+        args=(telemetry_queue, command_queue, shutdown_event),
+    )
+    mqtt_process.start()
+
+    # Initialize and start the robot
+    robot = RobotSystem(
+        telemetry_queue,
+        command_queue,
+        start_motors=not args.no_motors,
+        controller_type=args.controller,
+        config_file=args.config_file,
+    )
+
+    try:
+        await robot.start(shutdown_event)
+    except KeyboardInterrupt:
+        logger.info("Shutdown signal received")
+        shutdown_event.set()
+    except Exception as e:
+        logger.exception(f"An unexpected error occurred: {e}")
+    finally:
+        await robot.shutdown()
+
+        # Terminate and clean up the MQTT process
+        shutdown_event.set()
+        mqtt_process.join(timeout=5)
+        if mqtt_process.is_alive():
+            mqtt_process.kill()
+            logger.warning(
+                "MQTT process did not terminate gracefully, forcing termination."
+            )
+
+        logger.info("Cleanup complete. Exiting program.")
+```
+
+#### `robot/teledata.py`
+The `@dataclass` decorator in Python is used to define structures that hold the data in fields. A method to convert them to dictionary/JSON is also included in a TelemetryData base class. A generalist debug data class is also provided to allow for ad-hoc data to be sent to the telemetry system during development that has not been assigned a specific topic. The fields are coupled with the MQTT topic and the database measurement name within the dataclass object.
+
+A sample of the abstract class and a data class for IMU data is shown below:
+
+**Code Example: A sample of the abstract class and a data class for IMU data.**
+```{python}
+#| fig-cap: "A sample of the abstract class and a data class for IMU data."
+#| eval: false
+#| code-fold: true
+
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass, field
+from typing import Any, Dict
+
+
+class TelemetryData(ABC):
+    """
+    Abstract base class for telemetry data. All telemetry sent identifying a topic,
+    and with the data fields as the labels for the data.
+    """
+
+    @property
+    @abstractmethod
+    def topic(self) -> str:
+        pass
+
+    def get_data(self):
+        """
+        Returns a dictionary of the telemetry data excluding the topic.
+        Uses asdict() if the subclass is a dataclass.
+        """
+        return asdict(self)  # Convert to dictionary without the topic
+
+    def to_mqtt(self):
+        """
+        Returns the topic and the data as a tuple (topic, data).
+        The data does not include the topic field.
+        """
+        return (self.topic, self.get_data())  # Return tuple for sending to MQTT
+
+
+@dataclass(frozen=True)
+class IMUData(TelemetryData):
+    """Data returned from the IMU sensor"""
+
+    accel_x: float  # 1.0 = 9.8 m/s^2
+    accel_y: float
+    accel_z: float
+    gyro_x: float  # degrees per second
+    gyro_y: float
+    gyro_z: float
+
+    @property
+    def topic(self) -> str:
+        return "robot/sensors/imu"  # Class-level topic
+
+    def get_accel(self) -> tuple:
+        return (self.accel_x, self.accel_y, self.accel_z)
+
+    def get_gyro(self) -> tuple:
+        return (self.gyro_x, self.gyro_y, self.gyro_z)
+```
+
+#### `robot/rwip.py`
 At the end of a control cycle, all data classes are packed into a single list and sent to the telemetry process. Opening the inter-process queue incurs an overhead, so it is more efficient to send one single outgoing packet per control cycle.
 
-### Telemetry Process
+**Code Example: Packaging of TelemetryData objects into a list and sending them to the telemetry process.**
+```{python}
+#| eval: false
+#| label: data-sending
+#| fig-cap: "Packaging of TelemetryData objects into a list and sending them to the telemetry process."
+#| code-fold: true
+
+### SEND COMMS ###
+data_list = [imudata, euler_angles, control_data, tele_debug_data]
+await self._send_telemetry(data_packet=data_list)
+
+async def _send_telemetry(
+    self, data_packet: Union[List[td.TelemetryData], td.TelemetryData]
+) -> None:
+    """
+    Send telemetry data to the telemetry queue.
+    """
+    self.send_queue.put(data_packet)
+```
+
+
+#### Telemetry Process `communication/mqtt.py`
 The telemetry process is essentially a wrapper around the existing Paho MQTT client. It is designed to unpack the data classes from the incoming queue and send them to their corresponding topics. It additionally handles downsampling the data to a lower rate for the Grafana panels. It has a standby loop that listens for incoming commands over a control topic and routes them to the control cycle through the command queue as needed.
+
+**Code Example: Parsing of TelemetryData objects and sending them to the MQTT broker.**
+```{python}
+#| eval: false
+#| code-fold: true
+#| code-summary: "Show the code"
+#| fig-cap: "Parsing of TelemetryData objects and sending them to the MQTT broker."
+def telemetry_loop(self):
+        while not self.shutdown_event.is_set():
+            try:
+                while not self.send_queue.empty():
+                    batch = self.send_queue.get()
+
+                    self.batch_count += 1  # Increment batch counter
+                    if self.batch_count >= self.downsample_rate:
+                        self.batch_count = 0
+                        is_downsampled = True
+                    else:
+                        is_downsampled = False
+
+                    if isinstance(batch, list):
+                        for telemetry_data in batch:
+                            self.process_telemetry_data(telemetry_data, is_downsampled)
+                    else:
+                        self.process_telemetry_data(batch, is_downsampled)
+            except Exception as e:
+                logger.exception(f"Error in telemetry_loop: {e}")
+
+            time.sleep(self.loop_time)
+
+def process_telemetry_data(
+    self, telemetry_data: TelemetryData, is_downsampled: bool
+):
+    # Check that the telemetry data is an instance of the TelemetryData class
+    if not isinstance(telemetry_data, TelemetryData):
+        logger.error(f"Invalid telemetry data: {telemetry_data}")
+        return
+
+    try:
+        topic, data = telemetry_data.to_mqtt()
+
+        # Publish to the original topic
+        self.publish_data(topic, data)
+        # logger.debug(f"Published to {topic}: {data}")
+
+        # If this is a downsampled batch, also publish to the downsampled topic
+        if is_downsampled:
+            downsampled_topic = f"downsampled/{topic}"
+            self.publish_data(downsampled_topic, data)
+            # logger.debug(f"Published to {downsampled_topic}: {data}")
+
+    except Exception as e:
+        logger.exception(f"Error processing telemetry data for topic {topic}: {e}")
+
+def publish_data(self, topic, data):
+    self.client.publish(topic, json.dumps(data))
+    pass
+```
 
 # Command Management
 
