@@ -34,7 +34,7 @@
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <img src="https://latex.codecogs.com/png.latex?t_0"> and initial conditions <img src="https://latex.codecogs.com/png.latex?x_0,%20y_0">, with parameters <img src="https://latex.codecogs.com/png.latex?%5Calpha,%20%5Cbeta,%20%5Cgamma,%20%5Cdelta"> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -560,7 +560,7 @@ font-style: inherit;">'imgs/lotka_volterra.png'</span>)</span>
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
@@ -781,7 +781,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-comment-delimiter="//" data-indent-size="1.2em" data-pseudocode-number="1" data-caption-prefix="Algorithm">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -868,7 +868,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_v%20%5Cfrac%7Bd%7D%7Bd%20%5Cepsilon%7D%20F(p_k%20+%20%5Cepsilon%20v)%20=%20J_k"></p>
 <p>The gradient with respect to <img src="https://latex.codecogs.com/png.latex?v"> can be traced through with automatic differentiation. So we apply a chain of operations, the <code>pytorch</code> Jacobian vector product, followed by backpropagation on a surrogate <img src="https://latex.codecogs.com/png.latex?v"> that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover <img src="https://latex.codecogs.com/png.latex?J_k%5ET">.</p>
 <p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <img src="https://latex.codecogs.com/png.latex?v"> contributed to the <code>jvp</code> result.</p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="3">
+<div id="jacobian-vector-product" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
