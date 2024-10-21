@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/CAP-conference-poster/index.html",
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
     ]

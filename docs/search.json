@@ -379,7 +379,14 @@
     "href": "blog/index.html",
     "title": "Posts",
     "section": "",
-    "text": "Score Matching for Density Estimation\n\n\nEstimation of the probability density function using score matching\n\n\nScore matching is a method for indirectly estimating the probability density function of a distribution. In this post, I will explain the score matching method as well as some of its limitations.\n\n\n\n\n\nJun 22, 2024\n\n\n17 min\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome\n\n\nA first post using Quarto\n\n\nFind out more about the tools I’m using to create this blog.\n\n\n\n\n\nApr 22, 2024\n\n\n4 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Generative Modeling for Structural Geology\n\n\nA conference poster\n\n\nA copy of the conference poster for the 2024 Canadian Association of Physicists Undegraduate Research Conference held at UBC\n\n\n\n\n\nOct 21, 2024\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\n\nScore Matching for Density Estimation\n\n\nEstimation of the probability density function using score matching\n\n\nScore matching is a method for indirectly estimating the probability density function of a distribution. In this post, I will explain the score matching method as well as some of its limitations.\n\n\n\n\n\nJun 22, 2024\n\n\n17 min\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome\n\n\nA first post using Quarto\n\n\nFind out more about the tools I’m using to create this blog.\n\n\n\n\n\nApr 22, 2024\n\n\n4 min\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/CAP-conference-poster/index.html",
+    "href": "blog/posts/CAP-conference-poster/index.html",
+    "title": "Generative Modeling for Structural Geology",
+    "section": "",
+    "text": "This is an embedded &lt;a target=\"_blank\" href=\"https://office.com\"&gt;Microsoft Office&lt;/a&gt; presentation, powered by &lt;a target=\"_blank\" href=\"https://office.com/webapps\"&gt;Office&lt;/a&gt;."
   },
   {
     "objectID": "blog/posts/welcome/index.html",

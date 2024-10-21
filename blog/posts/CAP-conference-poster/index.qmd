@@ -1,0 +1,25 @@
+---
+title: "Generative Modeling for Structural Geology"
+subtitle: "A conference poster"
+date: 2024-10-21
+description: >-
+  A copy of the conference poster for the 2024 Canadian Association of Physicists Undegraduate Research Conference held at UBC
+categories:
+    - GeoGen
+    - Stochastic Interpolation
+
+draft: false
+
+execute:
+  jupyter: julia-1.10 
+  cache: true
+  cache-refresh: true  # Only re-execute cells that have changed
+  cache-path: .jupyter_cache  # Directory to store cache files
+
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+<iframe src="https://1drv.ms/p/c/922d945e0df41473/IQQjxbU9NQZxQ4xxRmZEynh_AWfMFPnqxf4LUHktDV2t_Yw?em=2&amp;wdAr=1.3333333333333333" width="800px" height="600px" frameborder="0">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe>
