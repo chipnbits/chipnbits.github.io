@@ -8,9 +8,9 @@
 
 <meta name="author" content="Simon Ghyselincks">
 <meta name="dcterms.date" content="2024-09-25">
-<meta name="description" content="Automatic differentiation is a powerful tool for solving optimization problems and for recovering the jacobian. It can be used to automate the process of Gauss-Newton optimization.">
+<meta name="description" content="The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form \min_{p} \frac{1}{2}\|F(p)-d\|^2. In this lecture, a derivation of the method is presented along with a comparison to Newton’s method. Finally an algorithm for solving the problem is given.">
 
-<title>Lecture 5: Autodiff and Gauss Newton Optimization – Simon Ghyselincks</title>
+<title>Lecture 5: Gauss Newton – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -205,8 +205,6 @@ window.Quarto = {
   <li><a href="#matrix-inversions" id="toc-matrix-inversions" class="nav-link" data-scroll-target="#matrix-inversions">Matrix Inversions</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul></li>
-  <li><a href="#automatic-differentiation" id="toc-automatic-differentiation" class="nav-link" data-scroll-target="#automatic-differentiation">Automatic Differentiation</a></li>
-  <li><a href="#a-torch-implementation" id="toc-a-torch-implementation" class="nav-link" data-scroll-target="#a-torch-implementation">A Torch Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -215,18 +213,17 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 5: Autodiff and Gauss Newton Optimization</h1>
-<p class="subtitle lead">A look at some of the foundations of automatic differentiation and the Gauss-Newton optimization method.</p>
+<h1 class="title">Lecture 5: Gauss Newton</h1>
+<p class="subtitle lead">Non-Linear Least Squares Optimization</p>
   <div class="quarto-categories">
     <div class="quarto-category">Optimization</div>
-    <div class="quarto-category">Automatic Differentiation</div>
     <div class="quarto-category">Gauss-Newton</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Automatic differentiation is a powerful tool for solving optimization problems and for recovering the jacobian. It can be used to automate the process of Gauss-Newton optimization.
+    The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form <span class="math inline">\(\min_{p} \frac{1}{2}\|F(p)-d\|^2\)</span>. In this lecture, a derivation of the method is presented along with a comparison to Newton’s method. Finally an algorithm for solving the problem is given.
   </div>
 </div>
 
@@ -274,7 +271,7 @@ window.Quarto = {
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <span class="math inline">\(t_0\)</span> and initial conditions <span class="math inline">\(x_0, y_0\)</span>, with parameters <span class="math inline">\(\alpha, \beta, \gamma, \delta\)</span> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -388,7 +385,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial conditions</span></span>
@@ -403,7 +400,7 @@ window.Quarto = {
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>time_steps <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">1000</span>)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the phase space</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">4.5</span>))</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> y <span class="kw">in</span> y0:</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    trajectory <span class="op">=</span> solver.solve(x0, y, time_steps)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    x_values <span class="op">=</span> trajectory[:, <span class="dv">0</span>].detach().numpy()</span>
@@ -420,7 +417,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div id="pred-prey-phase-space" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/pred-prey-phase-space-output-1.png" width="659" height="523" class="figure-img"></p>
+<p><img src="index_files/figure-html/pred-prey-phase-space-output-1.png" width="510" height="413" class="figure-img"></p>
 <figcaption>The phase space of the predator-prey model.</figcaption>
 </figure>
 </div>
@@ -430,26 +427,35 @@ window.Quarto = {
 </section>
 <section id="the-inverse-problem" class="level2">
 <h2 class="anchored" data-anchor-id="the-inverse-problem">The Inverse Problem</h2>
-<p>The inverse problem in this case is to find the parameters <span class="math inline">\(\alpha, \beta, \gamma, \delta\)</span> that best fit the data. We suppose that we have a model with parameters that takes in the initial conditions and time steps and returns the trajectory of the system.</p>
-<p><span class="math display">\[\frac{d \vec{x}}{dt} = f(\vec{x}; \vec{p}), \quad \vec{x}_0 = \vec{x}(0)\]</span></p>
-<p>where <span class="math inline">\(\vec{x}\)</span> is the state of the system and <span class="math inline">\(\vec{p}\)</span> are the parameters. The goal is to form an esimate of <span class="math inline">\(\vec{p}\)</span>, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the <span class="math inline">\(Q\)</span> <em>sampling operator</em> which is applied to the true underlying data to give <span class="math inline">\(Qx\)</span>. If <span class="math inline">\(x\)</span> is fully given then <span class="math inline">\(Q=I\)</span>.</p>
-<p><span class="math display">\[f(\vec{x}; \vec{p}) \cong \frac{x_{n+1} - x_n}{\Delta t}\]</span></p>
-<p>and we can apply non-linear least squares to try and produce a fit. <span class="math inline">\(F(\vec{p}, x_0) = x(t, \vec{p})\)</span> and the observed data is <span class="math inline">\(Qx(t)\)</span>. We also make an assumption here that <span class="math inline">\(F\)</span> does not depend on the particular solver that we are using for the forward ODE and that all of the <span class="math inline">\(p\)</span> are physical parameters, we assume that the parameters are faithful enough.</p>
-<p><span class="math display">\[ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(\vec{p})\|^2\]</span></p>
-<p>So what we have is a non-linear least squares problem, where we are trying to minimize some mean squared error of a function of the parameters <span class="math inline">\(p\)</span> and the data. The data is fixed for a given problem, so it is only the optimal <span class="math inline">\(p\)</span> that we are trying to find.</p>
+<p>The inverse problem in this case is to find the parameters <span class="math inline">\(\alpha, \beta, \gamma, \delta\)</span> that best fit the data. We suppose that we have a model with parameters that takes in the initial conditions and time steps and returns the trajectory of the system. For simplicity we vectorize the previous <span class="math inline">\(\begin{bmatrix} x \\ y \end{bmatrix}\)</span> into a single vector <span class="math inline">\(\vec{x}\)</span>. The forward model is then a function <span class="math inline">\(F(\vec{x}; \vec{p})\)</span> where <span class="math inline">\(\vec{p}\)</span> are the parameters and is an approximator of the true system, where</p>
+<p><span class="math display">\[f(\vec{x}; \vec{p}) \approx \frac{d \vec{x}}{dt} = \begin{bmatrix} \alpha x - \beta xy \\ \delta xy - \gamma y \end{bmatrix}, \quad \vec{x}_0 = \vec{x}(0).\]</span></p>
+<p>where <span class="math inline">\(\vec{x}\)</span> is the state of the system and <span class="math inline">\(\vec{p}\)</span> are the parameters.</p>
+<p>The goal is to form an estimate of <span class="math inline">\(\vec{p}\)</span>, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the <span class="math inline">\(Q\)</span> <em>sampling operator</em> which is applied to the true underlying data to give <span class="math inline">\(Qx\)</span>. If <span class="math inline">\(x\)</span> is fully given then <span class="math inline">\(Q=I\)</span>.</p>
+<p>A finite difference approximation of the derivative of the data can be used to approximate the derivative of the data,</p>
+<p><span class="math display">\[f(\vec{x}; \vec{p}) \cong \frac{\vec{x}_{n+1} - \vec{x}_n}{\Delta t}.\]</span></p>
+<p>So in this case the forward model is a time derivative, and the observed data is computed from an intial condition <span class="math inline">\(\vec{x}_0\)</span> and an ODE approximate solution such as Euler’s method or RK4. The output of the forward process is then given as <span class="math inline">\(F\)</span>, where <span class="math display">\[F(\vec{p}, x_0) = \hat {\vec{x}}(t, \vec{p}),\]</span></p>
+<p>is the application of the system dynamics to the initial conditions and the parameter to create an estimated trajectory <span class="math inline">\(\hat{\vec{x}}(t, \vec{p})\)</span>.</p>
+<p>The observed data is <span class="math inline">\(d = Q\vec{x}(t)\)</span>. We also make an assumption here that <span class="math inline">\(F\)</span> does not depend on the particular solver that we are using for the forward ODE and that all of the <span class="math inline">\(\vec{p}\)</span> are physical parameters, we assume that the parameters are faithful enough.</p>
+<p>For the rest of the mathematical notation ahead, the explicit marking of vectors is ommitted to simplify the equations.</p>
+<section id="goodness-of-fit" class="level4">
+<h4 class="anchored" data-anchor-id="goodness-of-fit">Goodness of Fit</h4>
+<p>The goodness of fit is measured by using the L2 norm of the difference between the observed data and the model output, thus forming the non-linear least squares problem:</p>
+<p><span class="math display">\[ \min_{p} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(p)\|^2.\]</span></p>
+<p>To find the best fit, the objective is to minimize the mean squared error (MSE) of a function of the parameters <span class="math inline">\(p\)</span> and the data <span class="math inline">\(d\)</span>. The data is fixed for a given problem, so it is only by varying <span class="math inline">\(p\)</span> that an optimal solution can be found. The entire MSE function is denoted as <span class="math inline">\(G(p)\)</span>.</p>
+</section>
 </section>
 <section id="minimization-of-the-objective-function" class="level2">
 <h2 class="anchored" data-anchor-id="minimization-of-the-objective-function">Minimization of the Objective Function</h2>
 <p><span class="math display">\[ \min_{p \in \mathbb{R}^m} \biggl\{ \sum_{i=1}^n (QF_i(\mathbf{p}) - d_i) ^2\biggr\}\]</span></p>
-<p>where <span class="math inline">\(d_i\)</span> is the observed data. This is the same as</p>
+<p>where <span class="math inline">\(d_i\)</span> are the observed data points. This is the same as</p>
 <p><span class="math display">\[ \min_{p \in \mathbb{R}^m} \|G(\mathbf{p})\|^2\]</span></p>
 <p>where <span class="math inline">\(G(\mathbf{p}) = QF(\mathbf{p}) - d\)</span> and <span class="math inline">\(d \in \mathbb{R}^n\)</span>. We are minimizing the norm of a non-linear function of the parameters. Supposing that we want to find the minimizer, one approach would be by gradient descent.</p>
 <section id="the-jacobian-a-quick-review" class="level4">
 <h4 class="anchored" data-anchor-id="the-jacobian-a-quick-review">The Jacobian: A quick review</h4>
 <hr>
-<p>The Jacobian is a multivariate extension of the derivative that extends to functions <span class="math inline">\(f : \mathbb{R}^m \to \mathbb{R}^n\)</span>. Because there are <span class="math inline">\(n\)</span> function outputs and <span class="math inline">\(m\)</span> input variables, the Jacobian is an <span class="math inline">\(n \times m\)</span> matrix that contains the information of how each of the <span class="math inline">\(n\)</span> functions changes with respect to each of the <span class="math inline">\(m\)</span> variables. In an abuse of notation, it can be seen as <span class="math inline">\(\frac{\partial \vec{f}}{\partial \vec{x}}\)</span>.</p>
+<p>The Jacobian is a multivariate extension of the derivative that extends to functions <span class="math inline">\(f : \mathbb{R}^m \to \mathbb{R}^n\)</span>. Because there are <span class="math inline">\(n\)</span> function outputs and <span class="math inline">\(m\)</span> input variables, the Jacobian is an <span class="math inline">\(n \times m\)</span> matrix that contains the information of how each of the <span class="math inline">\(n\)</span> functions changes with respect to each of the <span class="math inline">\(m\)</span> variables. In an abuse of Leibniz’s notation, it can be seen as:</p>
 <p><span class="math display">\[
-\mathbf{J_f} =
+\frac{\partial \vec{f}}{\partial \vec{x}} = \mathbf{J_f} =
 \left[
     \frac{\partial f}{\partial x_1} \cdots \frac{\partial f}{\partial x_n}
 \right]
@@ -470,11 +476,11 @@ window.Quarto = {
     \end{array}
 \right]
 \]</span></p>
-<p>Note that like the derivative, the Jacobian is a function of the input variables. The Jacobian is a linear approximation of the function <span class="math inline">\(f\)</span> at a point <span class="math inline">\(x_0\)</span> and can be used to approximate the function at a point <span class="math inline">\(x_0 + \Delta x\)</span>.</p>
+<p>Note that like the derivative, the Jacobian is a function of the input variables <span class="math inline">\(\vec{x}\)</span>. The Jacobian is a linear approximation of the function <span class="math inline">\(f\)</span> at a point <span class="math inline">\(x_0\)</span> and can be used to approximate the function at a point <span class="math inline">\(x_0 + \Delta x\)</span>.</p>
 <p><span class="math display">\[ f(x_0 + \Delta x) \approx f(x_0) + J_f(x_0) \Delta x\]</span></p>
-<p>Noting that we are applying matrix multiplication using <span class="math inline">\(J_f\)</span> evaluated at <span class="math inline">\(x_0\)</span> and the vector <span class="math inline">\(\Delta x = \vec{x} - \vec{x_0}\)</span>.</p>
+<p>Noting that we are applying matrix multiplication using <span class="math inline">\(J_f\)</span> evaluated at <span class="math inline">\(x_0\)</span> and the vector <span class="math inline">\(\Delta x = \vec{x} - \vec{x_0}\)</span>. The quantity <span class="math inline">\(J_f(x_0) \Delta x\)</span> is the directional derivative of the function <span class="math inline">\(f\)</span> at <span class="math inline">\(x_0\)</span> in the direction of <span class="math inline">\(\Delta x\)</span>.</p>
 <hr>
-<p>We can compute the gradient of <span class="math inline">\(\|G(\mathbf{p})\|^2\)</span></p>
+<p>The gradient of <span class="math inline">\(\|G(\mathbf{p})\|^2\)</span> can be computed as follows:</p>
 <p><span class="math display">\[\begin{align}
 \nabla_p \|G(p)\|^2 &amp;= \nabla_p G(p)^T G(p)\\
 &amp;= \sum_{i=1}^n \nabla_p G_i(p)^2\\
@@ -482,17 +488,19 @@ window.Quarto = {
 &amp;= 2 J_G(p)^T G(p)
 \end{align}
 \]</span></p>
-<p>From this stage we could apply gradient descent to find the minimum of the function. However, the function <span class="math inline">\(G(p)\)</span> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated <a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions">Newton’s Method</a> addresses some of these issues, but requires computing the Hessian <span class="math inline">\(\nabla^2 \|G(p)\|^2\)</span> of the function, which can be expensive.</p>
-<p>The true Hessian of the function is: <span class="math display">\[
+<p>From this stage, gradient descent can be applied to find the minimum of the function. However, the function <span class="math inline">\(G(p)\)</span> is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated <a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions">Newton’s Method</a> addresses some of these issues, but requires computing the Hessian <span class="math inline">\(\nabla^2 \|G(p)\|^2\)</span> of the function, which can be expensive.</p>
+<p>To demonstrate, the true Hessian of the function is: <span class="math display">\[
 \nabla^2 \|G(p)\|^2 = 2 J_G(p)^T J_G(p) + 2 \sum_{i=1}^n G_i(p) \nabla^2 G_i(p)
 \]</span></p>
-<p>So we’d have to compute the Hessian of each of the <span class="math inline">\(G_i(p)\)</span> functions, of which there are <span class="math inline">\(n\)</span>, not good in practice. If we did have this Hessian, then the steps with Newton’s method would be:</p>
+<p>So we’d have to compute the Hessian <span class="math inline">\(\nabla^2 G_i(p)\)</span> of each of the <span class="math inline">\(G_i(p)\)</span> functions, of which there are <span class="math inline">\(n\)</span>, not good in practice. If we did have this Hessian, the steps with Newton’s method would be:</p>
 <p><span class="math display">\[ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla (\|G(p_k)\|^2)\]</span></p>
 </section>
 </section>
 <section id="gauss-newton-optimization" class="level2">
 <h2 class="anchored" data-anchor-id="gauss-newton-optimization">Gauss-Newton Optimization</h2>
-<p>Rather than solve this problem directly we can linearize inside of the norm and solve the linearized problem using the normal equations. We approximate the function <span class="math inline">\(G(p) = QF(p) - d\)</span> by a linear function <span class="math inline">\(G(p) \approx (QF(p_k) - d) + QJ_k(p-p_k)\)</span> where <span class="math inline">\(J_k\)</span> is the Jacobian of <span class="math inline">\(F(p)\)</span> at <span class="math inline">\(p_k\)</span>.</p>
+<p>Rather than solve the problem directly with Newton’s method, it can be approximated by linearizing inside of the norm and solving the linearized version using the normal equations. We approximate the function</p>
+<p><span class="math display">\[G(p) = QF(p) - d \approx (QF(p_k) - d) + QJ_k(p-p_k)\]</span></p>
+<p>where <span class="math inline">\(J_k\)</span> is the Jacobian of <span class="math inline">\(F(p)\)</span> at <span class="math inline">\(p_k\)</span>.</p>
 <p><span class="math display">\[ \min_{p \in \mathbb{R}^m} \|QF(p_k) - d + QJ_k(p-p_k)\|^2\]</span></p>
 <p>Then rearranging this we get a form that is a linear least squares problem:</p>
 <p><span class="math display">\[ \begin{align}
@@ -541,7 +549,7 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 </tr>
 <tr class="even">
 <td></td>
-<td><span class="math inline">\(\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\)</span></td>
+<td><span class="math inline">\(\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J_G(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Gauss-Newton Method</strong></td>
@@ -562,15 +570,15 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 </tbody>
 </table>
 <p>The direction of change between iterations in Newton’s method can be rewritten as <span class="math display">\[d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
-<p>While the direction in the case of Gauss-Newton is <span class="math display">\[d_k = \left(J_G(p_k)^T J(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
-<p>So we can see that the difference between the two is the omission of the computationally expensive <span class="math inline">\(\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)\)</span> terms. The Gauss-Newton method is approximating the second-order approach of Newton’s method by only considering the first-order terms inside of the norm.</p>
+<p>While the direction in the case of Gauss-Newton is <span class="math display">\[d_k = \left(J_G(p_k)^T J_G(p_k)\right)^{-1} J_G(p_k)^T G(p_k)\]</span></p>
+<p>The difference between the two is the omission of the computationally expensive <span class="math inline">\(\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)\)</span> terms. The Gauss-Newton method is approximating the second-order approach of Newton’s method by only considering the first-order terms inside of the norm.</p>
 <p><span class="math display">\[J_G(p_k)^T J(p_k) \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k) \approx J_G(p_k)^T J(p_k)\]</span></p>
 <p>Recall that <span class="math inline">\(G(p) = QF(p) - d\)</span> which is the difference between the observed data and the model. If the difference is small then <span class="math inline">\(G_i\)</span> is also small and the approximation is good.</p>
 </section>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-line-number="true" data-no-end="false" data-line-number-punc=":" data-indent-size="1.2em" data-pseudocode-number="1" data-caption-prefix="Algorithm">
+<div class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="1" data-line-number-punc=":" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -644,238 +652,9 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="automatic-differentiation" class="level2">
-<h2 class="anchored" data-anchor-id="automatic-differentiation">Automatic Differentiation</h2>
-<p>In practice the Jacobian and its transpose can be computed using automatic differentiation.</p>
-<p>Take the forward model <span class="math inline">\(F(p)\)</span> for which we want a Jacobian matrix at <span class="math inline">\(p_k\)</span>. We can write the Taylor expansion of the forward model as:</p>
-<p><span class="math display">\[ F(p_k + \epsilon v) = F(p_k) + J_k \epsilon v + \mathcal{O}(\epsilon^2)\]</span></p>
-<p>where <span class="math inline">\(J_k\)</span> is the Jacobian of <span class="math inline">\(F(p_k)\)</span>. If we take the derivative of both sides in this expansion with respect to <span class="math inline">\(\epsilon\)</span> we get:</p>
-<p><span class="math display">\[ \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k v + \mathcal{O}(\epsilon)\]</span></p>
-<p>If we make <span class="math inline">\(\epsilon\)</span> very small then the Jacobian of the forward problem can be numerically approximated and bounded by a small <span class="math inline">\(\mathcal{O}(\epsilon)\)</span>. The next step to fully recover the Jacobian is to take the gradient with respect to <span class="math inline">\(v\)</span> of the left-hand side of the equation.</p>
-<p><span class="math display">\[ \nabla_v \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k\]</span></p>
-<p>The gradient with respect to <span class="math inline">\(v\)</span> can be traced through with automatic differentiation. So we apply a chain of operations, the <code>pytorch</code> Jacobian vector product, followed by backpropagation on a surrogate <span class="math inline">\(v\)</span> that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover <span class="math inline">\(J_k^T\)</span>.</p>
-<p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <span class="math inline">\(v\)</span> contributed to the <code>jvp</code> result.</p>
-<p>The fundamental use of the jvp or the vjp is to compute the directional derivate or its transpose. This is because the jacobian matrix encodes the directional derivatives of the function at a point.</p>
-<p><span class="math display">\[d_k = J_k^T v\]</span></p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="4">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jvp</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jacobian</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a simple forward function</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> F(p):</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.stack([p[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> p[<span class="dv">1</span>], p[<span class="dv">1</span>]<span class="op">**</span><span class="dv">3</span> <span class="op">+</span> p[<span class="dv">0</span>]])</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Input point p_k</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>p_k <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Arbitrary vector v, same size as p_k</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>,<span class="fl">1.0</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the Jacobian-vector product (J(p) * v)</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>F_output, jvp_result <span class="op">=</span> jvp(F, (p_k,), v, create_graph<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Function output:"</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(F_output)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian-vector product:"</span>)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jvp_result)</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a list to store each row of the Jacobian</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>jacobian_rows <span class="op">=</span> []</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the gradient of each component of the JVP result separately, retaining the graph to avoid re-computation</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>]):</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    v.grad <span class="op">=</span> <span class="va">None</span>  <span class="co"># Clear the gradient</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    jvp_result.backward(torch.tensor([<span class="fl">1.0</span> <span class="cf">if</span> i <span class="op">==</span> j <span class="cf">else</span> <span class="fl">0.0</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>])]), retain_graph<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    jacobian_rows.append(v.grad.clone())  <span class="co"># Append the gradient (row of the Jacobian)</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the rows to get the full Jacobian matrix</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> torch.stack(jacobian_rows, dim<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the full Jacobian matrix directly</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> jacobian(F, p_k)</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Function output:
-tensor([2., 2.], grad_fn=&lt;StackBackward0&gt;)
-Jacobian-vector product:
-tensor([3., 4.], grad_fn=&lt;AddBackward0&gt;)
-Jacobian matrix at p_k:
-tensor([[2., 1.],
-        [1., 3.]])
-Jacobian matrix at p_k:
-tensor([[2., 1.],
-        [1., 3.]])</code></pre>
-</div>
-</div>
-</section>
-<section id="a-torch-implementation" class="level1">
-<h1>A Torch Implementation</h1>
-<p>Now all the previous steps can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method using the conjugate gradient method to solve the normal equations involved.</p>
-<p>To make the solution components easier to understand, they are seprated into different class objects that contain the necessary components for each part of the solution.</p>
-<div id="6c9ab5b7" class="cell" data-execution_count="5">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RungeKutta4:</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Runge-Kutta 4th Order Integrator for solving ODEs.</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, func, time_steps, period):</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">        Initializes the RK4 integrator.</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">            func (callable): The function defining the ODE system, f(x, i).</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">            time_steps (int): Number of time steps to integrate over.</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">            period (list or tuple): [start_time, end_time].</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.func <span class="op">=</span> func</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.time_steps <span class="op">=</span> time_steps</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start_time, <span class="va">self</span>.end_time <span class="op">=</span> period</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dt <span class="op">=</span> (<span class="va">self</span>.end_time <span class="op">-</span> <span class="va">self</span>.start_time) <span class="op">/</span> <span class="va">self</span>.time_steps</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(<span class="va">self</span>, x0):</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">        Performs the RK4 integration.</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">            x0 (torch.Tensor): Initial state tensor of shape (n_vars,).</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co">            torch.Tensor: Tensor containing the solution at each time step of shape (n_vars, time_steps + 1).</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> torch.zeros(x0.size(<span class="dv">0</span>), <span class="va">self</span>.time_steps <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        X[:, <span class="dv">0</span>] <span class="op">=</span> x0</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.time_steps):</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>            k1 <span class="op">=</span> <span class="va">self</span>.func(X[:, i], i)</span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>            k2 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k1 <span class="op">/</span> <span class="dv">2</span>, i)</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>            k3 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k2 <span class="op">/</span> <span class="dv">2</span>, i)</span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>            k4 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k3, i)</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>            X[:, i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> X[:, i] <span class="op">+</span> (<span class="va">self</span>.dt <span class="op">/</span> <span class="dv">6</span>) <span class="op">*</span> (k1 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k3 <span class="op">+</span> k4)</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> X</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LotkaVolterra(nn.Module):</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="co">    Lotka-Volterra (Predator-Prey) Model with Trainable Parameters.</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, period, n_time_steps, perturbation<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="co">        Initializes the Lotka-Volterra model.</span></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="co">            period (list or tuple): [start_time, end_time].</span></span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="co">            n_time_steps (int): Number of time steps for integration.</span></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="co">            perturbation (torch.Tensor, optional): Tensor to perturb alpha parameters. Defaults to None.</span></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LotkaVolterra, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.time_steps <span class="op">=</span> n_time_steps</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.period <span class="op">=</span> period</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> perturbation <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>            perturbation <span class="op">=</span> torch.zeros(n_time_steps <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize trainable parameters</span></span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.alpha <span class="op">=</span> nn.Parameter( (<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>) <span class="op">+</span> perturbation )</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.beta <span class="op">=</span> nn.Parameter( (<span class="dv">4</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>) )</span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.gamma <span class="op">=</span> nn.Parameter( torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>) )</span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.delta <span class="op">=</span> nn.Parameter( torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>) )</span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> predator_prey_derivatives(<span class="va">self</span>, state, i):</span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="co">        Computes the derivatives for the Lotka-Volterra equations.</span></span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="co">            state (torch.Tensor): Current state tensor [prey, predator].</span></span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="co">            i (int): Current time step index.</span></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="co">            torch.Tensor: Derivatives [dprey/dt, dpredator/dt].</span></span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>        prey, predator <span class="op">=</span> state</span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>        dprey_dt <span class="op">=</span> <span class="va">self</span>.alpha[i] <span class="op">*</span> prey <span class="op">-</span> <span class="va">self</span>.beta[i] <span class="op">*</span> prey <span class="op">*</span> predator</span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>        dpredator_dt <span class="op">=</span> <span class="op">-</span><span class="va">self</span>.gamma[i] <span class="op">*</span> predator <span class="op">+</span> <span class="va">self</span>.delta[i] <span class="op">*</span> prey <span class="op">*</span> predator</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>        derivatives <span class="op">=</span> torch.stack([dprey_dt, dpredator_dt])</span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> derivatives</span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x0):</span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a><span class="co">        Solves the Lotka-Volterra equations using RK4.</span></span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a><span class="co">            x0 (torch.Tensor): Initial state tensor [prey, predator].</span></span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
-<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a><span class="co">            torch.Tensor: Solution tensor over time of shape (2, time_steps + 1).</span></span>
-<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>        rk4 <span class="op">=</span> RungeKutta4(<span class="va">self</span>.predator_prey_derivatives, <span class="va">self</span>.time_steps, <span class="va">self</span>.period)</span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> rk4.integrate(x0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Now to check the implementation, we can create a model and solve the Lotka-Volterra equations using the RK4 solver.</p>
-<div id="0452406c" class="cell" data-execution_count="6">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">40</span>]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n_time_steps <span class="op">=</span> <span class="dv">2000</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Lotka-Volterra model</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LotkaVolterra(period<span class="op">=</span>period, n_time_steps<span class="op">=</span>n_time_steps)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial populations: [prey, predator]</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>initial_state <span class="op">=</span> torch.rand(<span class="dv">2</span>) <span class="co"># Example initial conditions</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform integration</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>solution <span class="op">=</span> model(initial_state)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the results</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Time series plot</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">'Prey'</span>)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">'Predator'</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Time Series'</span>)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Time Step'</span>)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Population'</span>)</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase space plot</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">0</span>, :].detach().numpy(), solution[<span class="dv">1</span>, :].detach().numpy())</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Phase Space'</span>)</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Prey Population'</span>)</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Predator Population'</span>)</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-6-output-1.png" width="1142" height="758" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>N</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

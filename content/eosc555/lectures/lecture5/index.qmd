@@ -1,13 +1,12 @@
 ---
-title: "Lecture 5: Autodiff and Gauss Newton Optimization"
-subtitle: "A look at some of the foundations of automatic differentiation and the Gauss-Newton optimization method."
+title: "Lecture 5: Gauss Newton"
+subtitle: "Non-Linear Least Squares Optimization"
 date: 2024-09-25
 author: "Simon Ghyselincks"
 description: >-
-    Automatic differentiation is a powerful tool for solving optimization problems and for recovering the jacobian. It can be used to automate the process of Gauss-Newton optimization.
+    The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form $\min_{p} \frac{1}{2}\|F(p)-d\|^2$. In this lecture, a derivation of the method is presented along with a comparison to Newton's method. Finally an algorithm for solving the problem is given.
 categories:
   - Optimization
-  - Automatic Differentiation
   - Gauss-Newton
 
 image: imgs/lotka_volterra_phase_space.png
@@ -172,7 +171,7 @@ solver = RK4Solver(model)
 time_steps = np.linspace(0, 10, 1000)
 
 # Plot the phase space
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(6, 4.5))
 for y in y0:
     trajectory = solver.solve(x0, y, time_steps)
     x_values = trajectory[:, 0].detach().numpy()
@@ -189,25 +188,40 @@ plt.show()
 
 ## The Inverse Problem
 
-The inverse problem in this case is to find the parameters $\alpha, \beta, \gamma, \delta$ that best fit the data. We suppose that we have a model with parameters that takes in the initial conditions and time steps and returns the trajectory of the system. 
+The inverse problem in this case is to find the parameters $\alpha, \beta, \gamma, \delta$ that best fit the data. We suppose that we have a model with parameters that takes in the initial conditions and time steps and returns the trajectory of the system. For simplicity we vectorize the previous $\begin{bmatrix} x \\ y \end{bmatrix}$ into a single vector $\vec{x}$. The forward model is then a function $F(\vec{x}; \vec{p})$ where $\vec{p}$ are the parameters and is an approximator of the true system, where
 
-$$\frac{d \vec{x}}{dt} = f(\vec{x}; \vec{p}), \quad \vec{x}_0 = \vec{x}(0)$$
+$$f(\vec{x}; \vec{p}) \approx \frac{d \vec{x}}{dt} = \begin{bmatrix} \alpha x - \beta xy \\ \delta xy - \gamma y \end{bmatrix}, \quad \vec{x}_0 = \vec{x}(0).$$
 
-where $\vec{x}$ is the state of the system and $\vec{p}$ are the parameters. The goal is to form an esimate of $\vec{p}$, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the $Q$ *sampling operator* which is applied to the true underlying data to give $Qx$. If $x$ is fully given then $Q=I$.
+where $\vec{x}$ is the state of the system and $\vec{p}$ are the parameters. 
 
-$$f(\vec{x}; \vec{p}) \cong \frac{x_{n+1} - x_n}{\Delta t}$$ 
+The goal is to form an estimate of $\vec{p}$, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the $Q$ *sampling operator* which is applied to the true underlying data to give $Qx$. If $x$ is fully given then $Q=I$.
 
-and we can apply non-linear least squares to try and produce a fit. $F(\vec{p}, x_0) = x(t, \vec{p})$ and the observed data is $Qx(t)$. We also make an assumption here that $F$ does not depend on the particular solver that we are using for the forward ODE and that all of the $p$ are physical parameters, we assume that the parameters are faithful enough.
+A finite difference approximation of the derivative of the data can be used to approximate the derivative of the data,
 
-$$ \min_{\vec{p}} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(\vec{p})\|^2$$
+$$f(\vec{x}; \vec{p}) \cong \frac{\vec{x}_{n+1} - \vec{x}_n}{\Delta t}.$$ 
 
-So what we have is a non-linear least squares problem, where we are trying to minimize some mean squared error of a function of the parameters $p$ and the data. The data is fixed for a given problem, so it is only the optimal $p$ that we are trying to find.
+So in this case the forward model is a time derivative, and the observed data is computed from an intial condition $\vec{x}_0$ and an ODE approximate solution such as Euler's method or RK4. The output of the forward process is then given as $F$, where
+ $$F(\vec{p}, x_0) = \hat {\vec{x}}(t, \vec{p}),$$ 
+ 
+ is the application of the system dynamics to the initial conditions and the parameter to create an estimated trajectory $\hat{\vec{x}}(t, \vec{p})$.
+
+The observed data is $d = Q\vec{x}(t)$. We also make an assumption here that $F$ does not depend on the particular solver that we are using for the forward ODE and that all of the $\vec{p}$ are physical parameters, we assume that the parameters are faithful enough.
+
+For the rest of the mathematical notation ahead, the explicit marking of vectors is ommitted to simplify the equations.
+
+#### Goodness of Fit
+
+The goodness of fit is measured by using the L2 norm of the difference between the observed data and the model output, thus forming the non-linear least squares problem:
+
+$$ \min_{p} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(p)\|^2.$$
+
+To find the best fit, the objective is to minimize the mean squared error (MSE) of a function of the parameters $p$ and the data $d$. The data is fixed for a given problem, so it is only by varying $p$ that an optimal solution can be found. The entire MSE function is denoted as $G(p)$.
 
 ## Minimization of the Objective Function
 
 $$ \min_{p \in \mathbb{R}^m} \biggl\{ \sum_{i=1}^n (QF_i(\mathbf{p}) - d_i) ^2\biggr\}$$
 
-where $d_i$ is the observed data. This is the same as 
+where $d_i$ are the observed data points. This is the same as 
 
 $$ \min_{p \in \mathbb{R}^m} \|G(\mathbf{p})\|^2$$
 
@@ -216,10 +230,10 @@ where $G(\mathbf{p}) = QF(\mathbf{p}) - d$ and $d \in \mathbb{R}^n$. We are mini
 #### The Jacobian: A quick review
 ---
 
-The Jacobian is a multivariate extension of the derivative that extends to functions $f : \mathbb{R}^m \to \mathbb{R}^n$. Because there are $n$ function outputs and $m$ input variables, the Jacobian is an $n \times m$ matrix that contains the information of how each of the $n$ functions changes with respect to each of the $m$ variables. In an abuse of notation, it can be seen as $\frac{\partial \vec{f}}{\partial \vec{x}}$.
+The Jacobian is a multivariate extension of the derivative that extends to functions $f : \mathbb{R}^m \to \mathbb{R}^n$. Because there are $n$ function outputs and $m$ input variables, the Jacobian is an $n \times m$ matrix that contains the information of how each of the $n$ functions changes with respect to each of the $m$ variables. In an abuse of Leibniz's notation, it can be seen as:
 
 $$
-\mathbf{J_f} =
+\frac{\partial \vec{f}}{\partial \vec{x}} = \mathbf{J_f} =
 \left[
     \frac{\partial f}{\partial x_1} \cdots \frac{\partial f}{\partial x_n}
 \right]
@@ -241,14 +255,14 @@ $$
 \right]
 $$
 
-Note that like the derivative, the Jacobian is a function of the input variables. The Jacobian is a linear approximation of the function $f$ at a point $x_0$ and can be used to approximate the function at a point $x_0 + \Delta x$.
+Note that like the derivative, the Jacobian is a function of the input variables $\vec{x}$. The Jacobian is a linear approximation of the function $f$ at a point $x_0$ and can be used to approximate the function at a point $x_0 + \Delta x$.
 
 $$ f(x_0 + \Delta x) \approx f(x_0) + J_f(x_0) \Delta x$$
 
-Noting that we are applying matrix multiplication using $J_f$ evaluated at $x_0$ and the vector $\Delta x = \vec{x} - \vec{x_0}$. 
+Noting that we are applying matrix multiplication using $J_f$ evaluated at $x_0$ and the vector $\Delta x = \vec{x} - \vec{x_0}$. The quantity $J_f(x_0) \Delta x$ is the directional derivative of the function $f$ at $x_0$ in the direction of $\Delta x$.
 ---
 
-We can compute the gradient of $\|G(\mathbf{p})\|^2$
+The gradient of $\|G(\mathbf{p})\|^2$ can be computed as follows:
 
 $$\begin{align}
 \nabla_p \|G(p)\|^2 &= \nabla_p G(p)^T G(p)\\
@@ -258,20 +272,24 @@ $$\begin{align}
 \end{align}
 $$
 
-From this stage we could apply gradient descent to find the minimum of the function. However, the function $G(p)$ is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated [Newton's Method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions) addresses some of these issues, but requires computing the Hessian $\nabla^2 \|G(p)\|^2$ of the function, which can be expensive.
+From this stage, gradient descent can be applied to find the minimum of the function. However, the function $G(p)$ is non-linear and so the gradient descent method may not converge quickly or the problem may have poor conditioning. The celebrated [Newton's Method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization#Higher_dimensions) addresses some of these issues, but requires computing the Hessian $\nabla^2 \|G(p)\|^2$ of the function, which can be expensive.
 
-The true Hessian of the function is:
+To demonstrate, the true Hessian of the function is:
 $$
 \nabla^2 \|G(p)\|^2 = 2 J_G(p)^T J_G(p) + 2 \sum_{i=1}^n G_i(p) \nabla^2 G_i(p)
 $$
 
-So we'd have to compute the Hessian of each of the $G_i(p)$ functions, of which there are $n$, not good in practice. If we did have this Hessian, then the steps with Newton's method would be:
+So we'd have to compute the Hessian $\nabla^2 G_i(p)$ of each of the $G_i(p)$ functions, of which there are $n$, not good in practice. If we did have this Hessian, the steps with Newton's method would be:
 
 $$ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla (\|G(p_k)\|^2)$$
 
 ## Gauss-Newton Optimization
 
-Rather than solve this problem directly we can linearize inside of the norm and solve the linearized problem using the normal equations. We approximate the function $G(p) = QF(p) - d$ by a linear function $G(p) \approx (QF(p_k) - d) + QJ_k(p-p_k)$ where $J_k$ is the Jacobian of $F(p)$ at $p_k$.
+Rather than solve the problem directly with Newton's method, it can be approximated by linearizing inside of the norm and solving the linearized version using the normal equations. We approximate the function
+
+ $$G(p) = QF(p) - d \approx (QF(p_k) - d) + QJ_k(p-p_k)$$
+ 
+  where $J_k$ is the Jacobian of $F(p)$ at $p_k$.
 
 $$ \min_{p \in \mathbb{R}^m} \|QF(p_k) - d + QJ_k(p-p_k)\|^2$$
 
@@ -308,7 +326,7 @@ So this resembles a scaled gradient descent. In Newton's method we have the Hess
 | **Newton’s Method**    | **Step Update**                                           |
 |                       | $p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla \|G(p_k)\|^2$ |
 |                       | **Scaling Matrix**                                        |
-|                       | $\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)$ |
+|                       | $\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J_G(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)$ |
 | **Gauss-Newton Method**| **Step Update**                                           |
 |                       | $p_{k+1} = p_k - (J_G(p_k)^T J_G(p_k))^{-1} J_G(p_k)^T G(p_k)$ |
 |                       | **Scaling Matrix**                                        |
@@ -317,9 +335,9 @@ So this resembles a scaled gradient descent. In Newton's method we have the Hess
 The direction of change between iterations in Newton's method can be rewritten as $$d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
 
 While the direction in the case of Gauss-Newton is 
-$$d_k = \left(J_G(p_k)^T J(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
+$$d_k = \left(J_G(p_k)^T J_G(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
 
-So we can see that the difference between the two is the omission of the computationally expensive $\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)$ terms. The Gauss-Newton method is approximating the second-order approach of Newton's method by only considering the first-order terms inside of the norm.
+The difference between the two is the omission of the computationally expensive $\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)$ terms. The Gauss-Newton method is approximating the second-order approach of Newton's method by only considering the first-order terms inside of the norm.
 
 $$J_G(p_k)^T J(p_k) \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k) \approx J_G(p_k)^T J(p_k)$$
 
@@ -378,224 +396,3 @@ We developed a conjugate gradient method in the last lecture, so we can use that
 | $s_k$            | Step direction                    | $\mathbb{R}^{m}$         |
 | $J_k^T$          | Transpose of the Jacobian         | $\mathbb{R}^{m \times n}$|
 | $J_k^T Q^T Q J_k$ | Normal equations matrix           | $\mathbb{R}^{m \times m}$|
-
-## Automatic Differentiation
-
-In practice the Jacobian and its transpose can be computed using automatic differentiation. 
-
-Take the forward model $F(p)$ for which we want a Jacobian matrix at $p_k$. We can write the Taylor expansion of the forward model as:
-
-$$ F(p_k + \epsilon v) = F(p_k) + J_k \epsilon v + \mathcal{O}(\epsilon^2)$$
-
-where $J_k$ is the Jacobian of $F(p_k)$. If we take the derivative of both sides in this expansion with respect to $\epsilon$ we get:
-
-$$ \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k v + \mathcal{O}(\epsilon)$$
-
-If we make $\epsilon$ very small then the Jacobian of the forward problem can be numerically approximated and bounded by a small $\mathcal{O}(\epsilon)$. The next step to fully recover the Jacobian is to take the gradient with respect to $v$ of the left-hand side of the equation. 
-
-$$ \nabla_v \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k$$
-
-The gradient with respect to $v$ can be traced through with automatic differentiation. So we apply a chain of operations, the `pytorch` Jacobian vector product, followed by backpropagation on a surrogate $v$ that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover $J_k^T$.
-
-There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a `requires_grad=True` flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of $v$ contributed to the `jvp` result.
-
-The fundamental use of the jvp or the vjp is to compute the directional derivate or its transpose. This is because the jacobian matrix encodes the directional derivatives of the function at a point.
-
-$$d_k = J_k^T v$$
-
-```{python}
-#| label: jacobian-vector-product
-#| fig-cap: "The Jacobian vector product using automatic differentiation."
-import torch
-from torch.autograd.functional import jvp
-from torch.autograd.functional import jacobian
-
-# Define a simple forward function
-def F(p):
-    return torch.stack([p[0]**2 + p[1], p[1]**3 + p[0]])
-
-# Input point p_k
-p_k = torch.tensor([1.0, 1.0])
-
-# Arbitrary vector v, same size as p_k
-v = torch.tensor([1.0,1.0], requires_grad=True)
-
-# Compute the Jacobian-vector product (J(p) * v)
-F_output, jvp_result = jvp(F, (p_k,), v, create_graph=True)
-print("Function output:")
-print(F_output)
-print("Jacobian-vector product:")
-print(jvp_result)
-
-# Initialize a list to store each row of the Jacobian
-jacobian_rows = []
-# Compute the gradient of each component of the JVP result separately, retaining the graph to avoid re-computation
-for i in range(F_output.shape[0]):
-    v.grad = None  # Clear the gradient
-    jvp_result.backward(torch.tensor([1.0 if i == j else 0.0 for j in range(F_output.shape[0])]), retain_graph=True)
-    jacobian_rows.append(v.grad.clone())  # Append the gradient (row of the Jacobian)
-
-# Stack the rows to get the full Jacobian matrix
-jacobian_matrix = torch.stack(jacobian_rows, dim=0)
-
-# Print the Jacobian matrix
-print("Jacobian matrix at p_k:")
-print(jacobian_matrix)
-
-# Compute the full Jacobian matrix directly
-jacobian_matrix = jacobian(F, p_k)
-
-# Print the Jacobian matrix
-print("Jacobian matrix at p_k:")
-print(jacobian_matrix)
-```
-
-# A Torch Implementation
-
-Now all the previous steps can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method using the conjugate gradient method to solve the normal equations involved.
-
-To make the solution components easier to understand, they are seprated into different class objects that contain the necessary components for each part of the solution.
-
-```{python}
-#| fig-cap: "RK4 ODE solver and Lotka-Volterra model with trainable parameters."
-#| code-fold: true
-import torch
-from torch import nn
-import matplotlib.pyplot as plt
-
-class RungeKutta4:
-    """
-    Runge-Kutta 4th Order Integrator for solving ODEs.
-    """
-    def __init__(self, func, time_steps, period):
-        """
-        Initializes the RK4 integrator.
-
-        Args:
-            func (callable): The function defining the ODE system, f(x, i).
-            time_steps (int): Number of time steps to integrate over.
-            period (list or tuple): [start_time, end_time].
-        """
-        self.func = func
-        self.time_steps = time_steps
-        self.start_time, self.end_time = period
-        self.dt = (self.end_time - self.start_time) / self.time_steps
-
-    def integrate(self, x0):
-        """
-        Performs the RK4 integration.
-
-        Args:
-            x0 (torch.Tensor): Initial state tensor of shape (n_vars,).
-
-        Returns:
-            torch.Tensor: Tensor containing the solution at each time step of shape (n_vars, time_steps + 1).
-        """
-        X = torch.zeros(x0.size(0), self.time_steps + 1)
-        X[:, 0] = x0
-
-        for i in range(self.time_steps):
-            k1 = self.func(X[:, i], i)
-            k2 = self.func(X[:, i] + self.dt * k1 / 2, i)
-            k3 = self.func(X[:, i] + self.dt * k2 / 2, i)
-            k4 = self.func(X[:, i] + self.dt * k3, i)
-            X[:, i + 1] = X[:, i] + (self.dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
-
-        return X
-
-class LotkaVolterra(nn.Module):
-    """
-    Lotka-Volterra (Predator-Prey) Model with Trainable Parameters.
-    """
-    def __init__(self, period, n_time_steps, perturbation=None):
-        """
-        Initializes the Lotka-Volterra model.
-
-        Args:
-            period (list or tuple): [start_time, end_time].
-            n_time_steps (int): Number of time steps for integration.
-            perturbation (torch.Tensor, optional): Tensor to perturb alpha parameters. Defaults to None.
-        """
-        super(LotkaVolterra, self).__init__()
-        self.time_steps = n_time_steps
-        self.period = period
-
-        if perturbation is None:
-            perturbation = torch.zeros(n_time_steps + 1)
-
-        # Initialize trainable parameters
-        self.alpha = nn.Parameter( (2/3) * torch.ones(n_time_steps + 1) + perturbation )
-        self.beta = nn.Parameter( (4/3) * torch.ones(n_time_steps + 1) )
-        self.gamma = nn.Parameter( torch.ones(n_time_steps + 1) )
-        self.delta = nn.Parameter( torch.ones(n_time_steps + 1) )
-
-    def predator_prey_derivatives(self, state, i):
-        """
-        Computes the derivatives for the Lotka-Volterra equations.
-
-        Args:
-            state (torch.Tensor): Current state tensor [prey, predator].
-            i (int): Current time step index.
-
-        Returns:
-            torch.Tensor: Derivatives [dprey/dt, dpredator/dt].
-        """
-        prey, predator = state
-        dprey_dt = self.alpha[i] * prey - self.beta[i] * prey * predator
-        dpredator_dt = -self.gamma[i] * predator + self.delta[i] * prey * predator
-        derivatives = torch.stack([dprey_dt, dpredator_dt])
-        return derivatives
-
-    def forward(self, x0):
-        """
-        Solves the Lotka-Volterra equations using RK4.
-
-        Args:
-            x0 (torch.Tensor): Initial state tensor [prey, predator].
-
-        Returns:
-            torch.Tensor: Solution tensor over time of shape (2, time_steps + 1).
-        """
-        rk4 = RungeKutta4(self.predator_prey_derivatives, self.time_steps, self.period)
-        return rk4.integrate(x0)
-```
-
-Now to check the implementation, we can create a model and solve the Lotka-Volterra equations using the RK4 solver.
-
-```{python}
-period = [0, 40]
-n_time_steps = 2000
-
-# Initialize the Lotka-Volterra model
-model = LotkaVolterra(period=period, n_time_steps=n_time_steps)
-
-# Initial populations: [prey, predator]
-initial_state = torch.rand(2) # Example initial conditions
-
-# Perform integration
-solution = model(initial_state)
-
-# Plotting the results
-plt.figure(figsize=(12, 8))
-
-# Time series plot
-plt.subplot(2, 1, 1)
-plt.plot(solution[0, :].detach().numpy(), label='Prey')
-plt.plot(solution[1, :].detach().numpy(), label='Predator')
-plt.title('Time Series')
-plt.xlabel('Time Step')
-plt.ylabel('Population')
-plt.legend()
-
-# Phase space plot
-plt.subplot(2, 1, 2)
-plt.plot(solution[0, :].detach().numpy(), solution[1, :].detach().numpy())
-plt.title('Phase Space')
-plt.xlabel('Prey Population')
-plt.ylabel('Predator Population')
-
-plt.tight_layout()
-plt.show()
-```
-
-N
