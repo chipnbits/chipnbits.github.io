@@ -11,6 +11,9 @@ format:
     toc-depth: 3
     code-fold: true
     code-summary: "Show the code"
+
+    fig-width: 8
+    fig-height: 6
   # ipynb:
   #   execute: false
 

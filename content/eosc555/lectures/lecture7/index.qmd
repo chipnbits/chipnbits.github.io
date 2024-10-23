@@ -1,0 +1,109 @@
+---
+title: "Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions"
+subtitle: "A look at how Gaussian homotopy can be used to escape local minima in optimization problems."
+date: 2024-10-22
+author: "Simon Ghyselincks"
+description: >-
+    Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help escape local minima.
+categories:
+  - Optimization
+  - Gauss-Newton
+  - Automatic Differentiation
+  - PyTorch
+
+image: false
+draft: false
+
+editor: 
+  render-on-save: false
+
+filters:
+  - pseudocode
+
+pseudocode:
+  caption-prefix: "Algorithm"
+  reference-prefix: "Algorithm"
+  caption-number: true
+---
+
+{{< include /_macros.qmd >}}
+
+# Motivation
+
+So far we have examined optimization techniques using gradient descent and the Gauss-Newton method. These methods are powerful but can be limited by the presence of local minima in the optimization landscape. In this lecture we will explore a technique called Gaussian homotopy that can be used to escape local minima in optimization problems.
+
+To recap the steps used so far in optimization, we have an objective 
+
+$$\argmin f(x),$$
+
+where $x \in \mathbb{R}^n$ is an unconstrained optimization variable. The objective can be searched out by stepping in a direction itertively, in general:
+
+$$x_{k+1} = x_k - \alpha_k H \nabla f(x_k),$$
+
+where $\alpha_k$ is the step size. The gradient $\nabla f(x_k)$ can be computed explicitly or using automatic differentiation. The matrix $H$ is a modifier that depends on the method being used:
+
+$$H = \begin{cases}
+    I & \text{Gradient Descent} \\
+    (J^T J)^{-1} & \text{Gauss-Newton}
+\end{cases}$$
+
+However, optimization is often performed on non-convex functions, in which case the path to a global minimum can be obstructed by local minima. Three categories of increasingly non-convex functions are shown below.
+
+::: {#fig:function-classes .figure}
+![Three Categories of Increasingly Non-Convex Functions](./path1.svg){width=50% style="border: 2px solid #000; padding: 20px; display: block; margin-left: auto; margin-right: auto;"}
+**Figure:** Three categories of increasingly non-convex functions illustrating potential local minima that can obstruct the path to a global minimum.
+:::
+
+Some examples for each of the three catergories are given in the following table:
+
+| Category | Function | Local Minima |
+|----------|----------|--------------|
+| Convex | $f(x) = x^2$ | Global minimum at $x=0$ |
+| Non-Convex but $f'(x)<0$ | $f(x) = -\mathcal{N}(x; 0, 1)$ | Global minimum at $x=0$ |
+| Non-Convex with $f'(x) \geq 0$ | $f(A,B,w) = w^T \sigma (B \sigma (A x))$ | Multiple local minima |
+| Non-Convex and Poorly Conditioned $\nabla^2 f(x)$ | $f(t) = x(t)^T A x(t), \quad x(t) = \text{square wave}$ | Multiple local minima and discontinuous |
+
+To illustrate these functions even more we can plot them as well.
+
+```{python}
+#| label: function-plot
+#| fig-cap: "Function Categories."
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-5, 5, 100)
+y1 = x**2
+y2 = -np.exp(-x**2)
+y3 = np.sin(x) + .5*x
+
+#square wave
+def square_wave(x):
+    return 1 if np.sin(3*x) > 0 else 0
+
+y4 = [square_wave(xi)**2 for xi in x]
+
+fig, ax = plt.subplots(2, 2)
+ax[0, 0].plot(x, y1)
+ax[0, 0].set_title("Convex: $f(x) = x^2$")
+ax[0, 1].plot(x, y2)
+ax[0, 1].set_title("Non-Convex but $f'(x)<0$ \n $f(x) = -\mathcal{N}(x; 0, 1)$")
+ax[1, 0].plot(x, y3)
+ax[1, 0].set_title("Non-Convex with $f'(x) \geq 0$ \n $f(x) = sin(x)+.5 x$")
+ax[1, 1].plot(x, y4)
+ax[1, 1].set_title("Non-Convex and Poorly Conditioned $\nabla^2 f(x)$")
+
+plt.tight_layout()
+plt.show()
+```
+
+## Direct Search Methods
+
+A direct search can be performed to try to find the global minimum of a non-convex function.
+
+$$ x_{k+1} = x_k + \alpha_k d_k, \quad d_k \in \mathbb{R}^n.$$
+
+In this case the direction might not follow the gradient descent rule, there could be a stochastic element. The general algorithms that implement this will have the property that the step size decreases over time such that 
+
+$$ \| \alpha_k d_k \| \to 0, \ k \to \infty$$
+
+

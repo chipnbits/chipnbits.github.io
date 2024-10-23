@@ -1,5 +1,5 @@
 ---
-title: "Lecture 5: Autodiff and Implementing Gauss-Newton"
+title: "Lecture 6: Autodiff and Implementing Gauss-Newton"
 subtitle: "A look at some of the foundations of automatic differentiation and the Gauss-Newton optimization method."
 date: 2024-10-08
 author: "Simon Ghyselincks"
@@ -12,7 +12,7 @@ categories:
   - PyTorch
 
 image: imgs/lotka_volterra_phase_space.png
-draft: true
+draft: false
 
 editor: 
   render-on-save: false
@@ -35,7 +35,7 @@ Returning to the Lotka-Volterra model, we can now use automatic differentiation 
 
 ### Application to the Lotka-Volterra Model
 
-Take a forward model $F(p)$ for which we want a Jacobian matrix at $p_k$. We can write the Taylor expansion of the forward model as:
+Take a forward model $F(p)$ for which we want a linear approximation at $p_k$. We can write the Taylor expansion of the forward model as:
 
 $$ F(p_k + \epsilon v) = F(p_k) + J_k \epsilon v + \mathcal{O}(\epsilon^2)$$
 
@@ -51,7 +51,7 @@ The gradient with respect to $v$ can be traced through with automatic differenti
 
 There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a `requires_grad=True` flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of $v$ contributed to the `jvp` result.
 
-The fundamental use of the jvp or the vjp is to compute the directional derivate or its transpose. This is because the jacobian matrix encodes the directional derivatives of the function at a point.
+The fundamental use of the `jvp` or the `vjp` is to compute the directional derivate or its transpose without computing the gradient with respect to $v$. This is because the jacobian matrix encodes the directional derivatives of the function at a point.
 
 $$d_k = J_k^T v$$
 
@@ -102,15 +102,48 @@ print("Jacobian matrix at p_k:")
 print(jacobian_matrix)
 ```
 
-# A Torch Implementation
+# Fitting the Lotka-Volterra Model in PyTorch
 
-Now all the previous steps can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method using the conjugate gradient method to solve the normal equations involved.
+Now, all the previous theory can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method, utilizing the conjugate gradient method to solve the normal equations involved.
 
-To make the solution components easier to understand, they are seprated into different class objects that contain the necessary components for each part of the solution.
+To make the solution components easier to understand, they are separated into different class objects that contain the necessary components for each part of the solution. The main ingredients that will be required are:
+
+1. **ODE Integrator**
+    - Implements the Runge-Kutta 4th Order Method for numerically solving ordinary differential equations (ODEs).
+
+2. **Trainable Lotka-Volterra Model**
+    - A class that incorporates PyTorch's gradient tracking to enable training of the Lotka-Volterra model parameters.
+
+3. **Gauss-Newton Optimizer**
+    - A class designed to solve the non-linear least squares problem efficiently using the Gauss-Newton optimization technique.
+
+4. **Conjugate Gradient Descent Function**
+    - A function implemented to perform conjugate gradient descent, which is utilized to solve the normal equations arising in the Gauss-Newton method.
+
+---
+
+### RK4 and Lotka-Volterra Model
+
+The Runge-Kutta 4th order method is a numerical solver for ODEs that is of higher order than the Euler method, reducing the error in the solution to $O(h^4)$. A more detailed description of the method can be found in the [Wikipedia article](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods).
+
+The Lotka-Volterra model is implemented this time in PyTorch, with the parameters $\alpha$, $\beta$, $\gamma$, and $\delta$ being trainable. The parameters themselves are intialized to a starting value, but are also registered as parameters using the torch `nn.Parameter` class. This allows the optimizer to update the parameters during training. The `nn.Module` class is used to apply a PyTorch interface to the model that expects a forward method to be implemented, but will also implement features such as:
+
+- Parameter tracking
+- Gradient tracking
+- Model saving and loading
+- Train and eval modes
+
+More information can be read in the [PyTorch documentation](https://pytorch.org/docs/stable/generated/torch.nn.Module.html).
+
+For this exercise, the Lotka-Volterra model is implemented with the option to have time-varying parameters. While for the starting case the parameters are assumed to be constant over time.
 
 ```{python}
 #| fig-cap: "RK4 ODE solver and Lotka-Volterra model with trainable parameters."
-#| code-fold: true
+#| code-fold: false
+import torch
+from torch import nn
+import matplotlib.pyplot as plt
+
 import torch
 from torch import nn
 import matplotlib.pyplot as plt
@@ -119,31 +152,30 @@ class RungeKutta4:
     """
     Runge-Kutta 4th Order Integrator for solving ODEs.
     """
-    def __init__(self, func, time_steps, period):
+    def __init__(self, func, time_steps, time_horizon):
         """
-        Initializes the RK4 integrator.
+            Initializes the RK4 integrator.
 
-        Args:
-            func (callable): The function defining the ODE system, f(x, i).
-            time_steps (int): Number of time steps to integrate over.
-            period (list or tuple): [start_time, end_time].
+            Args:
+                func (callable): The function defining the ODE system, f(x, i).
+                time_steps (int): Number of time steps to integrate over.
+                time_horizon (float): Length of the time horizon.
         """
         self.func = func
         self.time_steps = time_steps
-        self.start_time, self.end_time = period
-        self.dt = (self.end_time - self.start_time) / self.time_steps
+        self.dt = time_horizon / self.time_steps
 
     def integrate(self, x0):
         """
-        Performs the RK4 integration.
+            Performs the RK4 integration.
 
-        Args:
-            x0 (torch.Tensor): Initial state tensor of shape (n_vars,).
+            Args:
+                x0 (torch.Tensor): Initial state tensor of shape (n_vars,).
 
-        Returns:
-            torch.Tensor: Tensor containing the solution at each time step of shape (n_vars, time_steps + 1).
+            Returns:
+                torch.Tensor: Tensor containing the solution at each time step of shape (n_vars, time_steps + 1).
         """
-        X = torch.zeros(x0.size(0), self.time_steps + 1)
+        X = torch.zeros(x0.size(0), self.time_steps + 1, dtype=x0.dtype, device=x0.device)
         X[:, 0] = x0
 
         for i in range(self.time_steps):
@@ -159,76 +191,81 @@ class LotkaVolterra(nn.Module):
     """
     Lotka-Volterra (Predator-Prey) Model with Trainable Parameters.
     """
-    def __init__(self, period, n_time_steps, perturbation=None):
+    def __init__(self, period, n_time_steps, perturbation=None, time_variant=False):
         """
-        Initializes the Lotka-Volterra model.
+            Initializes the Lotka-Volterra model.
 
-        Args:
-            period (list or tuple): [start_time, end_time].
-            n_time_steps (int): Number of time steps for integration.
-            perturbation (torch.Tensor, optional): Tensor to perturb alpha parameters. Defaults to None.
+            Args:
+                period (float): Length of the time horizon.
+                n_time_steps (int): Number of time steps for integration.
+                perturbation (torch.Tensor, optional): Tensor to perturb alpha parameters. Defaults to None.
+                time_variant (bool, optional): If True, parameters are time-variant. Defaults to False.
         """
         super(LotkaVolterra, self).__init__()
         self.time_steps = n_time_steps
         self.period = period
+        self.time_variant = time_variant
 
         if perturbation is None:
-            perturbation = torch.zeros(n_time_steps + 1)
+            perturbation = torch.zeros(n_time_steps + 1, dtype=torch.float32)
 
-        # Initialize trainable parameters
-        self.alpha = nn.Parameter( (2/3) * torch.ones(n_time_steps + 1) + perturbation )
-        self.beta = nn.Parameter( (4/3) * torch.ones(n_time_steps + 1) )
-        self.gamma = nn.Parameter( torch.ones(n_time_steps + 1) )
-        self.delta = nn.Parameter( torch.ones(n_time_steps + 1) )
+        # Initialize trainable parameters, which can vary over time steps
+        if time_variant:
+            self.alpha = nn.Parameter((2/3) * torch.ones(n_time_steps + 1,) + perturbation)
+            self.beta = nn.Parameter((4/3) * torch.ones(n_time_steps + 1))
+            self.gamma = nn.Parameter(1.0 * torch.ones(n_time_steps + 1))
+            self.delta = nn.Parameter(1.0 * torch.ones(n_time_steps + 1))
+        else:
+            self.alpha = nn.Parameter((2/3) * torch.ones(1,) + perturbation)
+            self.beta = nn.Parameter((4/3) * torch.ones(1))
+            self.gamma = nn.Parameter(1.0 * torch.ones(1))
+            self.delta = nn.Parameter(1.0 * torch.ones(1))
 
-    def predator_prey_derivatives(self, state, i):
+        self.ode_solver = RungeKutta4(self.dxdt, n_time_steps, period)
+
+    def dxdt(self, x, i):
         """
-        Computes the derivatives for the Lotka-Volterra equations.
-
-        Args:
-            state (torch.Tensor): Current state tensor [prey, predator].
-            i (int): Current time step index.
-
-        Returns:
-            torch.Tensor: Derivatives [dprey/dt, dpredator/dt].
+            Computes the derivatives for the Lotka-Volterra equations.
         """
-        prey, predator = state
-        dprey_dt = self.alpha[i] * prey - self.beta[i] * prey * predator
-        dpredator_dt = -self.gamma[i] * predator + self.delta[i] * prey * predator
-        derivatives = torch.stack([dprey_dt, dpredator_dt])
-        return derivatives
+
+        if not self.time_variant:
+            # In case where parameters are not time-variant,
+            # we set i to 0 to use the first and only parameter value
+            i = 0
+        
+        dx1dt = self.alpha[i]*x[0] - self.beta[i]*x[0]*x[1]
+        dx2dt = -self.gamma[i]*x[1] + self.delta[i]*x[0]*x[1]
+        dxdt = torch.zeros(2)
+        dxdt[0] = dx1dt
+        dxdt[1] = dx2dt
+        return dxdt
 
     def forward(self, x0):
         """
-        Solves the Lotka-Volterra equations using RK4.
+            Solves the Lotka-Volterra equations using RK4.
 
-        Args:
-            x0 (torch.Tensor): Initial state tensor [prey, predator].
+            Args:
+                x0 (torch.Tensor): Initial state tensor [prey, predator].
 
-        Returns:
-            torch.Tensor: Solution tensor over time of shape (2, time_steps + 1).
+            Returns:
+                torch.Tensor: Solution tensor over time of shape (2, time_steps + 1).
         """
-        rk4 = RungeKutta4(self.predator_prey_derivatives, self.time_steps, self.period)
-        return rk4.integrate(x0)
+        return self.ode_solver.integrate(x0)
 ```
 
-Now to check the implementation, we can create a model and solve the Lotka-Volterra equations using the RK4 solver.
+Now to check the implementation, a test run of the model with a random initial state is performed.
 
 ```{python}
-period = [0, 40]
+#| fig-cap: "Example of the Lotka-Volterra model integration."
+#| code-fold: true
+
+period = 40.0 
 n_time_steps = 2000
-
-# Initialize the Lotka-Volterra model
 model = LotkaVolterra(period=period, n_time_steps=n_time_steps)
+initial_state = torch.rand(2)
 
-# Initial populations: [prey, predator]
-initial_state = torch.rand(2) # Example initial conditions
-
-# Perform integration
+# Note that calling the model will call its forward method for a nn.Module
 solution = model(initial_state)
-
-# Plotting the results
-plt.figure(figsize=(12, 8))
 
 # Time series plot
 plt.subplot(2, 1, 1)
@@ -250,4 +287,149 @@ plt.tight_layout()
 plt.show()
 ```
 
-N
+To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method.To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset.
+
+```{python}
+#| fig-cap: "Time variant Lotka-Volterra model with perturbations."
+#| code-fold: true
+
+import numpy as np
+from matplotlib.collections import LineCollection
+from torch.nn.functional import pad
+
+def generate_data_set(forward_model, period=40.0, n_time_steps=2000, n_realizations=10):
+    """
+    Generates a training dataset for the Lotka-Volterra model by simulating multiple realizations
+    with perturbed parameters.
+
+    Args:
+        forward_model (callable): The Lotka-Volterra model to simulate.
+        period (float, optional): Length of the time horizon. Defaults to 40.0.
+        n_time_steps (int, optional): Number of time steps for integration. Defaults to 2000.
+        n_realizations (int, optional): Number of realizations to simulate. Defaults to 10.
+    
+    Returns:
+        tuple: A tuple containing two lists:
+            - XX (list of torch.Tensor): Simulated population trajectories for each realization.
+            - M (list of torch.Tensor): Perturbations for each realization.
+    """
+    
+    pop_data_runs = []
+    perturbations = []
+    
+    # Iterate over the number of desired realizations
+    for run_idx in range(n_realizations):
+        print(f'Computing realization {run_idx + 1}/{n_realizations}')
+        
+        # Noise pertubation to make more interesting dynamics
+        noise = torch.randn(1, 1, n_time_steps + 1)        
+        # Apply some smoothing to the pertubation using a low-pass filter to make natural variations
+        for i in range(250):
+            noise = pad(noise, pad=(1, 1), mode='reflect')
+            noise = (noise[:, :, :-2] + 
+                            2 * noise[:, :, 1:-1] + 
+                            noise[:, :, 2:]) / 4
+        noise = noise.squeeze()
+        
+        # Create a time variant model with the perturbation
+        model = forward_model(period, n_time_steps, noise, time_variant=True)
+        
+        # Generate random initial conditions
+        initial_pop = torch.rand(2)
+        
+        # Run the forward dynamics to generate the data
+        pop_data = model(initial_pop)
+        
+        # Append the results to the respective lists
+        pop_data_runs.append(pop_data)
+        perturbations.append(noise)
+    
+    return pop_data_runs, perturbations
+
+XX, M = generate_data_set(LotkaVolterra, period=40, n_time_steps=2000, n_realizations=1)
+
+X = XX[0]
+pert = M[0]
+
+# Time series plot
+plt.subplot(2,1,1)
+plt.plot(X[0,:].detach(), label='Prey')
+plt.plot(X[1,:].detach(), label='Predator')
+plt.plot(pert.detach(), label='Perturbation')
+plt.legend()
+plt.title('Time Series')
+
+# Phase space plot with color gradient
+plt.subplot(2,1,2)
+
+# Prepare data for LineCollection
+prey = X[0,:].detach().numpy()
+predator = X[1,:].detach().numpy()
+points = np.array([prey, predator]).T.reshape(-1, 1, 2)
+segments = np.concatenate([points[:-1], points[1:]], axis=1)
+
+cmap = 'viridis'
+
+# Create a LineCollection with the chosen colormap
+lc = LineCollection(segments, cmap=cmap, norm=plt.Normalize(0, 1))
+lc.set_array(np.linspace(0, 1, len(segments)))  # Normalize color range to [0,1]
+lc.set_linewidth(2)
+
+# Add the LineCollection to the plot
+plt.gca().add_collection(lc)
+
+# Set plot limits to the data range
+plt.xlim(prey.min(), prey.max())
+plt.ylim(predator.min(), predator.max())
+
+plt.title('Phase Space with Time-Varying Color')
+plt.xlabel('Prey Population')
+plt.ylabel('Predator Population')
+
+plt.tight_layout()
+plt.show()
+```
+
+As can be seen by the data, the pertubations over time make the dynamics of the system only roughly periodic. This will make the optimization problem more interesting to solve.
+
+### Conjugate Gradient Descent and Gauss-Newton Optimizer
+
+The Gauss-Newton method will need to make use of some important subfunctions to operate efficiently. One will be the computation of its components using the `jvp` and `vjp` functions, and the other will be the conjugate gradient descent method to solve the normal equations. 
+
+Recall the algorithm for the Gauss-Newton method:
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Gauss-Newton Algorithm for Non-linear Least Squares}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$
+\State \textbf{Initialize} $p_0$
+\For{$k = 0, 1, 2, \ldots$}
+    \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$
+    \State Compute the transpose $J_G^T$ of the Jacobian
+    \State Compute the residual $r_k =G(p_k)$ (forward model)
+    \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$
+    \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$
+    \If{$\|s_k\| < \epsilon$}
+        \State \textbf{Stop}
+    \EndIf
+\EndFor
+\State \textbf{Output:} $p_{k+1}$ as the optimal solution
+\end{algorithmic}
+\end{algorithm}
+```
+
+Recalling that:
+
+$$ r_k = G(p_k) = QF(p_k) - d,$$
+
+To implement this in code:
+
