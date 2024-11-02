@@ -200,7 +200,14 @@ window.Quarto = {
   <li><a href="#fitting-the-lotka-volterra-model-in-pytorch" id="toc-fitting-the-lotka-volterra-model-in-pytorch" class="nav-link" data-scroll-target="#fitting-the-lotka-volterra-model-in-pytorch">Fitting the Lotka-Volterra Model in PyTorch</a>
   <ul class="collapse">
   <li><a href="#rk4-and-lotka-volterra-model" id="toc-rk4-and-lotka-volterra-model" class="nav-link" data-scroll-target="#rk4-and-lotka-volterra-model">RK4 and Lotka-Volterra Model</a></li>
+  <li><a href="#jacobian-vector-product-and-directional-derivatives" id="toc-jacobian-vector-product-and-directional-derivatives" class="nav-link" data-scroll-target="#jacobian-vector-product-and-directional-derivatives">Jacobian Vector Product and Directional Derivatives</a></li>
   <li><a href="#conjugate-gradient-descent-and-gauss-newton-optimizer" id="toc-conjugate-gradient-descent-and-gauss-newton-optimizer" class="nav-link" data-scroll-target="#conjugate-gradient-descent-and-gauss-newton-optimizer">Conjugate Gradient Descent and Gauss-Newton Optimizer</a></li>
+  <li><a href="#building-the-gauss-newton-optimizer" id="toc-building-the-gauss-newton-optimizer" class="nav-link" data-scroll-target="#building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</a>
+  <ul class="collapse">
+  <li><a href="#testing-the-gauss-newton-optimizer" id="toc-testing-the-gauss-newton-optimizer" class="nav-link" data-scroll-target="#testing-the-gauss-newton-optimizer">Testing the Gauss-Newton Optimizer</a></li>
+  </ul></li>
+  <li><a href="#extension-to-time-varying-parameters" id="toc-extension-to-time-varying-parameters" class="nav-link" data-scroll-target="#extension-to-time-varying-parameters">Extension to Time Varying Parameters</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -270,52 +277,54 @@ window.Quarto = {
 <p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <span class="math inline">\(v\)</span> contributed to the <code>jvp</code> result.</p>
 <p>The fundamental use of the <code>jvp</code> or the <code>vjp</code> is to compute the directional derivate or its transpose without computing the gradient with respect to <span class="math inline">\(v\)</span>. This is because the jacobian matrix encodes the directional derivatives of the function at a point.</p>
 <p><span class="math display">\[d_k = J_k^T v\]</span></p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="2">
-<details class="code-fold">
-<summary>Show the code</summary>
+<div id="jvp" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jvp</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jacobian</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a simple forward function</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> F(p):</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.stack([p[<span class="dv">0</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> p[<span class="dv">1</span>], p[<span class="dv">1</span>]<span class="op">**</span><span class="dv">3</span> <span class="op">+</span> p[<span class="dv">0</span>]])</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Input point p_k</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>p_k <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Arbitrary vector v, same size as p_k</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>,<span class="fl">1.0</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the Jacobian-vector product (J(p) * v)</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>F_output, jvp_result <span class="op">=</span> jvp(F, (p_k,), v, create_graph<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Function output:"</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(F_output)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian-vector product:"</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jvp_result)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a list to store each row of the Jacobian</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>jacobian_rows <span class="op">=</span> []</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the gradient of each component of the JVP result separately, retaining the graph to avoid re-computation</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>]):</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    v.grad <span class="op">=</span> <span class="va">None</span>  <span class="co"># Clear the gradient</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    jvp_result.backward(torch.tensor([<span class="fl">1.0</span> <span class="cf">if</span> i <span class="op">==</span> j <span class="cf">else</span> <span class="fl">0.0</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>])]), retain_graph<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    jacobian_rows.append(v.grad.clone())  <span class="co"># Append the gradient (row of the Jacobian)</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the rows to get the full Jacobian matrix</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> torch.stack(jacobian_rows, dim<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the full Jacobian matrix directly</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> jacobian(F, p_k)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a simple forward function</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> F(p):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.stack([p[<span class="dv">0</span>] <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> p[<span class="dv">1</span>], p[<span class="dv">1</span>] <span class="op">**</span> <span class="dv">3</span> <span class="op">+</span> p[<span class="dv">0</span>]])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Input point p_k</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>p_k <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Arbitrary vector v, same size as p_k</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.tensor([<span class="fl">1.0</span>, <span class="fl">1.0</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the Jacobian-vector product (J(p) * v)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>F_output, jvp_result <span class="op">=</span> jvp(F, (p_k,), v, create_graph<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Function output:"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(F_output)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian-vector product:"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jvp_result)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize a list to store each row of the Jacobian</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>jacobian_rows <span class="op">=</span> []</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the gradient of each component of the JVP result separately, retaining the graph to avoid re-computation</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>]):</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    v.grad <span class="op">=</span> <span class="va">None</span>  <span class="co"># Clear the gradient</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    jvp_result.backward(</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        torch.tensor([<span class="fl">1.0</span> <span class="cf">if</span> i <span class="op">==</span> j <span class="cf">else</span> <span class="fl">0.0</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(F_output.shape[<span class="dv">0</span>])]),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        retain_graph<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    jacobian_rows.append(v.grad.clone())  <span class="co"># Append the gradient (row of the Jacobian)</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the rows to get the full Jacobian matrix</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> torch.stack(jacobian_rows, dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the full Jacobian matrix directly</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>jacobian_matrix <span class="op">=</span> jacobian(F, p_k)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the Jacobian matrix</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Jacobian matrix at p_k:"</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(jacobian_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Function output:
 tensor([2., 2.], grad_fn=&lt;StackBackward0&gt;)
@@ -333,7 +342,7 @@ tensor([[2., 1.],
 </section>
 <section id="fitting-the-lotka-volterra-model-in-pytorch" class="level1">
 <h1>Fitting the Lotka-Volterra Model in PyTorch</h1>
-<p>Now, all the previous theory can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method, utilizing the conjugate gradient method to solve the normal equations involved.</p>
+<p>Now, all the previous theory can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method, utilizing the conjugate gradient method to solve the normal equations involved. The data will be fit exclusively to the prey population of the Lotka-Volterra model. This is a simulation of a scenario where the predatory population is not observed and may be difficult to measure, but more reliable measurements are availble from the prey population.</p>
 <p>To make the solution components easier to understand, they are separated into different class objects that contain the necessary components for each part of the solution. The main ingredients that will be required are:</p>
 <ol type="1">
 <li><strong>ODE Integrator</strong>
@@ -357,267 +366,179 @@ tensor([[2., 1.],
 <section id="rk4-and-lotka-volterra-model" class="level3">
 <h3 class="anchored" data-anchor-id="rk4-and-lotka-volterra-model">RK4 and Lotka-Volterra Model</h3>
 <p>The Runge-Kutta 4th order method is a numerical solver for ODEs that is of higher order than the Euler method, reducing the error in the solution to <span class="math inline">\(O(h^4)\)</span>. A more detailed description of the method can be found in the <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Wikipedia article</a>.</p>
-<p>The Lotka-Volterra model is implemented this time in PyTorch, with the parameters <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(\delta\)</span> being trainable. The parameters themselves are intialized to a starting value, but are also registered as parameters using the torch <code>nn.Parameter</code> class. This allows the optimizer to update the parameters during training. The <code>nn.Module</code> class is used to apply a PyTorch interface to the model that expects a forward method to be implemented, but will also implement features such as:</p>
-<ul>
-<li>Parameter tracking</li>
-<li>Gradient tracking</li>
-<li>Model saving and loading</li>
-<li>Train and eval modes</li>
-</ul>
-<p>More information can be read in the <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">PyTorch documentation</a>.</p>
-<p>For this exercise, the Lotka-Volterra model is implemented with the option to have time-varying parameters. While for the starting case the parameters are assumed to be constant over time.</p>
-<div id="b55195e4" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RungeKutta4:</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Runge-Kutta 4th Order Integrator for solving ODEs.</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, func, time_steps, time_horizon):</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">            Initializes the RK4 integrator.</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">            Args:</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">                func (callable): The function defining the ODE system, f(x, i).</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">                time_steps (int): Number of time steps to integrate over.</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">                time_horizon (float): Length of the time horizon.</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.func <span class="op">=</span> func</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.time_steps <span class="op">=</span> time_steps</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dt <span class="op">=</span> time_horizon <span class="op">/</span> <span class="va">self</span>.time_steps</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> integrate(<span class="va">self</span>, x0):</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">            Performs the RK4 integration.</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">            Args:</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">                x0 (torch.Tensor): Initial state tensor of shape (n_vars,).</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">            Returns:</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">                torch.Tensor: Tensor containing the solution at each time step of shape (n_vars, time_steps + 1).</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> torch.zeros(x0.size(<span class="dv">0</span>), <span class="va">self</span>.time_steps <span class="op">+</span> <span class="dv">1</span>, dtype<span class="op">=</span>x0.dtype, device<span class="op">=</span>x0.device)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        X[:, <span class="dv">0</span>] <span class="op">=</span> x0</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.time_steps):</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            k1 <span class="op">=</span> <span class="va">self</span>.func(X[:, i], i)</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>            k2 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k1 <span class="op">/</span> <span class="dv">2</span>, i)</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>            k3 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k2 <span class="op">/</span> <span class="dv">2</span>, i)</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            k4 <span class="op">=</span> <span class="va">self</span>.func(X[:, i] <span class="op">+</span> <span class="va">self</span>.dt <span class="op">*</span> k3, i)</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>            X[:, i <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> X[:, i] <span class="op">+</span> (<span class="va">self</span>.dt <span class="op">/</span> <span class="dv">6</span>) <span class="op">*</span> (k1 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k3 <span class="op">+</span> k4)</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> X</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LotkaVolterra(nn.Module):</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">    Lotka-Volterra (Predator-Prey) Model with Trainable Parameters.</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, period, n_time_steps, perturbation<span class="op">=</span><span class="va">None</span>, time_variant<span class="op">=</span><span class="va">False</span>):</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co">            Initializes the Lotka-Volterra model.</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co">            Args:</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">                period (float): Length of the time horizon.</span></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">                n_time_steps (int): Number of time steps for integration.</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">                perturbation (torch.Tensor, optional): Tensor to perturb alpha parameters. Defaults to None.</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">                time_variant (bool, optional): If True, parameters are time-variant. Defaults to False.</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LotkaVolterra, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.time_steps <span class="op">=</span> n_time_steps</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.period <span class="op">=</span> period</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.time_variant <span class="op">=</span> time_variant</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> perturbation <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>            perturbation <span class="op">=</span> torch.zeros(n_time_steps <span class="op">+</span> <span class="dv">1</span>, dtype<span class="op">=</span>torch.float32)</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize trainable parameters, which can vary over time steps</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> time_variant:</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.alpha <span class="op">=</span> nn.Parameter((<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>,) <span class="op">+</span> perturbation)</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.beta <span class="op">=</span> nn.Parameter((<span class="dv">4</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>))</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.gamma <span class="op">=</span> nn.Parameter(<span class="fl">1.0</span> <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>))</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.delta <span class="op">=</span> nn.Parameter(<span class="fl">1.0</span> <span class="op">*</span> torch.ones(n_time_steps <span class="op">+</span> <span class="dv">1</span>))</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.alpha <span class="op">=</span> nn.Parameter((<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(<span class="dv">1</span>,) <span class="op">+</span> perturbation)</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.beta <span class="op">=</span> nn.Parameter((<span class="dv">4</span><span class="op">/</span><span class="dv">3</span>) <span class="op">*</span> torch.ones(<span class="dv">1</span>))</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.gamma <span class="op">=</span> nn.Parameter(<span class="fl">1.0</span> <span class="op">*</span> torch.ones(<span class="dv">1</span>))</span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.delta <span class="op">=</span> nn.Parameter(<span class="fl">1.0</span> <span class="op">*</span> torch.ones(<span class="dv">1</span>))</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ode_solver <span class="op">=</span> RungeKutta4(<span class="va">self</span>.dxdt, n_time_steps, period)</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dxdt(<span class="va">self</span>, x, i):</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co">            Computes the derivatives for the Lotka-Volterra equations.</span></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="va">self</span>.time_variant:</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>            <span class="co"># In case where parameters are not time-variant,</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>            <span class="co"># we set i to 0 to use the first and only parameter value</span></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>            i <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>        dx1dt <span class="op">=</span> <span class="va">self</span>.alpha[i]<span class="op">*</span>x[<span class="dv">0</span>] <span class="op">-</span> <span class="va">self</span>.beta[i]<span class="op">*</span>x[<span class="dv">0</span>]<span class="op">*</span>x[<span class="dv">1</span>]</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>        dx2dt <span class="op">=</span> <span class="op">-</span><span class="va">self</span>.gamma[i]<span class="op">*</span>x[<span class="dv">1</span>] <span class="op">+</span> <span class="va">self</span>.delta[i]<span class="op">*</span>x[<span class="dv">0</span>]<span class="op">*</span>x[<span class="dv">1</span>]</span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>        dxdt <span class="op">=</span> torch.zeros(<span class="dv">2</span>)</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>        dxdt[<span class="dv">0</span>] <span class="op">=</span> dx1dt</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>        dxdt[<span class="dv">1</span>] <span class="op">=</span> dx2dt</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> dxdt</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x0):</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co">            Solves the Lotka-Volterra equations using RK4.</span></span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="co">            Args:</span></span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="co">                x0 (torch.Tensor): Initial state tensor [prey, predator].</span></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co">            Returns:</span></span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="co">                torch.Tensor: Solution tensor over time of shape (2, time_steps + 1).</span></span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.ode_solver.integrate(x0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Now to check the implementation, a test run of the model with a random initial state is performed.</p>
-<div id="6c5548ba" class="cell" data-execution_count="4">
+<p>The Lotka-Volterra model is implemented this time in PyTorch, but to run the custom optimization algorithm, it is better to avoid the object-oriented approach and use a functional form of the model. The model is defined as a function that takes the parameters and returns the population at the next time step. The model is also made time variant by adding a perturbation term to the parameters.</p>
+<div id="cell-lotka-volterra" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="fl">40.0</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n_time_steps <span class="op">=</span> <span class="dv">2000</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LotkaVolterra(period<span class="op">=</span>period, n_time_steps<span class="op">=</span>n_time_steps)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>initial_state <span class="op">=</span> torch.rand(<span class="dv">2</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that calling the model will call its forward method for a nn.Module</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>solution <span class="op">=</span> model(initial_state)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Time series plot</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">'Prey'</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">'Predator'</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Time Series'</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Time Step'</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Population'</span>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase space plot</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">0</span>, :].detach().numpy(), solution[<span class="dv">1</span>, :].detach().numpy())</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Phase Space'</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Prey Population'</span>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Predator Population'</span>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> runge_kutta_4(func, x0, params, time_horizon, time_steps):</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    dt <span class="op">=</span> time_horizon <span class="op">/</span> time_steps</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> [x0]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(time_steps):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> X[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        k1 <span class="op">=</span> func(x, params[i])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        k2 <span class="op">=</span> func(x <span class="op">+</span> dt <span class="op">*</span> k1 <span class="op">/</span> <span class="dv">2</span>, params[i])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        k3 <span class="op">=</span> func(x <span class="op">+</span> dt <span class="op">*</span> k2 <span class="op">/</span> <span class="dv">2</span>, params[i])</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        k4 <span class="op">=</span> func(x <span class="op">+</span> dt <span class="op">*</span> k3, params[i])</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        X_next <span class="op">=</span> x <span class="op">+</span> (dt <span class="op">/</span> <span class="dv">6</span>) <span class="op">*</span> (k1 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k2 <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> k3 <span class="op">+</span> k4)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        X.append(X_next)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.stack(X, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lv_func(x, params):</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    alpha, beta, gamma, delta <span class="op">=</span> params</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    dxdt <span class="op">=</span> torch.zeros(<span class="dv">2</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    dxdt[<span class="dv">0</span>] <span class="op">=</span> alpha <span class="op">*</span> x[<span class="dv">0</span>] <span class="op">-</span> beta <span class="op">*</span> x[<span class="dv">0</span>] <span class="op">*</span> x[<span class="dv">1</span>]  <span class="co"># Prey population change</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    dxdt[<span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span>gamma <span class="op">*</span> x[<span class="dv">1</span>] <span class="op">+</span> delta <span class="op">*</span> x[<span class="dv">0</span>] <span class="op">*</span> x[<span class="dv">1</span>]  <span class="co"># Predator population change</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dxdt</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lotka_volterra(params, x0, T<span class="op">=</span><span class="dv">10</span>, nt<span class="op">=</span><span class="dv">1000</span>):</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Simulate the Lotka-Volterra model using the Runge-Kutta 4 method.</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">    params (torch.Tensor): The parameters of the Lotka-Volterra model.</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">    x0 (torch.Tensor): The initial population of prey and predators.</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">    T (float): The time horizon of the simulation.</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">    nt (int): The number of time steps to simulate.</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">    torch.Tensor: The population of prey and predators at each time step.</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">    Notes:</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co">    The parameters should be in the order alpha, beta, gamma, delta.</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co">    They can either be fixed as [4,] or time-varying as [nt, 4].</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if params has shape [4,] and expand to [nt, 4] if needed</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> params.ndim <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> params.shape[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">4</span>:</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Repeat params along the time dimension to make it [nt, 4]</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> params.unsqueeze(<span class="dv">0</span>).expand(nt, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> params.shape <span class="op">!=</span> (nt, <span class="dv">4</span>):</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"params must be either [4,] or [nt, 4]"</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Proceed with the Runge-Kutta 4 integration</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> runge_kutta_4(lv_func, x0, params, T, nt)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="fl">40.0</span>  <span class="co"># Time horizon as a single float</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>n_time_steps <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> torch.tensor([<span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>, <span class="dv">4</span> <span class="op">/</span> <span class="dv">3</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>initial_pop <span class="op">=</span> torch.tensor([<span class="fl">0.1</span>, <span class="fl">1.0</span>])</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>solution <span class="op">=</span> lotka_volterra(params, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">0</span>].detach(), label<span class="op">=</span><span class="st">"Prey"</span>)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>plt.plot(solution[<span class="dv">1</span>].detach(), label<span class="op">=</span><span class="st">"Predator"</span>)</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time Steps"</span>)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Population"</span>)</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="lotka-volterra" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-4-output-1.png" width="758" height="566" class="figure-img"></p>
-<figcaption>Example of the Lotka-Volterra model integration.</figcaption>
+<p><img src="index_files/figure-html/lotka-volterra-output-1.png" width="626" height="429" class="figure-img"></p>
+<figcaption>The Lotka-Volterra model implemented in PyTorch.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method.To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset.</p>
-<div id="15b33323" class="cell" data-execution_count="5">
+<p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method. To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations. Then select the first realization to plot the time series and phase space of the model.</p>
+<div id="4a182145" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.collections <span class="im">import</span> LineCollection</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn.functional <span class="im">import</span> pad</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_data_set(forward_model, period<span class="op">=</span><span class="fl">40.0</span>, n_time_steps<span class="op">=</span><span class="dv">2000</span>, n_realizations<span class="op">=</span><span class="dv">10</span>):</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Generates a training dataset for the Lotka-Volterra model by simulating multiple realizations</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">    with perturbed parameters.</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">        forward_model (callable): The Lotka-Volterra model to simulate.</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">        period (float, optional): Length of the time horizon. Defaults to 40.0.</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">        n_time_steps (int, optional): Number of time steps for integration. Defaults to 2000.</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">        n_realizations (int, optional): Number of realizations to simulate. Defaults to 10.</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">        tuple: A tuple containing two lists:</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">            - XX (list of torch.Tensor): Simulated population trajectories for each realization.</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">            - M (list of torch.Tensor): Perturbations for each realization.</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    pop_data_runs <span class="op">=</span> []</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    perturbations <span class="op">=</span> []</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate over the number of desired realizations</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> run_idx <span class="kw">in</span> <span class="bu">range</span>(n_realizations):</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Computing realization </span><span class="sc">{</span>run_idx <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>n_realizations<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Noise pertubation to make more interesting dynamics</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        noise <span class="op">=</span> torch.randn(<span class="dv">1</span>, <span class="dv">1</span>, n_time_steps <span class="op">+</span> <span class="dv">1</span>)        </span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Apply some smoothing to the pertubation using a low-pass filter to make natural variations</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">250</span>):</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>            noise <span class="op">=</span> pad(noise, pad<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>), mode<span class="op">=</span><span class="st">'reflect'</span>)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            noise <span class="op">=</span> (noise[:, :, :<span class="op">-</span><span class="dv">2</span>] <span class="op">+</span> </span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">2</span> <span class="op">*</span> noise[:, :, <span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> </span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>                            noise[:, :, <span class="dv">2</span>:]) <span class="op">/</span> <span class="dv">4</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        noise <span class="op">=</span> noise.squeeze()</span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a time variant model with the perturbation</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> forward_model(period, n_time_steps, noise, time_variant<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate random initial conditions</span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        initial_pop <span class="op">=</span> torch.rand(<span class="dv">2</span>)</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Run the forward dynamics to generate the data</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        pop_data <span class="op">=</span> model(initial_pop)</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Append the results to the respective lists</span></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>        pop_data_runs.append(pop_data)</span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        perturbations.append(noise)</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pop_data_runs, perturbations</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>XX, M <span class="op">=</span> generate_data_set(LotkaVolterra, period<span class="op">=</span><span class="dv">40</span>, n_time_steps<span class="op">=</span><span class="dv">2000</span>, n_realizations<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> XX[<span class="dv">0</span>]</span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>pert <span class="op">=</span> M[<span class="dv">0</span>]</span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Time series plot</span></span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">0</span>,:].detach(), label<span class="op">=</span><span class="st">'Prey'</span>)</span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">1</span>,:].detach(), label<span class="op">=</span><span class="st">'Predator'</span>)</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>plt.plot(pert.detach(), label<span class="op">=</span><span class="st">'Perturbation'</span>)</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Time Series'</span>)</span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase space plot with color gradient</span></span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>)</span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data for LineCollection</span></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>prey <span class="op">=</span> X[<span class="dv">0</span>,:].detach().numpy()</span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>predator <span class="op">=</span> X[<span class="dv">1</span>,:].detach().numpy()</span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> np.array([prey, predator]).T.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>segments <span class="op">=</span> np.concatenate([points[:<span class="op">-</span><span class="dv">1</span>], points[<span class="dv">1</span>:]], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>cmap <span class="op">=</span> <span class="st">'viridis'</span></span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a LineCollection with the chosen colormap</span></span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>lc <span class="op">=</span> LineCollection(segments, cmap<span class="op">=</span>cmap, norm<span class="op">=</span>plt.Normalize(<span class="dv">0</span>, <span class="dv">1</span>))</span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>lc.set_array(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="bu">len</span>(segments)))  <span class="co"># Normalize color range to [0,1]</span></span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>lc.set_linewidth(<span class="dv">2</span>)</span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the LineCollection to the plot</span></span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>plt.gca().add_collection(lc)</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Set plot limits to the data range</span></span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>plt.xlim(prey.<span class="bu">min</span>(), prey.<span class="bu">max</span>())</span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>plt.ylim(predator.<span class="bu">min</span>(), predator.<span class="bu">max</span>())</span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Phase Space with Time-Varying Color'</span>)</span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Prey Population'</span>)</span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Predator Population'</span>)</span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.collections <span class="im">import</span> LineCollection</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn.functional <span class="im">import</span> pad</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_data_set(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    initial_pop<span class="op">=</span>initial_pop, period<span class="op">=</span><span class="fl">40.0</span>, n_time_steps<span class="op">=</span><span class="dv">2000</span>, n_realizations<span class="op">=</span><span class="dv">10</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    pop_data_runs <span class="op">=</span> []</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    perturbations <span class="op">=</span> []</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> run_idx <span class="kw">in</span> <span class="bu">range</span>(n_realizations):</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Computing realization </span><span class="sc">{</span>run_idx <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>n_realizations<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate noise for perturbing alpha across time steps</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        noise <span class="op">=</span> torch.randn(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span>, n_time_steps</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># Shape [1, n_time_steps] for a single parameter over time</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">250</span>):  <span class="co"># Smooth out the noise to resemble realistic fluctuations</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            noise <span class="op">=</span> pad(noise, pad<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>), mode<span class="op">=</span><span class="st">"reflect"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            noise <span class="op">=</span> (noise[:, :<span class="op">-</span><span class="dv">2</span>] <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> noise[:, <span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> noise[:, <span class="dv">2</span>:]) <span class="op">/</span> <span class="dv">4</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        noise <span class="op">=</span> noise.squeeze()  <span class="co"># Shape [n_time_steps]</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Base parameters without perturbation, as shape [n_time_steps, 4]</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        base_params <span class="op">=</span> torch.tensor([<span class="dv">4</span> <span class="op">/</span> <span class="dv">3</span>, <span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>]).expand(n_time_steps, <span class="dv">4</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Apply perturbation to alpha (the first parameter)</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> base_params.clone()</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        params[:, <span class="dv">0</span>] <span class="op">+=</span> noise  <span class="co"># Modify alpha over time</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Solve ODE with perturbed parameters</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        pop_data <span class="op">=</span> lotka_volterra(params, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        pop_data_runs.append(pop_data)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        perturbations.append(noise)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pop_data_runs, perturbations</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>initial_pop <span class="op">=</span> torch.rand(<span class="dv">2</span>)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>XX, M <span class="op">=</span> generate_data_set(</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    initial_pop<span class="op">=</span>initial_pop, period<span class="op">=</span>period, n_time_steps<span class="op">=</span>n_time_steps, n_realizations<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> XX[<span class="dv">0</span>]</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>pert <span class="op">=</span> M[<span class="dv">0</span>]</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>d_true <span class="op">=</span> X[<span class="dv">0</span>, :]  <span class="co"># Use the prey population as the data to fit</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Time series plot</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">4.5</span>))</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">0</span>, :].detach(), label<span class="op">=</span><span class="st">"Prey"</span>)</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">1</span>, :].detach(), label<span class="op">=</span><span class="st">"Predator"</span>)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>plt.plot(pert.detach(), label<span class="op">=</span><span class="st">"Perturbation"</span>)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Time Series"</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase space plot with color gradient</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data for LineCollection</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>prey <span class="op">=</span> X[<span class="dv">0</span>, :].detach().numpy()</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>predator <span class="op">=</span> X[<span class="dv">1</span>, :].detach().numpy()</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> np.array([prey, predator]).T.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>segments <span class="op">=</span> np.concatenate([points[:<span class="op">-</span><span class="dv">1</span>], points[<span class="dv">1</span>:]], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>cmap <span class="op">=</span> <span class="st">"viridis"</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a LineCollection with the chosen colormap</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>lc <span class="op">=</span> LineCollection(segments, cmap<span class="op">=</span>cmap, norm<span class="op">=</span>plt.Normalize(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>lc.set_array(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="bu">len</span>(segments)))  <span class="co"># Normalize color range to [0,1]</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>lc.set_linewidth(<span class="dv">2</span>)</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the LineCollection to the plot</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>plt.gca().add_collection(lc)</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="co"># Set plot limits to the data range</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>plt.xlim(prey.<span class="bu">min</span>(), prey.<span class="bu">max</span>())</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>plt.ylim(predator.<span class="bu">min</span>(), predator.<span class="bu">max</span>())</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Phase Space with Time-Varying Color"</span>)</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Prey Population"</span>)</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Predator Population"</span>)</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Computing realization 1/1</code></pre>
@@ -625,7 +546,7 @@ tensor([[2., 1.],
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-5-output-2.png" width="758" height="566" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-4-output-2.png" width="710" height="422" class="figure-img"></p>
 <figcaption>Time variant Lotka-Volterra model with perturbations.</figcaption>
 </figure>
 </div>
@@ -633,18 +554,307 @@ tensor([[2., 1.],
 </div>
 <p>As can be seen by the data, the pertubations over time make the dynamics of the system only roughly periodic. This will make the optimization problem more interesting to solve.</p>
 </section>
+<section id="jacobian-vector-product-and-directional-derivatives" class="level3">
+<h3 class="anchored" data-anchor-id="jacobian-vector-product-and-directional-derivatives">Jacobian Vector Product and Directional Derivatives</h3>
+<p>Now is a good time to code and check a working system to take the jacobian vector products that are required for the Gauss-Newton method using the functions defined earlier. We will assume that we have the prey data and we are trying to recover. To check the correctness of the coding, we can compare the results of the <code>jvp</code> and the <code>vjp</code> functions by checking using the adjoint. The value <span class="math inline">\(\langle w, J_k v \rangle\)</span> is scalar and so it should equal its transpose: <span class="math display">\[ \langle w, J_k v \rangle = \langle v, J_k^T w  \rangle\]</span></p>
+<p>One other thing to note is that both the <code>jvp</code> and the <code>vjp</code> functions will output the value of the function evaluated at the point that is passed to it, about which the jacobian is computed. So we get both <span class="math inline">\(F(p)\)</span> and <span class="math inline">\(J_k v\)</span> from the <code>jvp</code> function, and a similar result for the <code>vjp</code> function.</p>
+<div id="jacobian-vector-product" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jvp, vjp</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fix all parts of the problem except the parameters</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward_model(params):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> lotka_volterra(params, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    prey <span class="op">=</span> X[<span class="dv">0</span>, :]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> prey</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># set an initial guess for the parameters</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> torch.tensor([<span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>, <span class="dv">4</span> <span class="op">/</span> <span class="dv">3</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.randn_like(params)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>d, q <span class="op">=</span> jvp(forward_model, params, v)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> torch.randn_like(d)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>d, a <span class="op">=</span> vjp(forward_model, params, w)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Check adjoint consistency</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(torch.<span class="bu">sum</span>(q <span class="op">*</span> w), torch.<span class="bu">sum</span>(a <span class="op">*</span> v))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor(-27.4492) tensor(-27.4493)</code></pre>
+</div>
+</div>
+</section>
 <section id="conjugate-gradient-descent-and-gauss-newton-optimizer" class="level3">
 <h3 class="anchored" data-anchor-id="conjugate-gradient-descent-and-gauss-newton-optimizer">Conjugate Gradient Descent and Gauss-Newton Optimizer</h3>
 <p>The Gauss-Newton method will need to make use of some important subfunctions to operate efficiently. One will be the computation of its components using the <code>jvp</code> and <code>vjp</code> functions, and the other will be the conjugate gradient descent method to solve the normal equations.</p>
+<p>To implement this in code, we will also need to make a conjugate gradient solver for the problem <span class="math display">\[ J_G(p_k)^T J_G(p_k)s_k = J_k^T r_k\]</span></p>
+<p>keeping in mind that we want to avoid explicit computation of the entire jacobian when the goal is only to take a directional derivative. To do this the <span class="math inline">\(J_G(p_k)^T J_G(p_k)\)</span> operator can be coded as a single function <code>Hmv</code> that takes a vector and returns the product of the Hessian estimate with the vector. We then use this defined function in a standard implementation of the conjugate gradient method. The conjugate gradient method below has been setup to accept a callable funtion <span class="math inline">\(A\)</span> that acts like the matrix operator <span class="math inline">\(A\)</span>, except we have bypassed the need to compute the full matrix, since we are only ever using it with a product.</p>
+<div id="conjugate-gradient" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Hmv(forProb, p, sk):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> torch.autograd.functional.jvp(forProb, p, sk)[<span class="dv">1</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> torch.autograd.functional.vjp(forProb, p, q)[<span class="dv">1</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conj_gradient(A, b, x0<span class="op">=</span><span class="va">None</span>, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Solve Ax = b using the conjugate gradient method.</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Paramters:</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">        A (callable): A function that computes the matrix-vector product Ax.</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">        b (torch.Tensor): The right-hand side vector.</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">        x0 (torch.Tensor, optional): The initial guess. Defaults to None.</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">        niter (int, optional): Maximum number of iterations. Defaults to 20.</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">        tol (float, optional): Tolerance for the residual. Defaults to 1e-2.</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">        alpha (float, optional): Step size for the conjugate gradient method. Defaults to 1e-2.</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x0 <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> b</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> b <span class="op">-</span> A(x0)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> r</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> torch.zeros_like(b)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(niter):</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        Hq <span class="op">=</span> A(q)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        alpha <span class="op">=</span> (r <span class="op">*</span> r).<span class="bu">sum</span>() <span class="op">/</span> (q <span class="op">*</span> Hq).<span class="bu">sum</span>()</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> x <span class="op">+</span> alpha <span class="op">*</span> q</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        rnew <span class="op">=</span> r <span class="op">-</span> alpha <span class="op">*</span> Hq</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        beta <span class="op">=</span> (rnew<span class="op">**</span><span class="dv">2</span>).<span class="bu">sum</span>() <span class="op">/</span> (r<span class="op">**</span><span class="dv">2</span>).<span class="bu">sum</span>()</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> rnew <span class="op">+</span> beta <span class="op">*</span> q</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> rnew.clone()</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose:</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"iter = </span><span class="sc">%3d</span><span class="st">    res = </span><span class="sc">%3.2e</span><span class="st">"</span> <span class="op">%</span> (i, r.norm() <span class="op">/</span> b.norm()))</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> r.norm() <span class="op">/</span> b.norm() <span class="op">&lt;</span> tol:</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> partial(Hmv, forward_model, params)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> torch.autograd.functional.vjp(forward_model, params, d_true)[<span class="dv">1</span>]</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> conj_gradient(A, b, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>iter =   0    res = 1.15e+00
+iter =   1    res = 5.48e-02
+iter =   2    res = 1.47e-02
+iter =   3    res = 2.79e-02
+iter =   4    res = 3.56e-03
+tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
+</div>
+</div>
+</section>
+<section id="building-the-gauss-newton-optimizer" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="//" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="//" data-line-number="true" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1">
 <div class="pseudocode">
-\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
-<p>Recalling that:</p>
-<p><span class="math display">\[ r_k = G(p_k) = QF(p_k) - d,\]</span></p>
-<p>To implement this in code:</p>
+<p>Then combining all the previous stages of code we have:</p>
+<div id="gauss-newton" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fix all parts of the problem except the parameters</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward_model(params):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> lotka_volterra(params, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    prey <span class="op">=</span> X[<span class="dv">0</span>, :]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> prey</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gauss_newton_solver(forward_model, p0, data, max_iter<span class="op">=</span><span class="dv">100</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, mu<span class="op">=</span><span class="dv">1</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Solve a non-linear least squares problem using the Gauss-Newton method.</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">        forward_model (callable): A function that computes the forward model.</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">        p0 (torch.Tensor): The initial guess for the parameters.</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">        data (torch.Tensor): The observed data to fit to.</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">        max_iter (int): Maximum number of iterations. Defaults to 100.</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">        tol (float): Tolerance for the residual. Defaults to 1e-6.</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">        mu (float): Step size for the Gauss-Newton method. Defaults to 1.</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">        verbose (bool): Whether to print iteration information. Defaults to True.</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> []  <span class="co"># To store predictions at each iteration for animation</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    params <span class="op">=</span> p0</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute residual</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        data_pred <span class="op">=</span> forward_model(params)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        rk <span class="op">=</span> data <span class="op">-</span> data_pred</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Store the current predicted data for animation</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        predictions.append(data_pred.detach())</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute parts for conjugate gradient</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> torch.autograd.functional.vjp(forward_model, params, rk)[<span class="dv">1</span>]</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> A(sk):</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>            q <span class="op">=</span> torch.autograd.functional.jvp(forward_model, params, sk)[<span class="dv">1</span>]</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> torch.autograd.functional.vjp(forward_model, params, q)[<span class="dv">1</span>]</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> a</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>        s_k <span class="op">=</span> conj_gradient(A, b, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Update parameters</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> params <span class="op">+</span> mu <span class="op">*</span> s_k</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check for convergence</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> s_k.norm() <span class="op">&lt;</span> tol:</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Converged in </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> iterations'</span>)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose:</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'Iteration </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>max_iter<span class="sc">}</span><span class="ss">: Residual = </span><span class="sc">{</span>rk<span class="sc">.</span>norm()<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> params, predictions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="testing-the-gauss-newton-optimizer" class="level3">
+<h3 class="anchored" data-anchor-id="testing-the-gauss-newton-optimizer">Testing the Gauss-Newton Optimizer</h3>
+<p>A run of the Gauss-Newton optimization method can be performed on the Lotka-Volterra model to fit the prey population data. The optimization method will be run for a maximum of <span class="math inline">\(40\)</span> iterations with a tolerance that will exit early if the step size becomes small enough indicating a local minimum. The results of the optimization can be plotted against the true data, both prey and predator, to see how well the optimization method has performed to recover the missing predator population.</p>
+<div id="cell-gauss-newton-test" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="fl">40.0</span>  <span class="co"># Time horizon as a single float</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>n_time_steps <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>initial_pop <span class="op">=</span> torch.rand(<span class="dv">2</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Making a true data set to fit to</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>XX, M <span class="op">=</span> generate_data_set(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    initial_pop<span class="op">=</span>initial_pop, period<span class="op">=</span>period, n_time_steps<span class="op">=</span>n_time_steps, n_realizations<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> XX[<span class="dv">0</span>]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>d_true <span class="op">=</span> X[<span class="dv">0</span>, :]  <span class="co"># Use the prey population as the data to fit</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Start with an initial guess for the parameters</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> torch.tensor([<span class="fl">1.7</span>, <span class="fl">1.7</span>, <span class="fl">0.7</span>, <span class="fl">0.7</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the problem</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>p_opt, predictions <span class="op">=</span> gauss_newton_solver(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    forward_model, p0, d_true, max_iter<span class="op">=</span><span class="dv">45</span>, tol<span class="op">=</span><span class="fl">1e-4</span>, mu<span class="op">=</span><span class="fl">1e-1</span>, verbose<span class="op">=</span><span class="va">False</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of the both pred prey true data and the predicted data</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>X_hat <span class="op">=</span> lotka_volterra(p_opt, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"True Prey Population"</span>)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"True Predator Population"</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>plt.plot(X_hat[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"Predicted Prey Population"</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>plt.plot(X_hat[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"Predicted Predator Population"</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time Steps"</span>)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Population"</span>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"True vs Predicted Population"</span>)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Computing realization 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div id="gauss-newton-test" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/gauss-newton-test-output-2.png" width="622" height="449" class="figure-img"></p>
+<figcaption>Testing the Gauss-Newton optimization method.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot outputs the successive iterations of the method and the data of the forward model as it is fitting in the predicitons tensor. The optimization process can be animated from the successive predictions to get a visual understanding of the optimization method.</p>
+<div id="animation" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.animation <span class="im">import</span> FuncAnimation</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_animation(true_data, predictions, filename<span class="op">=</span><span class="st">"imgs/fitting_animation.gif"</span>):</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    (line1,) <span class="op">=</span> ax.plot([], [], <span class="st">"r-"</span>, label<span class="op">=</span><span class="st">"Predicted Fit"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    (line2,) <span class="op">=</span> ax.plot([], [], <span class="st">"b--"</span>, label<span class="op">=</span><span class="st">"True Data"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set titles and labels</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Time Steps"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Population"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> init():</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set x and y limits based on true_data and predictions</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        ax.set_xlim(<span class="dv">0</span>, <span class="bu">len</span>(true_data))</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        ax.set_ylim(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">min</span>(true_data.<span class="bu">min</span>(), predictions[<span class="dv">0</span>].<span class="bu">min</span>()) <span class="op">-</span> <span class="fl">0.1</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            <span class="bu">max</span>(true_data.<span class="bu">max</span>(), predictions[<span class="dv">0</span>].<span class="bu">max</span>()) <span class="op">+</span> <span class="fl">0.1</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        line2.set_data(</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">range</span>(<span class="bu">len</span>(true_data)), true_data</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        )  <span class="co"># Set true data once, as it remains constant</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="st">"Iteration: 0"</span>)  <span class="co"># Initial title for iteration count</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> line1, line2</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(i):</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Update predicted data and title with the current iteration count</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        line1.set_data(<span class="bu">range</span>(<span class="bu">len</span>(predictions[i])), predictions[i])</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="ss">f"Iteration: </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> line1, line2</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create animation with updated frames</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    ani <span class="op">=</span> FuncAnimation(fig, update, frames<span class="op">=</span><span class="bu">len</span>(predictions), init_func<span class="op">=</span>init, blit<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    ani.save(filename, writer<span class="op">=</span><span class="st">"imagemagick"</span>)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the animation</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>create_animation(</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    d_true.cpu().detach().numpy(),</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>    [pred.cpu().numpy() <span class="cf">for</span> pred <span class="kw">in</span> predictions],</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"imgs/fitting_animation.gif"</span>,</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><img src="imgs/fitting_animation.gif" class="img-fluid" width="600"></p>
+</section>
+</section>
+<section id="extension-to-time-varying-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="extension-to-time-varying-parameters">Extension to Time Varying Parameters</h2>
+<p>Although the previous examples have been for a fixed set of parameters, it is entirely possible in natural systems that the parameters of the model are time dependent. The formulation of the Lotka-Volterra model has incorporated this design from the start by expanding the initial four parameters across the time dimension. However we can pass a full tensor of time varying parameters that is size <span class="math inline">\([nt, 4]\)</span> to the model and the optimization algorithm. The rest of the code does not change at all since the PyTorch library can perform the required gradient computations on a 2D tensor as well.</p>
+<p>The range of possible solutions and the dimensionality of the problem expands from <span class="math inline">\(4\)</span> parameters to <span class="math inline">\(4 \times nt\)</span> parameters which means more parameters than there are actual data points. This means that any set of data could be fit perfectly, but it might not be the correct fit. This issue is a hallmark of ill-posed inverse problems. The optimization algorithm will still converge to a solution, but it might not be the correct one.</p>
+<p>Since the ground truth of both predator and prey populations is known, the optimization algorithm can be run with time dependent parameters which will allow more overfitting. The parameters being fixed in time is a sort of regularization that can applied to the problem, and removing it will change the results of the optimization.</p>
+<div id="cell-time-varying-parameters" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start with an initial guess for the parameters</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> torch.tensor([<span class="fl">1.7</span>, <span class="fl">1.7</span>, <span class="fl">0.7</span>, <span class="fl">0.7</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extend p0 to repeat over the time steps with individual gradients</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> p0.unsqueeze(<span class="dv">0</span>).expand(n_time_steps, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the problem</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>p_opt, predictions <span class="op">=</span> gauss_newton_solver(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    forward_model, p0, d_true, max_iter<span class="op">=</span><span class="dv">45</span>, tol<span class="op">=</span><span class="fl">1e-4</span>, mu<span class="op">=</span><span class="fl">1e-1</span>, verbose<span class="op">=</span><span class="va">False</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of the both pred prey true data and the predicted data</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>X_hat <span class="op">=</span> lotka_volterra(p_opt, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"True Prey Population"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>plt.plot(X[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"True Predator Population"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>plt.plot(X_hat[<span class="dv">0</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"Predicted Prey Population"</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>plt.plot(X_hat[<span class="dv">1</span>, :].detach().numpy(), label<span class="op">=</span><span class="st">"Predicted Predator Population"</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Time Steps"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Population"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"True vs Predicted Population"</span>)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="time-varying-parameters" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/time-varying-parameters-output-1.png" width="622" height="449" class="figure-img"></p>
+<figcaption>Fitting the Lotka-Volterra model with time-varying parameters.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><img src="imgs/fitting_animation_time_varying.gif" class="img-fluid" width="600"></p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The Gauss-Newton optimization method is a powerful tool for solving non-linear least squares problems in a fast and efficient manner. It can be extended to any problem that is formulated as a vector of residuals or generally <span class="math inline">\(\| G(p) \|^2\)</span> that is to be optimized over <span class="math inline">\(p\)</span>. Improved efficiency in the normal equations is done by using the Jacobian-vector product to bypass the costly need to compute a full Jacobian when all that is required is the directional derivative. The normal equtions also present a sub-problem in the optimization routine that can be solved using the conjugate gradient method to find the optimal step size <span class="math inline">\(s_k\)</span>. This step direction is then used to perform the gradient descent step in the outer optimization algorithm. Increasing the complexity of the problem by allowing time varying parameters can lead to overfitting and ill-posedness, but the optimization algorithm will still converge to a solution.</p>
 
 
 </section>

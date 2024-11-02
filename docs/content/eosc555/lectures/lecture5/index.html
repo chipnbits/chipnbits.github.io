@@ -271,7 +271,7 @@ window.Quarto = {
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <span class="math inline">\(t_0\)</span> and initial conditions <span class="math inline">\(x_0, y_0\)</span>, with parameters <span class="math inline">\(\alpha, \beta, \gamma, \delta\)</span> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -378,14 +378,14 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div id="pred-prey-forward" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/pred-prey-forward-output-1.png" width="659" height="503" class="figure-img"></p>
+<p><img src="index_files/figure-html/pred-prey-forward-output-1.png" width="622" height="429" class="figure-img"></p>
 <figcaption>The time evolution of the prey and predator populations.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial conditions</span></span>
@@ -578,9 +578,9 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-no-end="false" data-line-number-punc=":" data-indent-size="1.2em" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-line-number="true" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-no-end="false" data-pseudocode-number="1">
 <div class="pseudocode">
-\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </section>

@@ -401,6 +401,7 @@ plt.tight_layout()
 The distorted image has had much of its intensity spread out diffusely, so it is only visible as a faint outline. The noise is also visible in the image as a grainy texture. The gradient flow method will attempt to recover the original image from this distorted image.
 
 ```{python, fig.show="hide"}
+
 from matplotlib import animation
 
 b_flat = b.flatten().to(torch.float64)
@@ -550,9 +551,9 @@ We can now use the defined operators (functions) from earlier to setup a simple 
 ```{python}
 from tqdm import tqdm
 
-def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e-6):
+def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e-6, show_progress=True):
     """
-    Solves the least squares problem using gradient descent with progress tracking.
+    Solves the least squares problem using gradient descent with optional progress tracking.
 
     Parameters:
     - x0 (torch.Tensor): Initial guess for the solution.
@@ -562,6 +563,7 @@ def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e
     - max_iter (int): Maximum number of iterations.
     - alpha (float): Learning rate.
     - tol (float): Tolerance for convergence.
+    - show_progress (bool): If True, display a progress bar; otherwise, suppress output.
 
     Returns:
     - x (torch.Tensor): Approximated solution vector.
@@ -570,36 +572,41 @@ def least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1e-3, tol=1e
     x.requires_grad = True
     b_noisy = b.clone() + 0.01 * torch.randn_like(b)
 
-    # Initialize the progress bar
-    with tqdm(total=max_iter, desc='Least Squares Iteration', unit='iter') as pbar:
-        for i in range(max_iter):
-            # Gradient descent update
-            residual = Amv(x) - b_noisy
-            gradient = Amv_adjoint(residual)
-            xnext = x - alpha * gradient
+    # Initialize progress bar or a placeholder for quiet mode
+    pbar = tqdm(total=max_iter, desc='Least Squares Iteration', unit='iter', disable=not show_progress) 
+    for i in range(max_iter):
+        # Gradient descent update
+        residual = Amv(x) - b_noisy
+        gradient = Amv_adjoint(residual)
+        xnext = x - alpha * gradient
 
-            # Compute relative error
-            error = torch.norm(xnext - x) 
+        # Compute relative error
+        error = torch.norm(xnext - x) 
 
-            # Update the progress bar with the current error
+        # Update the progress bar with the current error
+        if show_progress:
             pbar.set_postfix({'Error': f'{error.item():.4e}'})
             pbar.update(1);
 
-            # Check for convergence
-            if error < tol:
+        # Check for convergence
+        if error < tol:
+            if show_progress:
                 pbar.write(f'Converged at iteration {i+1} with error {error.item():.4e}')
-                x = xnext
-                break
-
             x = xnext
+            break
 
+        x = xnext
+
+    pbar.close()
+    
     return x
 
 b = Amv(x)
 x0 = torch.zeros_like(x)
-xhat = least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1, tol=1e-6)
+xhat = least_squares_sol(x0, b, Amv, Amv_adjoint, max_iter=1000, alpha=1, tol=1e-6, show_progress=False)
 
-plt.figure(figsize=(6,3))
+# Display final images
+plt.figure(figsize=(6, 3))
 plt.subplot(1, 2, 1)
 plt.imshow(x[0, 0], cmap='viridis', vmin=-1, vmax=1)
 plt.title('Original Image')

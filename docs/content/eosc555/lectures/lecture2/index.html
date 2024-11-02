@@ -291,7 +291,7 @@ window.Quarto = {
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="cec60acc" class="cell" data-execution_count="2">
+<div id="c53e6b29" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -321,7 +321,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <span class="math display">\[f(x) = \exp\left(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)\]</span></p>
 <p>where <span class="math inline">\(\mu\)</span> is the mean vector, <span class="math inline">\(x\)</span> is a position vector, and <span class="math inline">\(\Sigma\)</span> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <span class="math inline">\(C\)</span> as the inverse of the covariance matrix and working with a <span class="math inline">\(\mu=0\)</span> value.</p>
-<div id="mv-plot" class="cell" data-execution_count="3">
+<div id="mv-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> convolve</span>
@@ -417,7 +417,7 @@ window.Quarto = {
 <div class="cell-output cell-output-display">
 <div id="mv-plot-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/mv-plot-output-1.png" width="662" height="523" class="figure-img"></p>
+<p><img src="index_files/figure-html/mv-plot-output-1.png" width="624" height="449" class="figure-img"></p>
 <figcaption>Multivariate Gaussian and its Derivatives</figcaption>
 </figure>
 </div>
@@ -440,7 +440,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 \end{align}
 \]</span></p>
 <p>These operators act like edge detection or derivatives. The <span class="math inline">\(n_0\)</span>, <span class="math inline">\(n_x\)</span>, and <span class="math inline">\(n_y\)</span> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="5a2e0c42" class="cell" data-execution_count="4">
+<div id="bb04fe4e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> gaussianConv(nn.Module):</span>
@@ -568,7 +568,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="creating-a-toy-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-toy-dataset">Creating a Toy Dataset</h3>
 <p>Often in computational science we test our strategies on toy datasets, simplified data that allows for easier debugging and understanding of the problem at task. In this case, rather than use a real image, we construct a geometric image that will be easier to analyse visually for its correctness when it comes to denoising and deblurring. The dataset is also dimensioned to have a batch and color channel to follow some of the conventions for working with torch tensors, and later some machine learning frameworks. That is <span class="math inline">\(B \times C \times H \times W\)</span>, with a single sample, single channel, and a 256x256 image having dimensions <span class="math inline">\(1 \times 1 \times 256 \times 256\)</span>.</p>
-<div id="cell-toy-dataset" class="cell" data-execution_count="5">
+<div id="cell-toy-dataset" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.zeros(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">256</span>, <span class="dv">256</span>)</span>
@@ -588,7 +588,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </div>
 </div>
 <p>This simple image is a high and a low signal shown as two square regions, which we will try to recover after applying a point spread function to it (the forward model). The forward model is the convolution of the image with the PSF.</p>
-<div id="cell-forward-model" class="cell" data-execution_count="6">
+<div id="cell-forward-model" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> torch.tensor([[<span class="dv">1</span>, <span class="dv">0</span>],[<span class="dv">0</span>, <span class="dv">1</span>]])</span>
@@ -609,7 +609,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="forward-model" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/forward-model-output-2.png" width="689" height="476" class="figure-img"></p>
+<p><img src="index_files/figure-html/forward-model-output-2.png" width="651" height="402" class="figure-img"></p>
 <figcaption>Forward model for image denoising and deblurring.</figcaption>
 </figure>
 </div>
@@ -622,7 +622,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <p>Note that we are working with a rolling PSF which has a strange effect in that it assumes a periodic boundary condition in both <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. When it comes to convolution, there are many different ways to treat the boundary condition, such as using zero padding or mirroring the boundary. Coding this by hand is a good exercise to understand the convolution operation, but not the purpose of this exercise.</p>
 <section id="direct-recovery-of-convolution-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="direct-recovery-of-convolution-matrix">Direct Recovery of Convolution Matrix</h4>
-<div id="cell-convolution-matrix" class="cell" data-execution_count="7">
+<div id="cell-convolution-matrix" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dim <span class="op">=</span> <span class="dv">32</span></span>
@@ -669,7 +669,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="convolution-matrix" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/convolution-matrix-output-1.png" width="654" height="237" class="figure-img"></p>
+<p><img src="index_files/figure-html/convolution-matrix-output-1.png" width="617" height="226" class="figure-img"></p>
 <figcaption>Forming a convolution matrix for the forward model.</figcaption>
 </figure>
 </div>
@@ -681,7 +681,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <p>Since the convolution operation that is being performed is linear, one way to recover the matrix operator under this assumption is to pass through the basis vectors and recover the column vectors in this fashion:</p>
 <p><span class="math display">\[\begin{bmatrix} a_1 \mid a_2 \mid \ldots \mid a_n \end{bmatrix} \mathbf{e}_i = \mathbf{A} \mathbf{e}_i  = \mathbf{a}_i\]</span></p>
 <p>where <span class="math inline">\(\mathbf{e}_i\)</span> is the <span class="math inline">\(i\)</span>th basis vector.</p>
-<div id="cell-convolution-matrix-2" class="cell" data-execution_count="8">
+<div id="cell-convolution-matrix-2" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>A_conv_lin <span class="op">=</span> torch.zeros(n, n)</span>
@@ -707,14 +707,14 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="convolution-matrix-2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/convolution-matrix-2-output-1.png" width="698" height="473" class="figure-img"></p>
+<p><img src="index_files/figure-html/convolution-matrix-2-output-1.png" width="659" height="400" class="figure-img"></p>
 <figcaption>Forming a convolution matrix for the forward model using linearity.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="82356e4c" class="cell" data-execution_count="9">
+<div id="961a2bce" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b_forward <span class="op">=</span> Amv(x)</span>
@@ -732,13 +732,13 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-9-output-1.png" width="641" height="219" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-9-output-1.png" width="604" height="208" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We can see that there are some differences between the two methods but in principle they should be the same, (Not sure where the difference is coming from). The important method is actually the one which extracts the columns, as it is more generalizable. So we will continue with that.</p>
-<div id="final-conv-matrix" class="cell" data-execution_count="10">
+<div id="final-conv-matrix" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Amat <span class="op">=</span> A_conv_lin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -751,7 +751,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <span class="math inline">\(A\mathbf{x} = \mathbf{b}\)</span> with our known <span class="math inline">\(A\)</span> and <span class="math inline">\(\mathbf{b}\)</span>, and we want to recover <span class="math inline">\(\mathbf{x}\)</span>. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="89cf8d1b" class="cell" data-execution_count="11">
+<div id="492131e8" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>U, S, V <span class="op">=</span> torch.svd(Amat.to(torch.float64))</span>
@@ -759,7 +759,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 </details>
 </div>
 <p>Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the <span class="math inline">\(10^{-6}\)</span> mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.</p>
-<div id="cell-svd-decomposition" class="cell" data-execution_count="12">
+<div id="cell-svd-decomposition" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>plt.semilogy(S)</span>
@@ -775,7 +775,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="svd-decomposition" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/svd-decomposition-output-2.png" width="679" height="503" class="figure-img"></p>
+<p><img src="index_files/figure-html/svd-decomposition-output-2.png" width="642" height="429" class="figure-img"></p>
 <figcaption>SVD Decomposition of the Convolution Matrix.</figcaption>
 </figure>
 </div>
@@ -786,7 +786,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="initial-attempt-at-pseudoinverse" class="level3">
 <h3 class="anchored" data-anchor-id="initial-attempt-at-pseudoinverse">Initial Attempt at Pseudoinverse</h3>
 <p>To recover the original image data we first naively try to invert the matrix to see what happens.</p>
-<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="13">
+<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>xhat <span class="op">=</span> torch.linalg.solve(Amat,b.reshape(dim<span class="op">**</span><span class="dv">2</span>))</span>
@@ -800,7 +800,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="naive-pseudoinverse" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/naive-pseudoinverse-output-1.png" width="641" height="332" class="figure-img"></p>
+<p><img src="index_files/figure-html/naive-pseudoinverse-output-1.png" width="604" height="315" class="figure-img"></p>
 <figcaption>Naive Pseudoinverse Recovery of the Original Image.</figcaption>
 </figure>
 </div>
@@ -811,7 +811,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <span class="math inline">\(U\)</span>.</p>
-<div id="5978c5dd" class="cell" data-execution_count="14">
+<div id="1a36578d" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -823,13 +823,13 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-14-output-1.png" width="641" height="164" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-14-output-1.png" width="603" height="158" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <span class="math inline">\(V\)</span>. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="f1d6290b" class="cell" data-execution_count="15">
+<div id="9e5aaa70" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n<span class="op">=</span> <span class="dv">5</span></span>
@@ -848,20 +848,20 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-1.png" width="641" height="164" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-15-output-1.png" width="603" height="158" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-15-output-2.png" width="641" height="164" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-15-output-2.png" width="603" height="158" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>These modes are the most important ones, as they contain the big-picture detail without the high frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.</p>
-<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="16">
+<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>b_flat <span class="op">=</span> b.flatten().to(torch.float64)</span>
@@ -913,7 +913,7 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <section id="adding-noise-to-the-signal" class="level3">
 <h3 class="anchored" data-anchor-id="adding-noise-to-the-signal">Adding Noise to the Signal</h3>
 <p>Now we add some noise to the signal and try least squares again for the direct solution</p>
-<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="17">
+<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>b_flat <span class="op">=</span> b.flatten().to(torch.float64)</span>
@@ -936,14 +936,14 @@ S_y &amp;= \frac{1}{4} \begin{bmatrix} -1 &amp; -2 &amp; -1 \\ 0 &amp; 0 &amp; 0
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/pseudoinverse-filter-noised-output-1.png" width="641" height="332" class="figure-img"></p>
+<p><img src="index_files/figure-html/pseudoinverse-filter-noised-output-1.png" width="604" height="315" class="figure-img"></p>
 <figcaption>Pseudoinverse Recovery of the Original Image with Noise.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>The reconstruction is not very good, the noise has been amplifed all over the image. We can try the pseudoinverse method again with the noise added to the signal.</p>
-<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="18">
+<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Amat_noisy <span class="op">=</span> Amat <span class="op">+</span> alpha <span class="op">*</span> torch.eye(Amat.shape[<span class="dv">0</span>])</span>

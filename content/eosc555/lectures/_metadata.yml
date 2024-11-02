@@ -12,8 +12,8 @@ format:
     code-fold: true
     code-summary: "Show the code"
 
-    fig-width: 8
-    fig-height: 6
+    fig-width: 7.5
+    fig-height: 5
   # ipynb:
   #   execute: false
 
@@ -22,6 +22,7 @@ execute:
   cache: true
   cache-refresh: false
   cache-path: .jupyter_cache
+  freeze: auto
 
 crossref:
   fig-prefix: Figure

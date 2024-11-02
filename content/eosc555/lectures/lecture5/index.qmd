@@ -365,7 +365,7 @@ We have derived the algorithm for the Gauss-Newton method for solving the non-li
     \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$
     \State Compute the transpose $J_G^T$ of the Jacobian
     \State Compute the residual $r_k =G(p_k)$ (forward model)
-    \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k) r_k$
+    \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$
     \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$
     \If{$\|s_k\| < \epsilon$}
         \State \textbf{Stop}
