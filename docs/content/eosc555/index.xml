@@ -72,7 +72,7 @@
 </tbody>
 </table>
 <p>To illustrate these functions even more we can plot them as well.</p>
-<div id="cell-function-plot" class="cell" data-execution_count="1">
+<div id="cell-function-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -298,7 +298,7 @@ A continuous deformation of a path. Source: <a href="https://commons.wikimedia.o
 <p><img src="https://latex.codecogs.com/png.latex?f(x)%20%5Cast%20g(x)%20=%20%5Cmathcal%7BF%7D%5E%7B-1%7D%20%5Cleft%5B%20%5Chat%7Bf%7D(k)%20%5Chat%7Bg%7D(k)%20%5Cright%5D."></p>
 <p>The convolution of a function <img src="https://latex.codecogs.com/png.latex?f(x)"> with a Gaussian <img src="https://latex.codecogs.com/png.latex?g(x)"> can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain.</p>
 <p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <img src="https://latex.codecogs.com/png.latex?g(x)%20=%20%5Cdelta(x)"> in the time domain, a constant function $ (k) = 1$ in the frequency domain. The convolution of a delta function with a function <img src="https://latex.codecogs.com/png.latex?f"> is the function itself, so the delta function does not change the function. The multiplication of the function <img src="https://latex.codecogs.com/png.latex?%5Chat%20f(k)"> with the constant function <img src="https://latex.codecogs.com/png.latex?1"> is the function itself, so the constant function does not change the function in the frequency domain.</p>
-<div id="gaussian-homotopy" class="cell" data-execution_count="2">
+<div id="gaussian-homotopy" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -951,7 +951,7 @@ font-style: inherit;">8</span>)</span>
 <h1>Code Implementation</h1>
 <p>As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20y%20=%20-%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20-%202)%5E2%20+%20(x_2%20-%202)%5E2%7D%7B0.1%7D%5Cright)%20-%202%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20+%202)%5E2%20+%20(x_2%20+%202)%5E2%7D%7B0.1%7D%5Cright)."></p>
-<div id="8f752909" class="cell" data-execution_count="3">
+<div id="8f752909" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
@@ -1163,7 +1163,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
   <category>Fourier Transform</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture7/</guid>
   <pubDate>Tue, 22 Oct 2024 07:00:00 GMT</pubDate>
-  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/img/gaussian_homotopy.gif" medium="image" type="image/gif"/>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" medium="image" type="image/gif"/>
 </item>
 <item>
   <title>Lecture 6: Autodiff and Implementing Gauss-Newton</title>
@@ -2582,7 +2582,7 @@ tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-pseudocode-number="1" data-indent-size="1.2em" data-comment-delimiter="//" data-line-number="true" data-caption-prefix="Algorithm">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-comment-delimiter="//" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -4100,7 +4100,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="//" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number-punc=":" data-line-number="true">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-comment-delimiter="//" data-pseudocode-number="1" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>

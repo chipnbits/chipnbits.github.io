@@ -15,7 +15,7 @@ bibliography: references.bib
 biblatexoptions: "style=numeric,sorting=nyt"  # Uses numbered style and sorts by name-year-title
 biblio-style: numeric-comp  # A numeric style in biblatex, similar to IEEE, with compressed citation ranges
 
-image: "img/gaussian_homotopy.gif"
+image: "imgs/gaussian_homotopy.gif"
 draft: false
 
 editor: 
@@ -163,7 +163,7 @@ $$f(x) \ast g(x) = \mathcal{F}^{-1} \left[ \hat{f}(k) \hat{g}(k) \right].$$
 
 The convolution of a function $f(x)$ with a Gaussian $g(x)$ can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain. 
 
-A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function $g(x) = \delta(x)$ in the time domain, a constant function $ \hat{g}(k) = 1$ in the frequency domain. The convolution of a delta function with a function $f$ is the function itself, so the delta function does not change the function. The multiplication of the function $\hat f(k)$ with the constant function $1$ is the function itself, so the constant function does not change the function in the frequency domain.
+A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function $g(x) = \delta(x)$ in the time domain, a constant function $\hat{g}(k) = 1$ in the frequency domain. The convolution of a delta function with a function $f$ is the function itself, so the delta function does not change the function. The multiplication of the function $\hat f(k)$ with the constant function $1$ is the function itself, so the constant function does not change the function in the frequency domain.
 
 ```{python}
 #| label: gaussian-homotopy

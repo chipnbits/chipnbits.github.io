@@ -331,7 +331,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>To illustrate these functions even more we can plot them as well.</p>
-<div id="cell-function-plot" class="cell" data-execution_count="1">
+<div id="cell-function-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -415,7 +415,7 @@ A continuous deformation of a path. Source: <a href="https://commons.wikimedia.o
 <p><span class="math display">\[f(x) \ast g(x) = \mathcal{F}^{-1} \left[ \hat{f}(k) \hat{g}(k) \right].\]</span></p>
 <p>The convolution of a function <span class="math inline">\(f(x)\)</span> with a Gaussian <span class="math inline">\(g(x)\)</span> can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain.</p>
 <p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <span class="math inline">\(g(x) = \delta(x)\)</span> in the time domain, a constant function $ (k) = 1$ in the frequency domain. The convolution of a delta function with a function <span class="math inline">\(f\)</span> is the function itself, so the delta function does not change the function. The multiplication of the function <span class="math inline">\(\hat f(k)\)</span> with the constant function <span class="math inline">\(1\)</span> is the function itself, so the constant function does not change the function in the frequency domain.</p>
-<div id="gaussian-homotopy" class="cell" data-execution_count="2">
+<div id="gaussian-homotopy" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -558,7 +558,7 @@ x_{k+1} &amp;= x_k - \alpha_k \mathbb{E}_{\xi} \nabla f(x_k - \xi)\\
 <h1>Code Implementation</h1>
 <p>As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.</p>
 <p><span class="math display">\[ y = -\exp\left(-\frac{(x_1 - 2)^2 + (x_2 - 2)^2}{0.1}\right) - 2\exp\left(-\frac{(x_1 + 2)^2 + (x_2 + 2)^2}{0.1}\right).\]</span></p>
-<div id="8f752909" class="cell" data-execution_count="3">
+<div id="8f752909" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
