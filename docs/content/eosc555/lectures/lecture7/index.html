@@ -224,7 +224,10 @@ window.Quarto = {
   <li><a href="#stochastic-optimization" id="toc-stochastic-optimization" class="nav-link" data-scroll-target="#stochastic-optimization">Stochastic Optimization</a></li>
   <li><a href="#implementation-choices" id="toc-implementation-choices" class="nav-link" data-scroll-target="#implementation-choices">Implementation Choices</a></li>
   </ul></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation">Code Implementation</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation">Code Implementation</a>
+  <ul class="collapse">
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -414,7 +417,7 @@ A continuous deformation of a path. Source: <a href="https://commons.wikimedia.o
 <p>The Fourier transform of the Gaussian is another Gaussian, it is an eigenfunction of the Fourier transform operator. The convolution theorem states that the convolution of two functions in the spatial domain is equivalent to the multiplication of their Fourier transforms in the frequency domain:</p>
 <p><span class="math display">\[f(x) \ast g(x) = \mathcal{F}^{-1} \left[ \hat{f}(k) \hat{g}(k) \right].\]</span></p>
 <p>The convolution of a function <span class="math inline">\(f(x)\)</span> with a Gaussian <span class="math inline">\(g(x)\)</span> can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain.</p>
-<p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <span class="math inline">\(g(x) = \delta(x)\)</span> in the time domain, a constant function $ (k) = 1$ in the frequency domain. The convolution of a delta function with a function <span class="math inline">\(f\)</span> is the function itself, so the delta function does not change the function. The multiplication of the function <span class="math inline">\(\hat f(k)\)</span> with the constant function <span class="math inline">\(1\)</span> is the function itself, so the constant function does not change the function in the frequency domain.</p>
+<p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <span class="math inline">\(g(x) = \delta(x)\)</span> in the time domain, a constant function <span class="math inline">\(\hat{g}(k) = 1\)</span> in the frequency domain. The convolution of a delta function with a function <span class="math inline">\(f\)</span> is the function itself, so the delta function does not change the function. The multiplication of the function <span class="math inline">\(\hat f(k)\)</span> with the constant function <span class="math inline">\(1\)</span> is the function itself, so the constant function does not change the function in the frequency domain.</p>
 <div id="gaussian-homotopy" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -557,8 +560,9 @@ x_{k+1} &amp;= x_k - \alpha_k \mathbb{E}_{\xi} \nabla f(x_k - \xi)\\
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
 <p>As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.</p>
-<p><span class="math display">\[ y = -\exp\left(-\frac{(x_1 - 2)^2 + (x_2 - 2)^2}{0.1}\right) - 2\exp\left(-\frac{(x_1 + 2)^2 + (x_2 + 2)^2}{0.1}\right).\]</span></p>
-<div id="8f752909" class="cell" data-execution_count="4">
+<p><span class="math display">\[ f(x) = -\exp\left(-\frac{(x_1 - 2)^2 + (x_2 - 2)^2}{0.1}\right) - 2\exp\left(-\frac{(x_1 + 2)^2 + (x_2 + 2)^2}{0.1}\right).\]</span></p>
+<p>The function is two superimposed Gaussian functions that impose a local minimum at <span class="math inline">\((2, 2)\)</span> and <span class="math inline">\((-2, -2)\)</span> but with very little gradient information far away from the minima.</p>
+<div id="cell-objective-function" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -568,46 +572,127 @@ x_{k+1} &amp;= x_k - \alpha_k \mathbb{E}_{\xi} \nabla f(x_k - \xi)\\
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    A 2D function with multiple local minima.</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">        X: A tensor of shape (N, 2), where each row is a point [x1, x2].</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">        y: A tensor of shape (N,), representing the function value at each point.</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">=</span> X[:, <span class="dv">0</span>]</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">=</span> X[:, <span class="dv">1</span>]</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="op">-</span>torch.exp(<span class="op">-</span>((x1 <span class="op">-</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x2 <span class="op">-</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">0.1</span>) <span class="op">\</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> torch.exp(<span class="op">-</span>((x1 <span class="op">+</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x2 <span class="op">+</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">0.1</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the function</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>x1 <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>x2 <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>X1, X2 <span class="op">=</span> torch.meshgrid(x1, x2)</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.stack([X1.flatten(), X2.flatten()], dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> objective_function(X).reshape(<span class="dv">100</span>, <span class="dv">100</span>)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>plt.contourf(X1, X2, y, levels<span class="op">=</span><span class="dv">100</span>)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>plt.colorbar()</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x1'</span>)</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'x2'</span>)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Objective function'</span>)</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    X (torch.Tensor): A tensor of shape (N, 2) containing the input points.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    x1 <span class="op">=</span> X[:, <span class="dv">0</span>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    x2 <span class="op">=</span> X[:, <span class="dv">1</span>]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="op">-</span>torch.exp(<span class="op">-</span>((x1 <span class="op">-</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x2 <span class="op">-</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">0.1</span>) <span class="op">\</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> torch.exp(<span class="op">-</span>((x1 <span class="op">+</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (x2 <span class="op">+</span> <span class="dv">2</span>)<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">0.1</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the function</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>x1 <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>x2 <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>X1, X2 <span class="op">=</span> torch.meshgrid(x1, x2, indexing<span class="op">=</span><span class="st">'ij'</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.stack([X1.flatten(), X2.flatten()], dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> objective_function(X).reshape(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>plt.contourf(X1, X2, y, levels<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x1'</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'x2'</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Objective function'</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\sghys\miniconda3\envs\ml\Lib\site-packages\torch\functional.py:512: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ..\aten\src\ATen\native\TensorShape.cpp:3588.)
-  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]</code></pre>
-</div>
 <div class="cell-output cell-output-display">
-<div>
+<div id="objective-function" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-4-output-2.png" width="601" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/objective-function-output-1.png" width="601" height="449" class="figure-img"></p>
+<figcaption>Objective Function of Two Gaussians.</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>The next step is to create a time parameterized function <span class="math inline">\(h(x, t)\)</span> that is the Gaussian homotopy of f(x). In practical terms, the starting <span class="math inline">\(\sigma_{\text{max}}\)</span> is being modified by a <span class="math inline">\(t\)</span> parameter when multiplied by the random noise. At <span class="math inline">\(t=0\)</span> the function is the original function, and at <span class="math inline">\(t=1\)</span> the function is being convolved numerically with a Gaussian kernel that is <span class="math inline">\(\mathcal{N}(0, \sigma_{\text{max}})\)</span>. The time points in between are a homotopy between the two functions.</p>
+<div id="44f478c0" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gaussian_homotopy(func, x, batch_size<span class="op">=</span><span class="dv">1000</span>, sigma<span class="op">=</span><span class="fl">1.0</span>, t<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Computes the Gaussian homotopy function h(x, t) using Monte Carlo approximation.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">        func: The original objective function to be optimized.</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">        x: A tensor of shape (N, D), where N is the number of points and D is the dimension.</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">        batch_size: Number of samples to use in Monte Carlo approximation.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">        sigma: Standard deviation of the Gaussian kernel.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">        t: Homotopy parameter, varies from 0 (original function) to 1 (smoothed function).</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">        y: A tensor of shape (N,), the approximated h(x, t) values at each point x.</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    N, D <span class="op">=</span> x.shape</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample from the t=1 gaussian kernel</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    kernel <span class="op">=</span> torch.randn(batch_size, D) <span class="op">*</span> sigma</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Repeat x and z to compute all combinations</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    x_repeated <span class="op">=</span> x.unsqueeze(<span class="dv">1</span>).repeat(<span class="dv">1</span>, batch_size, <span class="dv">1</span>).view(<span class="op">-</span><span class="dv">1</span>, D)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    kernel_repeated <span class="op">=</span> kernel.repeat(N, <span class="dv">1</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the monte carlo set of points surrounding each x</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    x_input <span class="op">=</span> x_repeated <span class="op">-</span> t <span class="op">*</span> kernel_repeated</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Evaluate the function at the sampled points</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    y_input <span class="op">=</span> func(x_input)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape and average over the batch size to approximate the expectation</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> y_input.view(N, batch_size).mean(dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>This variation of the function can be seen as having extra parameters:</p>
+<p><span class="math display">\[h(x,t,\sigma_{\text{max}}, N) = \frac{1}{N} \sum_{i=1}^N f(x-\xi_i), \quad \xi_i \sim \mathcal{N}(0, t \cdot \sigma_{\text{max}}).\]</span></p>
+<p>The time parameter is modulating the standard deviation of the Gaussian kernel, and the number of samples <span class="math inline">\(N\)</span> is used to approximate the expectation of the function at each point. As time goes to zero we approach the original function. Now applying an animation to this it is possible to see the stochastic homotopy in action.</p>
+<div id="homotopy-animation" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create grid points</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>t_values <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">129</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>x_grid, y_grid <span class="op">=</span> torch.meshgrid(t_values, t_values, indexing<span class="op">=</span><span class="st">"ij"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.stack([x_grid.flatten(), y_grid.flatten()], dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the range of homotopy parameters</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> torch.linspace(<span class="fl">1.0</span>, <span class="fl">0.0</span>, steps<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize figure</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> update(i):</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ax1.clear()</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ax2.clear()</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> T[i]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    y_original <span class="op">=</span> objective_function(X).view(<span class="dv">129</span>, <span class="dv">129</span>).detach().numpy()</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    y_homotopy <span class="op">=</span> gaussian_homotopy(objective_function, X, batch_size<span class="op">=</span><span class="dv">12000</span>, sigma<span class="op">=</span><span class="fl">4.0</span>, t<span class="op">=</span>t).view(<span class="dv">129</span>, <span class="dv">129</span>).detach().numpy()</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ax1.contourf(t_values.numpy(), t_values.numpy(), y_original, levels<span class="op">=</span><span class="dv">50</span>, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    ax1.set_title(<span class="st">"Original Function"</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    ax1.set_xlabel(<span class="st">"x1"</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    ax1.set_ylabel(<span class="st">"x2"</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    ax2.contourf(t_values.numpy(), t_values.numpy(), y_homotopy, levels<span class="op">=</span><span class="dv">50</span>, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    ax2.set_title(<span class="ss">f"Homotopy Function (t = </span><span class="sc">{</span>t<span class="sc">:.2f}</span><span class="ss">)"</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    ax2.set_xlabel(<span class="st">"x1"</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    ax2.set_ylabel(<span class="st">"x2"</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Create animation</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>ani <span class="op">=</span> FuncAnimation(fig, update, frames<span class="op">=</span><span class="bu">len</span>(T), interval<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Save as GIF</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>ani.save(<span class="st">"imgs/homotopy_2d.gif"</span>, writer<span class="op">=</span><span class="st">"imagemagick"</span>, fps<span class="op">=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><img src="imgs/homotopy_2d.gif" class="img-fluid" style="width:100.0%"></p>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This lecture has covered the theory behind homotopy, its action in the frequency and time domain, and its purpose in optimization. A scheme for continuation scheduling for the optimization along with the homotopy is a field of active research. A more detailed analysis to implement the technique in a practical setting can be understood from Lin et. al <span class="citation" data-cites="Lin2023">(<a href="#ref-Lin2023" role="doc-biblioref">Lin et al. 2023</a>)</span>.</p>
 
 
 
+</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
