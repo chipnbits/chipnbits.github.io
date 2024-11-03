@@ -24,15 +24,12 @@
 <p>$$ </p>
 <p>$$</p>
 </div>
-<section id="motivation" class="level1">
-<h1>Motivation</h1>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
 <p>So far we have examined optimization techniques using gradient descent and the Gauss-Newton method. These methods are powerful but can be limited by the presence of local minima in the optimization landscape. In this lecture we will explore a technique called Gaussian homotopy that can be used to escape local minima in optimization problems.</p>
-<p>To recap the steps used so far in optimization, we have an objective</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Coperatorname*%7Bargmin%7Df(x),"></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?x%20%5Cin%20%5Cmathbb%7BR%7D%5En"> is an unconstrained optimization variable. The objective can be searched out by stepping in a direction itertively, in general:</p>
-<p><img src="https://latex.codecogs.com/png.latex?x_%7Bk+1%7D%20=%20x_k%20-%20%5Calpha_k%20H%20%5Cnabla%20f(x_k),"></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?%5Calpha_k"> is the step size. The gradient <img src="https://latex.codecogs.com/png.latex?%5Cnabla%20f(x_k)"> can be computed explicitly or using automatic differentiation. The matrix <img src="https://latex.codecogs.com/png.latex?H"> is a modifier that depends on the method being used:</p>
-<p><img src="https://latex.codecogs.com/png.latex?H%20=%20%5Cbegin%7Bcases%7D%0A%20%20%20%20I%20&amp;%20%5Ctext%7BGradient%20Descent%7D%20%5C%5C%0A%20%20%20%20(J%5ET%20J)%5E%7B-1%7D%20&amp;%20%5Ctext%7BGauss-Newton%7D%0A%5Cend%7Bcases%7D"></p>
+<p>To recap the steps used so far in optimization, we have an objective <img src="https://latex.codecogs.com/png.latex?%5Coperatorname*%7Bargmin%7Df(x),"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?x%20%5Cin%20%5Cmathbb%7BR%7D%5En"> is an unconstrained optimization variable. The objective can be searched out by stepping in a direction itertively, in general: <img src="https://latex.codecogs.com/png.latex?x_%7Bk+1%7D%20=%20x_k%20-%20%5Calpha_k%20H%20%5Cnabla%20f(x_k),"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Calpha_k"> is the step size. The gradient <img src="https://latex.codecogs.com/png.latex?%5Cnabla%20f(x_k)"> can be computed explicitly or using automatic differentiation. The matrix <img src="https://latex.codecogs.com/png.latex?H"> is a modifier that depends on the method being used: <img src="https://latex.codecogs.com/png.latex?H%20=%0A%5Cbegin%7Bcases%7D%0A%20%20%20%20I%20&amp;%20%5Ctext%7BGradient%20Descent%7D%20%5C%5C%0A%20%20%20%20(J%5ET%20J)%5E%7B-1%7D%20&amp;%20%5Ctext%7BGauss-Newton%7D%0A%5Cend%7Bcases%7D%0A"></p>
 <p>However, optimization is often performed on non-convex functions, in which case the path to a global minimum can be obstructed by local minima. Three categories of increasingly non-convex functions are shown below.</p>
 <div id="fig:function-classes" class="figure">
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture7/path1.svg" class="img-fluid" style="border: 2px solid #000; padding: 20px; display: block; margin-left: auto; margin-right: auto;;width:50.0%" alt="Three Categories of Increasingly Non-Convex Functions"> <strong>Figure:</strong> Three categories of increasingly non-convex functions illustrating potential local minima that can obstruct the path to a global minimum.</p>
@@ -256,24 +253,917 @@ font-style: inherit;">abla^2 f(x)$"</span>)</span>
 </div>
 </div>
 </div>
+</section>
 <section id="direct-search-methods" class="level2">
 <h2 class="anchored" data-anchor-id="direct-search-methods">Direct Search Methods</h2>
-<p>A direct search can be performed to try to find the global minimum of a non-convex function.</p>
+<p>A direct search <span class="citation" data-cites="wikipedia_directsearch">(Wikipedia 2024)</span> can be performed to try to find the global minimum of a non-convex function <span class="citation" data-cites="Lewis2000">(Lewis, Torczon, and Trosset 2000)</span>.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20x_%7Bk+1%7D%20=%20x_k%20+%20%5Calpha_k%20d_k,%20%5Cquad%20d_k%20%5Cin%20%5Cmathbb%7BR%7D%5En."></p>
-<p>In this case the direction might not follow the gradient descent rule, there could be a stochastic element. The general algorithms that implement this will have the property that the step size decreases over time such that</p>
+<p>In this case the direction does not follow the gradient descent rule, there could be a stochastic element. The general algorithms that implement this will have the property that the step size decreases over time such that</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20%5C%7C%20%5Calpha_k%20d_k%20%5C%7C%20%5Cto%200,%20%5C%20k%20%5Cto%20%5Cinfty"></p>
+<p>The implementation ignores seeking information about the gradient or the Hessian of the function. Instead some points in the surrounding region are computed and the most optimal decrease for the next step is selected.</p>
+<p>The method has been known since the 1950s but it fell out of favour due to the slow rate of convergence. However, with parallel computing advances it has become more feasible to use again. For a large set of direct search methods, it is possible to rigorously prove that they will converge to a local minimum <span class="citation" data-cites="Kolda2003">(Kolda, Lewis, and Torczon 2003)</span>.</p>
+</section>
+<section id="homotopy" class="level2">
+<h2 class="anchored" data-anchor-id="homotopy">Homotopy</h2>
+<p>In mathematics, homotopy refers to the continuous transformation of one function into another. In optimization, homotopy—or continuation optimization—is used to transform a highly non-convex function into a simpler, often more convex surrogate function. This approach enables the optimizer to escape local minima and approach a global minimum by incrementally tackling easier, intermediate optimization problems.</p>
+<p>The core idea behind homotopy optimization is to relax a difficult optimization problem into a series of smoother problems that gradually resemble the original objective function. This relaxation process spreads the gradient and Hessian information outward, making the function landscape easier to navigate and minimizing the risk of getting stuck in local minima.</p>
+<p>This can be accomplished using a convolution with a simple function as a kernel. The kernel that is used can have variable width and parameterization, there are varying degrees of relaxation which can be parameterized using a <img src="https://latex.codecogs.com/png.latex?t"> time variable. As <img src="https://latex.codecogs.com/png.latex?t%20%5Cto%200"> the function becomes more like the original function, and as <img src="https://latex.codecogs.com/png.latex?t%20%5Cto%201"> the function becomes more like the smoothing function. The homotopy between the two is parameterized by <img src="https://latex.codecogs.com/png.latex?t%20%5Cin%20%5B0,%201%5D">.</p>
+<div style="text-align: center; margin: 20px 0;">
+<a title="Jim.belk, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:HomotopySmall.gif"> <img width="300" alt="A continuous deformation of a path" src="https://upload.wikimedia.org/wikipedia/commons/7/7e/HomotopySmall.gif?20110614214259"> </a>
+<p style="font-size: 0.9em; color: gray;">
+A continuous deformation of a path. Source: <a href="https://commons.wikimedia.org/wiki/File:HomotopySmall.gif" title="Jim.belk, CC0, via Wikimedia Commons">Wikimedia Commons</a>
+</p>
+</div>
+<section id="homotopy-optimization" class="level3">
+<h3 class="anchored" data-anchor-id="homotopy-optimization">Homotopy Optimization</h3>
+<p>In the case of optimization, the technique is know as homotopy optimization or continuation optimization. The optimization process starts with the smoothed function and then gradually moves back to the original function using the optimization steps from the relaxed prbolem. This is known as a continuation method, and the scheduling of the homotopy parameter <img src="https://latex.codecogs.com/png.latex?t"> is the continutation schedule. A summary description with more details and advanced techniques can be found in work by Lin et. al <span class="citation" data-cites="Lin2023">(Lin et al. 2023)</span>.</p>
+<section id="example" class="level4">
+<h4 class="anchored" data-anchor-id="example">Example</h4>
+<p>Let <img src="https://latex.codecogs.com/png.latex?f(x)"> be the original function and <img src="https://latex.codecogs.com/png.latex?g(x)"> be the smoothing function. The homotopy function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> can be defined as and interpolation between the two functions:</p>
+<p><img src="https://latex.codecogs.com/png.latex?h(x,%20t)%20=%20(1-t)%20f(x)%20+%20t%20g(x)."></p>
+<p>This new function has the important property that <img src="https://latex.codecogs.com/png.latex?h(x,0)%20=%20f(x)"> and <img src="https://latex.codecogs.com/png.latex?h(x,1)%20=%20g(x)"> so it represents a continuous path of deformation between the two functions, beginning at <img src="https://latex.codecogs.com/png.latex?t=1"> with a simpler relaxed problem and ending at <img src="https://latex.codecogs.com/png.latex?t=0"> with the original problem.</p>
+<p>The new minimization problem becomes:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Coperatorname*%7Bargmin%7D_%7B%5Cmathcal%7BX%7D%7D%20h(x,%20t)."></p>
+<p>A schedule can be set up for the times so that a series of times <img src="https://latex.codecogs.com/png.latex?%5C%7Bt_0,%20t_1,%20%5Cdots%20t_k,%20%5Cldots,%20t_n%5C%7D"> are used to solve the problem. We solve at <img src="https://latex.codecogs.com/png.latex?t_0%20=%201"> and then gradually decrease the value of <img src="https://latex.codecogs.com/png.latex?t"> to <img src="https://latex.codecogs.com/png.latex?0">. The solution <img src="https://latex.codecogs.com/png.latex?x_k"> at <img src="https://latex.codecogs.com/png.latex?t_%7Bk%7D"> is used as the starting point for the next iteration <img src="https://latex.codecogs.com/png.latex?t_%7Bk+1%7D"> until reaching <img src="https://latex.codecogs.com/png.latex?t_n%20=%200">.</p>
+<p>In the case where the values of <img src="https://latex.codecogs.com/png.latex?x"> may be constrained, this becomes similar to the Interior Point Method, where the constraints are relaxed and then gradually tightened.</p>
+</section>
+</section>
+</section>
+<section id="gaussian-homotopy" class="level2">
+<h2 class="anchored" data-anchor-id="gaussian-homotopy">Gaussian Homotopy</h2>
+<p>A common case of homotopy is the Gaussian homotopy, where the smoothing function is a Gaussian function. The Gaussian function is a widely used in signal processing and image processing due to its properties as a low-pass filter. For example, a Gaussian blur is applied to images to aid in downsampling since it preserves the lower resolution details while removing high-frequency noise that may cause aliasing.</p>
+<p>To illustrate the low-pass filtering property, consider a Gaussian function <img src="https://latex.codecogs.com/png.latex?g(x)"> and its Fourier transform <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bg%7D(k)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?g(x)%20=%20%5Cfrac%7B1%7D%7B%5Csqrt%7B2%5Cpi%20%5Csigma%5E2%7D%7D%20e%5E%7B-%5Cfrac%7Bx%5E2%7D%7B2%5Csigma%5E2%7D%7D,%20%5Cquad%20%5Chat%7Bg%7D(k)%20=%20e%5E%7B-%5Cfrac%7Bk%5E2%20%5Csigma%5E2%7D%7B2%7D%7D."></p>
+<p>The Fourier transform of the Gaussian is another Gaussian, it is an eigenfunction of the Fourier transform operator. The convolution theorem states that the convolution of two functions in the spatial domain is equivalent to the multiplication of their Fourier transforms in the frequency domain:</p>
+<p><img src="https://latex.codecogs.com/png.latex?f(x)%20%5Cast%20g(x)%20=%20%5Cmathcal%7BF%7D%5E%7B-1%7D%20%5Cleft%5B%20%5Chat%7Bf%7D(k)%20%5Chat%7Bg%7D(k)%20%5Cright%5D."></p>
+<p>The convolution of a function <img src="https://latex.codecogs.com/png.latex?f(x)"> with a Gaussian <img src="https://latex.codecogs.com/png.latex?g(x)"> can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain.</p>
+<p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <img src="https://latex.codecogs.com/png.latex?g(x)%20=%20%5Cdelta(x)"> in the time domain, a constant function $ (k) = 1$ in the frequency domain. The convolution of a delta function with a function <img src="https://latex.codecogs.com/png.latex?f"> is the function itself, so the delta function does not change the function. The multiplication of the function <img src="https://latex.codecogs.com/png.latex?%5Chat%20f(k)"> with the constant function <img src="https://latex.codecogs.com/png.latex?1"> is the function itself, so the constant function does not change the function in the frequency domain.</p>
+<div id="gaussian-homotopy" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb2-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> scipy.fftpack <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> fft, ifft, fftfreq, fftshift</span>
+<span id="cb2-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> matplotlib.animation <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> FuncAnimation</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate a square wave in the time domain</span></span>
+<span id="cb2-7"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> square_wave(t, period<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>):</span>
+<span id="cb2-8">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Creates a square wave with a given period."""</span></span>
+<span id="cb2-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> np.where(np.sin(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> period) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Time domain setup</span></span>
+<span id="cb2-12">t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb2-13">square_wave_signal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> square_wave(t)</span>
+<span id="cb2-14">freq <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fftfreq(t.size, d<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(t[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> t[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]))</span>
+<span id="cb2-15">square_wave_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fft(square_wave_signal)</span>
+<span id="cb2-16"></span>
+<span id="cb2-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Function to update the plot for each frame, based on current sigma_t</span></span>
+<span id="cb2-18"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> update_plot(sigma_t, axs, time_text):</span>
+<span id="cb2-19">    sigma_f <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sigma_t)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Standard deviation in frequency domain</span></span>
+<span id="cb2-20">    gaussian_time_domain <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> sigma_t)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-21">    gaussian_filter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (freq <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> sigma_f)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-22">    filtered_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> square_wave_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> gaussian_filter</span>
+<span id="cb2-23">    smoothed_signal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.real(ifft(filtered_fft))</span>
+<span id="cb2-24"></span>
+<span id="cb2-25">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update each subplot with new data</span></span>
+<span id="cb2-26">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].clear()</span>
+<span id="cb2-27">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].plot(t, gaussian_time_domain, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"purple"</span>)</span>
+<span id="cb2-28">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gaussian Filter (Time Domain)"</span>)</span>
+<span id="cb2-29">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time"</span>)</span>
+<span id="cb2-30">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-31">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-32"></span>
+<span id="cb2-33">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].clear()</span>
+<span id="cb2-34">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(fftshift(freq), fftshift(gaussian_filter), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"orange"</span>)</span>
+<span id="cb2-35">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gaussian Low-Pass Filter (Frequency Domain)"</span>)</span>
+<span id="cb2-36">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Frequency"</span>)</span>
+<span id="cb2-37">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-38">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlim(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>)</span>
+<span id="cb2-39">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-40"></span>
+<span id="cb2-41">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].clear()</span>
+<span id="cb2-42">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].plot(t, square_wave_signal, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"green"</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>)</span>
+<span id="cb2-43">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].plot(t, smoothed_signal, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>)</span>
+<span id="cb2-44">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Smoothed Signal (Time Domain)"</span>)</span>
+<span id="cb2-45">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time"</span>)</span>
+<span id="cb2-46">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-47">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-48"></span>
+<span id="cb2-49">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].clear()</span>
+<span id="cb2-50">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(fftshift(freq), fftshift(np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(square_wave_fft)), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'blue'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>)</span>
+<span id="cb2-51">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(fftshift(freq), fftshift(np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(filtered_fft)), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"orange"</span>)</span>
+<span id="cb2-52">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Filtered Spectrum (Frequency Domain)"</span>)</span>
+<span id="cb2-53">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Frequency"</span>)</span>
+<span id="cb2-54">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-55">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlim(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>)</span>
+<span id="cb2-56">    axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-57"></span>
+<span id="cb2-58">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update the time text</span></span>
+<span id="cb2-59">    time_text.set_text(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"T = </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>T<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb2-60"></span>
+<span id="cb2-61"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize the figure and plot layout for animation</span></span>
+<span id="cb2-62">fig, axs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Increased figure size for animation</span></span>
+<span id="cb2-63">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].plot(t, square_wave_signal, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'green'</span>)</span>
+<span id="cb2-64">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Square Wave (Time Domain)"</span>)</span>
+<span id="cb2-65">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time"</span>)</span>
+<span id="cb2-66">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-67">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-68"></span>
+<span id="cb2-69">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(fftshift(freq), fftshift(np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(square_wave_fft)), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'blue'</span>)</span>
+<span id="cb2-70">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Fourier Transform of Square Wave (Frequency Domain)"</span>)</span>
+<span id="cb2-71">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Frequency"</span>)</span>
+<span id="cb2-72">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Amplitude"</span>)</span>
+<span id="cb2-73">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlim(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>)</span>
+<span id="cb2-74">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb2-75"></span>
+<span id="cb2-76"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add a text annotation for time at the bottom of the figure with extra space</span></span>
+<span id="cb2-77">time_text <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fig.text(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"center"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjusted position for clarity</span></span>
+<span id="cb2-78"></span>
+<span id="cb2-79"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust subplot spacing specifically for animation</span></span>
+<span id="cb2-80">plt.tight_layout(rect<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Extra space at the bottom for time text</span></span>
+<span id="cb2-81"></span>
+<span id="cb2-82"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Animation settings</span></span>
+<span id="cb2-83">steps <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb2-84"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> animate(frame):</span>
+<span id="cb2-85">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">global</span> T  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Declare T as a global variable for use in update_plot</span></span>
+<span id="cb2-86">    T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (frame <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> steps)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Scale frame number to a T value between 1 and 0</span></span>
+<span id="cb2-87">    sigma_t <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> T)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Interpolate sigma_t</span></span>
+<span id="cb2-88">    update_plot(sigma_t, axs, time_text)</span>
+<span id="cb2-89"></span>
+<span id="cb2-90"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create and display the animation</span></span>
+<span id="cb2-91">ani <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> FuncAnimation(fig, animate, frames<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>steps, interval<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb2-92"></span>
+<span id="cb2-93"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Save the animation as a GIF</span></span>
+<span id="cb2-94">ani.save(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'imgs/gaussian_homotopy.gif'</span>, writer<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'imagemagick'</span>, fps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb2-95"></span>
+<span id="cb2-96">plt.show()</span></code></pre></div>
+</details>
+</div>
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" class="img-fluid"></p>
+<p>For Gaussian homotopy, the continuous transformation between the original function and the relaxed version is given by a convolution with a Gaussian kernel. We let <img src="https://latex.codecogs.com/png.latex?%5Csigma(t)"> be the standard deviation of the Gaussian kernel at time <img src="https://latex.codecogs.com/png.latex?t">. The deviation will be <img src="https://latex.codecogs.com/png.latex?%5Csigma(0)%20=%200"> and <img src="https://latex.codecogs.com/png.latex?%5Csigma(1)%20=%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D"> so that the homotopy at any time <img src="https://latex.codecogs.com/png.latex?t"> is given by:</p>
+<p><img src="https://latex.codecogs.com/png.latex?h(x,%20t)%20=%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(x-%5Cxi)%20%5Cexp(-%5Cfrac%7B%5Cxi%5E2%7D%7B%5Csigma(t)%5E2%7D)%20d%5Cxi."></p>
+<p>The Gaussian kernel should be divided by its partition function <img src="https://latex.codecogs.com/png.latex?z(t)%20=%20%5Cint%20%5Cexp(-%5Cfrac%7B%5Cxi%5E2%7D%7B%5Csigma(t)%5E2%7D)%20d%5Cxi"> in theory so that the kernel is normalized, but for the use case where <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> is used as a surrogate function for optimization, the partition function <img src="https://latex.codecogs.com/png.latex?z(t)"> does not change the minimizer of the function.</p>
+<section id="stochastic-optimization" class="level3">
+<h3 class="anchored" data-anchor-id="stochastic-optimization">Stochastic Optimization</h3>
+<p>Since the objective is to minimize over the integral given by <img src="https://latex.codecogs.com/png.latex?h(x,%20t)">, a stochastic method can be used to estimate the minimizer in expectation using Monte Carlo methods. The integral can be approximated by sampling <img src="https://latex.codecogs.com/png.latex?N"> points from the Gaussian kernel and averaging the function values at those points:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ah(x,%20t)%20&amp;=%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(x-%5Cxi)%20%5Cexp(-%5Cfrac%7B%5Cxi%5E2%7D%7B%5Csigma(t)%5E2%7D)%20d%5Cxi%5C%5C%0A&amp;%20=%20%5Cmathbb%7BE%7D_%7B%5Cxi%20%5Csim%20%5Cmathcal%7BN%7D(0,%20%5Csigma(t)%5E2)%7D%20f(x-%5Cxi)%20%5C%5C%0A&amp;%20%5Capprox%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20f(x-%5Cxi_i),%20%5Cquad%20%5Cxi_i%20%5Csim%20%5Cmathcal%7BN%7D(0,%20%5Csigma(t)%5E2).%0A%5Cend%7Balign*%7D%0A"></p>
+<p>For a given <img src="https://latex.codecogs.com/png.latex?t"> and point <img src="https://latex.codecogs.com/png.latex?x"> where we want to estimate the function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)">, we can sample <img src="https://latex.codecogs.com/png.latex?N"> points from a Gaussian kernel centered at <img src="https://latex.codecogs.com/png.latex?x"> with standard deviation <img src="https://latex.codecogs.com/png.latex?%5Csigma(t)"> and evaluate the function at those points. The average of the function values at those points will be an estimate of the function value at <img src="https://latex.codecogs.com/png.latex?x">.</p>
+</section>
+<section id="implementation-choices" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-choices">Implementation Choices</h3>
+<p>There are two ways to approach this problem when using numerical methods.</p>
+<ol type="1">
+<li><strong>Discretize then Optimize:</strong> The integral is first discretized by choosing a set of points <img src="https://latex.codecogs.com/png.latex?%5C%7Bxi_1,%20%5Cxi_2,%20%5Cldots,%20%5Cxi_N%5C%7D"> and then the function is evaluated using that same discrete kernel across all points:</li>
+</ol>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%7B%5Cmathcal%7BX%7D%7D%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20f(x-%5Cxi_i)."></p>
+<p>This sum can end up being large if there are many points that are selected.</p>
+<ol start="2" type="1">
+<li><strong>Optimize then Discretize:</strong> In this case we start with gradient descent and the continuous function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> and then sample the function at the points <img src="https://latex.codecogs.com/png.latex?%5C%7Bxi_1,%20%5Cxi_2,%20%5Cldots,%20%5Cxi_N%5C%7D"> to estimate a gradient.</li>
+</ol>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ax_%7Bk+1%7D%20&amp;=%20x_k%20-%20%5Calpha_k%20%5Cmathbb%7BE%7D_%7B%5Cxi%7D%20%5Cnabla%20f(x_k%20-%20%5Cxi)%5C%5C%0A%20%20&amp;%5Capprox%20x_k%20-%20%5Calpha_k%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cnabla%20f(x_k%20-%20%5Cxi_i).%0A%5Cend%7Balign*%7D%0A"></p>
+<p>This formulation can technically converge even with <img src="https://latex.codecogs.com/png.latex?%7C%20i%20%7C%20=%201"> but with very slow convergence.</p>
+<hr>
+<p>Now that the Gaussian homotopy has been introduced, we can move on to the implementation of the algorithm.</p>
+</section>
+</section>
+<section id="code-implementation" class="level1">
+<h1>Code Implementation</h1>
+<p>As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20y%20=%20-%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20-%202)%5E2%20+%20(x_2%20-%202)%5E2%7D%7B0.1%7D%5Cright)%20-%202%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20+%202)%5E2%20+%20(x_2%20+%202)%5E2%7D%7B0.1%7D%5Cright)."></p>
+<div id="8f752909" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb3-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch</span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> objective_function(X):</span>
+<span id="cb3-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    A 2D function with multiple local minima.</span></span>
+<span id="cb3-7"></span>
+<span id="cb3-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Args:</span></span>
+<span id="cb3-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        X: A tensor of shape (N, 2), where each row is a point [x1, x2].</span></span>
+<span id="cb3-10"></span>
+<span id="cb3-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Returns:</span></span>
+<span id="cb3-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        y: A tensor of shape (N,), representing the function value at each point.</span></span>
+<span id="cb3-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb3-14">    x1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> X[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb3-15">    x2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> X[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb3-16">    y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>torch.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>((x1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (x2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb3-17">        <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> torch.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>((x1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (x2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)</span>
+<span id="cb3-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> y</span>
+<span id="cb3-19"></span>
+<span id="cb3-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># plot the function</span></span>
+<span id="cb3-21">x1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb3-22">x2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb3-23">X1, X2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.meshgrid(x1, x2)</span>
+<span id="cb3-24">X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.stack([X1.flatten(), X2.flatten()], dim<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb3-25">y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> objective_function(X).reshape(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb3-26">plt.contourf(X1, X2, y, levels<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb3-27">plt.colorbar()</span>
+<span id="cb3-28">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x1'</span>)</span>
+<span id="cb3-29">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x2'</span>)</span>
+<span id="cb3-30">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Objective function'</span>)</span>
+<span id="cb3-31">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\sghys\miniconda3\envs\ml\Lib\site-packages\torch\functional.py:512: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ..\aten\src\ATen\native\TensorShape.cpp:3588.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture7/index_files/figure-html/cell-4-output-2.png" width="601" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
 
 
 </section>
-</section>
 
- ]]></description>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-Kolda2003" class="csl-entry">
+Kolda, Tamara G., Robert Michael Lewis, and Virginia Torczon. 2003. <span>“Optimization by Direct Search: New Perspectives on Some Classical and Modern Methods.”</span> <em>SIAM Review</em> 45 (3): 385–482. <a href="https://doi.org/10.1137/s003614450242889">https://doi.org/10.1137/s003614450242889</a>.
+</div>
+<div id="ref-Lewis2000" class="csl-entry">
+Lewis, Robert Michael, Virginia Torczon, and Michael W. Trosset. 2000. <span>“Direct Search Methods: Then and Now.”</span> <em>Journal of Computational and Applied Mathematics</em> 124 (1–2): 191–207. <a href="https://doi.org/10.1016/s0377-0427(00)00423-4">https://doi.org/10.1016/s0377-0427(00)00423-4</a>.
+</div>
+<div id="ref-Lin2023" class="csl-entry">
+Lin, Xi, Zhiyuan Yang, Xiaoyuan Zhang, and Qingfu Zhang. 2023. <span>“Continuation Path Learning for Homotopy Optimization.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2307.12551">https://doi.org/10.48550/ARXIV.2307.12551</a>.
+</div>
+<div id="ref-wikipedia_directsearch" class="csl-entry">
+Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="https://en.wikipedia.org/wiki/Pattern_search_(optimization)">https://en.wikipedia.org/wiki/Pattern_search_(optimization)</a>.
+</div>
+</div></section></div> ]]></description>
   <category>Optimization</category>
-  <category>Gauss-Newton</category>
-  <category>Automatic Differentiation</category>
   <category>PyTorch</category>
+  <category>Homotopy</category>
+  <category>Fourier Transform</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture7/</guid>
   <pubDate>Tue, 22 Oct 2024 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/img/gaussian_homotopy.gif" medium="image" type="image/gif"/>
 </item>
 <item>
   <title>Lecture 6: Autodiff and Implementing Gauss-Newton</title>
