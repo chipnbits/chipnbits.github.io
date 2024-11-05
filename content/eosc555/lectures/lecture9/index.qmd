@@ -137,7 +137,7 @@ $$
 y \right\|^2
 $$
 
-### Non-linear Example
+#### Non-linear Example
 
 To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.
 
@@ -231,4 +231,10 @@ plt.ylim(0, m + 1)
 plt.show()
 ```
 
+#### Notes on Scaling
 
+The $W$ matrix will scale up in $O(N^2)$ so that with more data samples it can become too large to handle well. The problem however can be solved with a random $w$ and with $W$ alone under these conditions. A lower rank $W$ could help under conditions where the size of $N$ is large. 
+
+$$ W = Q Z^T $$
+
+where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product $U^TW$ for any particular sample $u_i$ will be giben by $\sigma((u_i^TQ)Z^T)$. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.

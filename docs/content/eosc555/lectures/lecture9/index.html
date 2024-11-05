@@ -198,7 +198,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#a-basic-neural-network-single-layer-perceptron-slp" id="toc-a-basic-neural-network-single-layer-perceptron-slp" class="nav-link" data-scroll-target="#a-basic-neural-network-single-layer-perceptron-slp">A Basic Neural Network: Single-Layer Perceptron (SLP)</a></li>
   <li><a href="#non-linearity-analysis" id="toc-non-linearity-analysis" class="nav-link" data-scroll-target="#non-linearity-analysis">Non-linearity Analysis</a></li>
-  <li><a href="#non-linear-example" id="toc-non-linear-example" class="nav-link" data-scroll-target="#non-linear-example">Non-linear Example</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -335,9 +334,8 @@ window.Quarto = {
 -
 y \right\|^2
 \]</span></p>
-</section>
-<section id="non-linear-example" class="level3">
-<h3 class="anchored" data-anchor-id="non-linear-example">Non-linear Example</h3>
+<section id="non-linear-example" class="level4">
+<h4 class="anchored" data-anchor-id="non-linear-example">Non-linear Example</h4>
 <p>To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.</p>
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -455,8 +453,15 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 </figcaption>
 </figure>
 </div>
+</section>
+<section id="notes-on-scaling" class="level4">
+<h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
+<p>The <span class="math inline">\(W\)</span> matrix will scale up in <span class="math inline">\(O(N^2)\)</span> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <span class="math inline">\(w\)</span> and with <span class="math inline">\(W\)</span> alone under these conditions. A lower rank <span class="math inline">\(W\)</span> could help under conditions where the size of <span class="math inline">\(N\)</span> is large.</p>
+<p><span class="math display">\[ W = Q Z^T \]</span></p>
+<p>where <span class="math inline">\(Q\)</span> is a matrix of orthonormal columns and <span class="math inline">\(Z\)</span> is a matrix of size <span class="math inline">\(d \times N\)</span>. In this case the product <span class="math inline">\(U^TW\)</span> for any particular sample <span class="math inline">\(u_i\)</span> will be giben by <span class="math inline">\(\sigma((u_i^TQ)Z^T)\)</span>. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.</p>
 
 
+</section>
 </section>
 </section>
 
