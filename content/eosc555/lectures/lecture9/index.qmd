@@ -1,0 +1,33 @@
+---
+title: "Lecture 9: Machine Learning and Neural Networks"
+subtitle: "A mathematical approach."
+date: 2024-11-04
+author: "Simon Ghyselincks"
+description: >-
+    Neural networks function as a universal approximator for nonlinear functions. This lecture explores their construction, use, and cases such as convolutional neural networks.
+categories:
+  - Machine Learning
+  - Neural Networks
+  
+image: "imgs/gaussian_homotopy.gif"
+draft: true
+
+editor: 
+  render-on-save: false
+
+filters:
+  - pseudocode
+
+pseudocode:
+  caption-prefix: "Algorithm"
+  reference-prefix: "Algorithm"
+  caption-number: true
+---
+
+{{< include /_macros.qmd >}}
+
+## Motivation
+Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.
+
+
+

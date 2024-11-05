@@ -361,6 +361,8 @@ plt.show()
 The next step is to create a time parameterized function $h(x, t)$ that is the Gaussian homotopy of f(x). In practical terms, the starting $\sigma_{\text{max}}$ is being modified by a $t$ parameter when multiplied by the random noise. At $t=0$ the function is the original function, and at $t=1$ the function is being convolved numerically with a Gaussian kernel that is $\mathcal{N}(0, \sigma_{\text{max}})$. The time points in between are a homotopy between the two functions.
 
 ```{python}
+#| fig-cap: "Gaussian Homotopy."
+#| code-fold: false
 def gaussian_homotopy(func, x, batch_size=1000, sigma=1.0, t=0.5):
     """
     Computes the Gaussian homotopy function h(x, t) using Monte Carlo approximation.

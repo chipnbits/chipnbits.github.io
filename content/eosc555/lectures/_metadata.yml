@@ -14,8 +14,7 @@ format:
 
     fig-width: 7.5
     fig-height: 5
-  # ipynb:
-  #   execute: false
+  # ipynb: false
 
 execute:
   kernel: ml
