@@ -4,19 +4,20 @@ subtitle: "A mathematical approach."
 date: 2024-11-04
 author: "Simon Ghyselincks"
 description: >-
-    Neural networks function as a universal approximator for nonlinear functions. This lecture explores their construction, use, and cases such as convolutional neural networks.
+    Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.
 categories:
   - Machine Learning
   - Neural Networks
   
-image: "imgs/gaussian_homotopy.gif"
-draft: true
+# image: "imgs/gaussian_homotopy.gif"
+draft: false
 
 editor: 
   render-on-save: false
 
 filters:
   - pseudocode
+  - diagram
 
 pseudocode:
   caption-prefix: "Algorithm"
@@ -27,7 +28,207 @@ pseudocode:
 {{< include /_macros.qmd >}}
 
 ## Motivation
-Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.
 
+In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:
+
+$$ \min_{u} \left\{ \frac{1}{2} \left\| Au(x) - b \right\|_2^2 + \lambda R(u) \right\} $$
+
+where $u(x)$ is a distribution of the unknowns over the domain $x$, $A$ is the forward operator, $b$ is the data, and $R(u)$ is the regularizer. A neural network can be used as a universal approximator for the function $R: \mathbb{R}^n \rightarrow \mathbb{R}$, where $n$ is the number of unknowns, or values of $u$.
+
+## Neural Networks
+
+### A Basic Neural Network: Single-Layer Perceptron (SLP)
+
+A basic neural network will have parameters $\theta$ that can be trained or learned, along with the input, $u$.
+
+$$y = R(u; \theta) = w^T \sigma(Wu+a), \quad \theta := \{w, W, a\}$$
+
+The function $R$ in this case is a function defined for fixed $\theta$. The term $\sigma$ is a non-linear activation function, of which there are many choices. 
+
+- **$u$**: Input vector to the neural network.
+  
+- **$y$**: Output of the neural network, parameterized by $\theta$, representing the learned function.
+
+- **$\theta := \{w, W, a\}$**: Set of trainable parameters in the network, where:
+  - **$w$**: Weight vector for the output layer
+  - **$W$**: Weights matrix for the hidden layer
+  - **$a$**: Bias vector added to the hidden layer
+
+- **$\sigma$**: Non-linear activation function applied element-wise to the affine transformation $Wu + a$. 
+
+So a single layer neural network can be seen as the affine transformation of the vector $u$ followed by a non-linear activation function and a weighting metric for the resultant vector.
+
+This can be used as an approximator for the true regularizer $R(u) \approx R_T(u)$ in the inverse problem.
+
+Suppose that we have a known set of mappings $u_i \rightarrow y_i$, where $i = 1, \ldots, N$. For example we might have some information about the regularizer $R(u)$ for a set of $u$ values. One possible technique is to train an SLP to approximate the true regularizer $R_T(u)$.
+
+The function $y = R(u; \theta)$ returns a scalar, taking its transpose will not change the output:
+
+$$y = w^T \sigma(Wu+a) = \sigma(u^TW + a)w$$
+
+Then using the squared loss function, we can define the loss function as:
+
+$$\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u^TW + a)w - y_i \right \|^2$$
+
+The summation is reorganized to get rid of the summation term where $U$ is a matrix with the $u_i^T$ as the columns, A is a matrix with $a$ as the columns, and $y$ is the vector of $y_i$ values.
+
+$$\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW + A)w - y \right \|^2$$
+
+For simplicity of this analysis, we can assume without loss of generality for the problem at hand that $A = 0$ and $\sigma$ is the identity operator. Then:
+
+$$\hat\theta = \min_{\theta} \mathcal{L}(\theta) = \min_{\hat w} \frac{1}{2} \left \| U^T\hat w - y \right \|^2.$$
+
+where $\hat w = Ww$.
+
+### Non-linearity Analysis
+
+This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). $N>d$ means that there are more equations than there are unknowns, because $\hat w$ is of dimension $d$, so there could be infinite solutions.
+
+$$\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
+\underbrace{
+\begin{bmatrix}
+\ & \ & \ \\
+\ & U^T & \ \\
+\ & \ & \ \\
+\end{bmatrix}
+}_{N \times d}
+\cdot
+\underbrace{
+\begin{bmatrix}
+\ & \ & \ \\
+\ & W & \ \\
+\ & \ & \ \\
+\end{bmatrix}
+}_{N \times k}
+- y \right\|^2
+$$
+
+
+
+**Idea 1:**
+
+If we can increase the rank of the $Z = U^TW$ matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix $W$ that is $N \times m$ where $m > d$. In the resulting $z = U^TW$ matrix, the rank will still be $\text{rank}(Z) \le d$.
+
+**Idea 2:**
+
+Use a non-linear activation function $\sigma$ that operates element-wise on the matrix $Z = U^TW$ to increase the rank of the matrix so that $\text{rank}(\sigma(Z)) = \min (N,m)$.
+
+In practice the exact activation function is not important. It may be the case that $\text{rank}(\sigma(Z)) = 3$ for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix $W$. This can give a unique solution the least squares problem.
+
+$$
+\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
+\sigma \left( \underbrace{
+\begin{bmatrix} 
+\ & \ & \ \\
+\ & U^T & \ \\
+\ & \ & \ \\
+\end{bmatrix}
+}_{N \times d}
+\cdot
+\underbrace{
+\begin{bmatrix}
+\ & \ & \ & \ & \cdots & \ \\
+\ & W & \ & \ & \ & \ \\
+\ & \ & \ & \ & \ & \ \\
+\end{bmatrix}
+}_{N \times m}
+\right ) w
+-
+y \right\|^2
+$$
+
+### Non-linear Example
+
+To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.
+
+```{python}
+#| label: fig-nonlinear-rank-recovery
+#| fig-width: 3
+#| fig-cap: "A comparison least squares with non-linear activation function"
+#| fig-subcap: 
+#|   - "Reconstruction Error Comparison"
+#|   - "Matrix Rank Comparison"
+#| layout-ncol: 2
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy.linalg import lstsq, matrix_rank
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters
+N = 10  # Number of samples
+d = 5   # Dimension of input u
+m = 10  # Increased dimension for W
+
+# Generate random input data U (d x N)
+U = np.random.randn(d, N)
+
+# True weight matrix W_true (d x d)
+W_true = np.random.randn(d, d)
+w_true = np.random.randn(d)
+
+# Generate nonlinear output to test with
+y_linear = (np.cos(U.T @ W_true)) @ w_true
+
+# Initialize random model weight matrix W (d x m)
+W = np.random.randn(d, m)
+Z = U.T @ W
+rank_Z = matrix_rank(Z)
+
+sigma = np.sin
+Z_nonlinear = sigma(Z)
+rank_Z_nl = matrix_rank(Z_nonlinear)
+
+w_linear, residuals_linear, _, _ = lstsq(Z, y_linear, rcond=None)
+w_nonlinear, residuals_nl, _, _ = lstsq(Z_nonlinear, y_linear, rcond=None)
+
+# Check reconstruction error for each case
+error_linear = np.linalg.norm(Z @ w_linear - y_linear)
+error_nonlinear = np.linalg.norm(Z_nonlinear @ w_nonlinear - y_linear)
+
+# Comparison of Reconstruction Errors
+labels = ['Linear Least Squares', 'Non-linear Least Squares']
+errors = [error_linear, error_nonlinear]
+
+plt.figure(figsize=(5,5))
+
+bars = plt.bar(labels, errors, color=['skyblue', 'salmon'])
+plt.ylabel('Reconstruction Error')
+
+# Annotate bars with error values
+for bar in bars:
+    height = bar.get_height()
+    plt.annotate(f'{height:.4f}',
+                 xy=(bar.get_x() + bar.get_width() / 2, height),
+                 xytext=(0, 3),  # 3 points vertical offset
+                 textcoords="offset points",
+                 ha='center', va='bottom')
+
+plt.ylim(0, max(errors)*1.2)
+plt.show()
+
+plt.figure(figsize=(5,5))
+
+ranks = [rank_Z, rank_Z_nl]
+labels_rank = ['Z (Linear)', 'Z_nonlinear (Non-linear)']
+
+bars_rank = plt.bar(labels_rank, ranks, color=['lightgreen', 'gold'])
+plt.ylabel('Matrix Rank')
+
+# Annotate bars with rank values
+for bar in bars_rank:
+    height = bar.get_height()
+    plt.annotate(f'{int(height)}',
+                 xy=(bar.get_x() + bar.get_width() / 2, height),
+                 xytext=(0, 3),  # 3 points vertical offset
+                 textcoords="offset points",
+                 ha='center', va='bottom')
+
+plt.ylim(0, m + 1)
+plt.show()
+```
 
 
