@@ -1,7 +1,7 @@
 ---
 title: "Lecture 9: Machine Learning and Neural Networks"
 subtitle: "A mathematical approach."
-date: 2024-11-04
+date: 2024-11-05
 author: "Simon Ghyselincks"
 description: >-
     Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.

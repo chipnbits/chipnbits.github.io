@@ -1,7 +1,7 @@
 ---
 title: "Lecture 8: Regularization and Priors in Inverse Problems"
 subtitle: "The role of regularization and priors in solving inverse problems."
-date: 2024-11-04
+date: 2024-11-03
 author: "Simon Ghyselincks"
 description: >-
     Inverse problems often have multiple or infinite solutions. Regularization and priors can be used to constrain the solution space and find a unique solution. This lecture covers the role of regularization and priors in solving inverse problems.

@@ -10,7 +10,458 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Mon, 04 Nov 2024 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 05 Nov 2024 08:00:00 GMT</lastBuildDate>
+<item>
+  <title>Lecture 9: Machine Learning and Neural Networks</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="hidden">
+<p>$$ </p>
+<p>$$</p>
+</div>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%7Bu%7D%20%5Cleft%5C%7B%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%20Au(x)%20-%20b%20%5Cright%5C%7C_2%5E2%20+%20%5Clambda%20R(u)%20%5Cright%5C%7D%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?u(x)"> is a distribution of the unknowns over the domain <img src="https://latex.codecogs.com/png.latex?x">, <img src="https://latex.codecogs.com/png.latex?A"> is the forward operator, <img src="https://latex.codecogs.com/png.latex?b"> is the data, and <img src="https://latex.codecogs.com/png.latex?R(u)"> is the regularizer. A neural network can be used as a universal approximator for the function <img src="https://latex.codecogs.com/png.latex?R:%20%5Cmathbb%7BR%7D%5En%20%5Crightarrow%20%5Cmathbb%7BR%7D">, where <img src="https://latex.codecogs.com/png.latex?n"> is the number of unknowns, or values of <img src="https://latex.codecogs.com/png.latex?u">.</p>
+</section>
+<section id="neural-networks" class="level2">
+<h2 class="anchored" data-anchor-id="neural-networks">Neural Networks</h2>
+<section id="a-basic-neural-network-single-layer-perceptron-slp" class="level3">
+<h3 class="anchored" data-anchor-id="a-basic-neural-network-single-layer-perceptron-slp">A Basic Neural Network: Single-Layer Perceptron (SLP)</h3>
+<p>A basic neural network will have parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> that can be trained or learned, along with the input, <img src="https://latex.codecogs.com/png.latex?u">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?y%20=%20R(u;%20%5Ctheta)%20=%20w%5ET%20%5Csigma(Wu+a),%20%5Cquad%20%5Ctheta%20:=%20%5C%7Bw,%20W,%20a%5C%7D"></p>
+<p>The function <img src="https://latex.codecogs.com/png.latex?R"> in this case is a function defined for fixed <img src="https://latex.codecogs.com/png.latex?%5Ctheta">. The term <img src="https://latex.codecogs.com/png.latex?%5Csigma"> is a non-linear activation function, of which there are many choices.</p>
+<ul>
+<li><p><strong><img src="https://latex.codecogs.com/png.latex?u"></strong>: Input vector to the neural network.</p></li>
+<li><p><strong><img src="https://latex.codecogs.com/png.latex?y"></strong>: Output of the neural network, parameterized by <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, representing the learned function.</p></li>
+<li><p><strong><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20:=%20%5C%7Bw,%20W,%20a%5C%7D"></strong>: Set of trainable parameters in the network, where:</p>
+<ul>
+<li><strong><img src="https://latex.codecogs.com/png.latex?w"></strong>: Weight vector for the output layer</li>
+<li><strong><img src="https://latex.codecogs.com/png.latex?W"></strong>: Weights matrix for the hidden layer</li>
+<li><strong><img src="https://latex.codecogs.com/png.latex?a"></strong>: Bias vector added to the hidden layer</li>
+</ul></li>
+<li><p><strong><img src="https://latex.codecogs.com/png.latex?%5Csigma"></strong>: Non-linear activation function applied element-wise to the affine transformation <img src="https://latex.codecogs.com/png.latex?Wu%20+%20a">.</p></li>
+</ul>
+<p>So a single layer neural network can be seen as the affine transformation of the vector <img src="https://latex.codecogs.com/png.latex?u"> followed by a non-linear activation function and a weighting metric for the resultant vector.</p>
+<p>This can be used as an approximator for the true regularizer <img src="https://latex.codecogs.com/png.latex?R(u)%20%5Capprox%20R_T(u)"> in the inverse problem.</p>
+<p>Suppose that we have a known set of mappings <img src="https://latex.codecogs.com/png.latex?u_i%20%5Crightarrow%20y_i">, where <img src="https://latex.codecogs.com/png.latex?i%20=%201,%20%5Cldots,%20N">. For example we might have some information about the regularizer <img src="https://latex.codecogs.com/png.latex?R(u)"> for a set of <img src="https://latex.codecogs.com/png.latex?u"> values. One possible technique is to train an SLP to approximate the true regularizer <img src="https://latex.codecogs.com/png.latex?R_T(u)">.</p>
+<p>The function <img src="https://latex.codecogs.com/png.latex?y%20=%20R(u;%20%5Ctheta)"> returns a scalar, taking its transpose will not change the output:</p>
+<p><img src="https://latex.codecogs.com/png.latex?y%20=%20w%5ET%20%5Csigma(Wu+a)%20=%20%5Csigma(u%5ETW%20+%20a)w"></p>
+<p>Then using the squared loss function, we can define the loss function as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cleft%20%5C%7C%20%5Csigma(u%5ETW%20+%20a)w%20-%20y_i%20%5Cright%20%5C%7C%5E2"></p>
+<p>The summation is reorganized to get rid of the summation term where <img src="https://latex.codecogs.com/png.latex?U"> is a matrix with the <img src="https://latex.codecogs.com/png.latex?u_i%5ET"> as the columns, A is a matrix with <img src="https://latex.codecogs.com/png.latex?a"> as the columns, and <img src="https://latex.codecogs.com/png.latex?y"> is the vector of <img src="https://latex.codecogs.com/png.latex?y_i"> values.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%20%5C%7C%20%5Csigma(U%5ETW%20+%20A)w%20-%20y%20%5Cright%20%5C%7C%5E2"></p>
+<p>For simplicity of this analysis, we can assume without loss of generality for the problem at hand that <img src="https://latex.codecogs.com/png.latex?A%20=%200"> and <img src="https://latex.codecogs.com/png.latex?%5Csigma"> is the identity operator. Then:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Chat%5Ctheta%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cmin_%7B%5Chat%20w%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%20%5C%7C%20U%5ET%5Chat%20w%20-%20y%20%5Cright%20%5C%7C%5E2."></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Chat%20w%20=%20Ww">.</p>
+</section>
+<section id="non-linearity-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="non-linearity-analysis">Non-linearity Analysis</h3>
+<p>This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). <img src="https://latex.codecogs.com/png.latex?N%3Ed"> means that there are more equations than there are unknowns, because <img src="https://latex.codecogs.com/png.latex?%5Chat%20w"> is of dimension <img src="https://latex.codecogs.com/png.latex?d">, so there could be infinite solutions.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Chat%7B%5Ctheta%7D%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20U%5ET%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20d%7D%0A%5Ccdot%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20W%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20k%7D%0A-%20y%20%5Cright%5C%7C%5E2%0A"></p>
+<p><strong>Idea 1:</strong></p>
+<p>If we can increase the rank of the <img src="https://latex.codecogs.com/png.latex?Z%20=%20U%5ETW"> matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix <img src="https://latex.codecogs.com/png.latex?W"> that is <img src="https://latex.codecogs.com/png.latex?N%20%5Ctimes%20m"> where <img src="https://latex.codecogs.com/png.latex?m%20%3E%20d">. In the resulting <img src="https://latex.codecogs.com/png.latex?z%20=%20U%5ETW"> matrix, the rank will still be <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(Z)%20%5Cle%20d">.</p>
+<p><strong>Idea 2:</strong></p>
+<p>Use a non-linear activation function <img src="https://latex.codecogs.com/png.latex?%5Csigma"> that operates element-wise on the matrix <img src="https://latex.codecogs.com/png.latex?Z%20=%20U%5ETW"> to increase the rank of the matrix so that <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(%5Csigma(Z))%20=%20%5Cmin%20(N,m)">.</p>
+<p>In practice the exact activation function is not important. It may be the case that <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(%5Csigma(Z))%20=%203"> for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix <img src="https://latex.codecogs.com/png.latex?W">. This can give a unique solution the least squares problem.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Chat%7B%5Ctheta%7D%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%0A%5Csigma%20%5Cleft(%20%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20U%5ET%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20d%7D%0A%5Ccdot%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5Ccdots%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20W%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20m%7D%0A%5Cright%20)%20w%0A-%0Ay%20%5Cright%5C%7C%5E2%0A"></p>
+<section id="non-linear-example" class="level4">
+<h4 class="anchored" data-anchor-id="non-linear-example">Non-linear Example</h4>
+<p>To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.</p>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> numpy.linalg <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> lstsq, matrix_rank</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set random seed for reproducibility</span></span>
+<span id="cb1-6">np.random.seed(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Parameters</span></span>
+<span id="cb1-9">N <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Number of samples</span></span>
+<span id="cb1-10">d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Dimension of input u</span></span>
+<span id="cb1-11">m <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Increased dimension for W</span></span>
+<span id="cb1-12"></span>
+<span id="cb1-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate random input data U (d x N)</span></span>
+<span id="cb1-14">U <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(d, N)</span>
+<span id="cb1-15"></span>
+<span id="cb1-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># True weight matrix W_true (d x d)</span></span>
+<span id="cb1-17">W_true <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(d, d)</span>
+<span id="cb1-18">w_true <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(d)</span>
+<span id="cb1-19"></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate nonlinear output to test with</span></span>
+<span id="cb1-21">y_linear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (np.cos(U.T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> W_true)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> w_true</span>
+<span id="cb1-22"></span>
+<span id="cb1-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize random model weight matrix W (d x m)</span></span>
+<span id="cb1-24">W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randn(d, m)</span>
+<span id="cb1-25">Z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> U.T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> W</span>
+<span id="cb1-26">rank_Z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> matrix_rank(Z)</span>
+<span id="cb1-27"></span>
+<span id="cb1-28">sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.sin</span>
+<span id="cb1-29">Z_nonlinear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> sigma(Z)</span>
+<span id="cb1-30">rank_Z_nl <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> matrix_rank(Z_nonlinear)</span>
+<span id="cb1-31"></span>
+<span id="cb1-32">w_linear, residuals_linear, _, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lstsq(Z, y_linear, rcond<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>)</span>
+<span id="cb1-33">w_nonlinear, residuals_nl, _, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> lstsq(Z_nonlinear, y_linear, rcond<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>)</span>
+<span id="cb1-34"></span>
+<span id="cb1-35"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Check reconstruction error for each case</span></span>
+<span id="cb1-36">error_linear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.norm(Z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> w_linear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> y_linear)</span>
+<span id="cb1-37">error_nonlinear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.norm(Z_nonlinear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> w_nonlinear <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> y_linear)</span>
+<span id="cb1-38"></span>
+<span id="cb1-39"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Comparison of Reconstruction Errors</span></span>
+<span id="cb1-40">labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Linear Least Squares'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Non-linear Least Squares'</span>]</span>
+<span id="cb1-41">errors <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [error_linear, error_nonlinear]</span>
+<span id="cb1-42"></span>
+<span id="cb1-43">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb1-44"></span>
+<span id="cb1-45">bars <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.bar(labels, errors, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'skyblue'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'salmon'</span>])</span>
+<span id="cb1-46">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Reconstruction Error'</span>)</span>
+<span id="cb1-47"></span>
+<span id="cb1-48"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate bars with error values</span></span>
+<span id="cb1-49"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> bar <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> bars:</span>
+<span id="cb1-50">    height <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bar.get_height()</span>
+<span id="cb1-51">    plt.annotate(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>height<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.4f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>,</span>
+<span id="cb1-52">                 xy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(bar.get_x() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> bar.get_width() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, height),</span>
+<span id="cb1-53">                 xytext<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>),  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 3 points vertical offset</span></span>
+<span id="cb1-54">                 textcoords<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"offset points"</span>,</span>
+<span id="cb1-55">                 ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'center'</span>, va<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bottom'</span>)</span>
+<span id="cb1-56"></span>
+<span id="cb1-57">plt.ylim(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(errors)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>)</span>
+<span id="cb1-58">plt.show()</span>
+<span id="cb1-59"></span>
+<span id="cb1-60">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb1-61"></span>
+<span id="cb1-62">ranks <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [rank_Z, rank_Z_nl]</span>
+<span id="cb1-63">labels_rank <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z (Linear)'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z_nonlinear (Non-linear)'</span>]</span>
+<span id="cb1-64"></span>
+<span id="cb1-65">bars_rank <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.bar(labels_rank, ranks, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'lightgreen'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'gold'</span>])</span>
+<span id="cb1-66">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Matrix Rank'</span>)</span>
+<span id="cb1-67"></span>
+<span id="cb1-68"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate bars with rank values</span></span>
+<span id="cb1-69"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> bar <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> bars_rank:</span>
+<span id="cb1-70">    height <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bar.get_height()</span>
+<span id="cb1-71">    plt.annotate(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(height)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>,</span>
+<span id="cb1-72">                 xy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(bar.get_x() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> bar.get_width() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, height),</span>
+<span id="cb1-73">                 xytext<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>),  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 3 points vertical offset</span></span>
+<span id="cb1-74">                 textcoords<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"offset points"</span>,</span>
+<span id="cb1-75">                 ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'center'</span>, va<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bottom'</span>)</span>
+<span id="cb1-76"></span>
+<span id="cb1-77">plt.ylim(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, m <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-78">plt.show()</span></code></pre></div>
+</details>
+<div id="fig-nonlinear-rank-recovery" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nonlinear-rank-recovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-nonlinear-rank-recovery" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-nonlinear-rank-recovery-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png" data-ref-parent="fig-nonlinear-rank-recovery" width="440" height="411" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Reconstruction Error Comparison
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-nonlinear-rank-recovery" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-nonlinear-rank-recovery-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-2.png" data-ref-parent="fig-nonlinear-rank-recovery" width="436" height="411" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Matrix Rank Comparison
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nonlinear-rank-recovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A comparison least squares with non-linear activation function
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="notes-on-scaling" class="level4">
+<h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
+<p>The <img src="https://latex.codecogs.com/png.latex?W"> matrix will scale up in <img src="https://latex.codecogs.com/png.latex?O(N%5E2)"> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <img src="https://latex.codecogs.com/png.latex?w"> and with <img src="https://latex.codecogs.com/png.latex?W"> alone under these conditions. A lower rank <img src="https://latex.codecogs.com/png.latex?W"> could help under conditions where the size of <img src="https://latex.codecogs.com/png.latex?N"> is large.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20W%20=%20Q%20Z%5ET%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?Q"> is a matrix of orthonormal columns and <img src="https://latex.codecogs.com/png.latex?Z"> is a matrix of size <img src="https://latex.codecogs.com/png.latex?d%20%5Ctimes%20N">. In this case the product <img src="https://latex.codecogs.com/png.latex?U%5ETW"> for any particular sample <img src="https://latex.codecogs.com/png.latex?u_i"> will be giben by <img src="https://latex.codecogs.com/png.latex?%5Csigma((u_i%5ETQ)Z%5ET)">. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.</p>
+
+
+</section>
+</section>
+</section>
+
+ ]]></description>
+  <category>Machine Learning</category>
+  <category>Neural Networks</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</guid>
+  <pubDate>Tue, 05 Nov 2024 08:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Lecture 8: Regularization and Priors in Inverse Problems</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -32,7 +483,7 @@
 <p>where the goal is to recover the model <img src="https://latex.codecogs.com/png.latex?u(x)"> from the data <img src="https://latex.codecogs.com/png.latex?b"> with a known forward operator <img src="https://latex.codecogs.com/png.latex?A"> and some noise <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">. The problem is that the solution is usually not unique and may have an infinite number of solutions or no solution. We usually will specify the goodness of a solution by some metric, for example, the least squares error:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5C%7CA%5Chat%20u%20-%20b%5C%7C%5E2%20%3C%20%5Ctext%7Btol%7D"></p>
 <p>will specify that solutions within a certain tolerance of the data are acceptable.</p>
-<div id="cell-fig-stem-plot" class="cell" data-execution_count="1">
+<div id="cell-fig-stem-plot" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div id="fig-stem-plot" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -635,459 +1086,8 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
   <category>Probability</category>
   <category>Bayesian Inference</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture8/</guid>
-  <pubDate>Mon, 04 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Sun, 03 Nov 2024 07:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture8/imgs/regularization_effects.png" medium="image" type="image/png" height="96" width="144"/>
-</item>
-<item>
-  <title>Lecture 9: Machine Learning and Neural Networks</title>
-  <dc:creator>Simon Ghyselincks</dc:creator>
-  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</link>
-  <description><![CDATA[ 
-
-
-
-
-<div class="hidden">
-<p>$$ </p>
-<p>$$</p>
-</div>
-<section id="motivation" class="level2">
-<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
-<p>In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%7Bu%7D%20%5Cleft%5C%7B%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%20Au(x)%20-%20b%20%5Cright%5C%7C_2%5E2%20+%20%5Clambda%20R(u)%20%5Cright%5C%7D%20"></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?u(x)"> is a distribution of the unknowns over the domain <img src="https://latex.codecogs.com/png.latex?x">, <img src="https://latex.codecogs.com/png.latex?A"> is the forward operator, <img src="https://latex.codecogs.com/png.latex?b"> is the data, and <img src="https://latex.codecogs.com/png.latex?R(u)"> is the regularizer. A neural network can be used as a universal approximator for the function <img src="https://latex.codecogs.com/png.latex?R:%20%5Cmathbb%7BR%7D%5En%20%5Crightarrow%20%5Cmathbb%7BR%7D">, where <img src="https://latex.codecogs.com/png.latex?n"> is the number of unknowns, or values of <img src="https://latex.codecogs.com/png.latex?u">.</p>
-</section>
-<section id="neural-networks" class="level2">
-<h2 class="anchored" data-anchor-id="neural-networks">Neural Networks</h2>
-<section id="a-basic-neural-network-single-layer-perceptron-slp" class="level3">
-<h3 class="anchored" data-anchor-id="a-basic-neural-network-single-layer-perceptron-slp">A Basic Neural Network: Single-Layer Perceptron (SLP)</h3>
-<p>A basic neural network will have parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> that can be trained or learned, along with the input, <img src="https://latex.codecogs.com/png.latex?u">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?y%20=%20R(u;%20%5Ctheta)%20=%20w%5ET%20%5Csigma(Wu+a),%20%5Cquad%20%5Ctheta%20:=%20%5C%7Bw,%20W,%20a%5C%7D"></p>
-<p>The function <img src="https://latex.codecogs.com/png.latex?R"> in this case is a function defined for fixed <img src="https://latex.codecogs.com/png.latex?%5Ctheta">. The term <img src="https://latex.codecogs.com/png.latex?%5Csigma"> is a non-linear activation function, of which there are many choices.</p>
-<ul>
-<li><p><strong><img src="https://latex.codecogs.com/png.latex?u"></strong>: Input vector to the neural network.</p></li>
-<li><p><strong><img src="https://latex.codecogs.com/png.latex?y"></strong>: Output of the neural network, parameterized by <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, representing the learned function.</p></li>
-<li><p><strong><img src="https://latex.codecogs.com/png.latex?%5Ctheta%20:=%20%5C%7Bw,%20W,%20a%5C%7D"></strong>: Set of trainable parameters in the network, where:</p>
-<ul>
-<li><strong><img src="https://latex.codecogs.com/png.latex?w"></strong>: Weight vector for the output layer</li>
-<li><strong><img src="https://latex.codecogs.com/png.latex?W"></strong>: Weights matrix for the hidden layer</li>
-<li><strong><img src="https://latex.codecogs.com/png.latex?a"></strong>: Bias vector added to the hidden layer</li>
-</ul></li>
-<li><p><strong><img src="https://latex.codecogs.com/png.latex?%5Csigma"></strong>: Non-linear activation function applied element-wise to the affine transformation <img src="https://latex.codecogs.com/png.latex?Wu%20+%20a">.</p></li>
-</ul>
-<p>So a single layer neural network can be seen as the affine transformation of the vector <img src="https://latex.codecogs.com/png.latex?u"> followed by a non-linear activation function and a weighting metric for the resultant vector.</p>
-<p>This can be used as an approximator for the true regularizer <img src="https://latex.codecogs.com/png.latex?R(u)%20%5Capprox%20R_T(u)"> in the inverse problem.</p>
-<p>Suppose that we have a known set of mappings <img src="https://latex.codecogs.com/png.latex?u_i%20%5Crightarrow%20y_i">, where <img src="https://latex.codecogs.com/png.latex?i%20=%201,%20%5Cldots,%20N">. For example we might have some information about the regularizer <img src="https://latex.codecogs.com/png.latex?R(u)"> for a set of <img src="https://latex.codecogs.com/png.latex?u"> values. One possible technique is to train an SLP to approximate the true regularizer <img src="https://latex.codecogs.com/png.latex?R_T(u)">.</p>
-<p>The function <img src="https://latex.codecogs.com/png.latex?y%20=%20R(u;%20%5Ctheta)"> returns a scalar, taking its transpose will not change the output:</p>
-<p><img src="https://latex.codecogs.com/png.latex?y%20=%20w%5ET%20%5Csigma(Wu+a)%20=%20%5Csigma(u%5ETW%20+%20a)w"></p>
-<p>Then using the squared loss function, we can define the loss function as:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cleft%20%5C%7C%20%5Csigma(u%5ETW%20+%20a)w%20-%20y_i%20%5Cright%20%5C%7C%5E2"></p>
-<p>The summation is reorganized to get rid of the summation term where <img src="https://latex.codecogs.com/png.latex?U"> is a matrix with the <img src="https://latex.codecogs.com/png.latex?u_i%5ET"> as the columns, A is a matrix with <img src="https://latex.codecogs.com/png.latex?a"> as the columns, and <img src="https://latex.codecogs.com/png.latex?y"> is the vector of <img src="https://latex.codecogs.com/png.latex?y_i"> values.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%20%5C%7C%20%5Csigma(U%5ETW%20+%20A)w%20-%20y%20%5Cright%20%5C%7C%5E2"></p>
-<p>For simplicity of this analysis, we can assume without loss of generality for the problem at hand that <img src="https://latex.codecogs.com/png.latex?A%20=%200"> and <img src="https://latex.codecogs.com/png.latex?%5Csigma"> is the identity operator. Then:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Chat%5Ctheta%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cmathcal%7BL%7D(%5Ctheta)%20=%20%5Cmin_%7B%5Chat%20w%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%20%5C%7C%20U%5ET%5Chat%20w%20-%20y%20%5Cright%20%5C%7C%5E2."></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?%5Chat%20w%20=%20Ww">.</p>
-</section>
-<section id="non-linearity-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="non-linearity-analysis">Non-linearity Analysis</h3>
-<p>This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). <img src="https://latex.codecogs.com/png.latex?N%3Ed"> means that there are more equations than there are unknowns, because <img src="https://latex.codecogs.com/png.latex?%5Chat%20w"> is of dimension <img src="https://latex.codecogs.com/png.latex?d">, so there could be infinite solutions.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Chat%7B%5Ctheta%7D%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20U%5ET%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20d%7D%0A%5Ccdot%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20W%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20k%7D%0A-%20y%20%5Cright%5C%7C%5E2%0A"></p>
-<p><strong>Idea 1:</strong></p>
-<p>If we can increase the rank of the <img src="https://latex.codecogs.com/png.latex?Z%20=%20U%5ETW"> matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix <img src="https://latex.codecogs.com/png.latex?W"> that is <img src="https://latex.codecogs.com/png.latex?N%20%5Ctimes%20m"> where <img src="https://latex.codecogs.com/png.latex?m%20%3E%20d">. In the resulting <img src="https://latex.codecogs.com/png.latex?z%20=%20U%5ETW"> matrix, the rank will still be <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(Z)%20%5Cle%20d">.</p>
-<p><strong>Idea 2:</strong></p>
-<p>Use a non-linear activation function <img src="https://latex.codecogs.com/png.latex?%5Csigma"> that operates element-wise on the matrix <img src="https://latex.codecogs.com/png.latex?Z%20=%20U%5ETW"> to increase the rank of the matrix so that <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(%5Csigma(Z))%20=%20%5Cmin%20(N,m)">.</p>
-<p>In practice the exact activation function is not important. It may be the case that <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(%5Csigma(Z))%20=%203"> for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix <img src="https://latex.codecogs.com/png.latex?W">. This can give a unique solution the least squares problem.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Chat%7B%5Ctheta%7D%20=%20%5Cmin_%7B%5Ctheta%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5C%7C%0A%5Csigma%20%5Cleft(%20%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20U%5ET%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20d%7D%0A%5Ccdot%0A%5Cunderbrace%7B%0A%5Cbegin%7Bbmatrix%7D%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5Ccdots%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20W%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20&amp;%20%5C%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%7D_%7BN%20%5Ctimes%20m%7D%0A%5Cright%20)%20w%0A-%0Ay%20%5Cright%5C%7C%5E2%0A"></p>
-<section id="non-linear-example" class="level4">
-<h4 class="anchored" data-anchor-id="non-linear-example">Non-linear Example</h4>
-<p>To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.</p>
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb1-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> plt</span>
-<span id="cb1-3"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> numpy.linalg <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> lstsq, matrix_rank</span>
-<span id="cb1-4"></span>
-<span id="cb1-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Set random seed for reproducibility</span></span>
-<span id="cb1-6">np.random.seed(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">42</span>)</span>
-<span id="cb1-7"></span>
-<span id="cb1-8"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Parameters</span></span>
-<span id="cb1-9">N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Number of samples</span></span>
-<span id="cb1-10">d <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>   <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Dimension of input u</span></span>
-<span id="cb1-11">m <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Increased dimension for W</span></span>
-<span id="cb1-12"></span>
-<span id="cb1-13"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Generate random input data U (d x N)</span></span>
-<span id="cb1-14">U <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.randn(d, N)</span>
-<span id="cb1-15"></span>
-<span id="cb1-16"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># True weight matrix W_true (d x d)</span></span>
-<span id="cb1-17">W_true <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.randn(d, d)</span>
-<span id="cb1-18">w_true <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.randn(d)</span>
-<span id="cb1-19"></span>
-<span id="cb1-20"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Generate nonlinear output to test with</span></span>
-<span id="cb1-21">y_linear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> (np.cos(U.T <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">@</span> W_true)) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">@</span> w_true</span>
-<span id="cb1-22"></span>
-<span id="cb1-23"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Initialize random model weight matrix W (d x m)</span></span>
-<span id="cb1-24">W <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.randn(d, m)</span>
-<span id="cb1-25">Z <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> U.T <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">@</span> W</span>
-<span id="cb1-26">rank_Z <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> matrix_rank(Z)</span>
-<span id="cb1-27"></span>
-<span id="cb1-28">sigma <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.sin</span>
-<span id="cb1-29">Z_nonlinear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> sigma(Z)</span>
-<span id="cb1-30">rank_Z_nl <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> matrix_rank(Z_nonlinear)</span>
-<span id="cb1-31"></span>
-<span id="cb1-32">w_linear, residuals_linear, _, _ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> lstsq(Z, y_linear, rcond<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">None</span>)</span>
-<span id="cb1-33">w_nonlinear, residuals_nl, _, _ <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> lstsq(Z_nonlinear, y_linear, rcond<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">None</span>)</span>
-<span id="cb1-34"></span>
-<span id="cb1-35"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Check reconstruction error for each case</span></span>
-<span id="cb1-36">error_linear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.linalg.norm(Z <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">@</span> w_linear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> y_linear)</span>
-<span id="cb1-37">error_nonlinear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.linalg.norm(Z_nonlinear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">@</span> w_nonlinear <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> y_linear)</span>
-<span id="cb1-38"></span>
-<span id="cb1-39"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Comparison of Reconstruction Errors</span></span>
-<span id="cb1-40">labels <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Linear Least Squares'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Non-linear Least Squares'</span>]</span>
-<span id="cb1-41">errors <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [error_linear, error_nonlinear]</span>
-<span id="cb1-42"></span>
-<span id="cb1-43">plt.figure(figsize<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>))</span>
-<span id="cb1-44"></span>
-<span id="cb1-45">bars <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> plt.bar(labels, errors, color<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'skyblue'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'salmon'</span>])</span>
-<span id="cb1-46">plt.ylabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Reconstruction Error'</span>)</span>
-<span id="cb1-47"></span>
-<span id="cb1-48"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Annotate bars with error values</span></span>
-<span id="cb1-49"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> bar <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> bars:</span>
-<span id="cb1-50">    height <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> bar.get_height()</span>
-<span id="cb1-51">    plt.annotate(<span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span>height<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:.4f}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'</span>,</span>
-<span id="cb1-52">                 xy<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(bar.get_x() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> bar.get_width() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, height),</span>
-<span id="cb1-53">                 xytext<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>),  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 3 points vertical offset</span></span>
-<span id="cb1-54">                 textcoords<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"offset points"</span>,</span>
-<span id="cb1-55">                 ha<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'center'</span>, va<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'bottom'</span>)</span>
-<span id="cb1-56"></span>
-<span id="cb1-57">plt.ylim(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">max</span>(errors)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.2</span>)</span>
-<span id="cb1-58">plt.show()</span>
-<span id="cb1-59"></span>
-<span id="cb1-60">plt.figure(figsize<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>,<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>))</span>
-<span id="cb1-61"></span>
-<span id="cb1-62">ranks <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [rank_Z, rank_Z_nl]</span>
-<span id="cb1-63">labels_rank <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Z (Linear)'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Z_nonlinear (Non-linear)'</span>]</span>
-<span id="cb1-64"></span>
-<span id="cb1-65">bars_rank <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> plt.bar(labels_rank, ranks, color<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'lightgreen'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'gold'</span>])</span>
-<span id="cb1-66">plt.ylabel(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Matrix Rank'</span>)</span>
-<span id="cb1-67"></span>
-<span id="cb1-68"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Annotate bars with rank values</span></span>
-<span id="cb1-69"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> bar <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> bars_rank:</span>
-<span id="cb1-70">    height <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> bar.get_height()</span>
-<span id="cb1-71">    plt.annotate(<span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span><span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">int</span>(height)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span><span class="ss" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'</span>,</span>
-<span id="cb1-72">                 xy<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(bar.get_x() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> bar.get_width() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, height),</span>
-<span id="cb1-73">                 xytext<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>),  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># 3 points vertical offset</span></span>
-<span id="cb1-74">                 textcoords<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"offset points"</span>,</span>
-<span id="cb1-75">                 ha<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'center'</span>, va<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'bottom'</span>)</span>
-<span id="cb1-76"></span>
-<span id="cb1-77">plt.ylim(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, m <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb1-78">plt.show()</span></code></pre></div>
-</details>
-<div id="fig-nonlinear-rank-recovery" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-nonlinear-rank-recovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-nonlinear-rank-recovery" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-nonlinear-rank-recovery-1" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png" data-ref-parent="fig-nonlinear-rank-recovery" width="440" height="411" class="figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a) Reconstruction Error Comparison
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-nonlinear-rank-recovery" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-nonlinear-rank-recovery-2" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-2.png" data-ref-parent="fig-nonlinear-rank-recovery" width="436" height="411" class="figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b) Matrix Rank Comparison
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nonlinear-rank-recovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: A comparison least squares with non-linear activation function
-</figcaption>
-</figure>
-</div>
-</section>
-<section id="notes-on-scaling" class="level4">
-<h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
-<p>The <img src="https://latex.codecogs.com/png.latex?W"> matrix will scale up in <img src="https://latex.codecogs.com/png.latex?O(N%5E2)"> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <img src="https://latex.codecogs.com/png.latex?w"> and with <img src="https://latex.codecogs.com/png.latex?W"> alone under these conditions. A lower rank <img src="https://latex.codecogs.com/png.latex?W"> could help under conditions where the size of <img src="https://latex.codecogs.com/png.latex?N"> is large.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20W%20=%20Q%20Z%5ET%20"></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?Q"> is a matrix of orthonormal columns and <img src="https://latex.codecogs.com/png.latex?Z"> is a matrix of size <img src="https://latex.codecogs.com/png.latex?d%20%5Ctimes%20N">. In this case the product <img src="https://latex.codecogs.com/png.latex?U%5ETW"> for any particular sample <img src="https://latex.codecogs.com/png.latex?u_i"> will be giben by <img src="https://latex.codecogs.com/png.latex?%5Csigma((u_i%5ETQ)Z%5ET)">. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.</p>
-
-
-</section>
-</section>
-</section>
-
- ]]></description>
-  <category>Machine Learning</category>
-  <category>Neural Networks</category>
-  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</guid>
-  <pubDate>Mon, 04 Nov 2024 08:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions</title>
@@ -3960,7 +3960,7 @@ tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1" data-comment-delimiter="//" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -5478,7 +5478,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-no-end="false" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="//" data-line-number-punc=":" data-line-number="true" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-caption-prefix="Algorithm" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
