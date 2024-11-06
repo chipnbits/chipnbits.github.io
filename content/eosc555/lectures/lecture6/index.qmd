@@ -1,6 +1,6 @@
 ---
-title: "Lecture 6: Autodiff and Implementing Gauss-Newton"
-subtitle: "A look at some of the foundations of automatic differentiation and the Gauss-Newton optimization method."
+title: "Lecture 6"
+subtitle: "Autodiff and Coding Gauss-Newton for Least Squares"
 date: 2024-10-08
 author: "Simon Ghyselincks"
 description: >-

@@ -1,6 +1,6 @@
 ---
-title: "Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions"
-subtitle: "A look at how Gaussian homotopy can be used to escape local minima in optimization problems."
+title: "Lecture 7"
+subtitle: "Homotopy Optimization"
 date: 2024-10-22
 author: "Simon Ghyselincks"
 description: >-

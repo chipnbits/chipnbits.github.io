@@ -1,6 +1,6 @@
 ---
-title: "Lecture 8: Regularization and Priors in Inverse Problems"
-subtitle: "The role of regularization and priors in solving inverse problems."
+title: "Lecture 8"
+subtitle: "Regularization and Priors in Inverse Problems"
 date: 2024-11-03
 author: "Simon Ghyselincks"
 description: >-

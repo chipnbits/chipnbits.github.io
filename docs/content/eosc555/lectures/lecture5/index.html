@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-09-25">
 <meta name="description" content="The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form \min_{p} \frac{1}{2}\|F(p)-d\|^2. In this lecture, a derivation of the method is presented along with a comparison to Newton’s method. Finally an algorithm for solving the problem is given.">
 
-<title>Lecture 5: Gauss Newton – Simon Ghyselincks</title>
+<title>Lecture 5 – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -213,8 +213,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 5: Gauss Newton</h1>
-<p class="subtitle lead">Non-Linear Least Squares Optimization</p>
+<h1 class="title">Lecture 5</h1>
+<p class="subtitle lead">Gauss Newton for Non-Linear Least Squares Optimization</p>
   <div class="quarto-categories">
     <div class="quarto-category">Optimization</div>
     <div class="quarto-category">Gauss-Newton</div>
@@ -578,7 +578,7 @@ p_{k+1} &amp;= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-caption-prefix="Algorithm" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>

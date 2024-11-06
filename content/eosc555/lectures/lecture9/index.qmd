@@ -1,6 +1,6 @@
 ---
-title: "Lecture 9: Machine Learning and Neural Networks"
-subtitle: "A mathematical approach."
+title: "Lecture 9"
+subtitle: "Machine Learning and Neural Networks"
 date: 2024-11-05
 author: "Simon Ghyselincks"
 description: >-
@@ -237,4 +237,57 @@ The $W$ matrix will scale up in $O(N^2)$ so that with more data samples it can b
 
 $$ W = Q Z^T $$
 
-where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product $U^TW$ for any particular sample $u_i$ will be giben by $\sigma((u_i^TQ)Z^T)$. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.
+where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product $U^TW$ for any particular sample $u_i$ will be giben by $\sigma((u_i^TQ)Z^T)$. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix $W$.
+
+This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).  
+
+$$y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)})) + a^{(L-1)}) + a^{(L)}$$
+
+where $L$ is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where $N$ is large.
+
+## Convolutional Neural Networks (CNNs)
+
+A convolutional neural network makes use of a matrix operator that produces the same result as a discrete convolution. 
+
+### Convolution Operator
+
+The 1D convolutional operator $\ast$ in the discrete case is defined as:
+
+$$ (f \ast g)[n] = \sum_{m=-\infty}^{\infty} f[m]g[n-m] $$
+
+In the case of a 2D convolution, the operator is defined as:
+
+$$ (f \ast g)[n,m] = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} f[i,j]g[n-i,m-j] $$
+
+It is also an operation defined in the continuous domain as:
+
+$$ (f \ast g)(x) = \int_{-\infty}^{\infty} f(y)g(x-y)dy $$
+
+The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green's function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI). 
+
+**Properties of Convolution**
+
+1. Linearity: $f \ast (\alpha g + \beta h) = \alpha f \ast g + \beta f \ast h$
+2. Commutativity: $f \ast g = g \ast f$
+3. Associativity: $f \ast (g \ast h) = (f \ast g) \ast h$
+
+Rather than explain convolution at length here, the interested reader is encouraged to look at the [Convolution Wikipedia page](https://en.wikipedia.org/wiki/Convolution) for some excellent properties and visual examples to build intuition. 
+
+In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.
+
+Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:
+
+$$ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) $$
+
+When it comes to computing large convolutions for two function $f(x)$ and $g(x)$, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.
+
+$$ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) $$
+
+For more details with visual explanations, another good resource is the UBC CPSC 425 course on (Computer Vision)[https://www.cs.ubc.ca/~lsigal/teaching.html] with slides from (Lecture 3b)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf] and (Lecture 4)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf].
+
+### Convolution in CNNs
+
+
+
+
+

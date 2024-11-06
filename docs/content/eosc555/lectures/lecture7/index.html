@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-10-22">
 <meta name="description" content="Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help escape local minima.">
 
-<title>Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions – Simon Ghyselincks</title>
+<title>Lecture 7 – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -236,8 +236,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions</h1>
-<p class="subtitle lead">A look at how Gaussian homotopy can be used to escape local minima in optimization problems.</p>
+<h1 class="title">Lecture 7</h1>
+<p class="subtitle lead">Homotopy Optimization</p>
   <div class="quarto-categories">
     <div class="quarto-category">Optimization</div>
     <div class="quarto-category">PyTorch</div>
@@ -604,7 +604,7 @@ x_{k+1} &amp;= x_k - \alpha_k \mathbb{E}_{\xi} \nabla f(x_k - \xi)\\
 </div>
 </div>
 <p>The next step is to create a time parameterized function <span class="math inline">\(h(x, t)\)</span> that is the Gaussian homotopy of f(x). In practical terms, the starting <span class="math inline">\(\sigma_{\text{max}}\)</span> is being modified by a <span class="math inline">\(t\)</span> parameter when multiplied by the random noise. At <span class="math inline">\(t=0\)</span> the function is the original function, and at <span class="math inline">\(t=1\)</span> the function is being convolved numerically with a Gaussian kernel that is <span class="math inline">\(\mathcal{N}(0, \sigma_{\text{max}})\)</span>. The time points in between are a homotopy between the two functions.</p>
-<div id="cc349fc8" class="cell" data-execution_count="4">
+<div id="0b5be197" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gaussian_homotopy(func, x, batch_size<span class="op">=</span><span class="dv">1000</span>, sigma<span class="op">=</span><span class="fl">1.0</span>, t<span class="op">=</span><span class="fl">0.5</span>):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Computes the Gaussian homotopy function h(x, t) using Monte Carlo approximation.</span></span>

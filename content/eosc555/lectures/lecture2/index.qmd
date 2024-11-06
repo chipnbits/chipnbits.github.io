@@ -1,6 +1,6 @@
 ---
-title: "Lecture 2: Image Denoising with SVD"
-subtitle: "Applications of Least Squares and SVD"
+title: "Lecture 2"
+subtitle: "Image Denoising with SVD"
 date: 2024-09-15
 author: "Simon Ghyselincks"
 description: >-

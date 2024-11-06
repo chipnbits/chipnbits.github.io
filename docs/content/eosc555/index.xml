@@ -12,7 +12,7 @@
 <generator>quarto-1.5.53</generator>
 <lastBuildDate>Tue, 05 Nov 2024 08:00:00 GMT</lastBuildDate>
 <item>
-  <title>Lecture 9: Machine Learning and Neural Networks</title>
+  <title>Lecture 9</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</link>
   <description><![CDATA[ 
@@ -449,10 +449,43 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
 <p>The <img src="https://latex.codecogs.com/png.latex?W"> matrix will scale up in <img src="https://latex.codecogs.com/png.latex?O(N%5E2)"> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <img src="https://latex.codecogs.com/png.latex?w"> and with <img src="https://latex.codecogs.com/png.latex?W"> alone under these conditions. A lower rank <img src="https://latex.codecogs.com/png.latex?W"> could help under conditions where the size of <img src="https://latex.codecogs.com/png.latex?N"> is large.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20W%20=%20Q%20Z%5ET%20"></p>
-<p>where <img src="https://latex.codecogs.com/png.latex?Q"> is a matrix of orthonormal columns and <img src="https://latex.codecogs.com/png.latex?Z"> is a matrix of size <img src="https://latex.codecogs.com/png.latex?d%20%5Ctimes%20N">. In this case the product <img src="https://latex.codecogs.com/png.latex?U%5ETW"> for any particular sample <img src="https://latex.codecogs.com/png.latex?u_i"> will be giben by <img src="https://latex.codecogs.com/png.latex?%5Csigma((u_i%5ETQ)Z%5ET)">. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.</p>
-
-
+<p>where <img src="https://latex.codecogs.com/png.latex?Q"> is a matrix of orthonormal columns and <img src="https://latex.codecogs.com/png.latex?Z"> is a matrix of size <img src="https://latex.codecogs.com/png.latex?d%20%5Ctimes%20N">. In this case the product <img src="https://latex.codecogs.com/png.latex?U%5ETW"> for any particular sample <img src="https://latex.codecogs.com/png.latex?u_i"> will be giben by <img src="https://latex.codecogs.com/png.latex?%5Csigma((u_i%5ETQ)Z%5ET)">. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix <img src="https://latex.codecogs.com/png.latex?W">.</p>
+<p>This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).</p>
+<p><img src="https://latex.codecogs.com/png.latex?y%20=%20R(u;%20%5Ctheta)%20=%20w%5ET%20%5Csigma(W%5E%7B(L)%7D%20%5Csigma(W%5E%7B(L-1)%7D%20%5Ccdots%20%5Csigma(W%5E%7B(1)%7Du%20+%20a%5E%7B(1)%7D))%20+%20a%5E%7B(L-1)%7D)%20+%20a%5E%7B(L)%7D"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?L"> is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where <img src="https://latex.codecogs.com/png.latex?N"> is large.</p>
 </section>
+</section>
+</section>
+<section id="convolutional-neural-networks-cnns" class="level2">
+<h2 class="anchored" data-anchor-id="convolutional-neural-networks-cnns">Convolutional Neural Networks (CNNs)</h2>
+<p>A convolutional neural network makes use of a matrix operator that produces the same result as a discrete convolution.</p>
+<section id="convolution-operator" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-operator">Convolution Operator</h3>
+<p>The 1D convolutional operator <img src="https://latex.codecogs.com/png.latex?%5Cast"> in the discrete case is defined as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20(f%20%5Cast%20g)%5Bn%5D%20=%20%5Csum_%7Bm=-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f%5Bm%5Dg%5Bn-m%5D%20"></p>
+<p>In the case of a 2D convolution, the operator is defined as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20(f%20%5Cast%20g)%5Bn,m%5D%20=%20%5Csum_%7Bi=-%5Cinfty%7D%5E%7B%5Cinfty%7D%20%5Csum_%7Bj=-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f%5Bi,j%5Dg%5Bn-i,m-j%5D%20"></p>
+<p>It is also an operation defined in the continuous domain as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20(f%20%5Cast%20g)(x)%20=%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20f(y)g(x-y)dy%20"></p>
+<p>The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green’s function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI).</p>
+<p><strong>Properties of Convolution</strong></p>
+<ol type="1">
+<li>Linearity: <img src="https://latex.codecogs.com/png.latex?f%20%5Cast%20(%5Calpha%20g%20+%20%5Cbeta%20h)%20=%20%5Calpha%20f%20%5Cast%20g%20+%20%5Cbeta%20f%20%5Cast%20h"></li>
+<li>Commutativity: <img src="https://latex.codecogs.com/png.latex?f%20%5Cast%20g%20=%20g%20%5Cast%20f"></li>
+<li>Associativity: <img src="https://latex.codecogs.com/png.latex?f%20%5Cast%20(g%20%5Cast%20h)%20=%20(f%20%5Cast%20g)%20%5Cast%20h"></li>
+</ol>
+<p>Rather than explain convolution at length here, the interested reader is encouraged to look at the <a href="https://en.wikipedia.org/wiki/Convolution">Convolution Wikipedia page</a> for some excellent properties and visual examples to build intuition.</p>
+<p>In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.</p>
+<p>Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmathcal%7BF%7D(f%20%5Cast%20g)%20=%20%5Cmathcal%7BF%7D(f)%20%5Ccdot%20%5Cmathcal%7BF%7D(g)%20"></p>
+<p>When it comes to computing large convolutions for two function <img src="https://latex.codecogs.com/png.latex?f(x)"> and <img src="https://latex.codecogs.com/png.latex?g(x)">, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20f%20%5Cast%20g%20=%20%5Cmathcal%7BF%7D%5E%7B-1%7D(%5Cmathcal%7BF%7D(f)%20%5Ccdot%20%5Cmathcal%7BF%7D(g))%20"></p>
+<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on (Computer Vision)[https://www.cs.ubc.ca/~lsigal/teaching.html] with slides from (Lecture 3b)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf] and (Lecture 4)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf].</p>
+</section>
+<section id="convolution-in-cnns" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-in-cnns">Convolution in CNNs</h3>
+
+
 </section>
 </section>
 
@@ -463,7 +496,7 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
   <pubDate>Tue, 05 Nov 2024 08:00:00 GMT</pubDate>
 </item>
 <item>
-  <title>Lecture 8: Regularization and Priors in Inverse Problems</title>
+  <title>Lecture 8</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture8/</link>
   <description><![CDATA[ 
@@ -1090,7 +1123,7 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture8/imgs/regularization_effects.png" medium="image" type="image/png" height="96" width="144"/>
 </item>
 <item>
-  <title>Lecture 7: Applying Homotopy to Optimize Highly Non-Convex Functions</title>
+  <title>Lecture 7</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture7/</link>
   <description><![CDATA[ 
@@ -2212,7 +2245,7 @@ font-style: inherit;">'Objective function'</span>)</span>
 </div>
 </div>
 <p>The next step is to create a time parameterized function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> that is the Gaussian homotopy of f(x). In practical terms, the starting <img src="https://latex.codecogs.com/png.latex?%5Csigma_%7B%5Ctext%7Bmax%7D%7D"> is being modified by a <img src="https://latex.codecogs.com/png.latex?t"> parameter when multiplied by the random noise. At <img src="https://latex.codecogs.com/png.latex?t=0"> the function is the original function, and at <img src="https://latex.codecogs.com/png.latex?t=1"> the function is being convolved numerically with a Gaussian kernel that is <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BN%7D(0,%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D)">. The time points in between are a homotopy between the two functions.</p>
-<div id="cc349fc8" class="cell" data-execution_count="4">
+<div id="0b5be197" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -2544,7 +2577,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" medium="image" type="image/gif"/>
 </item>
 <item>
-  <title>Lecture 6: Autodiff and Implementing Gauss-Newton</title>
+  <title>Lecture 6</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture6/</link>
   <description><![CDATA[ 
@@ -3188,7 +3221,7 @@ font-style: inherit;">"Population"</span>)</span>
 </div>
 </div>
 <p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method. To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations. Then select the first realization to plot the time series and phase space of the model.</p>
-<div id="4a182145" class="cell" data-execution_count="3">
+<div id="9a8ce1c5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
@@ -3698,7 +3731,7 @@ background-color: null;
 font-style: inherit;">*</span> v))</span></code></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>tensor(-27.4492) tensor(-27.4493)</code></pre>
+<pre><code>tensor(80.2678) tensor(80.2678)</code></pre>
 </div>
 </div>
 </section>
@@ -3948,19 +3981,18 @@ font-style: inherit;">1e-2</span>)</span>
 background-color: null;
 font-style: inherit;">print</span>(x)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>iter =   0    res = 1.15e+00
-iter =   1    res = 5.48e-02
-iter =   2    res = 1.47e-02
-iter =   3    res = 2.79e-02
-iter =   4    res = 3.56e-03
-tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
+<pre><code>iter =   0    res = 2.96e-01
+iter =   1    res = 1.63e-02
+iter =   2    res = 1.50e-02
+iter =   3    res = 8.92e-03
+tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 </div>
 </div>
 </section>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1" data-comment-delimiter="//" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -4365,7 +4397,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 <div class="cell-output cell-output-display">
 <div id="gauss-newton-test" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture6/index_files/figure-html/gauss-newton-test-output-2.png" width="622" height="449" class="figure-img"></p>
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture6/index_files/figure-html/gauss-newton-test-output-2.png" width="626" height="449" class="figure-img"></p>
 <figcaption>Testing the Gauss-Newton optimization method.</figcaption>
 </figure>
 </div>
@@ -4672,7 +4704,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 <div class="cell-output cell-output-display">
 <div id="time-varying-parameters" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture6/index_files/figure-html/time-varying-parameters-output-1.png" width="622" height="449" class="figure-img"></p>
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture6/index_files/figure-html/time-varying-parameters-output-1.png" width="626" height="449" class="figure-img"></p>
 <figcaption>Fitting the Lotka-Volterra model with time-varying parameters.</figcaption>
 </figure>
 </div>
@@ -4698,7 +4730,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture6/imgs/fitting_animation_time_varying.gif" medium="image" type="image/gif"/>
 </item>
 <item>
-  <title>Lecture 5: Gauss Newton</title>
+  <title>Lecture 5</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture5/</link>
   <description><![CDATA[ 
@@ -5478,7 +5510,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-caption-prefix="Algorithm" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -5565,7 +5597,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
-  <title>Lecture 4: Regularization and the Conjugate Gradient Methods</title>
+  <title>Lecture 4</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture4/</link>
   <description><![CDATA[ 
@@ -8275,7 +8307,7 @@ font-style: inherit;">'off'</span>)</span>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" medium="image" type="image/gif"/>
 </item>
 <item>
-  <title>Lecture 2: Image Denoising with SVD</title>
+  <title>Lecture 2</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</link>
   <description><![CDATA[ 
@@ -8309,7 +8341,7 @@ font-style: inherit;">'off'</span>)</span>
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="c53e6b29" class="cell" data-execution_count="2">
+<div id="8a8dac11" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -8389,7 +8421,7 @@ font-style: inherit;">import</span> torch.fft</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D%20(x-%5Cmu)%5ET%20%5CSigma%5E%7B-1%7D%20(x-%5Cmu)%5Cright)"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmu"> is the mean vector, <img src="https://latex.codecogs.com/png.latex?x"> is a position vector, and <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <img src="https://latex.codecogs.com/png.latex?C"> as the inverse of the covariance matrix and working with a <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> value.</p>
-<div id="mv-plot" class="cell" data-execution_count="3">
+<div id="mv-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -8830,7 +8862,7 @@ font-style: inherit;">'equal'</span>)</span>
 <p>We can compute the MV gaussian from the inverse covariance matrix <img src="https://latex.codecogs.com/png.latex?C"> with a mean of <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> along with a dimensional scaling metric <img src="https://latex.codecogs.com/png.latex?t">. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AS_x%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%200%20&amp;%201%20%5C%5C%20-2%20&amp;%200%20&amp;%202%20%5C%5C%20-1%20&amp;%200%20&amp;%201%20%5Cend%7Bbmatrix%7D%20%5C%5C%0AS_y%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%20-2%20&amp;%20-1%20%5C%5C%200%20&amp;%200%20&amp;%200%20%5C%5C%201%20&amp;%202%20&amp;%201%20%5Cend%7Bbmatrix%7D%0A%5Cend%7Balign%7D%0A"></p>
 <p>These operators act like edge detection or derivatives. The <img src="https://latex.codecogs.com/png.latex?n_0">, <img src="https://latex.codecogs.com/png.latex?n_x">, and <img src="https://latex.codecogs.com/png.latex?n_y"> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="bb04fe4e" class="cell" data-execution_count="4">
+<div id="9bb0f07a" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
@@ -9428,7 +9460,7 @@ font-style: inherit;">return</span> PSF_combined, center</span></code></pre></di
 <section id="creating-a-toy-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-toy-dataset">Creating a Toy Dataset</h3>
 <p>Often in computational science we test our strategies on toy datasets, simplified data that allows for easier debugging and understanding of the problem at task. In this case, rather than use a real image, we construct a geometric image that will be easier to analyse visually for its correctness when it comes to denoising and deblurring. The dataset is also dimensioned to have a batch and color channel to follow some of the conventions for working with torch tensors, and later some machine learning frameworks. That is <img src="https://latex.codecogs.com/png.latex?B%20%5Ctimes%20C%20%5Ctimes%20H%20%5Ctimes%20W">, with a single sample, single channel, and a 256x256 image having dimensions <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%201%20%5Ctimes%20256%20%5Ctimes%20256">.</p>
-<div id="cell-toy-dataset" class="cell" data-execution_count="5">
+<div id="cell-toy-dataset" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">x <span class="op" style="color: #5E5E5E;
@@ -9494,7 +9526,7 @@ font-style: inherit;">0</span>,:,:])</span></code></pre></div>
 </div>
 </div>
 <p>This simple image is a high and a low signal shown as two square regions, which we will try to recover after applying a point spread function to it (the forward model). The forward model is the convolution of the image with the PSF.</p>
-<div id="cell-forward-model" class="cell" data-execution_count="6">
+<div id="cell-forward-model" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">C <span class="op" style="color: #5E5E5E;
@@ -9580,7 +9612,7 @@ font-style: inherit;">print</span>()</span></code></pre></div>
 <p>Note that we are working with a rolling PSF which has a strange effect in that it assumes a periodic boundary condition in both <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y">. When it comes to convolution, there are many different ways to treat the boundary condition, such as using zero padding or mirroring the boundary. Coding this by hand is a good exercise to understand the convolution operation, but not the purpose of this exercise.</p>
 <section id="direct-recovery-of-convolution-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="direct-recovery-of-convolution-matrix">Direct Recovery of Convolution Matrix</h4>
-<div id="cell-convolution-matrix" class="cell" data-execution_count="7">
+<div id="cell-convolution-matrix" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">dim <span class="op" style="color: #5E5E5E;
@@ -9793,7 +9825,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <p>Since the convolution operation that is being performed is linear, one way to recover the matrix operator under this assumption is to pass through the basis vectors and recover the column vectors in this fashion:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D%20a_1%20%5Cmid%20a_2%20%5Cmid%20%5Cldots%20%5Cmid%20a_n%20%5Cend%7Bbmatrix%7D%20%5Cmathbf%7Be%7D_i%20=%20%5Cmathbf%7BA%7D%20%5Cmathbf%7Be%7D_i%20%20=%20%5Cmathbf%7Ba%7D_i"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Be%7D_i"> is the <img src="https://latex.codecogs.com/png.latex?i">th basis vector.</p>
-<div id="cell-convolution-matrix-2" class="cell" data-execution_count="8">
+<div id="cell-convolution-matrix-2" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">A_conv_lin <span class="op" style="color: #5E5E5E;
@@ -9890,7 +9922,7 @@ font-style: inherit;">'Difference from Direct'</span>)</span>
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="961a2bce" class="cell" data-execution_count="9">
+<div id="5700fdc9" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">b_forward <span class="op" style="color: #5E5E5E;
@@ -9954,7 +9986,7 @@ font-style: inherit;">2</span>:]))</span></code></pre></div>
 </div>
 </div>
 <p>We can see that there are some differences between the two methods but in principle they should be the same, (Not sure where the difference is coming from). The important method is actually the one which extracts the columns, as it is more generalizable. So we will continue with that.</p>
-<div id="final-conv-matrix" class="cell" data-execution_count="10">
+<div id="final-conv-matrix" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">Amat <span class="op" style="color: #5E5E5E;
@@ -9969,7 +10001,7 @@ font-style: inherit;">=</span> A_conv_lin</span></code></pre></div>
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <img src="https://latex.codecogs.com/png.latex?A%5Cmathbf%7Bx%7D%20=%20%5Cmathbf%7Bb%7D"> with our known <img src="https://latex.codecogs.com/png.latex?A"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bb%7D">, and we want to recover <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D">. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="492131e8" class="cell" data-execution_count="11">
+<div id="1783112b" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">U, S, V <span class="op" style="color: #5E5E5E;
@@ -9981,7 +10013,7 @@ font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
 </details>
 </div>
 <p>Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the <img src="https://latex.codecogs.com/png.latex?10%5E%7B-6%7D"> mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.</p>
-<div id="cell-svd-decomposition" class="cell" data-execution_count="12">
+<div id="cell-svd-decomposition" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">plt.semilogy(S)</span>
@@ -10028,7 +10060,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 <section id="initial-attempt-at-pseudoinverse" class="level3">
 <h3 class="anchored" data-anchor-id="initial-attempt-at-pseudoinverse">Initial Attempt at Pseudoinverse</h3>
 <p>To recover the original image data we first naively try to invert the matrix to see what happens.</p>
-<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="13">
+<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">xhat <span class="op" style="color: #5E5E5E;
@@ -10085,7 +10117,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?U">.</p>
-<div id="1a36578d" class="cell" data-execution_count="14">
+<div id="d9ddde55" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">n<span class="op" style="color: #5E5E5E;
@@ -10137,7 +10169,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?V">. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="9e5aaa70" class="cell" data-execution_count="15">
+<div id="25228293" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">n<span class="op" style="color: #5E5E5E;
@@ -10241,7 +10273,7 @@ font-style: inherit;">'</span>)</span>
 </div>
 </div>
 <p>These modes are the most important ones, as they contain the big-picture detail without the high frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.</p>
-<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="16">
+<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -10413,7 +10445,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <section id="adding-noise-to-the-signal" class="level3">
 <h3 class="anchored" data-anchor-id="adding-noise-to-the-signal">Adding Noise to the Signal</h3>
 <p>Now we add some noise to the signal and try least squares again for the direct solution</p>
-<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="17">
+<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -10503,7 +10535,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 </div>
 </div>
 <p>The reconstruction is not very good, the noise has been amplifed all over the image. We can try the pseudoinverse method again with the noise added to the signal.</p>
-<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="18">
+<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">Amat_noisy <span class="op" style="color: #5E5E5E;
@@ -10673,7 +10705,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised-recovery" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture2/index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="462" class="figure-img"></p>
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture2/index_files/figure-html/pseudoinverse-filter-noised-recovery-output-1.png" width="661" height="461" class="figure-img"></p>
 <figcaption>Pseudoinverse Recovery of the Original Image with Noise.</figcaption>
 </figure>
 </div>
@@ -10697,7 +10729,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="115" width="144"/>
 </item>
 <item>
-  <title>Lecture 1: Introduction to Inverse Theory</title>
+  <title>Lecture 1</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
   <link>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</link>
   <description><![CDATA[ 

@@ -1,6 +1,6 @@
 ---
-title: "Lecture 3: Image Denoising with Gradient Descent and Early Stopping"
-subtitle: "A derivation of least squares gradient descent and ODE analysis"
+title: "Lecture 3"
+subtitle: "Image Denoising with Gradient Descent and Early Stopping"
 date: 2024-09-17
 author: "Simon Ghyselincks"
 description: >-

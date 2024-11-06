@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-11-05">
 <meta name="description" content="Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.">
 
-<title>Lecture 9: Machine Learning and Neural Networks – Simon Ghyselincks</title>
+<title>Lecture 9 – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -199,6 +199,11 @@ window.Quarto = {
   <li><a href="#a-basic-neural-network-single-layer-perceptron-slp" id="toc-a-basic-neural-network-single-layer-perceptron-slp" class="nav-link" data-scroll-target="#a-basic-neural-network-single-layer-perceptron-slp">A Basic Neural Network: Single-Layer Perceptron (SLP)</a></li>
   <li><a href="#non-linearity-analysis" id="toc-non-linearity-analysis" class="nav-link" data-scroll-target="#non-linearity-analysis">Non-linearity Analysis</a></li>
   </ul></li>
+  <li><a href="#convolutional-neural-networks-cnns" id="toc-convolutional-neural-networks-cnns" class="nav-link" data-scroll-target="#convolutional-neural-networks-cnns">Convolutional Neural Networks (CNNs)</a>
+  <ul class="collapse">
+  <li><a href="#convolution-operator" id="toc-convolution-operator" class="nav-link" data-scroll-target="#convolution-operator">Convolution Operator</a></li>
+  <li><a href="#convolution-in-cnns" id="toc-convolution-in-cnns" class="nav-link" data-scroll-target="#convolution-in-cnns">Convolution in CNNs</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -207,8 +212,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 9: Machine Learning and Neural Networks</h1>
-<p class="subtitle lead">A mathematical approach.</p>
+<h1 class="title">Lecture 9</h1>
+<p class="subtitle lead">Machine Learning and Neural Networks</p>
   <div class="quarto-categories">
     <div class="quarto-category">Machine Learning</div>
     <div class="quarto-category">Neural Networks</div>
@@ -458,10 +463,43 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
 <p>The <span class="math inline">\(W\)</span> matrix will scale up in <span class="math inline">\(O(N^2)\)</span> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <span class="math inline">\(w\)</span> and with <span class="math inline">\(W\)</span> alone under these conditions. A lower rank <span class="math inline">\(W\)</span> could help under conditions where the size of <span class="math inline">\(N\)</span> is large.</p>
 <p><span class="math display">\[ W = Q Z^T \]</span></p>
-<p>where <span class="math inline">\(Q\)</span> is a matrix of orthonormal columns and <span class="math inline">\(Z\)</span> is a matrix of size <span class="math inline">\(d \times N\)</span>. In this case the product <span class="math inline">\(U^TW\)</span> for any particular sample <span class="math inline">\(u_i\)</span> will be giben by <span class="math inline">\(\sigma((u_i^TQ)Z^T)\)</span>. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix.</p>
-
-
+<p>where <span class="math inline">\(Q\)</span> is a matrix of orthonormal columns and <span class="math inline">\(Z\)</span> is a matrix of size <span class="math inline">\(d \times N\)</span>. In this case the product <span class="math inline">\(U^TW\)</span> for any particular sample <span class="math inline">\(u_i\)</span> will be giben by <span class="math inline">\(\sigma((u_i^TQ)Z^T)\)</span>. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix <span class="math inline">\(W\)</span>.</p>
+<p>This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).</p>
+<p><span class="math display">\[y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)})) + a^{(L-1)}) + a^{(L)}\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where <span class="math inline">\(N\)</span> is large.</p>
 </section>
+</section>
+</section>
+<section id="convolutional-neural-networks-cnns" class="level2">
+<h2 class="anchored" data-anchor-id="convolutional-neural-networks-cnns">Convolutional Neural Networks (CNNs)</h2>
+<p>A convolutional neural network makes use of a matrix operator that produces the same result as a discrete convolution.</p>
+<section id="convolution-operator" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-operator">Convolution Operator</h3>
+<p>The 1D convolutional operator <span class="math inline">\(\ast\)</span> in the discrete case is defined as:</p>
+<p><span class="math display">\[ (f \ast g)[n] = \sum_{m=-\infty}^{\infty} f[m]g[n-m] \]</span></p>
+<p>In the case of a 2D convolution, the operator is defined as:</p>
+<p><span class="math display">\[ (f \ast g)[n,m] = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} f[i,j]g[n-i,m-j] \]</span></p>
+<p>It is also an operation defined in the continuous domain as:</p>
+<p><span class="math display">\[ (f \ast g)(x) = \int_{-\infty}^{\infty} f(y)g(x-y)dy \]</span></p>
+<p>The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green’s function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI).</p>
+<p><strong>Properties of Convolution</strong></p>
+<ol type="1">
+<li>Linearity: <span class="math inline">\(f \ast (\alpha g + \beta h) = \alpha f \ast g + \beta f \ast h\)</span></li>
+<li>Commutativity: <span class="math inline">\(f \ast g = g \ast f\)</span></li>
+<li>Associativity: <span class="math inline">\(f \ast (g \ast h) = (f \ast g) \ast h\)</span></li>
+</ol>
+<p>Rather than explain convolution at length here, the interested reader is encouraged to look at the <a href="https://en.wikipedia.org/wiki/Convolution">Convolution Wikipedia page</a> for some excellent properties and visual examples to build intuition.</p>
+<p>In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.</p>
+<p>Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:</p>
+<p><span class="math display">\[ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) \]</span></p>
+<p>When it comes to computing large convolutions for two function <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.</p>
+<p><span class="math display">\[ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) \]</span></p>
+<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on (Computer Vision)[https://www.cs.ubc.ca/~lsigal/teaching.html] with slides from (Lecture 3b)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf] and (Lecture 4)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf].</p>
+</section>
+<section id="convolution-in-cnns" class="level3">
+<h3 class="anchored" data-anchor-id="convolution-in-cnns">Convolution in CNNs</h3>
+
+
 </section>
 </section>
 

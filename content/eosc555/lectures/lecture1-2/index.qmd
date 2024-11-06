@@ -1,6 +1,6 @@
 ---
-title: "Lecture 1: Introduction to Inverse Theory"
-subtitle: "Least Squares and the SVD"
+title: "Lecture 1"
+subtitle: "Introduction to Inverse Theory"
 date: 2024-09-14
 author: "Simon Ghyselincks"
 description: >-

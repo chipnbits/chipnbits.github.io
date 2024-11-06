@@ -1,6 +1,6 @@
 ---
-title: "Lecture 5: Gauss Newton"
-subtitle: "Non-Linear Least Squares Optimization"
+title: "Lecture 5"
+subtitle: "Gauss Newton for Non-Linear Least Squares Optimization"
 date: 2024-09-25
 author: "Simon Ghyselincks"
 description: >-

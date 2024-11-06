@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-10-08">
 <meta name="description" content="Automatic differentiation is a powerful tool for solving optimization problems that can be used to automate the process of Gauss-Newton optimization. Here we put together an implementation of the Gauss-Newton method using PyTorch.">
 
-<title>Lecture 6: Autodiff and Implementing Gauss-Newton – Simon Ghyselincks</title>
+<title>Lecture 6 – Simon Ghyselincks</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -217,8 +217,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lecture 6: Autodiff and Implementing Gauss-Newton</h1>
-<p class="subtitle lead">A look at some of the foundations of automatic differentiation and the Gauss-Newton optimization method.</p>
+<h1 class="title">Lecture 6</h1>
+<p class="subtitle lead">Autodiff and Coding Gauss-Newton for Least Squares</p>
   <div class="quarto-categories">
     <div class="quarto-category">Optimization</div>
     <div class="quarto-category">Gauss-Newton</div>
@@ -450,7 +450,7 @@ tensor([[2., 1.],
 </div>
 </div>
 <p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method. To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations. Then select the first realization to plot the time series and phase space of the model.</p>
-<div id="4a182145" class="cell" data-execution_count="3">
+<div id="9a8ce1c5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -582,7 +582,7 @@ tensor([[2., 1.],
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(torch.<span class="bu">sum</span>(q <span class="op">*</span> w), torch.<span class="bu">sum</span>(a <span class="op">*</span> v))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>tensor(-27.4492) tensor(-27.4493)</code></pre>
+<pre><code>tensor(80.2678) tensor(80.2678)</code></pre>
 </div>
 </div>
 </section>
@@ -638,19 +638,18 @@ tensor([[2., 1.],
 <span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> conj_gradient(A, b, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>)</span>
 <span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>iter =   0    res = 1.15e+00
-iter =   1    res = 5.48e-02
-iter =   2    res = 1.47e-02
-iter =   3    res = 2.79e-02
-iter =   4    res = 3.56e-03
-tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
+<pre><code>iter =   0    res = 2.96e-01
+iter =   1    res = 1.63e-02
+iter =   2    res = 1.50e-02
+iter =   3    res = 8.92e-03
+tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 </div>
 </div>
 </section>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1" data-comment-delimiter="//" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -754,7 +753,7 @@ tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
 <div class="cell-output cell-output-display">
 <div id="gauss-newton-test" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/gauss-newton-test-output-2.png" width="622" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/gauss-newton-test-output-2.png" width="626" height="449" class="figure-img"></p>
 <figcaption>Testing the Gauss-Newton optimization method.</figcaption>
 </figure>
 </div>
@@ -844,7 +843,7 @@ tensor([-2.3992, -3.3430,  4.1509,  3.3726])</code></pre>
 <div class="cell-output cell-output-display">
 <div id="time-varying-parameters" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/time-varying-parameters-output-1.png" width="622" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/time-varying-parameters-output-1.png" width="626" height="449" class="figure-img"></p>
 <figcaption>Fitting the Lotka-Volterra model with time-varying parameters.</figcaption>
 </figure>
 </div>

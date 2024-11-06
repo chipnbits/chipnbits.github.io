@@ -1,6 +1,6 @@
 ---
-title: "Lecture 4: Regularization and the Conjugate Gradient Methods"
-subtitle: "A derivation of regularization techniques for least squares"
+title: "Lecture 4"
+subtitle: "Regularization and the Conjugate Gradient Methods"
 date: 2024-09-20
 author: "Simon Ghyselincks"
 description: >-
