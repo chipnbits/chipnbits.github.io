@@ -480,16 +480,76 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <p><img src="https://latex.codecogs.com/png.latex?%20%5Cmathcal%7BF%7D(f%20%5Cast%20g)%20=%20%5Cmathcal%7BF%7D(f)%20%5Ccdot%20%5Cmathcal%7BF%7D(g)%20"></p>
 <p>When it comes to computing large convolutions for two function <img src="https://latex.codecogs.com/png.latex?f(x)"> and <img src="https://latex.codecogs.com/png.latex?g(x)">, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20f%20%5Cast%20g%20=%20%5Cmathcal%7BF%7D%5E%7B-1%7D(%5Cmathcal%7BF%7D(f)%20%5Ccdot%20%5Cmathcal%7BF%7D(g))%20"></p>
-<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on (Computer Vision)[https://www.cs.ubc.ca/~lsigal/teaching.html] with slides from (Lecture 3b)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf] and (Lecture 4)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf].</p>
+<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on <a href="https://www.cs.ubc.ca/~lsigal/teaching.html">Computer Vision</a> with slides from <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf">Lecture 3b</a> and <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf">Lecture 4</a>.</p>
 </section>
 <section id="convolution-in-cnns" class="level3">
 <h3 class="anchored" data-anchor-id="convolution-in-cnns">Convolution in CNNs</h3>
+<p>A convolutinal neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix <img src="https://latex.codecogs.com/png.latex?W">. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.</p>
+<p><strong>Single Layer Perceptron (SLP) vs Convolutional Neural Network (CNN)</strong></p>
+<p>The single layer of a perceptron given earlier is of the form <img src="https://latex.codecogs.com/png.latex?y%20=%20w%5ET%20%5Csigma(Wu%20+%20a)">, where <img src="https://latex.codecogs.com/png.latex?W"> is the weights matrix, <img src="https://latex.codecogs.com/png.latex?w"> is the weights vector, <img src="https://latex.codecogs.com/png.latex?u"> is the input, and <img src="https://latex.codecogs.com/png.latex?a"> is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix. Replacing <img src="https://latex.codecogs.com/png.latex?W"> with a sparse convolutional matrix <img src="https://latex.codecogs.com/png.latex?C">.</p>
+<hr>
+<p><strong>Definition: Convolutional Operation</strong></p>
+<p>Let <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> be the flattened input image <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BI%7D">, and let <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BK%7D"> be the convolutional kernel. The convolutional operation is defined as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20Y%5Bs,t%5D%20=%20%5Cmathcal%7BK%7D%20%5Cast%20%5Cmathcal%7BI%7D%20=%20%5Csum_%7Bi=-%5Cinfty%7D%5E%7B%5Cinfty%7D%20%5Csum_%7Bj=-%5Cinfty%7D%5E%7B%5Cinfty%7D%20%5Cmathcal%7BK%7D%5Bi,j%5D%20%5Cmathcal%7BI%7D%5Bs-i,t-j%5D"></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?Y%5Bs,t%5D"> is the output at position <img src="https://latex.codecogs.com/png.latex?(s,t)"></li>
+<li><img src="https://latex.codecogs.com/png.latex?N"> and <img src="https://latex.codecogs.com/png.latex?M"> are the dimensions of the kernel <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BK%7D"></li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BK%7D%5Bi,j%5D"> is the element in the <img src="https://latex.codecogs.com/png.latex?i">-th row and <img src="https://latex.codecogs.com/png.latex?j">-th column of the kernel</li>
+</ul>
+<p>The kernel slides across the input image, producing a weighted sum at each valid position to give output <img src="https://latex.codecogs.com/png.latex?Y">. The indices are clipped from infinity to the correct size depending on the padding, size of kernel, and the stride.</p>
+<p>It is a linear operation so that every element of <img src="https://latex.codecogs.com/png.latex?Y"> is a linear combination of the input and weights elements, indicating that it can be expressed as a matrix multiplication with the flattened image <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and the flattened kernel <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bk%7D">.</p>
+<section id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image" class="level4">
+<h4 class="anchored" data-anchor-id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image">Example: Convolution of a <img src="https://latex.codecogs.com/png.latex?2%5Ctimes%202"> Kernel with a <img src="https://latex.codecogs.com/png.latex?4%5Ctimes%204"> Image</h4>
+<p><strong>Input Image</strong>: <img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BI%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Au_%7B1,1%7D%20&amp;%20u_%7B1,2%7D%20&amp;%20u_%7B1,3%7D%20&amp;%20u_%7B1,4%7D%20%5C%5C%0Au_%7B2,1%7D%20&amp;%20u_%7B2,2%7D%20&amp;%20u_%7B2,3%7D%20&amp;%20u_%7B2,4%7D%20%5C%5C%0Au_%7B3,1%7D%20&amp;%20u_%7B3,2%7D%20&amp;%20u_%7B3,3%7D%20&amp;%20u_%7B3,4%7D%20%5C%5C%0Au_%7B4,1%7D%20&amp;%20u_%7B4,2%7D%20&amp;%20u_%7B4,3%7D%20&amp;%20u_%7B4,4%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+<p><strong>Kernel</strong>: <img src="https://latex.codecogs.com/png.latex?%0A%5Cmathcal%7BK%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Ak_%7B1,1%7D%20&amp;%20k_%7B1,2%7D%20%5C%5C%0Ak_%7B2,1%7D%20&amp;%20k_%7B2,2%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+<p><strong>Output</strong>: The output of the convolution will be a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%203"> matrix, since the kernel slides over the <img src="https://latex.codecogs.com/png.latex?4%20%5Ctimes%204"> image with no padding and a stride of 1.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AY%20=%0A%5Cbegin%7Bbmatrix%7D%0Ay_%7B1,1%7D%20&amp;%20y_%7B1,2%7D%20&amp;%20y_%7B1,3%7D%20%5C%5C%0Ay_%7B2,1%7D%20&amp;%20y_%7B2,2%7D%20&amp;%20y_%7B2,3%7D%20%5C%5C%0Ay_%7B3,1%7D%20&amp;%20y_%7B3,2%7D%20&amp;%20y_%7B3,3%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+<p>Note that the output indexing loses the first and last row and column because there is no padding. In cases with zero padding, then all undefined indices of the input are set to zero when using the convolution formula and reaching undefined indices.</p>
+<p>Each element <img src="https://latex.codecogs.com/png.latex?y_%7Bs,t%7D"> of the output is given by: <img src="https://latex.codecogs.com/png.latex?%0Ay_%7Bs,t%7D%20=%20%5Csum_%7Bi=1%7D%5E%7B2%7D%20%5Csum_%7Bj=1%7D%5E%7B2%7D%20%5Cmathcal%7BK%7D%5Bi,j%5D%20%5Ccdot%20%5Cmathcal%7BI%7D%5B(s+2)-i,%20(t+2)-j%5D%0A"></p>
+<p>The addition of <img src="https://latex.codecogs.com/png.latex?2"> in the indexing is due to the size of the kernel being <img src="https://latex.codecogs.com/png.latex?2%20%5Ctimes%202"> and the choice to index <img src="https://latex.codecogs.com/png.latex?y"> starting from <img src="https://latex.codecogs.com/png.latex?1"> instead of <img src="https://latex.codecogs.com/png.latex?3"> for the case with no padding.</p>
+<p><strong>Flatten the Input Image</strong>:</p>
+<p>Flatten the <img src="https://latex.codecogs.com/png.latex?4%20%5Ctimes%204"> image <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BI%7D"> into a column vector <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Cin%20%5Cmathbb%7BR%7D%5E%7B16%7D">: <img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7Bflatten%7D%5Cleft(%5Cmathcal%7BI%7D%5Cright)%20=%20%5Cvec%7Bu%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Au_%7B1,1%7D%20&amp;%20u_%7B1,2%7D%20&amp;%20u_%7B1,3%7D%20&amp;%20u_%7B1,4%7D%20&amp;%0Au_%7B2,1%7D%20&amp;%20u_%7B2,2%7D%20&amp;%20u_%7B2,3%7D%20&amp;%20u_%7B2,4%7D%20&amp;%0Au_%7B3,1%7D%20&amp;%20u_%7B3,2%7D%20&amp;%20u_%7B3,3%7D%20&amp;%20u_%7B3,4%7D%20&amp;%0Au_%7B4,1%7D%20&amp;%20u_%7B4,2%7D%20&amp;%20u_%7B4,3%7D%20&amp;%20u_%7B4,4%7D%0A%5Cend%7Bbmatrix%7D%5ET%0A"></p>
+<p><strong>Sparse Convolution Matrix</strong>:</p>
+<p>The convolution operation is expressed as a matrix multiplication: <img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7Bflatten%7D%5Cleft(%20Y%20%5Cright)%20=%20%5Cmathbf%7BC%7D%20%5Cvec%7Bu%7D%0A"></p>
+<p>Here, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BC%7D"> is the sparse matrix representation of the <img src="https://latex.codecogs.com/png.latex?2%20%5Ctimes%202"> kernel, with size <img src="https://latex.codecogs.com/png.latex?9%20%5Ctimes%2016"> (matching the size of the output vector and the input vector). The non-zero entries in each row of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BC%7D"> correspond to the flattened values of <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BK%7D">.</p>
+<p>Looking at the first few entries of the output <img src="https://latex.codecogs.com/png.latex?Y"> defines the matrix entries:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?y_%7B1,1%7D%20=%20k_%7B2,2%7Du_%7B1,1%7D%20+%20k_%7B2,1%7Du_%7B1,2%7D%20+%20k_%7B1,2%7Du_%7B2,1%7D%20+%20k_%7B1,1%7Du_%7B2,2%7D"></li>
+<li><img src="https://latex.codecogs.com/png.latex?y_%7B1,2%7D%20=%20k_%7B2,2%7Du_%7B1,2%7D%20+%20k_%7B2,1%7Du_%7B1,3%7D%20+%20k_%7B1,2%7Du_%7B2,2%7D%20+%20k_%7B1,1%7Du_%7B2,3%7D"></li>
+<li><img src="https://latex.codecogs.com/png.latex?y_%7B1,3%7D%20=%20k_%7B2,2%7Du_%7B1,3%7D%20+%20k_%7B2,1%7Du_%7B1,4%7D%20+%20k_%7B1,2%7Du_%7B2,3%7D%20+%20k_%7B1,1%7Du_%7B2,4%7D"></li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BC%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Ak_%7B2,2%7D%20&amp;%20k_%7B2,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B1,2%7D%20&amp;%20k_%7B1,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20%5C%5C%0A0%20%20%20%20%20%20&amp;%20k_%7B2,2%7D%20&amp;%20k_%7B2,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B1,2%7D%20&amp;%20k_%7B1,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20%5C%5C%0A0%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B2,2%7D%20&amp;%20k_%7B2,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B1,2%7D%20&amp;%20k_%7B1,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20%5C%5C%0A0%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20%20%20&amp;%20k_%7B2,2%7D%20&amp;%20k_%7B2,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B1,2%7D%20&amp;%20k_%7B1,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%5C%5C%0A0%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B2,2%7D%20&amp;%20k_%7B2,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%20k_%7B1,2%7D%20&amp;%20k_%7B1,1%7D%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%20%20&amp;%200%20%20%20%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20%20&amp;%20%5Cvdots%20%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20%20&amp;%20%5Cvdots%20%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+<p>Then using this matrix and the flattened input image, a flattened output vector can be computed as $<img src="https://latex.codecogs.com/png.latex?%5Ctext%7Bflatten%7D%5Cleft(Y%20%5Cright)%20=%20C%20%5Cvec%7Bu%7D">.</p>
+<p>So the convolution operation gives a matrix that only has <img src="https://latex.codecogs.com/png.latex?4"> parameters out of the <img src="https://latex.codecogs.com/png.latex?9%20%5Ctimes%2016%20=%20144"> total elements, with most of the entries being zero. This can be highly efficient for compuations in a neural network for spatially invariant features in the input data. The sparse structure of the matrix can also be exploited for efficient computation.</p>
+</section>
+<section id="channels-in-convolutional-neural-networks" class="level4">
+<h4 class="anchored" data-anchor-id="channels-in-convolutional-neural-networks">Channels in Convolutional Neural Networks</h4>
+<p>The data being processed in a CNN can have multiple channels, such as color images with <img src="https://latex.codecogs.com/png.latex?3"> channels. The images may also be processed in batches, adding yet another dimension to the input data. For a single image that is size <img src="https://latex.codecogs.com/png.latex?%5C%7BC,H,W%5C%7D"> where <img src="https://latex.codecogs.com/png.latex?C"> is the number of channels, <img src="https://latex.codecogs.com/png.latex?H"> is the height, and <img src="https://latex.codecogs.com/png.latex?W"> is the width, a different convolutional kernel is applied as a mapping from <img src="https://latex.codecogs.com/png.latex?C_%7Bin%7D"> channels to <img src="https://latex.codecogs.com/png.latex?C_%7Bout%7D"> channels. To flatten the input image with channels, the flattened single channels are stacked vertically to form a single column vector.</p>
+<p>For <img src="https://latex.codecogs.com/png.latex?k"> input channels and <img src="https://latex.codecogs.com/png.latex?l"> output channels:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20y%20=%20%5Cbegin%7Bbmatrix%7D%0AW_%7B1,1%7D%20&amp;%20W_%7B1,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7B1,k%7D%20%5C%5C%0AW_%7B2,1%7D%20&amp;%20W_%7B2,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7B2,k%7D%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0AW_%7Bl,1%7D%20&amp;%20W_%7Bl,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7Bl,k%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Cbegin%7Bbmatrix%7D%0Au_%7Bc=1%7D%20%5C%5C%0Au_%7Bc=2%7D%20%5C%5C%0A%5Cvdots%20%5C%5C%0Au_%7Bc=k%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+<p>The <img src="https://latex.codecogs.com/png.latex?W"> are the individual convolutional kernel maps for each input to output channel. The input is a flattened tensor of size <img src="https://latex.codecogs.com/png.latex?k%20%5Ctimes%20H%20%5Ctimes%20W">, and the output is a flattened tensor of size <img src="https://latex.codecogs.com/png.latex?l%20%5Ctimes%20H%20%5Ctimes%20W">.</p>
+<p>To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattned input data, where each column is a flattened input image. For a batch size of <img src="https://latex.codecogs.com/png.latex?N">, the input data is of size <img src="https://latex.codecogs.com/png.latex?N%20%5Ctimes%20k%20%5Ctimes%20H%20%5Ctimes%20W%20%5Ctimes%20N"> and the output data is of size <img src="https://latex.codecogs.com/png.latex?N%20%5Ctimes%20l%20%5Ctimes%20H%20%5Ctimes%20W">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20Y_%7B%5Ctext%7Bbatch%7D%7D%20=%20%5Cbegin%7Bbmatrix%7D%0AW_%7B1,1%7D%20&amp;%20W_%7B1,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7B1,k%7D%20%5C%5C%0AW_%7B2,1%7D%20&amp;%20W_%7B2,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7B2,k%7D%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0AW_%7Bl,1%7D%20&amp;%20W_%7Bl,2%7D%20&amp;%20%5Ccdots%20&amp;%20W_%7Bl,k%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Cbegin%7Bbmatrix%7D%0Au_%7B1,c=1%7D%20&amp;%20u_%7B2,c=1%7D%20&amp;%20%5Ccdots%20&amp;%20u_%7BN,c=1%7D%20%5C%5C%0Au_%7B1,c=2%7D%20&amp;%20u_%7B2,c=2%7D%20&amp;%20%5Ccdots%20&amp;%20u_%7BN,c=2%7D%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0Au_%7B1,c=k%7D%20&amp;%20u_%7B2,c=k%7D%20&amp;%20%5Ccdots%20&amp;%20u_%7BN,c=k%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A"></p>
+</section>
+<section id="deep-cnns" class="level4">
+<h4 class="anchored" data-anchor-id="deep-cnns">Deep CNNs</h4>
+<p>A deep CNN wil chain multiple convolutional layers together, including a non-linear activation function and bias after each later:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20y%20=%20%5Csigma(W%5E%7B(L)%7D%20%5Csigma(W%5E%7B(L-1)%7D%20%5Ccdots%20%5Csigma(W%5E%7B(1)%7Du%20+%20a%5E%7B(1)%7D)%20+%20a%5E%7B(L-1)%7D)%20+%20a%5E%7B(L)%7D%20"></p>
+<p>A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture <span class="citation" data-cites="Kaiming2015">(He et al. 2015)</span>. The ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypassed one or more layers. Each sequential layer in the architecture is to train a change in the residual rather than the entire output to the next layer.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20u_%7Bn+1%7D%20=%20u_n%20+%20h%20%5Csigma(W_n%20u_n%20+%20a_n)%20"></p>
+<p>When <img src="https://latex.codecogs.com/png.latex?h"> becomes small, this resembles the Euler method for solving ordinary differential equations where <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bdu%7D%7Bdt%7D%20=%20%5Csigma(W_t%20u%20+%20a_t)">. Where the parameters are also time dependent.</p>
+
 
 
 </section>
 </section>
+</section>
 
- ]]></description>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-Kaiming2015" class="csl-entry">
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Residual Learning for Image Recognition.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.1512.03385">https://doi.org/10.48550/ARXIV.1512.03385</a>.
+</div>
+</div></section></div> ]]></description>
   <category>Machine Learning</category>
   <category>Neural Networks</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</guid>
@@ -1183,7 +1243,7 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
 </tbody>
 </table>
 <p>To illustrate these functions even more we can plot them as well.</p>
-<div id="cell-function-plot" class="cell" data-execution_count="1">
+<div id="cell-function-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -1409,7 +1469,7 @@ A continuous deformation of a path. Source: <a href="https://commons.wikimedia.o
 <p><img src="https://latex.codecogs.com/png.latex?f(x)%20%5Cast%20g(x)%20=%20%5Cmathcal%7BF%7D%5E%7B-1%7D%20%5Cleft%5B%20%5Chat%7Bf%7D(k)%20%5Chat%7Bg%7D(k)%20%5Cright%5D."></p>
 <p>The convolution of a function <img src="https://latex.codecogs.com/png.latex?f(x)"> with a Gaussian <img src="https://latex.codecogs.com/png.latex?g(x)"> can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain.</p>
 <p>A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function <img src="https://latex.codecogs.com/png.latex?g(x)%20=%20%5Cdelta(x)"> in the time domain, a constant function <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bg%7D(k)%20=%201"> in the frequency domain. The convolution of a delta function with a function <img src="https://latex.codecogs.com/png.latex?f"> is the function itself, so the delta function does not change the function. The multiplication of the function <img src="https://latex.codecogs.com/png.latex?%5Chat%20f(k)"> with the constant function <img src="https://latex.codecogs.com/png.latex?1"> is the function itself, so the constant function does not change the function in the frequency domain.</p>
-<div id="gaussian-homotopy" class="cell" data-execution_count="2">
+<div id="gaussian-homotopy" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -2063,7 +2123,7 @@ font-style: inherit;">8</span>)</span>
 <p>As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%20f(x)%20=%20-%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20-%202)%5E2%20+%20(x_2%20-%202)%5E2%7D%7B0.1%7D%5Cright)%20-%202%5Cexp%5Cleft(-%5Cfrac%7B(x_1%20+%202)%5E2%20+%20(x_2%20+%202)%5E2%7D%7B0.1%7D%5Cright)."></p>
 <p>The function is two superimposed Gaussian functions that impose a local minimum at <img src="https://latex.codecogs.com/png.latex?(2,%202)"> and <img src="https://latex.codecogs.com/png.latex?(-2,%20-2)"> but with very little gradient information far away from the minima.</p>
-<div id="cell-objective-function" class="cell" data-execution_count="3">
+<div id="cell-objective-function" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
@@ -2245,7 +2305,7 @@ font-style: inherit;">'Objective function'</span>)</span>
 </div>
 </div>
 <p>The next step is to create a time parameterized function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> that is the Gaussian homotopy of f(x). In practical terms, the starting <img src="https://latex.codecogs.com/png.latex?%5Csigma_%7B%5Ctext%7Bmax%7D%7D"> is being modified by a <img src="https://latex.codecogs.com/png.latex?t"> parameter when multiplied by the random noise. At <img src="https://latex.codecogs.com/png.latex?t=0"> the function is the original function, and at <img src="https://latex.codecogs.com/png.latex?t=1"> the function is being convolved numerically with a Gaussian kernel that is <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BN%7D(0,%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D)">. The time points in between are a homotopy between the two functions.</p>
-<div id="0b5be197" class="cell" data-execution_count="4">
+<div id="0b5be197" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -2368,7 +2428,7 @@ font-style: inherit;">return</span> y</span></code></pre></div>
 <p>This variation of the function can be seen as having extra parameters:</p>
 <p><img src="https://latex.codecogs.com/png.latex?h(x,t,%5Csigma_%7B%5Ctext%7Bmax%7D%7D,%20N)%20=%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20f(x-%5Cxi_i),%20%5Cquad%20%5Cxi_i%20%5Csim%20%5Cmathcal%7BN%7D(0,%20t%20%5Ccdot%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D)."></p>
 <p>The time parameter is modulating the standard deviation of the Gaussian kernel, and the number of samples <img src="https://latex.codecogs.com/png.latex?N"> is used to approximate the expectation of the function at each point. As time goes to zero we approach the original function. Now applying an animation to this it is possible to see the stochastic homotopy in action.</p>
-<div id="homotopy-animation" class="cell" data-execution_count="5">
+<div id="homotopy-animation" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
@@ -3992,7 +4052,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -5510,7 +5570,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="//" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>

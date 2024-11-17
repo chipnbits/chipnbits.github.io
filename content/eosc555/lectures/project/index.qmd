@@ -1,13 +1,14 @@
 ---
-title: "Lecture 9"
-subtitle: "Machine Learning and Neural Networks"
-date: 2024-11-05
+title: "Project Work 1"
+subtitle: "Applications of Machine Learning in Geophysics"
+date: 2024-11-06
 author: "Simon Ghyselincks"
 description: >-
-    Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.
+    Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.
 categories:
   - Machine Learning
   - Neural Networks
+  - Geophysics
   
 draft: false
 

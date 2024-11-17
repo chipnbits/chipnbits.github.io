@@ -4,7 +4,7 @@ subtitle: "Homotopy Optimization"
 date: 2024-10-22
 author: "Simon Ghyselincks"
 description: >-
-    Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help escape local minima.
+    Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help scape local minima.
 categories:
   - Optimization
   - PyTorch

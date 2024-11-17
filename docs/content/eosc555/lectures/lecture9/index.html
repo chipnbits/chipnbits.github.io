@@ -57,7 +57,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -494,16 +514,143 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <p><span class="math display">\[ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) \]</span></p>
 <p>When it comes to computing large convolutions for two function <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.</p>
 <p><span class="math display">\[ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) \]</span></p>
-<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on (Computer Vision)[https://www.cs.ubc.ca/~lsigal/teaching.html] with slides from (Lecture 3b)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf] and (Lecture 4)[https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf].</p>
+<p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on <a href="https://www.cs.ubc.ca/~lsigal/teaching.html">Computer Vision</a> with slides from <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf">Lecture 3b</a> and <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf">Lecture 4</a>.</p>
 </section>
 <section id="convolution-in-cnns" class="level3">
 <h3 class="anchored" data-anchor-id="convolution-in-cnns">Convolution in CNNs</h3>
+<p>A convolutinal neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix <span class="math inline">\(W\)</span>. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.</p>
+<p><strong>Single Layer Perceptron (SLP) vs Convolutional Neural Network (CNN)</strong></p>
+<p>The single layer of a perceptron given earlier is of the form <span class="math inline">\(y = w^T \sigma(Wu + a)\)</span>, where <span class="math inline">\(W\)</span> is the weights matrix, <span class="math inline">\(w\)</span> is the weights vector, <span class="math inline">\(u\)</span> is the input, and <span class="math inline">\(a\)</span> is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix. Replacing <span class="math inline">\(W\)</span> with a sparse convolutional matrix <span class="math inline">\(C\)</span>.</p>
+<hr>
+<p><strong>Definition: Convolutional Operation</strong></p>
+<p>Let <span class="math inline">\(\vec{u}\)</span> be the flattened input image <span class="math inline">\(\mathcal{I}\)</span>, and let <span class="math inline">\(\mathcal{K}\)</span> be the convolutional kernel. The convolutional operation is defined as:</p>
+<p><span class="math display">\[ Y[s,t] = \mathcal{K} \ast \mathcal{I} = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} \mathcal{K}[i,j] \mathcal{I}[s-i,t-j]\]</span></p>
+<ul>
+<li><span class="math inline">\(Y[s,t]\)</span> is the output at position <span class="math inline">\((s,t)\)</span></li>
+<li><span class="math inline">\(N\)</span> and <span class="math inline">\(M\)</span> are the dimensions of the kernel <span class="math inline">\(\mathcal{K}\)</span></li>
+<li><span class="math inline">\(\mathcal{K}[i,j]\)</span> is the element in the <span class="math inline">\(i\)</span>-th row and <span class="math inline">\(j\)</span>-th column of the kernel</li>
+</ul>
+<p>The kernel slides across the input image, producing a weighted sum at each valid position to give output <span class="math inline">\(Y\)</span>. The indices are clipped from infinity to the correct size depending on the padding, size of kernel, and the stride.</p>
+<p>It is a linear operation so that every element of <span class="math inline">\(Y\)</span> is a linear combination of the input and weights elements, indicating that it can be expressed as a matrix multiplication with the flattened image <span class="math inline">\(\vec{u}\)</span> and the flattened kernel <span class="math inline">\(\vec{k}\)</span>.</p>
+<section id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image" class="level4">
+<h4 class="anchored" data-anchor-id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image">Example: Convolution of a <span class="math inline">\(2\times 2\)</span> Kernel with a <span class="math inline">\(4\times 4\)</span> Image</h4>
+<p><strong>Input Image</strong>: <span class="math display">\[
+\mathcal{I} =
+\begin{bmatrix}
+u_{1,1} &amp; u_{1,2} &amp; u_{1,3} &amp; u_{1,4} \\
+u_{2,1} &amp; u_{2,2} &amp; u_{2,3} &amp; u_{2,4} \\
+u_{3,1} &amp; u_{3,2} &amp; u_{3,3} &amp; u_{3,4} \\
+u_{4,1} &amp; u_{4,2} &amp; u_{4,3} &amp; u_{4,4} \\
+\end{bmatrix}
+\]</span></p>
+<p><strong>Kernel</strong>: <span class="math display">\[
+\mathcal{K} =
+\begin{bmatrix}
+k_{1,1} &amp; k_{1,2} \\
+k_{2,1} &amp; k_{2,2} \\
+\end{bmatrix}
+\]</span></p>
+<p><strong>Output</strong>: The output of the convolution will be a <span class="math inline">\(3 \times 3\)</span> matrix, since the kernel slides over the <span class="math inline">\(4 \times 4\)</span> image with no padding and a stride of 1.</p>
+<p><span class="math display">\[
+Y =
+\begin{bmatrix}
+y_{1,1} &amp; y_{1,2} &amp; y_{1,3} \\
+y_{2,1} &amp; y_{2,2} &amp; y_{2,3} \\
+y_{3,1} &amp; y_{3,2} &amp; y_{3,3} \\
+\end{bmatrix}
+\]</span></p>
+<p>Note that the output indexing loses the first and last row and column because there is no padding. In cases with zero padding, then all undefined indices of the input are set to zero when using the convolution formula and reaching undefined indices.</p>
+<p>Each element <span class="math inline">\(y_{s,t}\)</span> of the output is given by: <span class="math display">\[
+y_{s,t} = \sum_{i=1}^{2} \sum_{j=1}^{2} \mathcal{K}[i,j] \cdot \mathcal{I}[(s+2)-i, (t+2)-j]
+\]</span></p>
+<p>The addition of <span class="math inline">\(2\)</span> in the indexing is due to the size of the kernel being <span class="math inline">\(2 \times 2\)</span> and the choice to index <span class="math inline">\(y\)</span> starting from <span class="math inline">\(1\)</span> instead of <span class="math inline">\(3\)</span> for the case with no padding.</p>
+<p><strong>Flatten the Input Image</strong>:</p>
+<p>Flatten the <span class="math inline">\(4 \times 4\)</span> image <span class="math inline">\(\mathcal{I}\)</span> into a column vector <span class="math inline">\(\vec{u} \in \mathbb{R}^{16}\)</span>: <span class="math display">\[
+\text{flatten}\left(\mathcal{I}\right) = \vec{u} =
+\begin{bmatrix}
+u_{1,1} &amp; u_{1,2} &amp; u_{1,3} &amp; u_{1,4} &amp;
+u_{2,1} &amp; u_{2,2} &amp; u_{2,3} &amp; u_{2,4} &amp;
+u_{3,1} &amp; u_{3,2} &amp; u_{3,3} &amp; u_{3,4} &amp;
+u_{4,1} &amp; u_{4,2} &amp; u_{4,3} &amp; u_{4,4}
+\end{bmatrix}^T
+\]</span></p>
+<p><strong>Sparse Convolution Matrix</strong>:</p>
+<p>The convolution operation is expressed as a matrix multiplication: <span class="math display">\[
+\text{flatten}\left( Y \right) = \mathbf{C} \vec{u}
+\]</span></p>
+<p>Here, <span class="math inline">\(\mathbf{C}\)</span> is the sparse matrix representation of the <span class="math inline">\(2 \times 2\)</span> kernel, with size <span class="math inline">\(9 \times 16\)</span> (matching the size of the output vector and the input vector). The non-zero entries in each row of <span class="math inline">\(\mathbf{C}\)</span> correspond to the flattened values of <span class="math inline">\(\mathcal{K}\)</span>.</p>
+<p>Looking at the first few entries of the output <span class="math inline">\(Y\)</span> defines the matrix entries:</p>
+<ul>
+<li><span class="math inline">\(y_{1,1} = k_{2,2}u_{1,1} + k_{2,1}u_{1,2} + k_{1,2}u_{2,1} + k_{1,1}u_{2,2}\)</span></li>
+<li><span class="math inline">\(y_{1,2} = k_{2,2}u_{1,2} + k_{2,1}u_{1,3} + k_{1,2}u_{2,2} + k_{1,1}u_{2,3}\)</span></li>
+<li><span class="math inline">\(y_{1,3} = k_{2,2}u_{1,3} + k_{2,1}u_{1,4} + k_{1,2}u_{2,3} + k_{1,1}u_{2,4}\)</span></li>
+</ul>
+<p><span class="math display">\[
+\mathbf{C} =
+\begin{bmatrix}
+k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      \\
+0      &amp; k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      \\
+0      &amp; 0      &amp; k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      \\
+0      &amp; 0      &amp; 0      &amp; 0        &amp; k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0    \\
+0      &amp; 0      &amp; 0      &amp; 0        &amp; 0      &amp; k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp; 0      &amp; 0      &amp; 0      &amp; 0      &amp; 0    \\
+\vdots &amp; \vdots  &amp; \vdots  &amp; \vdots &amp; \vdots &amp; \vdots  &amp; \vdots  &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+\end{bmatrix}
+\]</span></p>
+<p>Then using this matrix and the flattened input image, a flattened output vector can be computed as $<span class="math inline">\(\text{flatten}\left(Y \right) = C \vec{u}\)</span>.</p>
+<p>So the convolution operation gives a matrix that only has <span class="math inline">\(4\)</span> parameters out of the <span class="math inline">\(9 \times 16 = 144\)</span> total elements, with most of the entries being zero. This can be highly efficient for compuations in a neural network for spatially invariant features in the input data. The sparse structure of the matrix can also be exploited for efficient computation.</p>
+</section>
+<section id="channels-in-convolutional-neural-networks" class="level4">
+<h4 class="anchored" data-anchor-id="channels-in-convolutional-neural-networks">Channels in Convolutional Neural Networks</h4>
+<p>The data being processed in a CNN can have multiple channels, such as color images with <span class="math inline">\(3\)</span> channels. The images may also be processed in batches, adding yet another dimension to the input data. For a single image that is size <span class="math inline">\(\{C,H,W\}\)</span> where <span class="math inline">\(C\)</span> is the number of channels, <span class="math inline">\(H\)</span> is the height, and <span class="math inline">\(W\)</span> is the width, a different convolutional kernel is applied as a mapping from <span class="math inline">\(C_{in}\)</span> channels to <span class="math inline">\(C_{out}\)</span> channels. To flatten the input image with channels, the flattened single channels are stacked vertically to form a single column vector.</p>
+<p>For <span class="math inline">\(k\)</span> input channels and <span class="math inline">\(l\)</span> output channels:</p>
+<p><span class="math display">\[ y = \begin{bmatrix}
+W_{1,1} &amp; W_{1,2} &amp; \cdots &amp; W_{1,k} \\
+W_{2,1} &amp; W_{2,2} &amp; \cdots &amp; W_{2,k} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+W_{l,1} &amp; W_{l,2} &amp; \cdots &amp; W_{l,k} \\
+\end{bmatrix}
+\begin{bmatrix}
+u_{c=1} \\
+u_{c=2} \\
+\vdots \\
+u_{c=k} \\
+\end{bmatrix}
+\]</span></p>
+<p>The <span class="math inline">\(W\)</span> are the individual convolutional kernel maps for each input to output channel. The input is a flattened tensor of size <span class="math inline">\(k \times H \times W\)</span>, and the output is a flattened tensor of size <span class="math inline">\(l \times H \times W\)</span>.</p>
+<p>To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattned input data, where each column is a flattened input image. For a batch size of <span class="math inline">\(N\)</span>, the input data is of size <span class="math inline">\(N \times k \times H \times W \times N\)</span> and the output data is of size <span class="math inline">\(N \times l \times H \times W\)</span>.</p>
+<p><span class="math display">\[ Y_{\text{batch}} = \begin{bmatrix}
+W_{1,1} &amp; W_{1,2} &amp; \cdots &amp; W_{1,k} \\
+W_{2,1} &amp; W_{2,2} &amp; \cdots &amp; W_{2,k} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+W_{l,1} &amp; W_{l,2} &amp; \cdots &amp; W_{l,k} \\
+\end{bmatrix}
+\begin{bmatrix}
+u_{1,c=1} &amp; u_{2,c=1} &amp; \cdots &amp; u_{N,c=1} \\
+u_{1,c=2} &amp; u_{2,c=2} &amp; \cdots &amp; u_{N,c=2} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+u_{1,c=k} &amp; u_{2,c=k} &amp; \cdots &amp; u_{N,c=k} \\
+\end{bmatrix}
+\]</span></p>
+</section>
+<section id="deep-cnns" class="level4">
+<h4 class="anchored" data-anchor-id="deep-cnns">Deep CNNs</h4>
+<p>A deep CNN wil chain multiple convolutional layers together, including a non-linear activation function and bias after each later:</p>
+<p><span class="math display">\[ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) + a^{(L-1)}) + a^{(L)} \]</span></p>
+<p>A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture <span class="citation" data-cites="Kaiming2015">(<a href="#ref-Kaiming2015" role="doc-biblioref">He et al. 2015</a>)</span>. The ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypassed one or more layers. Each sequential layer in the architecture is to train a change in the residual rather than the entire output to the next layer.</p>
+<p><span class="math display">\[ u_{n+1} = u_n + h \sigma(W_n u_n + a_n) \]</span></p>
+<p>When <span class="math inline">\(h\)</span> becomes small, this resembles the Euler method for solving ordinary differential equations where <span class="math inline">\(\frac{du}{dt} = \sigma(W_t u + a_t)\)</span>. Where the parameters are also time dependent.</p>
+
 
 
 </section>
 </section>
+</section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Kaiming2015" class="csl-entry" role="listitem">
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Residual Learning for Image Recognition.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.1512.03385">https://doi.org/10.48550/ARXIV.1512.03385</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
