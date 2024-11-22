@@ -156,7 +156,7 @@ In the Bayesian perspective, the regularization term is grounded in a probabilis
 
 Probabilistic approaches to inverse problems with complex distributions are becoming more reliable now with the advent of generative models that learn an underlying probability distribution. While the Gaussian prior is easier to work with, it is simplistic and may not always be the best choice. For example the underlying parameters of a forward model could be the density of a material, or its conductivity, in which case the prior distribution could be something very different from a Gaussian. The choice of prior can be enhanced using a neural network for examples.
 
-## Choice of Regularizer
+## Choice of Regularizer {#choice-of-regularizer}
 
 The problem of least squares with a regularization term can be generalized as:
 

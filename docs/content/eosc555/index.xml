@@ -10,7 +10,3255 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Tue, 05 Nov 2024 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 15 Nov 2024 08:00:00 GMT</lastBuildDate>
+<item>
+  <title>Project Work 1</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/project/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="hidden">
+<p>$$ </p>
+<p>$$</p>
+</div>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>Geomagnetic inversion from recovered magnetic readings above ground is a classic problem in geophysics. Much of the data that we have about subsurface geology must be collected via indirect methods such as magnetic and seismic surveys, or sparse sampling via boreholes. The data can be expensive to collect, where the objective is to detect underground structures such as ore bodies, oil and gas deposits, or aquifers. The goal is to recover a 3D distribution of some of the physical properties of the Earth from the incomplete data, a non-linear and ill-posed problem.</p>
+<p>This project explores the use of machine learning and optimization techniques to attempt an inversion of the data, using electromagnetic equations to model the propogation of the Earth’s magnetic field through the subsurface on a known data set. The goal is to develop a model that can take the forward problem data and invert it to recover the true starting distribution.</p>
+<section id="background" class="level3">
+<h3 class="anchored" data-anchor-id="background">Background</h3>
+<p>A background on the magnetic principles that underpin the problem can be found at <a href="https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html">Geophysics for Practicing Geophysicists</a>.</p>
+<p>The subsurface of the Earth is composed of materials with differences in magnetic susceptibility <img src="https://latex.codecogs.com/png.latex?%5Cchi"> and conductivity <img src="https://latex.codecogs.com/png.latex?%5Csigma">. The magnetic susceptibility relates a material’s magnetization <img src="https://latex.codecogs.com/png.latex?M"> to the magnetic field <img src="https://latex.codecogs.com/png.latex?H"> via the equation <img src="https://latex.codecogs.com/png.latex?M%20=%20%5Cchi%20H">. When the magnetic field of the Earth passes through this material it creates a magnetization response, causing small magnetic anomolies that can be measured above ground. The magnetic field passing through the subsurface is assumed to be uniform and known over the survey area.</p>
+<p>The magnetization effect can be calculated by integrating the magnetic effect over each infinetesimally small volume of the subsurface, since the total effect will be the sum of the parts, similar to analysing electric fields from charge distributions. It is easier to first calculate the magnetic potential and then take the curl to get the field:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D(r)%20=%20%5Cnabla%20%5Ctimes%20%5Cmathbf%7BA%7D(r)%20"> <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D(r)%20=%20%5Cfrac%7B%5Cmu_0%7D%7B4%5Cpi%7D%20%5Cint_V%20%5Cmathbf%7BM%7D(r')%20%5Cfrac%7B1%7D%7B%7C%5Cmathbf%7Br%7D%20-%20%5Cmathbf%7Br'%7D%7C%7D%20dV'"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D"> is the magnetic field, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> is the magnetic potential, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BM%7D"> is the magnetization, and <img src="https://latex.codecogs.com/png.latex?%5Cmu_0"> is the magnetic permeability of free space. The equations above are for the case where there are no free currents, which is a good assumption to make for the Earth’s subsurface.</p>
+<p>The integral is of the form of a convolution with the kernel <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B%7C%5Cmathbf%7Br%7D%20-%20%5Cmathbf%7Br'%7D%7C%7D">, which can be computed using the Fast Fourier Transform (FFT) to speed up the computation. The operation <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D(r)%20=%20%5Cnabla%20%5Ctimes%20%5Cmathbf%7BA%7D(r)"> can also be carried through into the integral since it is a linear operator.</p>
+<p>Using all of the above information yields the integral equation that is dependent on the magnetic susceptibility <img src="https://latex.codecogs.com/png.latex?%5Cchi"> and the magnetic field <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BH%7D_0">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmathbf%7BB%7D_A(%5Cmathbf%7Br%7D)%20=%20%5Cfrac%7B%5Cmu_0%7D%7B4%5Cpi%7D%20%5Cint_V%20%5Cchi(%5Cmathbf%7Br'%7D)%20%5Cmathbf%7BH%7D_0%20%5Ccdot%20%5Cnabla%5E2%20%5Cleft(%20%5Cfrac%7B1%7D%7B%7C%5Cmathbf%7Br%7D%20-%20%5Cmathbf%7Br'%7D%7C%7D%20%5Cright)%20dV'%20"></p>
+<p>The resulting magnetic field anomaly <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D_A"> is projected onto the direction of the magnetic field <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BH%7D_0"> to get the observed anomaly in magnetic field strength at any point above the Earth’s surface in the forward model. For survey work, the probed field is usually measured over a planar surface above the ground, forming a 2D image.</p>
+<p>See <a href="https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html">Geophysics for Practicing Geophysicists</a> for more images and interactive examples.</p>
+</section>
+</section>
+<section id="coding-the-forward-model" class="level2">
+<h2 class="anchored" data-anchor-id="coding-the-forward-model">Coding the Forward Model</h2>
+<p>The model is programmed into the <code>Magnetics</code> class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.</p>
+<div id="b3c78942" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch.nn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> nn</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> scipy.constants <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> mu_0</span>
+<span id="cb1-5">    </span>
+<span id="cb1-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> Magnetics(nn.Module):</span>
+<span id="cb1-7">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    A PyTorch module to perform forward and adjoint computations for magnetic inversion problems.</span></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb1-10">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, dim, h, dirs, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'cpu'</span>):</span>
+<span id="cb1-11">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Initialize the Magnetics module.</span></span>
+<span id="cb1-13"></span>
+<span id="cb1-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Parameters:</span></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            dim (list or tuple): Mesh dimensions [nx, ny, nz].</span></span>
+<span id="cb1-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            h (list or tuple): Cell sizes [dx, dy, dz].</span></span>
+<span id="cb1-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            dirs (list or tuple): Magnetic field directions [I, A, I0, A0] in radians.</span></span>
+<span id="cb1-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">                                  I  - Magnetization dip angle</span></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">                                  A  - Magnetization declination angle</span></span>
+<span id="cb1-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">                                  I0 - Geomagnetic dip angle</span></span>
+<span id="cb1-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">                                  A0 - Geomagnetic declination angle</span></span>
+<span id="cb1-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            device (str): Device to perform computations ('cpu' or 'cuda').</span></span>
+<span id="cb1-23"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-24">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">super</span>(Magnetics, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>).<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>()</span>
+<span id="cb1-25">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dim</span>
+<span id="cb1-26">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> h</span>
+<span id="cb1-27">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dirs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dirs</span>
+<span id="cb1-28">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.device <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> device</span>
+<span id="cb1-29"></span>
+<span id="cb1-30">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the scaling factor</span></span>
+<span id="cb1-31">        dV <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.prod(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h.clone().detach())</span>
+<span id="cb1-32">        mu_0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Magnetic permeability (set to 1 for simplicity)</span></span>
+<span id="cb1-33">        zeta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mu_0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.pi)</span>
+<span id="cb1-34">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.mudV <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> zeta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dV</span>
+<span id="cb1-35"></span>
+<span id="cb1-36">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> fft_kernel(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, P, center):</span>
+<span id="cb1-37">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Compute the 2D shifted FFT of the kernel P.</span></span>
+<span id="cb1-39"></span>
+<span id="cb1-40"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Parameters:</span></span>
+<span id="cb1-41"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            P (torch.Tensor): The point spread function (PSF) kernel.</span></span>
+<span id="cb1-42"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            center (list): Center indices for fftshift.</span></span>
+<span id="cb1-43"></span>
+<span id="cb1-44"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Returns:</span></span>
+<span id="cb1-45"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            torch.Tensor: The shifted FFT of P.</span></span>
+<span id="cb1-46"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-47">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shift the kernel for FFT operations</span></span>
+<span id="cb1-48">        S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.roll(P, shifts<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>center, dims<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])</span>
+<span id="cb1-49">        S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(S)</span>
+<span id="cb1-50">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the 2D FFT</span></span>
+<span id="cb1-51">        S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fft2(S)</span>
+<span id="cb1-52">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shift the quadrants back</span></span>
+<span id="cb1-53">        S <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(S)</span>
+<span id="cb1-54">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> S</span>
+<span id="cb1-55"></span>
+<span id="cb1-56">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, M, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>):</span>
+<span id="cb1-57">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-58"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Perform the forward computation using FFT.</span></span>
+<span id="cb1-59"></span>
+<span id="cb1-60"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Parameters:</span></span>
+<span id="cb1-61"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            M (torch.Tensor): The magnetization model tensor of shape B,C,X,Y,Z.</span></span>
+<span id="cb1-62"></span>
+<span id="cb1-63"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Returns:</span></span>
+<span id="cb1-64"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            torch.Tensor: The computed magnetic data.</span></span>
+<span id="cb1-65"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-66">        dz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]</span>
+<span id="cb1-67">        z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> height <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> dz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Starting depth</span></span>
+<span id="cb1-68"></span>
+<span id="cb1-69">        data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize the data</span></span>
+<span id="cb1-70"></span>
+<span id="cb1-71">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Loop through each layer in the z-direction</span></span>
+<span id="cb1-72">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(M.shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]):</span>
+<span id="cb1-73">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Extract the i-th layer of the model</span></span>
+<span id="cb1-74">            m_layer <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M[..., i].to(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.device)</span>
+<span id="cb1-75"></span>
+<span id="cb1-76">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the point spread function (PSF) for the current layer</span></span>
+<span id="cb1-77">            psf, center, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.psf_layer(z)</span>
+<span id="cb1-78"></span>
+<span id="cb1-79">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the FFT of the PSF kernel</span></span>
+<span id="cb1-80">            s_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.fft_kernel(psf, center)</span>
+<span id="cb1-81"></span>
+<span id="cb1-82">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the FFT of the model layer</span></span>
+<span id="cb1-83">            m_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(m_layer)</span>
+<span id="cb1-84">            m_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fft2(m_fft)</span>
+<span id="cb1-85">            m_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(m_fft)</span>
+<span id="cb1-86"></span>
+<span id="cb1-87">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Perform the convolution in the frequency domain</span></span>
+<span id="cb1-88">            b_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> s_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> m_fft</span>
+<span id="cb1-89">            b_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(b_fft)</span>
+<span id="cb1-90"></span>
+<span id="cb1-91">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert back to the spatial domain</span></span>
+<span id="cb1-92">            b_spatial <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.real(torch.fft.ifft2(b_fft))</span>
+<span id="cb1-93"></span>
+<span id="cb1-94">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Accumulate the data from each layer</span></span>
+<span id="cb1-95">            data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> b_spatial</span>
+<span id="cb1-96"></span>
+<span id="cb1-97">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update depth</span></span>
+<span id="cb1-98">            z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> dz</span>
+<span id="cb1-99"></span>
+<span id="cb1-100">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.mudV <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> data</span>
+<span id="cb1-101"></span>
+<span id="cb1-102">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> adjoint(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, data, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>):</span>
+<span id="cb1-103">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-104"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Perform the adjoint operation.</span></span>
+<span id="cb1-105"></span>
+<span id="cb1-106"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Parameters:</span></span>
+<span id="cb1-107"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            data (torch.Tensor): The observed magnetic data tensor.</span></span>
+<span id="cb1-108"></span>
+<span id="cb1-109"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Returns:</span></span>
+<span id="cb1-110"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            torch.Tensor: The adjoint result (model update).</span></span>
+<span id="cb1-111"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-112">        dz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]</span>
+<span id="cb1-113">        z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> height <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> dz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Starting depth</span></span>
+<span id="cb1-114"></span>
+<span id="cb1-115">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize the result tensor</span></span>
+<span id="cb1-116">        m_adj <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros(</span>
+<span id="cb1-117">            <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>], device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.device</span>
+<span id="cb1-118">        )</span>
+<span id="cb1-119"></span>
+<span id="cb1-120">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]):</span>
+<span id="cb1-121">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the PSF for the current layer</span></span>
+<span id="cb1-122">            psf, center, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.psf_layer(z)</span>
+<span id="cb1-123"></span>
+<span id="cb1-124">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the FFT of the PSF kernel</span></span>
+<span id="cb1-125">            s_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.fft_kernel(psf, center)</span>
+<span id="cb1-126"></span>
+<span id="cb1-127">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the FFT of the input data</span></span>
+<span id="cb1-128">            data_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fft2(data)</span>
+<span id="cb1-129">            data_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(data_fft)</span>
+<span id="cb1-130"></span>
+<span id="cb1-131">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Perform the adjoint operation in the frequency domain</span></span>
+<span id="cb1-132">            b_fft <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.conj(s_fft) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> data_fft</span>
+<span id="cb1-133"></span>
+<span id="cb1-134">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert back to the spatial domain</span></span>
+<span id="cb1-135">            b_spatial <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(b_fft)</span>
+<span id="cb1-136">            b_spatial <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.real(torch.fft.ifft2(b_spatial))</span>
+<span id="cb1-137">            b_spatial <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.fft.fftshift(b_spatial)</span>
+<span id="cb1-138"></span>
+<span id="cb1-139">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Store the result for the current layer</span></span>
+<span id="cb1-140">            m_adj[..., i] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> b_spatial</span>
+<span id="cb1-141"></span>
+<span id="cb1-142">            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update depth</span></span>
+<span id="cb1-143">            z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> dz</span>
+<span id="cb1-144"></span>
+<span id="cb1-145">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.mudV <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> m_adj</span>
+<span id="cb1-146"></span>
+<span id="cb1-147">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> psf_layer(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, z):</span>
+<span id="cb1-148">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb1-149"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Compute the point spread function (PSF) for a layer at depth z.</span></span>
+<span id="cb1-150"></span>
+<span id="cb1-151"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Parameters:</span></span>
+<span id="cb1-152"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            z (float): The depth of the layer.</span></span>
+<span id="cb1-153"></span>
+<span id="cb1-154"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        Returns:</span></span>
+<span id="cb1-155"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            psf (torch.Tensor): The computed PSF.</span></span>
+<span id="cb1-156"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            center (list): Center indices for fftshift.</span></span>
+<span id="cb1-157"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">            rf (torch.Tensor): The radial factor (unused but computed for completeness).</span></span>
+<span id="cb1-158"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        """</span></span>
+<span id="cb1-159">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Unpack magnetic field directions</span></span>
+<span id="cb1-160">        I, A, I0, A0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dirs  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Dip and declination angles for magnetization and geomagnetic field</span></span>
+<span id="cb1-161"></span>
+<span id="cb1-162">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute half-dimensions</span></span>
+<span id="cb1-163">        nx2, ny2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">//</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.dim[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">//</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb1-164"></span>
+<span id="cb1-165">        dx, dy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.h[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb1-166"></span>
+<span id="cb1-167">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create coordinate grids</span></span>
+<span id="cb1-168">        x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> torch.arange(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>nx2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, nx2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.device)</span>
+<span id="cb1-169">        y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> torch.arange(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>ny2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, ny2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.device)</span>
+<span id="cb1-170">        X, Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.meshgrid(x, y, indexing<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ij'</span>)</span>
+<span id="cb1-171"></span>
+<span id="cb1-172">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Center indices for fftshift</span></span>
+<span id="cb1-173">        center <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> nx2, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ny2]</span>
+<span id="cb1-174"></span>
+<span id="cb1-175">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the radial factor</span></span>
+<span id="cb1-176">        rf <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (X<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> Y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> z<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.5</span></span>
+<span id="cb1-177"></span>
+<span id="cb1-178">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute components of the PSF</span></span>
+<span id="cb1-179">        cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.cos(I)</span>
+<span id="cb1-180">        sin_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.sin(I)</span>
+<span id="cb1-181">        cos_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.cos(A)</span>
+<span id="cb1-182">        sin_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.sin(A)</span>
+<span id="cb1-183">        cos_I0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.cos(I0)</span>
+<span id="cb1-184">        sin_I0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.sin(I0)</span>
+<span id="cb1-185">        cos_A0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.cos(A0)</span>
+<span id="cb1-186">        sin_A0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.sin(A0)</span>
+<span id="cb1-187"></span>
+<span id="cb1-188">        PSFx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ((<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> X<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> z<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-189">                <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-190">                <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_I) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> rf</span>
+<span id="cb1-191"></span>
+<span id="cb1-192">        PSFy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-193">                (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> X<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> z<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-194">                <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_I) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> rf</span>
+<span id="cb1-195"></span>
+<span id="cb1-196">        PSFz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-197">                <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_A <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-198">                (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> X<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_I) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> rf</span>
+<span id="cb1-199"></span>
+<span id="cb1-200">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Combine components to get the total PSF</span></span>
+<span id="cb1-201">        psf <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (PSFx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_A0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-202">               PSFy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> cos_I0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_A0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-203">               PSFz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> sin_I0)</span>
+<span id="cb1-204"></span>
+<span id="cb1-205">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> psf, center, rf</span></code></pre></div>
+</div>
+<p>To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that <img src="https://latex.codecogs.com/png.latex?%20%5Clangle%20A(X),%20Q%20%5Crangle%20=%20%5Clangle%20X,%20A%5E*(Q)%20%5Crangle%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?A"> is the forward operator and <img src="https://latex.codecogs.com/png.latex?A%5E*"> is the adjoint operator. The code below performs the adjoint test for the forward model defined above.</p>
+<div id="2286a91c" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pyvista <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pv</span>
+<span id="cb2-2">pv.set_jupyter_backend(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"static"</span>)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> adjoint_test(op, adj, arg):</span>
+<span id="cb2-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Adjoint test for a given operator.</span></span>
+<span id="cb2-7"></span>
+<span id="cb2-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Parameters:</span></span>
+<span id="cb2-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        op (callable): Forward operator.</span></span>
+<span id="cb2-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        adj (callable): Adjoint operator.</span></span>
+<span id="cb2-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        arg (torch.Tensor): Input to the forward operator.</span></span>
+<span id="cb2-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb2-13"></span>
+<span id="cb2-14">    X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> arg</span>
+<span id="cb2-15">    D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> op(X)</span>
+<span id="cb2-16">    Q <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.rand_like(D)</span>
+<span id="cb2-17"></span>
+<span id="cb2-18">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the inner product &lt;A(X), Q&gt;</span></span>
+<span id="cb2-19">    inner_prod1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Q)</span>
+<span id="cb2-20"></span>
+<span id="cb2-21">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the inner product &lt;X, adj(Q)&gt;</span></span>
+<span id="cb2-22">    W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> adj(Q)</span>
+<span id="cb2-23">    inner_prod2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> W)</span>
+<span id="cb2-24"></span>
+<span id="cb2-25">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Adjoint test:"</span>, inner_prod1.item(), inner_prod2.item())</span>
+<span id="cb2-26"></span>
+<span id="cb2-27"></span>
+<span id="cb2-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set a magnetics model</span></span>
+<span id="cb2-29">dx, dy, dz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span></span>
+<span id="cb2-30">n1, n2, n3 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">256</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">256</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">128</span></span>
+<span id="cb2-31">dim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([n1, n2, n3])</span>
+<span id="cb2-32">h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([dx, dy, dz])</span>
+<span id="cb2-33">dirs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])</span>
+<span id="cb2-34">forMod <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Magnetics(dim, h, dirs)</span>
+<span id="cb2-35"></span>
+<span id="cb2-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set the magnetization of the material</span></span>
+<span id="cb2-37">M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>dim)</span>
+<span id="cb2-38">M[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">120</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">120</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span></span>
+<span id="cb2-39">M[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span></span>
+<span id="cb2-40"></span>
+<span id="cb2-41">M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>).unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb2-42">adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adjoint test: 4.552471160888672 4.552471160888672</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-the-model">Plotting the Model</h2>
+<p>A simple toy dataset was used to test the adjoint opearation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of commands that make use of <a href="https://docs.pyvista.org/">Pyvista</a> are provided below.</p>
+<div id="a81be94b" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> plot_model_2d(M, n_slices<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rainbow"</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>)):</span>
+<span id="cb4-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Plot an array of 2D slices for a given 3D tensor in a single grid-style plot.</span></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    </span></span>
+<span id="cb4-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Parameters:</span></span>
+<span id="cb4-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    - M (torch.Tensor): 3D tensor representing the model (e.g., [x, y, z]).</span></span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    - n_slices (int, optional): Number of slices to plot. Defaults to all slices.</span></span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    - cmap (str): Colormap for the plot.</span></span>
+<span id="cb4-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    - figsize (tuple): Size of the figure.</span></span>
+<span id="cb4-10"></span>
+<span id="cb4-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Returns:</span></span>
+<span id="cb4-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    - matplotlib.figure.Figure: The created figure.</span></span>
+<span id="cb4-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-14">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb4-15">    <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb4-16"></span>
+<span id="cb4-17">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Dimensions of the 3D tensor</span></span>
+<span id="cb4-18">    nx, ny, nz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>], M.shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>], M.shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb4-19">    </span>
+<span id="cb4-20">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Determine the number of slices</span></span>
+<span id="cb4-21">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> n_slices <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-22">        n_slices <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> nz</span>
+<span id="cb4-23">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb4-24">        n_slices <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(n_slices, nz)</span>
+<span id="cb4-25">    </span>
+<span id="cb4-26">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Determine the grid shape (rows and columns)</span></span>
+<span id="cb4-27">    ncols <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(np.ceil(np.sqrt(n_slices)))</span>
+<span id="cb4-28">    nrows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(np.ceil(n_slices <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> ncols))</span>
+<span id="cb4-29"></span>
+<span id="cb4-30">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a blank canvas for the grid plot</span></span>
+<span id="cb4-31">    grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros((nrows <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> nx, ncols <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> ny), dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>M.dtype, device<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>M.device)</span>
+<span id="cb4-32">    </span>
+<span id="cb4-33">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Fill the grid with slices</span></span>
+<span id="cb4-34">    slice_idx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb4-35">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(nrows):</span>
+<span id="cb4-36">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> j <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(ncols):</span>
+<span id="cb4-37">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> slice_idx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> n_slices:</span>
+<span id="cb4-38">                grid[i <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> nx:(i <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> nx, j <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> ny:(j <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> ny] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M[..., slice_idx]</span>
+<span id="cb4-39">                slice_idx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb4-40"></span>
+<span id="cb4-41">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the grid</span></span>
+<span id="cb4-42">    fig <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>figsize)</span>
+<span id="cb4-43">    plt.imshow(grid.cpu().detach().numpy(), cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>cmap)</span>
+<span id="cb4-44">    plt.colorbar()</span>
+<span id="cb4-45">    plt.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"off"</span>)</span>
+<span id="cb4-46">    plt.tight_layout()</span>
+<span id="cb4-47">    plt.show()</span>
+<span id="cb4-48"></span>
+<span id="cb4-49"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> plot_model(M, plotter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, threshold_value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>):</span>
+<span id="cb4-50">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb4-51"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Plot the magnetization model with an outline showing the overall bounds.</span></span>
+<span id="cb4-52"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    </span></span>
+<span id="cb4-53"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Parameters:</span></span>
+<span id="cb4-54"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        M (torch.Tensor): Magnetization model tensor of shape [B, C, X, Y, Z] or [X, Y, Z].</span></span>
+<span id="cb4-55"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        threshold_value (float): Threshold value for magnetization to visualize.</span></span>
+<span id="cb4-56"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-57">    </span>
+<span id="cb4-58">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> plotter <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-59">        plotter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb4-60">    </span>
+<span id="cb4-61">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Remove unnecessary dimensions if present</span></span>
+<span id="cb4-62">    M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.squeeze(M)</span>
+<span id="cb4-63">    </span>
+<span id="cb4-64">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert the PyTorch tensor to a NumPy array</span></span>
+<span id="cb4-65">    m_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.detach().cpu().numpy()</span>
+<span id="cb4-66">    </span>
+<span id="cb4-67">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define grid parameters</span></span>
+<span id="cb4-68">    spacing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>)  </span>
+<span id="cb4-69">    origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>)   </span>
+<span id="cb4-70">    </span>
+<span id="cb4-71">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a PyVista Uniform Grid (ImageData)</span></span>
+<span id="cb4-72">    grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.ImageData()</span>
+<span id="cb4-73">    </span>
+<span id="cb4-74">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set grid dimensions (number of points = cells + 1)</span></span>
+<span id="cb4-75">    grid.dimensions <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array(m_plot.shape) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb4-76">    grid.spacing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> spacing</span>
+<span id="cb4-77">    grid.origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> origin</span>
+<span id="cb4-78">    </span>
+<span id="cb4-79">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Assign magnetization data to cell data</span></span>
+<span id="cb4-80">    grid.cell_data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> m_plot.flatten(order<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"F"</span>)</span>
+<span id="cb4-81">    </span>
+<span id="cb4-82">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Apply threshold to isolate regions with M &gt; threshold_value</span></span>
+<span id="cb4-83">    thresholded <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.threshold(value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>threshold_value, scalars<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>)</span>
+<span id="cb4-84">    </span>
+<span id="cb4-85">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create an outline of the entire grid</span></span>
+<span id="cb4-86">    outline <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.outline()</span>
+<span id="cb4-87">        </span>
+<span id="cb4-88">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the thresholded mesh</span></span>
+<span id="cb4-89">    plotter.add_mesh(thresholded, cmap <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rainbow"</span>, opacity<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, show_edges<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Magnetization &gt; </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{:.2f}</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">format</span>(threshold_value))</span>
+<span id="cb4-90">    </span>
+<span id="cb4-91">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the outline mesh</span></span>
+<span id="cb4-92">    plotter.add_mesh(outline, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, line_width<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Model Bounds'</span>)</span>
+<span id="cb4-93">    </span>
+<span id="cb4-94">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Optionally, add axes and a legend for better context</span></span>
+<span id="cb4-95">    plotter.add_axes()</span>
+<span id="cb4-96">    plotter.add_legend()</span>
+<span id="cb4-97">    </span>
+<span id="cb4-98">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set camera position for better visualization (optional)</span></span>
+<span id="cb4-99">    plotter.view_isometric()</span>
+<span id="cb4-100">    </span>
+<span id="cb4-101">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> plotter</span>
+<span id="cb4-102"></span>
+<span id="cb4-103"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> plot_model_with_slider(M):</span>
+<span id="cb4-104">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb4-105"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Plot the magnetization model with an interactive slider for threshold value.</span></span>
+<span id="cb4-106"></span>
+<span id="cb4-107"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Parameters:</span></span>
+<span id="cb4-108"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        M (torch.Tensor): Magnetization model tensor of shape [B, C, X, Y, Z] or [X, Y, Z].</span></span>
+<span id="cb4-109"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb4-110"></span>
+<span id="cb4-111">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Remove unnecessary dimensions if present</span></span>
+<span id="cb4-112">    M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.squeeze(M)</span>
+<span id="cb4-113"></span>
+<span id="cb4-114">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Convert the PyTorch tensor to a NumPy array</span></span>
+<span id="cb4-115">    m_plot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.detach().cpu().numpy()</span>
+<span id="cb4-116"></span>
+<span id="cb4-117">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define grid parameters</span></span>
+<span id="cb4-118">    spacing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>)  </span>
+<span id="cb4-119">    origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>)   </span>
+<span id="cb4-120"></span>
+<span id="cb4-121">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a PyVista Uniform Grid (ImageData)</span></span>
+<span id="cb4-122">    grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.ImageData()</span>
+<span id="cb4-123"></span>
+<span id="cb4-124">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set grid dimensions (number of points = cells + 1)</span></span>
+<span id="cb4-125">    grid.dimensions <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array(m_plot.shape) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb4-126">    grid.spacing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> spacing</span>
+<span id="cb4-127">    grid.origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> origin</span>
+<span id="cb4-128"></span>
+<span id="cb4-129">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Assign magnetization data to cell data</span></span>
+<span id="cb4-130">    grid.cell_data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> m_plot.flatten(order<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"F"</span>)</span>
+<span id="cb4-131"></span>
+<span id="cb4-132">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create an outline of the entire grid</span></span>
+<span id="cb4-133">    outline <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.outline()</span>
+<span id="cb4-134"></span>
+<span id="cb4-135">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a PyVista plotter</span></span>
+<span id="cb4-136">    plotter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb4-137">    plotter.add_mesh(outline, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, line_width<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Model Bounds'</span>)</span>
+<span id="cb4-138"></span>
+<span id="cb4-139">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add axes and a legend</span></span>
+<span id="cb4-140">    plotter.add_axes()</span>
+<span id="cb4-141">    plotter.add_legend()</span>
+<span id="cb4-142"></span>
+<span id="cb4-143">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set camera position for better visualization</span></span>
+<span id="cb4-144">    plotter.view_isometric()</span>
+<span id="cb4-145"></span>
+<span id="cb4-146">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define a callback function for the slider</span></span>
+<span id="cb4-147">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> threshold_callback(value):</span>
+<span id="cb4-148">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Remove previous thresholded mesh if exists</span></span>
+<span id="cb4-149">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'thresholded'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> plotter.actors:</span>
+<span id="cb4-150">            plotter.remove_actor(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'thresholded'</span>)</span>
+<span id="cb4-151">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Apply threshold to isolate regions with M &gt; value</span></span>
+<span id="cb4-152">        thresholded <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.threshold(value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>(value), scalars<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>)</span>
+<span id="cb4-153">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the thresholded mesh</span></span>
+<span id="cb4-154">        plotter.add_mesh(thresholded, name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'thresholded'</span>, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rainbow"</span>, opacity<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, show_edges<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Magnetization &gt; </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>value<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb4-155">        plotter.render()</span>
+<span id="cb4-156"></span>
+<span id="cb4-157">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initial threshold value</span></span>
+<span id="cb4-158">    initial_threshold <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span></span>
+<span id="cb4-159"></span>
+<span id="cb4-160">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Apply initial threshold and plot</span></span>
+<span id="cb4-161">    thresholded <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.threshold(value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>initial_threshold, scalars<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>)</span>
+<span id="cb4-162">    plotter.add_mesh(thresholded, name<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'thresholded'</span>, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rainbow"</span>, opacity<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, show_edges<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Magnetization &gt; </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>initial_threshold<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb4-163"></span>
+<span id="cb4-164">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the slider widget</span></span>
+<span id="cb4-165">    plotter.add_slider_widget(</span>
+<span id="cb4-166">        threshold_callback,</span>
+<span id="cb4-167">        [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(m_plot)],</span>
+<span id="cb4-168">        value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>initial_threshold,</span>
+<span id="cb4-169">        title<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Threshold Value'</span>,</span>
+<span id="cb4-170">        pointa<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.025</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>),</span>
+<span id="cb4-171">        pointb<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.225</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>),</span>
+<span id="cb4-172">        style<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'modern'</span>,</span>
+<span id="cb4-173">    )</span>
+<span id="cb4-174"></span>
+<span id="cb4-175">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Show the plot</span></span>
+<span id="cb4-176">    plotter.show()</span>
+<span id="cb4-177"></span>
+<span id="cb4-178"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> plot_model_with_forward(</span>
+<span id="cb4-179">    mag_data,</span>
+<span id="cb4-180">    forward_data,</span>
+<span id="cb4-181">    spacing<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>),</span>
+<span id="cb4-182">    height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb4-183">    zoom<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span>,</span>
+<span id="cb4-184">    plotter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>,</span>
+<span id="cb4-185">    threshold_value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>,</span>
+<span id="cb4-186">):</span>
+<span id="cb4-187">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> plotter <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb4-188">        plotter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb4-189"></span>
+<span id="cb4-190">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Remove unnecessary dimensions if present</span></span>
+<span id="cb4-191">    M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mag_data.squeeze()</span>
+<span id="cb4-192">    M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.cpu().numpy()</span>
+<span id="cb4-193">    D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forward_data.squeeze().cpu().numpy()</span>
+<span id="cb4-194"></span>
+<span id="cb4-195">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define grid parameters XYZ spacing</span></span>
+<span id="cb4-196">    origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.0</span>)</span>
+<span id="cb4-197"></span>
+<span id="cb4-198">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a PyVista Uniform Grid (ImageData) for the 3D volume</span></span>
+<span id="cb4-199">    grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.ImageData()</span>
+<span id="cb4-200"></span>
+<span id="cb4-201">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set grid dimensions (number of points = cells + 1)</span></span>
+<span id="cb4-202">    grid.dimensions <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array(M.shape) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb4-203">    grid.spacing <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> spacing</span>
+<span id="cb4-204">    grid.origin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> origin</span>
+<span id="cb4-205"></span>
+<span id="cb4-206">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Assign magnetization data to cell data</span></span>
+<span id="cb4-207">    grid.cell_data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> M.flatten(order<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"F"</span>)</span>
+<span id="cb4-208"></span>
+<span id="cb4-209">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Apply threshold to isolate regions with M &gt; threshold_value</span></span>
+<span id="cb4-210">    thresholded <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.threshold(value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>threshold_value, scalars<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"M"</span>).flip_z()</span>
+<span id="cb4-211">    outline <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> grid.outline()</span>
+<span id="cb4-212"></span>
+<span id="cb4-213">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the thresholded mesh</span></span>
+<span id="cb4-214">    plotter.add_mesh(</span>
+<span id="cb4-215">        thresholded,</span>
+<span id="cb4-216">        cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rainbow"</span>,</span>
+<span id="cb4-217">        opacity<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>,</span>
+<span id="cb4-218">        show_edges<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb4-219">        label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Magnetization &gt; </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{:.2f}</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">format</span>(threshold_value),</span>
+<span id="cb4-220">    )</span>
+<span id="cb4-221"></span>
+<span id="cb4-222">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the outline mesh</span></span>
+<span id="cb4-223">    plotter.add_mesh(outline, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, line_width<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Model Bounds"</span>)</span>
+<span id="cb4-224"></span>
+<span id="cb4-225">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a structured grid for the 2D surface data</span></span>
+<span id="cb4-226">    nx, ny <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> D.shape</span>
+<span id="cb4-227">    x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, nx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> spacing[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], nx)</span>
+<span id="cb4-228">    y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, ny <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> spacing[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], ny)</span>
+<span id="cb4-229">    X, Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.meshgrid(x, y)</span>
+<span id="cb4-230">    Z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full_like(X, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>height)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Position the surface above the volume</span></span>
+<span id="cb4-231"></span>
+<span id="cb4-232">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a PyVista mesh for the 2D surface</span></span>
+<span id="cb4-233">    surface_mesh <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.StructuredGrid(X, Y, Z)</span>
+<span id="cb4-234">    surface_mesh.point_data[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Forward Data"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> D.flatten(order<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"F"</span>)</span>
+<span id="cb4-235"></span>
+<span id="cb4-236">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add the 2D surface to the plotter</span></span>
+<span id="cb4-237">    plotter.add_mesh(</span>
+<span id="cb4-238">        surface_mesh,</span>
+<span id="cb4-239">        cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"coolwarm"</span>,</span>
+<span id="cb4-240">        show_edges<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb4-241">        opacity<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>,</span>
+<span id="cb4-242">        label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Forward Problem Data"</span>,</span>
+<span id="cb4-243">    )</span>
+<span id="cb4-244"></span>
+<span id="cb4-245">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add axes and a legend</span></span>
+<span id="cb4-246">    plotter.add_axes()</span>
+<span id="cb4-247">    plotter.add_legend()</span>
+<span id="cb4-248">    plotter.camera_position <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb4-249">        (<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">54507.19712327622</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">49446.175185560685</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">53221.11813207309</span>),</span>
+<span id="cb4-250">        (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">128.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">128.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64.0</span>),</span>
+<span id="cb4-251">        (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.44554389292076074</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.38017371952961604</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8105298158982375</span>),</span>
+<span id="cb4-252">    ]</span>
+<span id="cb4-253"></span>
+<span id="cb4-254">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust the zoom to fit data in window</span></span>
+<span id="cb4-255">    plotter.camera.zoom(zoom)</span>
+<span id="cb4-256"></span>
+<span id="cb4-257"></span>
+<span id="cb4-258">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> plotter</span></code></pre></div>
+</details>
+</div>
+<div id="74abf357" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb5-2">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod(M)</span>
+<span id="cb5-3">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> D.squeeze()</span>
+<span id="cb5-4">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plot_model_with_forward(M, D, h, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, plotter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>p)</span>
+<span id="cb5-5">output_file <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"imgs/magnetic_inversion_plot.png"</span></span>
+<span id="cb5-6">p.show(screenshot<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>output_file)</span></code></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>A simple model and forward data.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="inverting-the-magnetic-readings" class="level2">
+<h2 class="anchored" data-anchor-id="inverting-the-magnetic-readings">Inverting the Magnetic Readings</h2>
+<p>The magnetic anomaly readings above ground are but a 2D slice from the 3D data that is being recovered. This is like trying to reconstruct a 3D object from the shadow that it casts, a very ill conditioned problem. To get a gauge of the problem difficulty we attempt a simple inversion using the conjugate gradient method developed in earlier lectures.</p>
+<p>The inversion problem is to recover the magnetization model <img src="https://latex.codecogs.com/png.latex?M"> from the observed magnetic data <img src="https://latex.codecogs.com/png.latex?D"> using the forward model <img src="https://latex.codecogs.com/png.latex?A">, its adjoint <img src="https://latex.codecogs.com/png.latex?A%5E*">, and the conjugate gradient method. The null space of the forward operator is quite large, meaning there are infinite possible solutions, so a regularization term is added to the objective function to constrain the solution. The model is</p>
+<p><img src="https://latex.codecogs.com/png.latex?D%20=%20A(M)%20+%20%5Cepsilon"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is the noise in the data.</p>
+<section id="objective-function" class="level4">
+<h4 class="anchored" data-anchor-id="objective-function">Objective Function</h4>
+<p>The objective function to minimize is</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20J(M)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5C%7C%20A(M)%20-%20D%20%5C%7C_2%5E2%20+%20%5Calpha%20R(M)%20"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?R(M)"> is the regularization term and <img src="https://latex.codecogs.com/png.latex?%5Calpha"> is the regularization parameter. In this example a weight matrix <img src="https://latex.codecogs.com/png.latex?W"> is used on the flattened magnetic data.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20R(M)%20=%20%5Cfrac%7B1%7D%7B2%7D%20%5C%7C%20W(M)%20%5C%7C_2%5E2"></p>
+<p>The solution to this problem is given in <a href="../../../../content/eosc555/lectures/lecture4/index.html">Lecture 4</a> using the normal equations.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20(A%5E*A%20+%20%5Calpha%20W%5E*W)%20M_%7Bsol%7D%20=%20A%5E*D"></p>
+<p>The conjugate gradient method is used to solve the system of equations. The adjoint of the regularization term is also defined to speed up the process of inverting data when using techniques that make use of it.</p>
+</section>
+<section id="regularization-implementation" class="level4">
+<h4 class="anchored" data-anchor-id="regularization-implementation">Regularization Implementation</h4>
+<p>The penalty or prior that this is to incur is the finite difference between neighboring cells in the model. This is an approximation of the gradient at each point in the magnetic data, functioning as a slope penalty regularization as discussed previously in <a href="../../../../content/eosc555/lectures/lecture8/index.html#choice-of-regularizer">Lecture 8</a>.</p>
+<p>The finite difference matrix in 1D is</p>
+<p><img src="https://latex.codecogs.com/png.latex?W%20=%20%5Cbegin%7Bbmatrix%7D%201%20&amp;%20-1%20&amp;%200%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C0%20&amp;%201%20&amp;%20-1%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C0%20&amp;%200%20&amp;%200%20&amp;%20%5Ccdots%20&amp;%20-1%20%5Cend%7Bbmatrix%7D"></p>
+<p>and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: <img src="https://latex.codecogs.com/png.latex?%5C%7CW(M)%5C%7C%5E2%20=%20%5Csum_i%5EN%5Csum_j%5ES%5Csum_k%5EQ%20(M_%7Bi,j,k%7D%20-%20M_%7Bi+1,j,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j+1,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j,k+1%7D)%5E2"> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
+<p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm.</p>
+<div id="81de7ac6" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> regularization(x):</span>
+<span id="cb6-2">    gx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[:,:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>:,:,:] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x[:,:,:<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,:,:]</span>
+<span id="cb6-3">    gy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[:,:,:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>:,:] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x[:,:,:,:<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,:]</span>
+<span id="cb6-4">    gz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[:,:,:,:,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>:] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x[:,:,:,:,:<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]</span>
+<span id="cb6-5">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(torch.mean(gx<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>torch.mean(gy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>torch.mean(gz<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>))</span>
+<span id="cb6-6"></span>
+<span id="cb6-7"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> adjoint(A, v, x_sample):</span>
+<span id="cb6-8">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">""" </span></span>
+<span id="cb6-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Take the adjoint of the forward operator A with respect to the input vector v.</span></span>
+<span id="cb6-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    </span></span>
+<span id="cb6-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Parameters:</span></span>
+<span id="cb6-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        A (callable): Forward operator.</span></span>
+<span id="cb6-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        v (torch.Tensor): Input vector.</span></span>
+<span id="cb6-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).</span></span>
+<span id="cb6-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb6-16">    </span>
+<span id="cb6-17">    x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros_like(x_sample)</span>
+<span id="cb6-18">    x.requires_grad <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span></span>
+<span id="cb6-19">    b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> A(x)</span>
+<span id="cb6-20">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the dot product of the forward operator with the input vector</span></span>
+<span id="cb6-21">    h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> v)</span>
+<span id="cb6-22">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the gradient of the dot product with respect to the input image</span></span>
+<span id="cb6-23">    adjoint <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.autograd.grad(h, x, create_graph<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb6-24">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> adjoint</span></code></pre></div>
+</div>
+</section>
+<section id="data-set-for-fitting" class="level4">
+<h4 class="anchored" data-anchor-id="data-set-for-fitting">Data Set for Fitting</h4>
+<p>A new data set with three blocks is created for a more interesting test case.</p>
+<div id="87d9a757" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gen_true_data(dim):</span>
+<span id="cb7-2"></span>
+<span id="cb7-3">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># set the magnetization model</span></span>
+<span id="cb7-4">    xtrue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>dim)</span>
+<span id="cb7-5">    xtrue[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span></span>
+<span id="cb7-6">    xtrue[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span></span>
+<span id="cb7-7">    xtrue[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span></span>
+<span id="cb7-8">    </span>
+<span id="cb7-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> xtrue</span>
+<span id="cb7-10"></span>
+<span id="cb7-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set the model parameters</span></span>
+<span id="cb7-12">n1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span></span>
+<span id="cb7-13">n2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span></span>
+<span id="cb7-14">n3 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">32</span></span>
+<span id="cb7-15">dim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([n1,n2,n3])</span>
+<span id="cb7-16">h <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100.0</span>])</span>
+<span id="cb7-17">dirs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor([np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])</span>
+<span id="cb7-18">forMod <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Magnetics(dim, h, dirs)</span>
+<span id="cb7-19"></span>
+<span id="cb7-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate the true data</span></span>
+<span id="cb7-21">xtrue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gen_true_data(dim)</span>
+<span id="cb7-22">xtrue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xtrue.unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>).unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb7-23"></span>
+<span id="cb7-24">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod(xtrue)</span>
+<span id="cb7-25">noise <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.randn_like(D)</span>
+<span id="cb7-26">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>noise</span>
+<span id="cb7-27"></span>
+<span id="cb7-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the true model and forward data</span></span>
+<span id="cb7-29">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb7-30">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plot_model_with_forward(xtrue, D, h, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, zoom <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.0</span>, plotter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>p)</span>
+<span id="cb7-31">output_file <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"imgs/magnetic_inversion_proj.png"</span></span>
+<span id="cb7-32">p.show(screenshot<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>output_file)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+<figcaption>Model with forward data</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conjugate-gradient-method" class="level4">
+<h4 class="anchored" data-anchor-id="conjugate-gradient-method">Conjugate Gradient Method</h4>
+<p>The equation to solve is <img src="https://latex.codecogs.com/png.latex?(A%5E*A%20+%20%5Calpha%20W%5E*W)%20M_%7Bsol%7D%20=%20A%5E*D"> which should be defined in the standard form for a conjugate gradient problem, <img src="https://latex.codecogs.com/png.latex?Cx%20=%20b">. To fit this form a new linear operator <img src="https://latex.codecogs.com/png.latex?C"> is defined as <img src="https://latex.codecogs.com/png.latex?C%20:=%20A%5E*A%20+%20%5Calpha%20W%5E*W"> and the right hand side <img src="https://latex.codecogs.com/png.latex?b%20=%20A%5E*D">. The conjugate gradient method is then applied to solve the system of equations.</p>
+<div id="9e5461d3" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb8-2"></span>
+<span id="cb8-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> conj_gradient(A, b, x0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, niter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, tol<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>, verbose<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>):</span>
+<span id="cb8-4">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb8-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Solve Ax=b using the conjugate gradient method.</span></span>
+<span id="cb8-6"></span>
+<span id="cb8-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    Paramters:</span></span>
+<span id="cb8-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        A (callable): A function that computes the operator Ax.</span></span>
+<span id="cb8-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        b (torch.Tensor): The right-hand side vector.</span></span>
+<span id="cb8-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        x0 (torch.Tensor, optional): The initial guess. Defaults to None.</span></span>
+<span id="cb8-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        niter (int, optional): Maximum number of iterations. Defaults to 20.</span></span>
+<span id="cb8-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        tol (float, optional): Tolerance for the residual. Defaults to 1e-2.</span></span>
+<span id="cb8-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">        alpha (float, optional): Step size for the conjugate gradient method. Defaults to 1e-2.</span></span>
+<span id="cb8-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    """</span></span>
+<span id="cb8-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> x0 <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>:</span>
+<span id="cb8-16">        r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> b</span>
+<span id="cb8-17">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb8-18">        r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> A(x0)</span>
+<span id="cb8-19"></span>
+<span id="cb8-20">    q <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> r</span>
+<span id="cb8-21">    x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros_like(b)</span>
+<span id="cb8-22">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(niter):</span>
+<span id="cb8-23">        Aq <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> A(q)</span>
+<span id="cb8-24">        alpha <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> r).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (q <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Aq).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()</span>
+<span id="cb8-25">        x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> alpha <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> q</span>
+<span id="cb8-26">        rnew <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> alpha <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Aq</span>
+<span id="cb8-27">        beta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (rnew<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (r<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()</span>
+<span id="cb8-28">        q <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rnew <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> beta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> q</span>
+<span id="cb8-29">        r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rnew.clone()</span>
+<span id="cb8-30">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> verbose:</span>
+<span id="cb8-31">            <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"iter = </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%3d</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    res = </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%3.2e</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span> (i, r.norm() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> b.norm()))</span>
+<span id="cb8-32">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> r.norm() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> b.norm() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> tol:</span>
+<span id="cb8-33">            <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">break</span></span>
+<span id="cb8-34">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> x</span>
+<span id="cb8-35"></span>
+<span id="cb8-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate the true data</span></span>
+<span id="cb8-37">xtrue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gen_true_data(dim)</span>
+<span id="cb8-38">xtrue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xtrue.unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>).unsqueeze(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb8-39"></span>
+<span id="cb8-40">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod(xtrue)</span>
+<span id="cb8-41">noise <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.randn_like(D)</span>
+<span id="cb8-42">D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>noise</span>
+<span id="cb8-43"></span>
+<span id="cb8-44"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the forward operator with regularization</span></span>
+<span id="cb8-45">reg_param <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e10</span></span>
+<span id="cb8-46"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> A(x, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>reg_param):</span>
+<span id="cb8-47">    y1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod(x)</span>
+<span id="cb8-48">    y1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod.adjoint(y1)</span>
+<span id="cb8-49">    </span>
+<span id="cb8-50">    y2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> regularization(x)</span>
+<span id="cb8-51">    y2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> adjoint(regularization, y2, x_sample <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x)</span>
+<span id="cb8-52">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> y1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>y2</span>
+<span id="cb8-53"></span>
+<span id="cb8-54">b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod.adjoint(D)</span>
+<span id="cb8-55"></span>
+<span id="cb8-56"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Check dimensions and functioning</span></span>
+<span id="cb8-57">y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> A(xtrue)</span>
+<span id="cb8-58"></span>
+<span id="cb8-59"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Solve the inverse problem using the conjugate gradient method</span></span>
+<span id="cb8-60">x0 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.zeros_like(xtrue)</span>
+<span id="cb8-61"></span>
+<span id="cb8-62">xinv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> conj_gradient(A, b, x0, niter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, tol<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-6</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-2</span>, verbose<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-63">    </span>
+<span id="cb8-64"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Verify that the gradient is zero at the solution</span></span>
+<span id="cb8-65">xtest <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xinv.clone().detach().requires_grad_(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb8-66">loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> forMod(xtest)).norm()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> reg_param <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> regularization(xtest)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb8-67">loss.backward()</span>
+<span id="cb8-68"></span>
+<span id="cb8-69"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Print the norm of the gradient</span></span>
+<span id="cb8-70">gradient_norm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xtest.grad.norm().item()</span>
+<span id="cb8-71"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Gradient norm at xinv: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>gradient_norm<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.6e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb8-72"></span>
+<span id="cb8-73"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Get misfit and regularization</span></span>
+<span id="cb8-74">misfit <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (D <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> forMod(xinv)).norm()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb8-75">reg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> reg_param <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> regularization(xinv)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb8-76"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Misfit: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>misfit<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.6e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, Regularization: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>reg<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.6e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb8-77"></span>
+<span id="cb8-78"></span>
+<span id="cb8-79"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Optionally, set a tolerance and assert</span></span>
+<span id="cb8-80">tolerance <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e-4</span></span>
+<span id="cb8-81"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> gradient_norm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> tolerance:</span>
+<span id="cb8-82">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Verification Passed: Gradient norm </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>gradient_norm<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> is below the tolerance </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>tolerance<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">."</span>)</span>
+<span id="cb8-83"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span>:</span>
+<span id="cb8-84">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Verification Failed: Gradient norm </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>gradient_norm<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> exceeds the tolerance </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>tolerance<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">."</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>iter =   0    res = 1.47e-01
+iter =   1    res = 3.32e-02
+iter =   2    res = 6.95e-03
+iter =   3    res = 1.32e-03
+iter =   4    res = 2.66e-04
+iter =   5    res = 5.20e-05
+iter =   6    res = 8.94e-06
+iter =   7    res = 1.70e-06
+iter =   8    res = 3.16e-07
+Gradient norm at xinv: 4.102344e-01
+Misfit: 1.019026e-13, Regularization: 7.034114e-02
+Verification Failed: Gradient norm 4.10e-01 exceeds the tolerance 1.00e-04.</code></pre>
+</div>
+</div>
+<p>Now that the inversion is performed, the results can be checked against the true forward model to see if they match correctly.</p>
+<div id="3a206017" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the results   </span></span>
+<span id="cb10-2">pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> forMod(xinv) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># predicted 2d data</span></span>
+<span id="cb10-3"></span>
+<span id="cb10-4">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb10-5">plt.imshow(D.view(n1, n2).cpu().detach().numpy(), cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'rainbow'</span>)</span>
+<span id="cb10-6">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Data'</span>)</span>
+<span id="cb10-7">plt.colorbar()</span>
+<span id="cb10-8"></span>
+<span id="cb10-9">plt.subplot(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb10-10">plt.imshow(pred.view(n1,n2).cpu().detach().numpy(), cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'rainbow'</span>)</span>
+<span id="cb10-11">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Inverted model'</span>)</span>
+<span id="cb10-12">plt.colorbar()</span>
+<span id="cb10-13"></span>
+<span id="cb10-14">plt.show() </span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/cell-9-output-1.png" width="623" height="389" class="figure-img"></p>
+<figcaption>Forward model comparison.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This looks like a perfect fit, but as we will see, the method has done a poor job of recovering the true model.</p>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The inverted model can be plotted to see how well the inversion has performed.</p>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb11-2">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plot_model_with_forward(xtrue, D, h, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, zoom <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.0</span>, threshold_value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>, plotter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>p)</span>
+<span id="cb11-3">p.show()</span>
+<span id="cb11-4"></span>
+<span id="cb11-5">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pv.Plotter()</span>
+<span id="cb11-6">xinv <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xinv.detach().cpu()</span>
+<span id="cb11-7">p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plot_model_with_forward(xinv, D, h, height<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, zoom <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.0</span>, threshold_value<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>, plotter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>p)</span>
+<span id="cb11-8">p.show()</span></code></pre></div>
+</details>
+<div id="fig-inverted-comparison" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-inverted-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-inverted-comparison" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-inverted-comparison-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-inverted-comparison-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/fig-inverted-comparison-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-inverted-comparison">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) True Model
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-inverted-comparison" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-inverted-comparison-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-inverted-comparison-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/fig-inverted-comparison-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-inverted-comparison">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Inverted Model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inverted-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A comparison of true and inverted models.
+</figcaption>
+</figure>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the true and inverted models</span></span>
+<span id="cb12-2">plot_model_2d(xtrue, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span>
+<span id="cb12-3"></span>
+<span id="cb12-4">plot_model_2d(xinv, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span></code></pre></div>
+</details>
+<div id="fig-inverted-comparison-2d" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-inverted-comparison-2d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-inverted-comparison-2d" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-inverted-comparison-2d-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-inverted-comparison-2d-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/fig-inverted-comparison-2d-output-1.png" data-ref-parent="fig-inverted-comparison-2d" width="275" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-2d-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) True Model
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-inverted-comparison-2d" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-inverted-comparison-2d-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-inverted-comparison-2d-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/project/index_files/figure-html/fig-inverted-comparison-2d-output-2.png" data-ref-parent="fig-inverted-comparison-2d" width="277" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-2d-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Inverted Model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-inverted-comparison-2d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: A comparison of true and inverted models in 2D.
+</figcaption>
+</figure>
+</div>
+<p>The inversion is clearly a failure. The magnetic distrbution for a material with a lower susceptibility that is close to the surface will produce an identical 2D magnetic field to the true data which is material buried much deeper. The model has a preference for shallow material, as material that is far away is more susceptible to noise and closer to the null space of the forward operator.</p>
+<p>To try and recover the true magnetic model, a more sophisticated inversion method is required. One such method is decribed in a review paper by Crespo et. al <span class="citation" data-cites="CrespoMarques2019">(Crespo Marques et al. 2019)</span> and is a topic of exploration in the next project section, where a sparse recovery technique will be used to recover the true model.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-CrespoMarques2019" class="csl-entry">
+Crespo Marques, Elaine, Nilson Maciel, Lirida Naviner, Hao Cai, and Jun Yang. 2019. <span>“A Review of Sparse Recovery Algorithms.”</span> <em>IEEE Access</em> 7: 1300–1322. <a href="https://doi.org/10.1109/access.2018.2886471">https://doi.org/10.1109/access.2018.2886471</a>.
+</div>
+</div></section></div> ]]></description>
+  <category>Machine Learning</category>
+  <category>Neural Networks</category>
+  <category>Geophysics</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/project/</guid>
+  <pubDate>Fri, 15 Nov 2024 08:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png" medium="image" type="image/png" height="108" width="144"/>
+</item>
 <item>
   <title>Lecture 9</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -4052,7 +7300,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="//" data-no-end="false" data-line-number="true" data-pseudocode-number="1" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -5570,7 +8818,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="//" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-line-number="true" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>

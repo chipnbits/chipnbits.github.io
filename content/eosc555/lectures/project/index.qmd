@@ -1,7 +1,7 @@
 ---
 title: "Project Work 1"
 subtitle: "Applications of Machine Learning in Geophysics"
-date: 2024-11-06
+date: 2024-11-15
 author: "Simon Ghyselincks"
 description: >-
     Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.
@@ -9,7 +9,8 @@ categories:
   - Machine Learning
   - Neural Networks
   - Geophysics
-  
+
+image: "imgs/magnetic_inversion_plot.png"
 draft: false
 
 editor: 
@@ -33,424 +34,841 @@ pseudocode:
 
 ## Motivation
 
-In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:
+Geomagnetic inversion from recovered magnetic readings above ground is a classic problem in geophysics. Much of the data that we have about subsurface geology must be collected via indirect methods such as magnetic and seismic surveys, or sparse sampling via boreholes. The data can be expensive to collect, where the objective is to detect underground structures such as ore bodies, oil and gas deposits, or aquifers. The goal is to recover a 3D distribution of some of the physical properties of the Earth from the incomplete data, a non-linear and ill-posed problem.
 
-$$ \min_{u} \left\{ \frac{1}{2} \left\| Au(x) - b \right\|_2^2 + \lambda R(u) \right\} $$
+This project explores the use of machine learning and optimization techniques to attempt an inversion of the data, using electromagnetic equations to model the propogation of the Earth's magnetic field through the subsurface on a known data set. The goal is to develop a model that can take the forward problem data and invert it to recover the true starting distribution.
 
-where $u(x)$ is a distribution of the unknowns over the domain $x$, $A$ is the forward operator, $b$ is the data, and $R(u)$ is the regularizer. A neural network can be used as a universal approximator for the function $R: \mathbb{R}^n \rightarrow \mathbb{R}$, where $n$ is the number of unknowns, or values of $u$.
+### Background
 
-## Neural Networks
+A background on the magnetic principles that underpin the problem can be found at [Geophysics for Practicing Geophysicists](https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html).
 
-### A Basic Neural Network: Single-Layer Perceptron (SLP)
+The subsurface of the Earth is composed of materials with differences in magnetic susceptibility $\chi$ and conductivity $\sigma$. The magnetic susceptibility relates a material's magnetization $M$ to the magnetic field $H$ via the equation $M = \chi H$. When the magnetic field of the Earth passes through this material it creates a magnetization response, causing small magnetic anomolies that can be measured above ground. The magnetic field passing through the subsurface is assumed to be uniform and known over the survey area.
 
-A basic neural network will have parameters $\theta$ that can be trained or learned, along with the input, $u$.
+The magnetization effect can be calculated by integrating the magnetic effect over each infinetesimally small volume of the subsurface, since the total effect will be the sum of the parts, similar to analysing electric fields from charge distributions. It is easier to first calculate the magnetic potential and then take the curl to get the field:
 
-$$y = R(u; \theta) = w^T \sigma(Wu+a), \quad \theta := \{w, W, a\}$$
+$$\mathbf{B}(r) = \nabla \times \mathbf{A}(r) $$
+$$\mathbf{A}(r) = \frac{\mu_0}{4\pi} \int_V \mathbf{M}(r') \frac{1}{|\mathbf{r} - \mathbf{r'}|} dV'$$
 
-The function $R$ in this case is a function defined for fixed $\theta$. The term $\sigma$ is a non-linear activation function, of which there are many choices. 
+where $\mathbf{B}$ is the magnetic field, $\mathbf{A}$ is the magnetic potential, $\mathbf{M}$ is the magnetization, and $\mu_0$ is the magnetic permeability of free space. The equations above are for the case where there are no free currents, which is a good assumption to make for the Earth's subsurface.
 
-- **$u$**: Input vector to the neural network.
-  
-- **$y$**: Output of the neural network, parameterized by $\theta$, representing the learned function.
+The integral is of the form of a convolution with the kernel $\frac{1}{|\mathbf{r} - \mathbf{r'}|}$, which can be computed using the Fast Fourier Transform (FFT) to speed up the computation. The operation $\mathbf{B}(r) = \nabla \times \mathbf{A}(r)$ can also be carried through into the integral since it is a linear operator. 
 
-- **$\theta := \{w, W, a\}$**: Set of trainable parameters in the network, where:
-  - **$w$**: Weight vector for the output layer
-  - **$W$**: Weights matrix for the hidden layer
-  - **$a$**: Bias vector added to the hidden layer
+Using all of the above information yields the integral equation that is dependent on the magnetic susceptibility $\chi$ and the magnetic field $\mathbf{H}_0$:
 
-- **$\sigma$**: Non-linear activation function applied element-wise to the affine transformation $Wu + a$. 
+$$ \mathbf{B}_A(\mathbf{r}) = \frac{\mu_0}{4\pi} \int_V \chi(\mathbf{r'}) \mathbf{H}_0 \cdot \nabla^2 \left( \frac{1}{|\mathbf{r} - \mathbf{r'}|} \right) dV' $$
 
-So a single layer neural network can be seen as the affine transformation of the vector $u$ followed by a non-linear activation function and a weighting metric for the resultant vector.
+The resulting magnetic field anomaly $\mathbf{B}_A$ is projected onto the direction of the magnetic field $\mathbf{H}_0$ to get the observed anomaly in magnetic field strength at any point above the Earth's surface in the forward model. For survey work, the probed field is usually measured over a planar surface above the ground, forming a 2D image.
 
-This can be used as an approximator for the true regularizer $R(u) \approx R_T(u)$ in the inverse problem.
+See [Geophysics for Practicing Geophysicists](https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html) for more images and interactive examples.
 
-Suppose that we have a known set of mappings $u_i \rightarrow y_i$, where $i = 1, \ldots, N$. For example we might have some information about the regularizer $R(u)$ for a set of $u$ values. One possible technique is to train an SLP to approximate the true regularizer $R_T(u)$.
+## Coding the Forward Model
 
-The function $y = R(u; \theta)$ returns a scalar, taking its transpose will not change the output:
-
-$$y = w^T \sigma(Wu+a) = \sigma(u^TW + a)w$$
-
-Then using the squared loss function, we can define the loss function as:
-
-$$\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u^TW + a)w - y_i \right \|^2$$
-
-The summation is reorganized to get rid of the summation term where $U$ is a matrix with the $u_i^T$ as the columns, A is a matrix with $a$ as the columns, and $y$ is the vector of $y_i$ values.
-
-$$\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW + A)w - y \right \|^2$$
-
-For simplicity of this analysis, we can assume without loss of generality for the problem at hand that $A = 0$ and $\sigma$ is the identity operator. Then:
-
-$$\hat\theta = \min_{\theta} \mathcal{L}(\theta) = \min_{\hat w} \frac{1}{2} \left \| U^T\hat w - y \right \|^2.$$
-
-where $\hat w = Ww$.
-
-### Non-linearity Analysis
-
-This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). $N>d$ means that there are more equations than there are unknowns, because $\hat w$ is of dimension $d$, so there could be infinite solutions.
-
-$$\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
-\underbrace{
-\begin{bmatrix}
-\ & \ & \ \\
-\ & U^T & \ \\
-\ & \ & \ \\
-\end{bmatrix}
-}_{N \times d}
-\cdot
-\underbrace{
-\begin{bmatrix}
-\ & \ & \ \\
-\ & W & \ \\
-\ & \ & \ \\
-\end{bmatrix}
-}_{N \times k}
-- y \right\|^2
-$$
-
-
-
-**Idea 1:**
-
-If we can increase the rank of the $Z = U^TW$ matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix $W$ that is $N \times m$ where $m > d$. In the resulting $z = U^TW$ matrix, the rank will still be $\text{rank}(Z) \le d$.
-
-**Idea 2:**
-
-Use a non-linear activation function $\sigma$ that operates element-wise on the matrix $Z = U^TW$ to increase the rank of the matrix so that $\text{rank}(\sigma(Z)) = \min (N,m)$.
-
-In practice the exact activation function is not important. It may be the case that $\text{rank}(\sigma(Z)) = 3$ for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix $W$. This can give a unique solution the least squares problem.
-
-$$
-\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
-\sigma \left( \underbrace{
-\begin{bmatrix} 
-\ & \ & \ \\
-\ & U^T & \ \\
-\ & \ & \ \\
-\end{bmatrix}
-}_{N \times d}
-\cdot
-\underbrace{
-\begin{bmatrix}
-\ & \ & \ & \ & \cdots & \ \\
-\ & W & \ & \ & \ & \ \\
-\ & \ & \ & \ & \ & \ \\
-\end{bmatrix}
-}_{N \times m}
-\right ) w
--
-y \right\|^2
-$$
-
-#### Non-linear Example
-
-To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.
-
+The model is programmed into the `Magnetics` class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.
 ```{python}
-#| label: fig-nonlinear-rank-recovery
-#| fig-width: 3
-#| fig-cap: "A comparison least squares with non-linear activation function"
-#| fig-subcap: 
-#|   - "Reconstruction Error Comparison"
-#|   - "Matrix Rank Comparison"
-#| layout-ncol: 2
-
-
+#| fig-cap: "A PyTorch module to perform forward and adjoint computations for magnetic inversion problems."
+#| code-fold: false
+#| 
+import torch
+import torch.nn as nn
 import numpy as np
-import matplotlib.pyplot as plt
-from numpy.linalg import lstsq, matrix_rank
+from scipy.constants import mu_0
+    
+class Magnetics(nn.Module):
+    """
+    A PyTorch module to perform forward and adjoint computations for magnetic inversion problems.
+    """
+    def __init__(self, dim, h, dirs, device='cpu'):
+        """
+        Initialize the Magnetics module.
 
-# Set random seed for reproducibility
-np.random.seed(42)
+        Parameters:
+            dim (list or tuple): Mesh dimensions [nx, ny, nz].
+            h (list or tuple): Cell sizes [dx, dy, dz].
+            dirs (list or tuple): Magnetic field directions [I, A, I0, A0] in radians.
+                                  I  - Magnetization dip angle
+                                  A  - Magnetization declination angle
+                                  I0 - Geomagnetic dip angle
+                                  A0 - Geomagnetic declination angle
+            device (str): Device to perform computations ('cpu' or 'cuda').
+        """
+        super(Magnetics, self).__init__()
+        self.dim = dim
+        self.h = h
+        self.dirs = dirs
+        self.device = device
 
-# Parameters
-N = 10  # Number of samples
-d = 5   # Dimension of input u
-m = 10  # Increased dimension for W
+        # Compute the scaling factor
+        dV = torch.prod(self.h.clone().detach())
+        mu_0 = 1.0  # Magnetic permeability (set to 1 for simplicity)
+        zeta = mu_0 / (4 * np.pi)
+        self.mudV = zeta * dV
 
-# Generate random input data U (d x N)
-U = np.random.randn(d, N)
+    def fft_kernel(self, P, center):
+        """
+        Compute the 2D shifted FFT of the kernel P.
 
-# True weight matrix W_true (d x d)
-W_true = np.random.randn(d, d)
-w_true = np.random.randn(d)
+        Parameters:
+            P (torch.Tensor): The point spread function (PSF) kernel.
+            center (list): Center indices for fftshift.
 
-# Generate nonlinear output to test with
-y_linear = (np.cos(U.T @ W_true)) @ w_true
+        Returns:
+            torch.Tensor: The shifted FFT of P.
+        """
+        # Shift the kernel for FFT operations
+        S = torch.roll(P, shifts=center, dims=[0, 1])
+        S = torch.fft.fftshift(S)
+        # Compute the 2D FFT
+        S = torch.fft.fft2(S)
+        # Shift the quadrants back
+        S = torch.fft.fftshift(S)
+        return S
 
-# Initialize random model weight matrix W (d x m)
-W = np.random.randn(d, m)
-Z = U.T @ W
-rank_Z = matrix_rank(Z)
+    def forward(self, M, height=0):
+        """
+        Perform the forward computation using FFT.
 
-sigma = np.sin
-Z_nonlinear = sigma(Z)
-rank_Z_nl = matrix_rank(Z_nonlinear)
+        Parameters:
+            M (torch.Tensor): The magnetization model tensor of shape B,C,X,Y,Z.
 
-w_linear, residuals_linear, _, _ = lstsq(Z, y_linear, rcond=None)
-w_nonlinear, residuals_nl, _, _ = lstsq(Z_nonlinear, y_linear, rcond=None)
+        Returns:
+            torch.Tensor: The computed magnetic data.
+        """
+        dz = self.h[2]
+        z = height + dz / 2  # Starting depth
 
-# Check reconstruction error for each case
-error_linear = np.linalg.norm(Z @ w_linear - y_linear)
-error_nonlinear = np.linalg.norm(Z_nonlinear @ w_nonlinear - y_linear)
+        data = 0  # Initialize the data
 
-# Comparison of Reconstruction Errors
-labels = ['Linear Least Squares', 'Non-linear Least Squares']
-errors = [error_linear, error_nonlinear]
+        # Loop through each layer in the z-direction
+        for i in range(M.shape[-1]):
+            # Extract the i-th layer of the model
+            m_layer = M[..., i].to(self.device)
 
-plt.figure(figsize=(5,5))
+            # Compute the point spread function (PSF) for the current layer
+            psf, center, _ = self.psf_layer(z)
 
-bars = plt.bar(labels, errors, color=['skyblue', 'salmon'])
-plt.ylabel('Reconstruction Error')
+            # Compute the FFT of the PSF kernel
+            s_fft = self.fft_kernel(psf, center)
 
-# Annotate bars with error values
-for bar in bars:
-    height = bar.get_height()
-    plt.annotate(f'{height:.4f}',
-                 xy=(bar.get_x() + bar.get_width() / 2, height),
-                 xytext=(0, 3),  # 3 points vertical offset
-                 textcoords="offset points",
-                 ha='center', va='bottom')
+            # Compute the FFT of the model layer
+            m_fft = torch.fft.fftshift(m_layer)
+            m_fft = torch.fft.fft2(m_fft)
+            m_fft = torch.fft.fftshift(m_fft)
 
-plt.ylim(0, max(errors)*1.2)
-plt.show()
+            # Perform the convolution in the frequency domain
+            b_fft = s_fft * m_fft
+            b_fft = torch.fft.fftshift(b_fft)
 
-plt.figure(figsize=(5,5))
+            # Convert back to the spatial domain
+            b_spatial = torch.real(torch.fft.ifft2(b_fft))
 
-ranks = [rank_Z, rank_Z_nl]
-labels_rank = ['Z (Linear)', 'Z_nonlinear (Non-linear)']
+            # Accumulate the data from each layer
+            data += b_spatial
 
-bars_rank = plt.bar(labels_rank, ranks, color=['lightgreen', 'gold'])
-plt.ylabel('Matrix Rank')
+            # Update depth
+            z += dz
 
-# Annotate bars with rank values
-for bar in bars_rank:
-    height = bar.get_height()
-    plt.annotate(f'{int(height)}',
-                 xy=(bar.get_x() + bar.get_width() / 2, height),
-                 xytext=(0, 3),  # 3 points vertical offset
-                 textcoords="offset points",
-                 ha='center', va='bottom')
+        return self.mudV * data
 
-plt.ylim(0, m + 1)
-plt.show()
+    def adjoint(self, data, height=0):
+        """
+        Perform the adjoint operation.
+
+        Parameters:
+            data (torch.Tensor): The observed magnetic data tensor.
+
+        Returns:
+            torch.Tensor: The adjoint result (model update).
+        """
+        dz = self.h[2]
+        z = height + dz / 2  # Starting depth
+
+        # Initialize the result tensor
+        m_adj = torch.zeros(
+            1, 1, self.dim[0], self.dim[1], self.dim[2], device=self.device
+        )
+
+        for i in range(self.dim[2]):
+            # Compute the PSF for the current layer
+            psf, center, _ = self.psf_layer(z)
+
+            # Compute the FFT of the PSF kernel
+            s_fft = self.fft_kernel(psf, center)
+
+            # Compute the FFT of the input data
+            data_fft = torch.fft.fft2(data)
+            data_fft = torch.fft.fftshift(data_fft)
+
+            # Perform the adjoint operation in the frequency domain
+            b_fft = torch.conj(s_fft) * data_fft
+
+            # Convert back to the spatial domain
+            b_spatial = torch.fft.fftshift(b_fft)
+            b_spatial = torch.real(torch.fft.ifft2(b_spatial))
+            b_spatial = torch.fft.fftshift(b_spatial)
+
+            # Store the result for the current layer
+            m_adj[..., i] = b_spatial
+
+            # Update depth
+            z += dz
+
+        return self.mudV * m_adj
+
+    def psf_layer(self, z):
+        """
+        Compute the point spread function (PSF) for a layer at depth z.
+
+        Parameters:
+            z (float): The depth of the layer.
+
+        Returns:
+            psf (torch.Tensor): The computed PSF.
+            center (list): Center indices for fftshift.
+            rf (torch.Tensor): The radial factor (unused but computed for completeness).
+        """
+        # Unpack magnetic field directions
+        I, A, I0, A0 = self.dirs  # Dip and declination angles for magnetization and geomagnetic field
+
+        # Compute half-dimensions
+        nx2, ny2 = self.dim[0] // 2, self.dim[1] // 2
+
+        dx, dy = self.h[0], self.h[1]
+
+        # Create coordinate grids
+        x = dx * torch.arange(-nx2 + 1, nx2 + 1, device=self.device)
+        y = dy * torch.arange(-ny2 + 1, ny2 + 1, device=self.device)
+        X, Y = torch.meshgrid(x, y, indexing='ij')
+
+        # Center indices for fftshift
+        center = [1 - nx2, 1 - ny2]
+
+        # Compute the radial factor
+        rf = (X**2 + Y**2 + z**2) ** 2.5
+
+        # Compute components of the PSF
+        cos_I = torch.cos(I)
+        sin_I = torch.sin(I)
+        cos_A = torch.cos(A)
+        sin_A = torch.sin(A)
+        cos_I0 = torch.cos(I0)
+        sin_I0 = torch.sin(I0)
+        cos_A0 = torch.cos(A0)
+        sin_A0 = torch.sin(A0)
+
+        PSFx = ((2 * X**2 - Y**2 - z**2) * cos_I * sin_A +
+                3 * X * Y * cos_I * cos_A +
+                3 * X * z * sin_I) / rf
+
+        PSFy = (3 * X * Y * cos_I * sin_A +
+                (2 * Y**2 - X**2 - z**2) * cos_I * cos_A +
+                3 * Y * z * sin_I) / rf
+
+        PSFz = (3 * X * z * cos_I * sin_A +
+                3 * Y * z * cos_I * cos_A +
+                (2 * z**2 - X**2 - Y**2) * sin_I) / rf
+
+        # Combine components to get the total PSF
+        psf = (PSFx * cos_I0 * cos_A0 +
+               PSFy * cos_I0 * sin_A0 +
+               PSFz * sin_I0)
+
+        return psf, center, rf
 ```
 
-#### Notes on Scaling
-
-The $W$ matrix will scale up in $O(N^2)$ so that with more data samples it can become too large to handle well. The problem however can be solved with a random $w$ and with $W$ alone under these conditions. A lower rank $W$ could help under conditions where the size of $N$ is large. 
-
-$$ W = Q Z^T $$
-
-where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product $U^TW$ for any particular sample $u_i$ will be giben by $\sigma((u_i^TQ)Z^T)$. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix $W$.
-
-This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).  
-
-$$y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)})) + a^{(L-1)}) + a^{(L)}$$
-
-where $L$ is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where $N$ is large.
-
-## Convolutional Neural Networks (CNNs)
-
-A convolutional neural network makes use of a matrix operator that produces the same result as a discrete convolution. 
-
-### Convolution Operator
-
-The 1D convolutional operator $\ast$ in the discrete case is defined as:
-
-$$ (f \ast g)[n] = \sum_{m=-\infty}^{\infty} f[m]g[n-m] $$
-
-In the case of a 2D convolution, the operator is defined as:
-
-$$ (f \ast g)[n,m] = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} f[i,j]g[n-i,m-j] $$
-
-It is also an operation defined in the continuous domain as:
-
-$$ (f \ast g)(x) = \int_{-\infty}^{\infty} f(y)g(x-y)dy $$
-
-The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green's function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI). 
-
-**Properties of Convolution**
-
-1. Linearity: $f \ast (\alpha g + \beta h) = \alpha f \ast g + \beta f \ast h$
-2. Commutativity: $f \ast g = g \ast f$
-3. Associativity: $f \ast (g \ast h) = (f \ast g) \ast h$
-
-Rather than explain convolution at length here, the interested reader is encouraged to look at the [Convolution Wikipedia page](https://en.wikipedia.org/wiki/Convolution) for some excellent properties and visual examples to build intuition. 
-
-In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.
-
-Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:
-
-$$ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) $$
-
-When it comes to computing large convolutions for two function $f(x)$ and $g(x)$, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.
-
-$$ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) $$
-
-For more details with visual explanations, another good resource is the UBC CPSC 425 course on [Computer Vision](https://www.cs.ubc.ca/~lsigal/teaching.html) with slides from [Lecture 3b](https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf) and [Lecture 4](https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf).
-
-### Convolution in CNNs
-
-A convolutinal neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix $W$. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.
-
-**Single Layer Perceptron (SLP) vs Convolutional Neural Network (CNN)**
-
-The single layer of a perceptron given earlier is of the form $y = w^T \sigma(Wu + a)$, where $W$ is the weights matrix, $w$ is the weights vector, $u$ is the input, and $a$ is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix. Replacing $W$ with a sparse convolutional matrix $C$.
-
----
-
-**Definition: Convolutional Operation**
-
-Let $\vec{u}$ be the flattened input image $\mathcal{I}$, and let $\mathcal{K}$ be the convolutional kernel. The convolutional operation is defined as:
-
-$$ Y[s,t] = \mathcal{K} \ast \mathcal{I} = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} \mathcal{K}[i,j] \mathcal{I}[s-i,t-j]$$
-
-  - $Y[s,t]$ is the output at position $(s,t)$
-  - $N$ and $M$ are the dimensions of the kernel $\mathcal{K}$
-  - $\mathcal{K}[i,j]$ is the element in the $i$-th row and $j$-th column of the kernel
-
-The kernel slides across the input image, producing a weighted sum at each valid position to give output $Y$. The indices are clipped from infinity to the correct size depending on the padding, size of kernel, and the stride.
-
-It is a linear operation so that every element of $Y$ is a linear combination of the input and weights elements, indicating that it can be expressed as a matrix multiplication with the flattened image $\vec{u}$ and the flattened kernel $\vec{k}$. 
-
-#### Example: Convolution of a $2\times 2$ Kernel with a $4\times 4$ Image
-
-**Input Image**:
-$$
-\mathcal{I} =
-\begin{bmatrix}
-u_{1,1} & u_{1,2} & u_{1,3} & u_{1,4} \\
-u_{2,1} & u_{2,2} & u_{2,3} & u_{2,4} \\
-u_{3,1} & u_{3,2} & u_{3,3} & u_{3,4} \\
-u_{4,1} & u_{4,2} & u_{4,3} & u_{4,4} \\
-\end{bmatrix}
-$$
-
-**Kernel**:
-$$
-\mathcal{K} =
-\begin{bmatrix}
-k_{1,1} & k_{1,2} \\
-k_{2,1} & k_{2,2} \\
-\end{bmatrix}
-$$
-
-**Output**:
-The output of the convolution will be a $3 \times 3$ matrix, since the kernel slides over the $4 \times 4$ image with no padding and a stride of 1.
-
-$$
-Y =
-\begin{bmatrix}
-y_{1,1} & y_{1,2} & y_{1,3} \\
-y_{2,1} & y_{2,2} & y_{2,3} \\
-y_{3,1} & y_{3,2} & y_{3,3} \\
-\end{bmatrix}
-$$
-
-Note that the output indexing loses the first and last row and column because there is no padding. In cases with zero padding, then all undefined indices of the input are set to zero when using the convolution formula and reaching undefined indices.
-
-Each element $y_{s,t}$ of the output is given by:
-$$
-y_{s,t} = \sum_{i=1}^{2} \sum_{j=1}^{2} \mathcal{K}[i,j] \cdot \mathcal{I}[(s+2)-i, (t+2)-j]
-$$
-
-The addition of $2$ in the indexing is due to the size of the kernel being $2 \times 2$ and the choice to index $y$ starting from $1$ instead of $3$ for the case with no padding.
-
-**Flatten the Input Image**:
-
-Flatten the $4 \times 4$ image $\mathcal{I}$ into a column vector $\vec{u} \in \mathbb{R}^{16}$:
-$$
-\text{flatten}\left(\mathcal{I}\right) = \vec{u} = 
-\begin{bmatrix}
-u_{1,1} & u_{1,2} & u_{1,3} & u_{1,4} &
-u_{2,1} & u_{2,2} & u_{2,3} & u_{2,4} &
-u_{3,1} & u_{3,2} & u_{3,3} & u_{3,4} &
-u_{4,1} & u_{4,2} & u_{4,3} & u_{4,4}
-\end{bmatrix}^T
-$$
-
-**Sparse Convolution Matrix**:
-
-The convolution operation is expressed as a matrix multiplication:
-$$
-\text{flatten}\left( Y \right) = \mathbf{C} \vec{u}
-$$
-
-Here, $\mathbf{C}$ is the sparse matrix representation of the $2 \times 2$ kernel, with size $9 \times 16$ (matching the size of the output vector and the input vector). The non-zero entries in each row of $\mathbf{C}$ correspond to the flattened values of $\mathcal{K}$.
-
-Looking at the first few entries of the output $Y$ defines the matrix entries:
-
-  - $y_{1,1} = k_{2,2}u_{1,1} + k_{2,1}u_{1,2} + k_{1,2}u_{2,1} + k_{1,1}u_{2,2}$
-  - $y_{1,2} = k_{2,2}u_{1,2} + k_{2,1}u_{1,3} + k_{1,2}u_{2,2} + k_{1,1}u_{2,3}$
-  - $y_{1,3} = k_{2,2}u_{1,3} + k_{2,1}u_{1,4} + k_{1,2}u_{2,3} + k_{1,1}u_{2,4}$
-
-
-$$
-\mathbf{C} =
-\begin{bmatrix}
-k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      \\
-0      & k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      \\
-0      & 0      & k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0      & 0      & 0      & 0      & 0      & 0      \\
-0      & 0      & 0      & 0        & k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0      & 0      & 0      & 0    \\
-0      & 0      & 0      & 0        & 0      & k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0      & 0      & 0    \\
-\vdots & \vdots  & \vdots  & \vdots & \vdots & \vdots  & \vdots  & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
-\end{bmatrix}
-$$
-
-Then using this matrix and the flattened input image, a flattened output vector can be computed as $$\text{flatten}\left(Y \right) = C \vec{u}$.
-
-So the convolution operation gives a matrix that only has $4$ parameters out of the $9 \times 16 = 144$ total elements, with most of the entries being zero. This can be highly efficient for compuations in a neural network for spatially invariant features in the input data. The sparse structure of the matrix can also be exploited for efficient computation.
-
-#### Channels in Convolutional Neural Networks
-
-The data being processed in a CNN can have multiple channels, such as color images with $3$ channels. The images may also be processed in batches, adding yet another dimension to the input data. For a single image that is size $\{C,H,W\}$ where $C$ is the number of channels, $H$ is the height, and $W$ is the width, a different convolutional kernel is applied as a mapping from $C_{in}$ channels to $C_{out}$ channels. To flatten the input image with channels, the flattened single channels are stacked vertically to form a single column vector.
-
-For $k$ input channels and $l$ output channels:
-
-$$ y = \begin{bmatrix}
-W_{1,1} & W_{1,2} & \cdots & W_{1,k} \\
-W_{2,1} & W_{2,2} & \cdots & W_{2,k} \\
-\vdots & \vdots & \ddots & \vdots \\
-W_{l,1} & W_{l,2} & \cdots & W_{l,k} \\
-\end{bmatrix}
-\begin{bmatrix}
-u_{c=1} \\
-u_{c=2} \\
-\vdots \\
-u_{c=k} \\
-\end{bmatrix}
-$$
-
-The $W$ are the individual convolutional kernel maps for each input to output channel. The input is a flattened tensor of size $k \times H \times W$, and the output is a flattened tensor of size $l \times H \times W$.
-
-To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattned input data, where each column is a flattened input image. For a batch size of $N$, the input data is of size $N \times k \times H \times W \times N$ and the output data is of size $N \times l \times H \times W$.
-
-$$ Y_{\text{batch}} = \begin{bmatrix}
-W_{1,1} & W_{1,2} & \cdots & W_{1,k} \\
-W_{2,1} & W_{2,2} & \cdots & W_{2,k} \\
-\vdots & \vdots & \ddots & \vdots \\
-W_{l,1} & W_{l,2} & \cdots & W_{l,k} \\
-\end{bmatrix}
-\begin{bmatrix}
-u_{1,c=1} & u_{2,c=1} & \cdots & u_{N,c=1} \\
-u_{1,c=2} & u_{2,c=2} & \cdots & u_{N,c=2} \\
-\vdots & \vdots & \ddots & \vdots \\
-u_{1,c=k} & u_{2,c=k} & \cdots & u_{N,c=k} \\
-\end{bmatrix}
-$$
-
-#### Deep CNNs
-
-A deep CNN wil chain multiple convolutional layers together, including a non-linear activation function and bias after each later:
-
-$$ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) + a^{(L-1)}) + a^{(L)} $$
-
-A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture [@Kaiming2015]. The ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypassed one or more layers. Each sequential layer in the architecture is to train a change in the residual rather than the entire output to the next layer.
-
-$$ u_{n+1} = u_n + h \sigma(W_n u_n + a_n) $$
-
-When $h$ becomes small, this resembles the Euler method for solving ordinary differential equations where $\frac{du}{dt} = \sigma(W_t u + a_t)$. Where the parameters are also time dependent.
-
-
-
-
+To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that 
+$$ \langle A(X), Q \rangle = \langle X, A^*(Q) \rangle $$
+
+where $A$ is the forward operator and $A^*$ is the adjoint operator. The code below performs the adjoint test for the forward model defined above.
+
+```{python}
+# | fig-cap: "Testing the adjoint operation of the forward model."
+import pyvista as pv
+pv.set_jupyter_backend("static")
+
+def adjoint_test(op, adj, arg):
+    """
+    Adjoint test for a given operator.
+
+    Parameters:
+        op (callable): Forward operator.
+        adj (callable): Adjoint operator.
+        arg (torch.Tensor): Input to the forward operator.
+    """
+
+    X = arg
+    D = op(X)
+    Q = torch.rand_like(D)
+
+    # Compute the inner product <A(X), Q>
+    inner_prod1 = torch.sum(D * Q)
+
+    # Compute the inner product <X, adj(Q)>
+    W = adj(Q)
+    inner_prod2 = torch.sum(X * W)
+
+    print("Adjoint test:", inner_prod1.item(), inner_prod2.item())
+
+
+# Set a magnetics model
+dx, dy, dz = 100.0, 100.0, 100.0
+n1, n2, n3 = 256, 256, 128
+dim = torch.tensor([n1, n2, n3])
+h = torch.tensor([dx, dy, dz])
+dirs = torch.tensor([np.pi / 2, np.pi / 2, np.pi / 2, np.pi / 2])
+forMod = Magnetics(dim, h, dirs)
+
+# set the magnetization of the material
+M = torch.zeros(*dim)
+M[120:140, 120:140, 20:40] = 0.3
+M[20:40, 20:40, 10:20] = 0.1
+
+M = M.unsqueeze(0).unsqueeze(0)
+adjoint_test(forMod.forward, forMod.adjoint, M)  
+```
+
+## Plotting the Model
+
+A simple toy dataset was used to test the adjoint opearation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of commands that make use of [Pyvista](https://docs.pyvista.org/) are provided below.
+
+```{python}
+def plot_model_2d(M, n_slices=None, cmap="rainbow", figsize=(12, 6)):
+    """
+    Plot an array of 2D slices for a given 3D tensor in a single grid-style plot.
+    
+    Parameters:
+    - M (torch.Tensor): 3D tensor representing the model (e.g., [x, y, z]).
+    - n_slices (int, optional): Number of slices to plot. Defaults to all slices.
+    - cmap (str): Colormap for the plot.
+    - figsize (tuple): Size of the figure.
+
+    Returns:
+    - matplotlib.figure.Figure: The created figure.
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # Dimensions of the 3D tensor
+    nx, ny, nz = M.shape[-3], M.shape[-2], M.shape[-1]
+    
+    # Determine the number of slices
+    if n_slices is None:
+        n_slices = nz
+    else:
+        n_slices = min(n_slices, nz)
+    
+    # Determine the grid shape (rows and columns)
+    ncols = int(np.ceil(np.sqrt(n_slices)))
+    nrows = int(np.ceil(n_slices / ncols))
+
+    # Create a blank canvas for the grid plot
+    grid = torch.zeros((nrows * nx, ncols * ny), dtype=M.dtype, device=M.device)
+    
+    # Fill the grid with slices
+    slice_idx = 0
+    for i in range(nrows):
+        for j in range(ncols):
+            if slice_idx < n_slices:
+                grid[i * nx:(i + 1) * nx, j * ny:(j + 1) * ny] = M[..., slice_idx]
+                slice_idx += 1
+
+    # Plot the grid
+    fig = plt.figure(figsize=figsize)
+    plt.imshow(grid.cpu().detach().numpy(), cmap=cmap)
+    plt.colorbar()
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
+
+def plot_model(M, plotter = None, threshold_value=0.05):
+    """
+    Plot the magnetization model with an outline showing the overall bounds.
+    
+    Parameters:
+        M (torch.Tensor): Magnetization model tensor of shape [B, C, X, Y, Z] or [X, Y, Z].
+        threshold_value (float): Threshold value for magnetization to visualize.
+    """
+    
+    if plotter is None:
+        plotter = pv.Plotter()
+    
+    # Remove unnecessary dimensions if present
+    M = torch.squeeze(M)
+    
+    # Convert the PyTorch tensor to a NumPy array
+    m_plot = M.detach().cpu().numpy()
+    
+    # Define grid parameters
+    spacing = (1.0, 1.0, 1.0)  
+    origin = (0.0, 0.0, 0.0)   
+    
+    # Create a PyVista Uniform Grid (ImageData)
+    grid = pv.ImageData()
+    
+    # Set grid dimensions (number of points = cells + 1)
+    grid.dimensions = np.array(m_plot.shape) + 1
+    grid.spacing = spacing
+    grid.origin = origin
+    
+    # Assign magnetization data to cell data
+    grid.cell_data["M"] = m_plot.flatten(order="F")
+    
+    # Apply threshold to isolate regions with M > threshold_value
+    thresholded = grid.threshold(value=threshold_value, scalars="M")
+    
+    # Create an outline of the entire grid
+    outline = grid.outline()
+        
+    # Add the thresholded mesh
+    plotter.add_mesh(thresholded, cmap = "rainbow", opacity=0.5, show_edges=True, label='Magnetization > {:.2f}'.format(threshold_value))
+    
+    # Add the outline mesh
+    plotter.add_mesh(outline, color="black", line_width=2, label='Model Bounds')
+    
+    # Optionally, add axes and a legend for better context
+    plotter.add_axes()
+    plotter.add_legend()
+    
+    # Set camera position for better visualization (optional)
+    plotter.view_isometric()
+    
+    return plotter
+
+def plot_model_with_slider(M):
+    """
+    Plot the magnetization model with an interactive slider for threshold value.
+
+    Parameters:
+        M (torch.Tensor): Magnetization model tensor of shape [B, C, X, Y, Z] or [X, Y, Z].
+    """
+
+    # Remove unnecessary dimensions if present
+    M = torch.squeeze(M)
+
+    # Convert the PyTorch tensor to a NumPy array
+    m_plot = M.detach().cpu().numpy()
+
+    # Define grid parameters
+    spacing = (1.0, 1.0, 1.0)  
+    origin = (0.0, 0.0, 0.0)   
+
+    # Create a PyVista Uniform Grid (ImageData)
+    grid = pv.ImageData()
+
+    # Set grid dimensions (number of points = cells + 1)
+    grid.dimensions = np.array(m_plot.shape) + 1
+    grid.spacing = spacing
+    grid.origin = origin
+
+    # Assign magnetization data to cell data
+    grid.cell_data["M"] = m_plot.flatten(order="F")
+
+    # Create an outline of the entire grid
+    outline = grid.outline()
+
+    # Create a PyVista plotter
+    plotter = pv.Plotter()
+    plotter.add_mesh(outline, color="black", line_width=2, label='Model Bounds')
+
+    # Add axes and a legend
+    plotter.add_axes()
+    plotter.add_legend()
+
+    # Set camera position for better visualization
+    plotter.view_isometric()
+
+    # Define a callback function for the slider
+    def threshold_callback(value):
+        # Remove previous thresholded mesh if exists
+        if 'thresholded' in plotter.actors:
+            plotter.remove_actor('thresholded')
+        # Apply threshold to isolate regions with M > value
+        thresholded = grid.threshold(value=float(value), scalars="M")
+        # Add the thresholded mesh
+        plotter.add_mesh(thresholded, name='thresholded', cmap="rainbow", opacity=0.5, show_edges=True, label=f'Magnetization > {value:.2f}')
+        plotter.render()
+
+    # Initial threshold value
+    initial_threshold = 0.05
+
+    # Apply initial threshold and plot
+    thresholded = grid.threshold(value=initial_threshold, scalars="M")
+    plotter.add_mesh(thresholded, name='thresholded', cmap="rainbow", opacity=0.5, show_edges=True, label=f'Magnetization > {initial_threshold:.2f}')
+
+    # Add the slider widget
+    plotter.add_slider_widget(
+        threshold_callback,
+        [0.0, np.max(m_plot)],
+        value=initial_threshold,
+        title='Threshold Value',
+        pointa=(0.025, 0.1),
+        pointb=(0.225, 0.1),
+        style='modern',
+    )
+
+    # Show the plot
+    plotter.show()
+
+def plot_model_with_forward(
+    mag_data,
+    forward_data,
+    spacing=(1.0, 1.0, 1.0),
+    height=0,
+    zoom=1.0,
+    plotter=None,
+    threshold_value=0.05,
+):
+    if plotter is None:
+        plotter = pv.Plotter()
+
+    # Remove unnecessary dimensions if present
+    M = mag_data.squeeze()
+    M = M.cpu().numpy()
+    D = forward_data.squeeze().cpu().numpy()
+
+    # Define grid parameters XYZ spacing
+    origin = (0.0, 0.0, 0.0)
+
+    # Create a PyVista Uniform Grid (ImageData) for the 3D volume
+    grid = pv.ImageData()
+
+    # Set grid dimensions (number of points = cells + 1)
+    grid.dimensions = np.array(M.shape) + 1
+    grid.spacing = spacing
+    grid.origin = origin
+
+    # Assign magnetization data to cell data
+    grid.cell_data["M"] = M.flatten(order="F")
+
+    # Apply threshold to isolate regions with M > threshold_value
+    thresholded = grid.threshold(value=threshold_value, scalars="M").flip_z()
+    outline = grid.outline()
+
+    # Add the thresholded mesh
+    plotter.add_mesh(
+        thresholded,
+        cmap="rainbow",
+        opacity=0.7,
+        show_edges=True,
+        label="Magnetization > {:.2f}".format(threshold_value),
+    )
+
+    # Add the outline mesh
+    plotter.add_mesh(outline, color="black", line_width=2, label="Model Bounds")
+
+    # Create a structured grid for the 2D surface data
+    nx, ny = D.shape
+    x = np.linspace(0, nx * spacing[0], nx)
+    y = np.linspace(0, ny * spacing[1], ny)
+    X, Y = np.meshgrid(x, y)
+    Z = np.full_like(X, -height)  # Position the surface above the volume
+
+    # Create a PyVista mesh for the 2D surface
+    surface_mesh = pv.StructuredGrid(X, Y, Z)
+    surface_mesh.point_data["Forward Data"] = D.flatten(order="F")
+
+    # Add the 2D surface to the plotter
+    plotter.add_mesh(
+        surface_mesh,
+        cmap="coolwarm",
+        show_edges=False,
+        opacity=0.3,
+        label="Forward Problem Data",
+    )
+
+    # Add axes and a legend
+    plotter.add_axes()
+    plotter.add_legend()
+    plotter.camera_position = [
+        (-54507.19712327622, -49446.175185560685, -53221.11813207309),
+        (128.0, 128.0, 64.0),
+        (0.44554389292076074, 0.38017371952961604, -0.8105298158982375),
+    ]
+
+    # Adjust the zoom to fit data in window
+    plotter.camera.zoom(zoom)
+
+
+    return plotter
+```
+
+```{python}
+# | fig-cap: "A simple model and forward data."
+# | code-fold: false
+
+p = pv.Plotter()
+D = forMod(M)
+D = D.squeeze()
+p = plot_model_with_forward(M, D, h, height=0, plotter=p)
+output_file = "imgs/magnetic_inversion_plot.png"
+p.show(screenshot=output_file)
+```
+
+## Inverting the Magnetic Readings
+
+The magnetic anomaly readings above ground are but a 2D slice from the 3D data that is being recovered. This is like trying to reconstruct a 3D object from the shadow that it casts, a very ill conditioned problem. To get a gauge of the problem difficulty we attempt a simple inversion using the conjugate gradient method developed in earlier lectures.
+
+The inversion problem is to recover the magnetization model $M$ from the observed magnetic data $D$ using the forward model $A$, its adjoint $A^*$, and the conjugate gradient method. The null space of the forward operator is quite large, meaning there are infinite possible solutions, so a regularization term is added to the objective function to constrain the solution. The model is
+
+$$D = A(M) + \epsilon$$
+
+where $\epsilon$ is the noise in the data. 
+
+#### Objective Function
+The objective function to minimize is
+
+$$ J(M) = \frac{1}{2} \| A(M) - D \|_2^2 + \alpha R(M) $$
+
+where $R(M)$ is the regularization term and $\alpha$ is the regularization parameter. In this example a weight matrix $W$ is used on the flattened magnetic data.
+
+$$ R(M) = \frac{1}{2} \| W(M) \|_2^2$$
+
+The solution to this problem is given in [Lecture 4](../lecture4/index.qmd) using the normal equations.
+
+$$ (A^*A + \alpha W^*W) M_{sol} = A^*D$$
+
+The conjugate gradient method is used to solve the system of equations. The adjoint of the regularization term is also defined to speed up the process of inverting data when using techniques that make use of it. 
+
+#### Regularization Implementation
+
+The penalty or prior that this is to incur is the finite difference between neighboring cells in the model. This is an approximation of the gradient at each point in the magnetic data, functioning as a slope penalty regularization as discussed previously in [Lecture 8](../lecture8/index.qmd#choice-of-regularizer). 
+
+The finite difference matrix in 1D is
+
+$$W = \begin{bmatrix} 1 & -1 & 0 & \cdots & 0 \\0 & 1 & -1 & \cdots & 0 \\\vdots & \vdots & \vdots & \ddots & \vdots \\0 & 0 & 0 & \cdots & -1 \end{bmatrix}$$
+
+and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: $$\|W(M)\|^2 = \sum_i^N\sum_j^S\sum_k^Q (M_{i,j,k} - M_{i+1,j,k})^2 + (M_{i,j,k} - M_{i,j+1,k})^2 + (M_{i,j,k} - M_{i,j,k+1})^2$$ We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.
+
+A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm.
+
+```{python}
+# | fig-cap: "Finite difference regularization."
+# | code-fold: false
+
+def regularization(x):
+    gx = x[:,:,1:,:,:] - x[:,:,:-1,:,:]
+    gy = x[:,:,:,1:,:] - x[:,:,:,:-1,:]
+    gz = x[:,:,:,:,1:] - x[:,:,:,:,:-1]
+    return 0.5*(torch.mean(gx**2)+torch.mean(gy**2)+torch.mean(gz**2))
+
+def adjoint(A, v, x_sample):
+    """ 
+    Take the adjoint of the forward operator A with respect to the input vector v.
+    
+    Parameters:
+        A (callable): Forward operator.
+        v (torch.Tensor): Input vector.
+        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).
+    """
+    
+    x = torch.zeros_like(x_sample)
+    x.requires_grad = True
+    b = A(x)
+    # Compute the dot product of the forward operator with the input vector
+    h = torch.sum(b * v)
+    # Compute the gradient of the dot product with respect to the input image
+    adjoint = torch.autograd.grad(h, x, create_graph=True)[0]
+    return adjoint
+```
+
+#### Data Set for Fitting
+
+A new data set with three blocks is created for a more interesting test case.
+
+```{python}
+# | fig-cap: "Model with forward data"
+# | code-fold: true
+
+def gen_true_data(dim):
+
+    # set the magnetization model
+    xtrue = torch.zeros(*dim)
+    xtrue[30:50, 40:50, 10:20] = 0.6
+    xtrue[20:40, 20:40, 5:15] = 0.2
+    xtrue[10:15, 10:15, 2:5] = 0.5
+    
+    return xtrue
+
+# Set the model parameters
+n1 = 64
+n2 = 64
+n3 = 32
+dim = torch.tensor([n1,n2,n3])
+h = torch.tensor([100.0, 100.0, 100.0])
+dirs = torch.tensor([np.pi/2, np.pi/2, np.pi/2, np.pi/2])
+forMod = Magnetics(dim, h, dirs)
+
+# Generate the true data
+xtrue = gen_true_data(dim)
+xtrue = xtrue.unsqueeze(0).unsqueeze(0)
+
+D = forMod(xtrue)
+noise = torch.randn_like(D)
+D = D + 0.001*noise
+
+# Plot the true model and forward data
+p = pv.Plotter()
+p = plot_model_with_forward(xtrue, D, h, height=0, zoom = 4.0, plotter=p)
+output_file = "imgs/magnetic_inversion_proj.png"
+p.show(screenshot=output_file)
+```
+
+#### Conjugate Gradient Method
+
+The equation to solve is $(A^*A + \alpha W^*W) M_{sol} = A^*D$ which should be defined in the standard form for a conjugate gradient problem, $Cx = b$. To fit this form a new linear operator $C$ is defined as $C := A^*A + \alpha W^*W$ and the right hand side $b = A^*D$. The conjugate gradient method is then applied to solve the system of equations.
+
+```{python}
+# | fig-cap: "Conjugate gradient inversion."
+# | code-fold: false
+
+import matplotlib.pyplot as plt
+
+def conj_gradient(A, b, x0=None, niter=20, tol=1e-2, alpha=1e-2, verbose=True):
+    """
+    Solve Ax=b using the conjugate gradient method.
+
+    Paramters:
+        A (callable): A function that computes the operator Ax.
+        b (torch.Tensor): The right-hand side vector.
+        x0 (torch.Tensor, optional): The initial guess. Defaults to None.
+        niter (int, optional): Maximum number of iterations. Defaults to 20.
+        tol (float, optional): Tolerance for the residual. Defaults to 1e-2.
+        alpha (float, optional): Step size for the conjugate gradient method. Defaults to 1e-2.
+    """
+    if x0 is None:
+        r = b
+    else:
+        r = b - A(x0)
+
+    q = r
+    x = torch.zeros_like(b)
+    for i in range(niter):
+        Aq = A(q)
+        alpha = (r * r).sum() / (q * Aq).sum()
+        x = x + alpha * q
+        rnew = r - alpha * Aq
+        beta = (rnew**2).sum() / (r**2).sum()
+        q = rnew + beta * q
+        r = rnew.clone()
+        if verbose:
+            print("iter = %3d    res = %3.2e" % (i, r.norm() / b.norm()))
+        if r.norm() / b.norm() < tol:
+            break
+    return x
+
+# Generate the true data
+xtrue = gen_true_data(dim)
+xtrue = xtrue.unsqueeze(0).unsqueeze(0)
+
+D = forMod(xtrue)
+noise = torch.randn_like(D)
+D = D + 0.001*noise
+
+# Define the forward operator with regularization
+reg_param = 1e10
+def A(x, alpha=reg_param):
+    y1 = forMod(x)
+    y1 = forMod.adjoint(y1)
+    
+    y2 = regularization(x)
+    y2 = adjoint(regularization, y2, x_sample = x)
+    return y1 + alpha*y2
+
+b = forMod.adjoint(D)
+
+# Check dimensions and functioning
+y = A(xtrue)
+
+# Solve the inverse problem using the conjugate gradient method
+x0 = torch.zeros_like(xtrue)
+
+xinv = conj_gradient(A, b, x0, niter=20, tol=1e-6, alpha=1e-2, verbose=True)
+    
+# Verify that the gradient is zero at the solution
+xtest = xinv.clone().detach().requires_grad_(True)
+loss = 0.5 * (D - forMod(xtest)).norm()**2 + 0.5 * reg_param * regularization(xtest)**2
+loss.backward()
+
+# Print the norm of the gradient
+gradient_norm = xtest.grad.norm().item()
+print(f"Gradient norm at xinv: {gradient_norm:.6e}")
+
+# Get misfit and regularization
+misfit = 0.5 * (D - forMod(xinv)).norm()**2
+reg = 0.5 * reg_param * regularization(xinv)**2
+print(f"Misfit: {misfit:.6e}, Regularization: {reg:.6e}")
+
+
+# Optionally, set a tolerance and assert
+tolerance = 1e-4
+if gradient_norm < tolerance:
+    print(f"Verification Passed: Gradient norm {gradient_norm:.2e} is below the tolerance {tolerance:.2e}.")
+else:
+    print(f"Verification Failed: Gradient norm {gradient_norm:.2e} exceeds the tolerance {tolerance:.2e}.")
+     
+```
+
+Now that the inversion is performed, the results can be checked against the true forward model to see if they match correctly.
+
+```{python}
+# | fig-cap: "Forward model comparison."
+# | code-fold: true
+# Plot the results   
+pred = forMod(xinv) # predicted 2d data
+
+plt.subplot(1, 2, 1)
+plt.imshow(D.view(n1, n2).cpu().detach().numpy(), cmap='rainbow')
+plt.title('Data')
+plt.colorbar()
+
+plt.subplot(1, 2, 2)
+plt.imshow(pred.view(n1,n2).cpu().detach().numpy(), cmap='rainbow')
+plt.title('Inverted model')
+plt.colorbar()
+
+plt.show() 
+```
+
+This looks like a perfect fit, but as we will see, the method has done a poor job of recovering the true model. 
+
+## Results
+
+The inverted model can be plotted to see how well the inversion has performed.
+
+```{python}
+#| label: fig-inverted-comparison
+#| fig-width: 8
+#| fig-cap: "A comparison of true and inverted models."
+#| fig-subcap: 
+#|   - "True Model"
+#|   - "Inverted Model"
+#| layout-ncol: 2
+
+p = pv.Plotter()
+p = plot_model_with_forward(xtrue, D, h, height=0, zoom = 4.0, threshold_value=0.05, plotter=p)
+p.show()
+
+p = pv.Plotter()
+xinv = xinv.detach().cpu()
+p = plot_model_with_forward(xinv, D, h, height=0, zoom = 4.0, threshold_value=0.01, plotter=p)
+p.show()
+```
+
+```{python}
+#| label: fig-inverted-comparison-2d
+#| fig-width: 8
+#| fig-height: 4
+#| fig-cap: "A comparison of true and inverted models in 2D."
+#| fig-subcap: 
+#|   - "True Model"
+#|   - "Inverted Model"
+#| layout-ncol: 2
+
+# Plot the true and inverted models
+plot_model_2d(xtrue, figsize=(3,3))
+
+plot_model_2d(xinv, figsize=(3,3))
+```
+
+The inversion is clearly a failure. The magnetic distrbution for a material with a lower susceptibility that is close to the surface will produce an identical 2D magnetic field to the true data which is material buried much deeper. The model has a preference for shallow material, as material that is far away is more susceptible to noise and closer to the null space of the forward operator.
+
+To try and recover the true magnetic model, a more sophisticated inversion method is required. One such method is decribed in a review paper by Crespo et. al [@CrespoMarques2019] and is a topic of exploration in the next project section, where a sparse recovery technique will be used to recover the true model.
