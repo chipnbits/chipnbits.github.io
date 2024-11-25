@@ -388,9 +388,85 @@ plt.close(fig)
 
 ## MAP Estimation with General Gaussian
 
+Revisitng the MAP estimation problem, we can consider a more general prior $\pi(x)$ with mean $\mu = 0$ and covariance $\Sigma$:
+
+$$
+\begin{align*}
+\pi(b|x) &= \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right)\\
+\pi_\theta(x) &= \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}x^\intercal \Sigma^{-1} x\right)\\
+\text{MAP} &= \min_x \left( \frac{1}{2\sigma^2}\|b-F(x)\|^2 + \frac{1}{2}x^\intercal \Sigma^{-1} x \right)
+\end{align*}
+$$ 
+
+We now make a choice of which $pi_\theta(x)$ to use, as before this is a MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameters be $\theta = \Sigma^{-1}$, since the true $\Sigma$ is positive definite, it can be found by inverting this result. The partition function $Z(\theta)$ is known for the case of a Gaussian distribution, and so the MLE objective is:
+
+$$
+\begin{align*}
+\pi(x) &= \max_\theta \Pi_{i=1}^N \pi_\theta(x_i)\\
+&= \max_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
+&= \min_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&= \min_\theta -\log((2\pi)^{n/2}|\Sigma|^{1/2}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&= \min_\theta -\frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
+\end{align*}
+$$
 
 
+#### Finding the Gradient
 
+**Left Term:**
+To find the min using gradient descent we take the gradient of each term with respect to $\Sigma^{-1}$. The gradient of a log determinant can be found in the matrix cookbook [@Petersen2012] formula (57):
+$$ \nabla_{A} \log(|A|) = (A^{-1})^\intercal $$
+
+This can be rewritten as:
+
+$$ \nabla_A \log(|A^{-1}|) = A^\intercal$$
+
+Applying this to the left term we get:
+
+$$ \nabla_{\Sigma^{-1}} \left( -\frac{1}{2}\log(|\Sigma|) \right) = -\frac{1}{2} \Sigma$$
+
+**Right Term:**
+The gradient of the second term is found by reformulating it as a trace of a new matrix $X = \sum x_i x_i^\intercal$:
+
+$$
+\begin{align*}
+\sum x_j^\intercal \Sigma^{-1} x_j &= \sum \text{trace} \left( x_j^\intercal  \Sigma^{-1} x_j \right)\\
+&= \sum \text{trace} \left(  \Sigma^{-1} x_j x_j^\intercal \right)\\
+&= \text{trace} \left(  \Sigma^{-1} X\right)\\
+\end{align*}
+$$
+
+The matrix cookbook [@Petersen2012] formula (100) gives the gradient of the trace of a matrix product:
+
+$$ \nabla_X \text{trace}(XB) = B^\intercal$$
+
+Applying this we get:
+
+$$ \nabla_{\Sigma^{-1}} \left( \frac{1}{2N} \sum x_i^\intercal \Sigma^{-1} x_i \right) = \frac{1}{2N} X^\intercal = \frac{1}{2N} \sum x_i x_i^\intercal$$
+
+**Combined Result:**
+
+Combining the two terms we get the gradient of the MLE objective with respect to $\Sigma^{-1}$:
+$$
+\begin{align*}
+g &= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|^{-1}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
+&= \frac{1}{2} \Sigma^\intercal - \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
+\end{align*}
+$$
+
+Solving for where the gradient is zero, we find the optimal value of $\Sigma$, since $\Sigma = \Sigma^\intercal$:
+
+$$ \Sigma = \frac{1}{N} \sum_{i=1}^N x_i x_i^\intercal$$
+
+This is the maximum likelihood estimate of the covariance matrix $\Sigma$ given the samples $\{x_1, x_2, ..., x_N\}$, which can be interpreted as the expectation value of the outer product of the samples. The estimated covariance matrix is the actual true covariance matrix of the sampled data. This is a common result in statistics, where the sample mean is the MLE of the true mean of the distribution.
+
+Unfortunately, estimating parameters can be very difficult to do for non-Gaussian $\pi_\theta$ due to the partition function $Z(\theta)$ being intractable. 
+
+## Conclusion
+
+MAP estimation on an inverse problem may require the use of a prior distribution $\pi(x)$ to regularize the solution. The potential function $\phi(x, \theta)$ is used to define the probability distribution $\pi(x; \theta)$, and the score function $s(x, \theta)$ is the negative gradient of the potential function. 
+
+If the prior is not known, an MLE estimate can be made to find the parameters $\theta$ that maximize the likelihood of the samples based on an assumed parameterized model. The score matching gradient is used to estimate the gradient of the MLE objective with respect to $\theta$.
 
 
 

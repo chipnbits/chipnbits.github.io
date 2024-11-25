@@ -226,6 +226,8 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#code-example" id="toc-code-example" class="nav-link" data-scroll-target="#code-example">Code Example</a></li>
   </ul></li>
+  <li><a href="#map-estimation-with-general-gaussian" id="toc-map-estimation-with-general-gaussian" class="nav-link" data-scroll-target="#map-estimation-with-general-gaussian">MAP Estimation with General Gaussian</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -734,13 +736,73 @@ Figure&nbsp;2
 <figcaption>Langevin Dynamics to a 2d Gaussian</figcaption>
 </figure>
 </div>
-
-
-
 </section>
+</section>
+<section id="map-estimation-with-general-gaussian" class="level2">
+<h2 class="anchored" data-anchor-id="map-estimation-with-general-gaussian">MAP Estimation with General Gaussian</h2>
+<p>Revisitng the MAP estimation problem, we can consider a more general prior <span class="math inline">\(\pi(x)\)</span> with mean <span class="math inline">\(\mu = 0\)</span> and covariance <span class="math inline">\(\Sigma\)</span>:</p>
+<p><span class="math display">\[
+\begin{align*}
+\pi(b|x) &amp;= \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right)\\
+\pi_\theta(x) &amp;= \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}x^\intercal \Sigma^{-1} x\right)\\
+\text{MAP} &amp;= \min_x \left( \frac{1}{2\sigma^2}\|b-F(x)\|^2 + \frac{1}{2}x^\intercal \Sigma^{-1} x \right)
+\end{align*}
+\]</span></p>
+<p>We now make a choice of which <span class="math inline">\(pi_\theta(x)\)</span> to use, as before this is a MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameters be <span class="math inline">\(\theta = \Sigma^{-1}\)</span>, since the true <span class="math inline">\(\Sigma\)</span> is positive definite, it can be found by inverting this result. The partition function <span class="math inline">\(Z(\theta)\)</span> is known for the case of a Gaussian distribution, and so the MLE objective is:</p>
+<p><span class="math display">\[
+\begin{align*}
+\pi(x) &amp;= \max_\theta \Pi_{i=1}^N \pi_\theta(x_i)\\
+&amp;= \max_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
+&amp;= \min_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&amp;= \min_\theta -\log((2\pi)^{n/2}|\Sigma|^{1/2}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&amp;= \min_\theta -\frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
+\end{align*}
+\]</span></p>
+<section id="finding-the-gradient" class="level4">
+<h4 class="anchored" data-anchor-id="finding-the-gradient">Finding the Gradient</h4>
+<p><strong>Left Term:</strong> To find the min using gradient descent we take the gradient of each term with respect to <span class="math inline">\(\Sigma^{-1}\)</span>. The gradient of a log determinant can be found in the matrix cookbook <span class="citation" data-cites="Petersen2012">(<a href="#ref-Petersen2012" role="doc-biblioref">Petersen and Pedersen 2012</a>)</span> formula (57): <span class="math display">\[ \nabla_{A} \log(|A|) = (A^{-1})^\intercal \]</span></p>
+<p>This can be rewritten as:</p>
+<p><span class="math display">\[ \nabla_A \log(|A^{-1}|) = A^\intercal\]</span></p>
+<p>Applying this to the left term we get:</p>
+<p><span class="math display">\[ \nabla_{\Sigma^{-1}} \left( -\frac{1}{2}\log(|\Sigma|) \right) = -\frac{1}{2} \Sigma\]</span></p>
+<p><strong>Right Term:</strong> The gradient of the second term is found by reformulating it as a trace of a new matrix <span class="math inline">\(X = \sum x_i x_i^\intercal\)</span>:</p>
+<p><span class="math display">\[
+\begin{align*}
+\sum x_j^\intercal \Sigma^{-1} x_j &amp;= \sum \text{trace} \left( x_j^\intercal  \Sigma^{-1} x_j \right)\\
+&amp;= \sum \text{trace} \left(  \Sigma^{-1} x_j x_j^\intercal \right)\\
+&amp;= \text{trace} \left(  \Sigma^{-1} X\right)\\
+\end{align*}
+\]</span></p>
+<p>The matrix cookbook <span class="citation" data-cites="Petersen2012">(<a href="#ref-Petersen2012" role="doc-biblioref">Petersen and Pedersen 2012</a>)</span> formula (100) gives the gradient of the trace of a matrix product:</p>
+<p><span class="math display">\[ \nabla_X \text{trace}(XB) = B^\intercal\]</span></p>
+<p>Applying this we get:</p>
+<p><span class="math display">\[ \nabla_{\Sigma^{-1}} \left( \frac{1}{2N} \sum x_i^\intercal \Sigma^{-1} x_i \right) = \frac{1}{2N} X^\intercal = \frac{1}{2N} \sum x_i x_i^\intercal\]</span></p>
+<p><strong>Combined Result:</strong></p>
+<p>Combining the two terms we get the gradient of the MLE objective with respect to <span class="math inline">\(\Sigma^{-1}\)</span>: <span class="math display">\[
+\begin{align*}
+g &amp;= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|^{-1}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
+&amp;= \frac{1}{2} \Sigma^\intercal - \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
+\end{align*}
+\]</span></p>
+<p>Solving for where the gradient is zero, we find the optimal value of <span class="math inline">\(\Sigma\)</span>, since <span class="math inline">\(\Sigma = \Sigma^\intercal\)</span>:</p>
+<p><span class="math display">\[ \Sigma = \frac{1}{N} \sum_{i=1}^N x_i x_i^\intercal\]</span></p>
+<p>This is the maximum likelihood estimate of the covariance matrix <span class="math inline">\(\Sigma\)</span> given the samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>, which can be interpreted as the expectation value of the outer product of the samples. The estimated covariance matrix is the actual true covariance matrix of the sampled data. This is a common result in statistics, where the sample mean is the MLE of the true mean of the distribution.</p>
+<p>Unfortunately, estimating parameters can be very difficult to do for non-Gaussian <span class="math inline">\(\pi_\theta\)</span> due to the partition function <span class="math inline">\(Z(\theta)\)</span> being intractable.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>MAP estimation on an inverse problem may require the use of a prior distribution <span class="math inline">\(\pi(x)\)</span> to regularize the solution. The potential function <span class="math inline">\(\phi(x, \theta)\)</span> is used to define the probability distribution <span class="math inline">\(\pi(x; \theta)\)</span>, and the score function <span class="math inline">\(s(x, \theta)\)</span> is the negative gradient of the potential function.</p>
+<p>If the prior is not known, an MLE estimate can be made to find the parameters <span class="math inline">\(\theta\)</span> that maximize the likelihood of the samples based on an assumed parameterized model. The score matching gradient is used to estimate the gradient of the MLE objective with respect to <span class="math inline">\(\theta\)</span>.</p>
+
+
+
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Petersen2012" class="csl-entry" role="listitem">
+Petersen, K. B., and M. S. Pedersen. 2012. <span>“The Matrix Cookbook.”</span> Technical University of Denmark. <a href="http://www2.compute.dtu.dk/pubdb/pubs/3274-full.html">http://www2.compute.dtu.dk/pubdb/pubs/3274-full.html</a>.
+</div>
 <div id="ref-Schervish2012-sk" class="csl-entry" role="listitem">
 Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Statistics. New York, NY: Springer.
 </div>
@@ -1224,7 +1286,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     })(document);
     </script>
   
-<script>var lightboxQuarto = GLightbox({"loop":false,"openEffect":"zoom","descPosition":"bottom","closeEffect":"zoom","selector":".lightbox"});
+<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","loop":false,"openEffect":"zoom","closeEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

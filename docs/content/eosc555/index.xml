@@ -1070,13 +1070,48 @@ Figure&nbsp;2
 <figcaption>Langevin Dynamics to a 2d Gaussian</figcaption>
 </figure>
 </div>
-
-
-
 </section>
+</section>
+<section id="map-estimation-with-general-gaussian" class="level2">
+<h2 class="anchored" data-anchor-id="map-estimation-with-general-gaussian">MAP Estimation with General Gaussian</h2>
+<p>Revisitng the MAP estimation problem, we can consider a more general prior <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> with mean <img src="https://latex.codecogs.com/png.latex?%5Cmu%20=%200"> and covariance <img src="https://latex.codecogs.com/png.latex?%5CSigma">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cpi(b%7Cx)%20&amp;=%20%5Cfrac%7B1%7D%7B(2%5Cpi%20%5Csigma%5E2)%5E%7Bm/2%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20%5Cright)%5C%5C%0A%5Cpi_%5Ctheta(x)%20&amp;=%20%5Cfrac%7B1%7D%7B(2%5Cpi)%5E%7Bn/2%7D%7C%5CSigma%7C%5E%7B1/2%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7Dx%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x%5Cright)%5C%5C%0A%5Ctext%7BMAP%7D%20&amp;=%20%5Cmin_x%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20+%20%5Cfrac%7B1%7D%7B2%7Dx%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x%20%5Cright)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>We now make a choice of which <img src="https://latex.codecogs.com/png.latex?pi_%5Ctheta(x)"> to use, as before this is a MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameters be <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20%5CSigma%5E%7B-1%7D">, since the true <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is positive definite, it can be found by inverting this result. The partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> is known for the case of a Gaussian distribution, and so the MLE objective is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cpi(x)%20&amp;=%20%5Cmax_%5Ctheta%20%5CPi_%7Bi=1%7D%5EN%20%5Cpi_%5Ctheta(x_i)%5C%5C%0A&amp;=%20%5Cmax_%5Ctheta%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%5EN%7D%20%5Cexp%5Cleft(-%5Csum_%7Bi=1%7D%5EN%20%5Cfrac%7B1%7D%7B2%7Dx_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%5Cright)%5C%5C%0A&amp;=%20%5Cmin_%5Ctheta%20N%20%5Clog(Z(%5Ctheta))%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%5C%5C%0A&amp;=%20%5Cmin_%5Ctheta%20-%5Clog((2%5Cpi)%5E%7Bn/2%7D%7C%5CSigma%7C%5E%7B1/2%7D)%20+%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%5C%5C%0A&amp;=%20%5Cmin_%5Ctheta%20-%5Cfrac%7B1%7D%7B2%7D%5Clog(%7C%5CSigma%7C)%20+%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%0A%5Cend%7Balign*%7D%0A"></p>
+<section id="finding-the-gradient" class="level4">
+<h4 class="anchored" data-anchor-id="finding-the-gradient">Finding the Gradient</h4>
+<p><strong>Left Term:</strong> To find the min using gradient descent we take the gradient of each term with respect to <img src="https://latex.codecogs.com/png.latex?%5CSigma%5E%7B-1%7D">. The gradient of a log determinant can be found in the matrix cookbook <span class="citation" data-cites="Petersen2012">(Petersen and Pedersen 2012)</span> formula (57): <img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_%7BA%7D%20%5Clog(%7CA%7C)%20=%20(A%5E%7B-1%7D)%5E%5Cintercal%20"></p>
+<p>This can be rewritten as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_A%20%5Clog(%7CA%5E%7B-1%7D%7C)%20=%20A%5E%5Cintercal"></p>
+<p>Applying this to the left term we get:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_%7B%5CSigma%5E%7B-1%7D%7D%20%5Cleft(%20-%5Cfrac%7B1%7D%7B2%7D%5Clog(%7C%5CSigma%7C)%20%5Cright)%20=%20-%5Cfrac%7B1%7D%7B2%7D%20%5CSigma"></p>
+<p><strong>Right Term:</strong> The gradient of the second term is found by reformulating it as a trace of a new matrix <img src="https://latex.codecogs.com/png.latex?X%20=%20%5Csum%20x_i%20x_i%5E%5Cintercal">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Csum%20x_j%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_j%20&amp;=%20%5Csum%20%5Ctext%7Btrace%7D%20%5Cleft(%20x_j%5E%5Cintercal%20%20%5CSigma%5E%7B-1%7D%20x_j%20%5Cright)%5C%5C%0A&amp;=%20%5Csum%20%5Ctext%7Btrace%7D%20%5Cleft(%20%20%5CSigma%5E%7B-1%7D%20x_j%20x_j%5E%5Cintercal%20%5Cright)%5C%5C%0A&amp;=%20%5Ctext%7Btrace%7D%20%5Cleft(%20%20%5CSigma%5E%7B-1%7D%20X%5Cright)%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The matrix cookbook <span class="citation" data-cites="Petersen2012">(Petersen and Pedersen 2012)</span> formula (100) gives the gradient of the trace of a matrix product:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_X%20%5Ctext%7Btrace%7D(XB)%20=%20B%5E%5Cintercal"></p>
+<p>Applying this we get:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla_%7B%5CSigma%5E%7B-1%7D%7D%20%5Cleft(%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum%20x_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%20%5Cright)%20=%20%5Cfrac%7B1%7D%7B2N%7D%20X%5E%5Cintercal%20=%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum%20x_i%20x_i%5E%5Cintercal"></p>
+<p><strong>Combined Result:</strong></p>
+<p>Combining the two terms we get the gradient of the MLE objective with respect to <img src="https://latex.codecogs.com/png.latex?%5CSigma%5E%7B-1%7D">: <img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ag%20&amp;=%20%5Cnabla_%7B%5CSigma%5E%7B-1%7D%7D%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%7D%5Clog(%7C%5CSigma%7C%5E%7B-1%7D)%20+%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20x_i%20%5Cright)%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B2%7D%20%5CSigma%5E%5Cintercal%20-%20%5Cfrac%7B1%7D%7B2N%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%20x_i%5E%5Cintercal%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Solving for where the gradient is zero, we find the optimal value of <img src="https://latex.codecogs.com/png.latex?%5CSigma">, since <img src="https://latex.codecogs.com/png.latex?%5CSigma%20=%20%5CSigma%5E%5Cintercal">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5CSigma%20=%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%20x_i%5E%5Cintercal"></p>
+<p>This is the maximum likelihood estimate of the covariance matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma"> given the samples <img src="https://latex.codecogs.com/png.latex?%5C%7Bx_1,%20x_2,%20...,%20x_N%5C%7D">, which can be interpreted as the expectation value of the outer product of the samples. The estimated covariance matrix is the actual true covariance matrix of the sampled data. This is a common result in statistics, where the sample mean is the MLE of the true mean of the distribution.</p>
+<p>Unfortunately, estimating parameters can be very difficult to do for non-Gaussian <img src="https://latex.codecogs.com/png.latex?%5Cpi_%5Ctheta"> due to the partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> being intractable.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>MAP estimation on an inverse problem may require the use of a prior distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> to regularize the solution. The potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> is used to define the probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x;%20%5Ctheta)">, and the score function <img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta)"> is the negative gradient of the potential function.</p>
+<p>If the prior is not known, an MLE estimate can be made to find the parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> that maximize the likelihood of the samples based on an assumed parameterized model. The score matching gradient is used to estimate the gradient of the MLE objective with respect to <img src="https://latex.codecogs.com/png.latex?%5Ctheta">.</p>
+
+
+
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-Petersen2012" class="csl-entry">
+Petersen, K. B., and M. S. Pedersen. 2012. <span>“The Matrix Cookbook.”</span> Technical University of Denmark. <a href="http://www2.compute.dtu.dk/pubdb/pubs/3274-full.html">http://www2.compute.dtu.dk/pubdb/pubs/3274-full.html</a>.
+</div>
 <div id="ref-Schervish2012-sk" class="csl-entry">
 Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Statistics. New York, NY: Springer.
 </div>
@@ -8379,7 +8414,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-pseudocode-number="1" data-line-number="true">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-comment-delimiter="//" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -9897,7 +9932,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-indent-size="1.2em" data-line-number-punc=":" data-comment-delimiter="//" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -15114,6 +15149,119 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</guid>
   <pubDate>Sun, 15 Sep 2024 07:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="115" width="144"/>
+</item>
+<item>
+  <title>Lecture 1</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="what-is-inverse-theory" class="level1">
+<h1>What is Inverse Theory?</h1>
+<p>Inverse theory is a set of mathematical techniques used to infer the properties of a physical system from observations of its output. It is a fundamental tool in many scientific disciplines, including geophysics, seismology, and medical imaging. Inverse theory is used to solve a wide range of problems, such as:</p>
+<ul>
+<li><strong>Parameter Estimation</strong>: Determining the values of unknown parameters in a model that best fit the observed data.</li>
+<li><strong>System Identification</strong>: Identifying the structure and dynamics of a system from input-output data.</li>
+<li><strong>Image Reconstruction</strong>: Reconstructing an image or object from noisy or incomplete measurements.</li>
+</ul>
+<p>What many of these tasks have in common is that we are working with incomplete information. There is a <em>forward</em> problem that has generated the data that we observe <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> from a set of input data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D">, and we want to infer the <em>inverse</em> problem that generated the data. However the inverse problem is often ill-posed, meaning that there are multiple solutions that can fit the data equally well. Inverse theory provides a framework for finding the best solution to these problems.</p>
+<p>The forward problem can be described for example as a differetial equation or operator <img src="https://latex.codecogs.com/png.latex?L"> that takes in some measured parameters <img src="https://latex.codecogs.com/png.latex?u"> with model parameters <img src="https://latex.codecogs.com/png.latex?x"> :</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20L(x)%5Bu%5D%20=%20q%20%5Ciff%20u%20=%20L%5E%7B-1%7D(x)%5Bq%5D%20"></p>
+<p>For example making measurements of an electromagnetic field in correspondence to conductivity values that are underground we have:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla%20%5Csigma%20%5Cnabla%20u%20=%20q%20+%20%5Ctext%7BBC%7D"></p>
+<p>We measure the <img src="https://latex.codecogs.com/png.latex?u"> at some points and use that to try and form an estimate of the conductivity <img src="https://latex.codecogs.com/png.latex?%5Csigma">. The forward problem is to solve for <img src="https://latex.codecogs.com/png.latex?u"> given <img src="https://latex.codecogs.com/png.latex?%5Csigma"> and the inverse problem is to solve for <img src="https://latex.codecogs.com/png.latex?%5Csigma"> given <img src="https://latex.codecogs.com/png.latex?u">. The forward problem is often well-posed and the inverse problem is often ill-posed.</p>
+<p>For a computational framework we can discretize the the equation so that the operator is a matrix <img src="https://latex.codecogs.com/png.latex?A"> and the data is a vector <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cunderbrace%7BA%7D_%7B%5Ctext%7BForward%20Map%7D%7D%20%5Cunderbrace%7B%5Cvec%7Bx%7D%7D_%7B%5Ctext%7BModel%20Parameters%7D%7D%20+%20%5Cepsilon%20=%20%5Cunderbrace%7B%5Cvec%7Bb%7D%7D_%7B%5Ctext%7BObserved%20Data%7D%7D%20"></p>
+<p>In this case we may have a sparse set of measurements <img src="https://latex.codecogs.com/png.latex?b"> and a large set of <img src="https://latex.codecogs.com/png.latex?x"> making the problem underdetermined. The goal of inverse theory is to find the best estimate of <img src="https://latex.codecogs.com/png.latex?x"> given <img src="https://latex.codecogs.com/png.latex?b">.</p>
+<section id="example-the-triathlon-problem" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-triathlon-problem">Example: The Triathlon Problem</h3>
+<p>To illustrate the concept of inverse theory, consider the following example:</p>
+<blockquote class="blockquote">
+<p>Suppose that you have agreed to meet a friend to watch them during a triathlon race but you showed up late and missed the start. They are expecting for you to have been there at some point during the time at which they were changing from a running phase to a cycle phase. They expect you to know the time at which they made the transition. However you only know the overall start time and finish time of the race.</p>
+<p>If the race starts at time <img src="https://latex.codecogs.com/png.latex?t=0"> and then ends at time <img src="https://latex.codecogs.com/png.latex?t=b"> how do you use this information to deduce the actual time <img src="https://latex.codecogs.com/png.latex?t_r%20%5Cin%20%5B0,b%5D"> at which they crossed the transition zone of the race?</p>
+</blockquote>
+<p>The first restriction on feasible solutions is the domain <img src="https://latex.codecogs.com/png.latex?%5B0,b%5D"> so that we know that <img src="https://latex.codecogs.com/png.latex?0%3Ct_r%3Cb">.</p>
+<p>After this there are some other techniquest that we could use to better inform the probability of the occurence at different times. For example, we might have a good idea of their fitness level or average running speed from previous experience. Or in the abscence of this information there might be average times for the competitors that are available to further inform the problem and reduce the amount of error in the estimate.</p>
+</section>
+<section id="the-singular-value-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="the-singular-value-decomposition">The Singular Value Decomposition</h2>
+<p>For cases where the matrix <img src="https://latex.codecogs.com/png.latex?A"> is not full rank, the singular value decomposition (SVD) provides a more general framework for solving the least squares problem. The SVD decomposes the matrix <img src="https://latex.codecogs.com/png.latex?A"> into three matrices <img src="https://latex.codecogs.com/png.latex?U">, <img src="https://latex.codecogs.com/png.latex?%5CSigma">, and <img src="https://latex.codecogs.com/png.latex?V"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20U%20%5CSigma%20V%5ET%20"></p>
+<p>The matrices have the following special properties:</p>
+<ul>
+<li><em>Orthogonal Subspaces</em>: <img src="https://latex.codecogs.com/png.latex?U"> and <img src="https://latex.codecogs.com/png.latex?V"> are orthogonal matrices, meaning that <img src="https://latex.codecogs.com/png.latex?U%5ETU%20=%20I"> and <img src="https://latex.codecogs.com/png.latex?V%5ETV%20=%20I">, that is <img src="https://latex.codecogs.com/png.latex?U%5ET%20=%20U%5E%7B-1%7D"> and $V^T = V^{-1}.</li>
+<li><em>Ordered Singular Values</em>: <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is a diagonal matrix with non-negative values on the diagonal, known as the singular values of <img src="https://latex.codecogs.com/png.latex?A">. The singular values are ordered such that <img src="https://latex.codecogs.com/png.latex?%5Csigma_1%20%5Cgeq%20%5Csigma_2%20%5Cgeq%20%5Cldots%20%5Cgeq%20%5Csigma_r">. The number of non-zero singular values is equal to the rank of <img src="https://latex.codecogs.com/png.latex?A">.</li>
+</ul>
+<p>Supposed that we have a <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(A)%20=%20r"> matrix <img src="https://latex.codecogs.com/png.latex?A"> which maps from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em%5Crightarrow%20%5Cmathbb%7BR%7D%5En">. A fundamental way to view this mapping is as a composition of three linear transformations: a rotation <img src="https://latex.codecogs.com/png.latex?V">, a scaling <img src="https://latex.codecogs.com/png.latex?%5CSigma">, and another rotation <img src="https://latex.codecogs.com/png.latex?U">. The orthogonal matrix <img src="https://latex.codecogs.com/png.latex?V"> has the property that all of its rows and columns are orthogonal to each other, and the vectors themselves are normalized to <img src="https://latex.codecogs.com/png.latex?1">. To see this property of the orthogonal matrix consider that <img src="https://latex.codecogs.com/png.latex?V%5ET%20V%20=%20I"> and <img src="https://latex.codecogs.com/png.latex?V%20V%5ET%20=%20I">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0AZ%20=%20V%5ET%20V%20&amp;=%20I%20%5C%5C%0Az_%7Bij%7D%20=%20%5Clangle%20v_i,%20v_j%20%5Crangle%20&amp;=%20%5Cdelta_%7Bij%7D%20%5Cend%7Balign%7D%20"></p>
+<p>Each of the elements of the matrix <img src="https://latex.codecogs.com/png.latex?V%5ET"> is the dot product of the <img src="https://latex.codecogs.com/png.latex?i">th and <img src="https://latex.codecogs.com/png.latex?j">th columns of <img src="https://latex.codecogs.com/png.latex?V">. The dotproduct of all vectors against themselves is <img src="https://latex.codecogs.com/png.latex?1"> and the dotproduct of any two different vectors is <img src="https://latex.codecogs.com/png.latex?0">. So from this we can see that all of the columns of <img src="https://latex.codecogs.com/png.latex?V"> are orthogonal to each other. The same property holds for <img src="https://latex.codecogs.com/png.latex?U">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?V%5ET"> by our definition of <img src="https://latex.codecogs.com/png.latex?A"> must accept a vector from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"> and the matrix is square, indicating an <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%20m"> matrix. The matrix <img src="https://latex.codecogs.com/png.latex?U"> must output a vector in <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En"> and the matrix is square, indicating an <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20n"> matrix. The matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma"> must be <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20m"> to map from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"> to <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En">.</p>
+<p>In all its glory:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0AA_%7Bn%20%5Ctimes%20m%7D%20&amp;=%20U_%7Bn%20%5Ctimes%20n%7D%20%5C,%20%5CSigma_%7Bn%20%5Ctimes%20m%7D%20%5C,%20V%5ET_%7Bm%20%5Ctimes%20m%7D%20%5C%5C%0A&amp;=%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7Cccc%7D%0A%5Cmathbf%7Bu%7D_1%20&amp;%20%5Ccdots%20&amp;%20%5Cmathbf%7Bu%7D_r%20&amp;%20%5Cmathbf%7Bu%7D_%7Br+1%7D%20&amp;%20%5Ccdots%20&amp;%20%5Cmathbf%7Bu%7D_n%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20n%7D%0A%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%20&amp;%20%20&amp;%20%20%5C%5C%0A&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A&amp;%20%20&amp;%20%5Csigma_r%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20m%7D%0A%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7Cccc%7D%0A%5Cmathbf%7Bv%7D%5ET_1%20%5C%5C%0A%5Cvdots%20%5C%5C%0A%5Cmathbf%7Bv%7D%5ET_r%20%5C%5C%0A%5Cmathbf%7Bv%7D%5ET_%7Br+1%7D%20%5C%5C%0A%5Cvdots%20%5C%5C%0A%20%20%5Cmathbf%7Bv%7D%5ET_m%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bm%20%5Ctimes%20m%7D%0A%5Cend%7Baligned%7D%0A"></p>
+<p>In this case the first <img src="https://latex.codecogs.com/png.latex?r"> columns of <img src="https://latex.codecogs.com/png.latex?U"> are the range of <img src="https://latex.codecogs.com/png.latex?A">, the rest of <img src="https://latex.codecogs.com/png.latex?U"> is filled with its orthogonal complement. The first <img src="https://latex.codecogs.com/png.latex?r"> columns of <img src="https://latex.codecogs.com/png.latex?V"> are the domain of <img src="https://latex.codecogs.com/png.latex?A">, the rest of <img src="https://latex.codecogs.com/png.latex?V"> is filled with its orthogonal complement. These are the four fundamental subspaces of the matrix <img src="https://latex.codecogs.com/png.latex?A">, more information on this can be found at: <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">Wikipedia: SVD</a></p>
+<p>The matrices as shown above are for a rectangular <img src="https://latex.codecogs.com/png.latex?A"> where <img src="https://latex.codecogs.com/png.latex?n%3Em"> but the same properties hold for all <img src="https://latex.codecogs.com/png.latex?n,m">. Some of the singular values <img src="https://latex.codecogs.com/png.latex?%5Csigma_i"> may be zero, in which case the matrix <img src="https://latex.codecogs.com/png.latex?A"> is not full rank.</p>
+<p>Another way to decompose the SVD is to write it as a sum of outer products that are scaled by the diagonal matrix of singular values:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20%5Csum_%7Bi=1%7D%5Er%20%5Csigma_i%20%5Cmathbf%7Bu%7D_i%20%5Cmathbf%7Bv%7D_i%5ET%20"></p>
+<p>If <img src="https://latex.codecogs.com/png.latex?%5Csigma_i%3E0"> then <img src="https://latex.codecogs.com/png.latex?v_i"> is not in the null space of <img src="https://latex.codecogs.com/png.latex?A"> because <img src="https://latex.codecogs.com/png.latex?A%20v_i%20=%20%5Csigma_i%20u_i">. If <img src="https://latex.codecogs.com/png.latex?%5Csigma_i%20=%200"> then <img src="https://latex.codecogs.com/png.latex?v_i"> is in the null space of <img src="https://latex.codecogs.com/png.latex?A"> because <img src="https://latex.codecogs.com/png.latex?A%20v_i%20=%200">.</p>
+<section id="the-pseudoinverse" class="level3">
+<h3 class="anchored" data-anchor-id="the-pseudoinverse">The Pseudoinverse</h3>
+<p>Back to the task of inverting <img src="https://latex.codecogs.com/png.latex?Ax%20+%20%5Cepsilon%20=%20b"> we can apply the SVD decomposition:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AU%20%5CSigma%20V%5ET%20x%20+%20%5Cepsilon%20&amp;=%20b%20%5C%5C%0A%5CSigma%20V%5ET%20x%20+&amp;=%20U%5ET%20(b-%5Cepsilon)%20%5C%5C%0AV%20%5CSigma%5E%7B-1%7D%20U%5ET%20(b-%5Cepsilon)%20&amp;=%20x%5C%5C%0AA%5E+%20(b-%5Cepsilon)%20&amp;=%20%5Chat%7Bx%7D%0A%5Cend%7Balign%7D"></p>
+<p>Where <img src="https://latex.codecogs.com/png.latex?A%5E+%20=%20V%20%5CSigma%5E%7B-1%7D%20U%5ET"> is the pseudoinverse of <img src="https://latex.codecogs.com/png.latex?A">. The pseudoinverse is a generalization of the matrix inverse for non-square matrices. We recover a square matrix by removing all of the absent or zero singular values from <img src="https://latex.codecogs.com/png.latex?%5CSigma"> and inverting the rest, giving an <img src="https://latex.codecogs.com/png.latex?r%20%5Ctimes%20r"> diagonal matrix whose inverse is simply the inverse of each element.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%20&amp;%20%20&amp;%20%20%5C%5C%0A&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A&amp;%20%20&amp;%20%5Csigma_r%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20m%7D%0A%5Crightarrow%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%5E%7B-1%7D%20&amp;%20%20&amp;%20%20%5C%5C%0A%20%20&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A%20%20&amp;%20%20&amp;%20%5Csigma_r%5E%7B-1%7D%20%5C%5C%0A%20%20%5Cend%7Barray%7D%20%5Cright%5D_%7Br%20%5Ctimes%20r%7D"></p>
+<p>Then <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D%20=%20%5Csum_i%5EN%20%5Csigma_i%5E%7B-1%7D%20%5Cmathbf%7Bu%7D_i%5ET%20(b-%5Cepsilon)%20%5Cmathbf%7Bv%7D_i"> is the solution to the least squares problem. This can be solved also as a truncated sum since <img src="https://latex.codecogs.com/png.latex?0%3CN%3Cr">. In actual practice with real world measurement we end up with many singular values that may be effectively <img src="https://latex.codecogs.com/png.latex?0"> by nature of being very small relative to the noise in the data and the largest single value. We have that the solution <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D"> is a sum of <img src="https://latex.codecogs.com/png.latex?v_i"> components that form an orthogonal basis <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D%20=%20%5Csum_i%20%5Cbeta_i%20v_i"> where <img src="https://latex.codecogs.com/png.latex?%5Cbeta_i%20=%20%5Cfrac%7Bu_i%5ET%20(b-%5Cepsilon)%7D%7B%5Csigma_i%7D">. These small singular values blow up in size when inverted and so extra truncation is often necessary to avoid numerical instability and excessive amplification of noise <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">.</p>
+</section>
+</section>
+<section id="least-squares" class="level2">
+<h2 class="anchored" data-anchor-id="least-squares">Least Squares</h2>
+<p>Least squares and matrix inversion is a classic starting point for understanding inverse theory. Suppose that we have input data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> and output data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> that are related by a linear system of equations: <img src="https://latex.codecogs.com/png.latex?Ax%20=%20b"> where <img src="https://latex.codecogs.com/png.latex?A"> is a matrix of coefficients. In many cases, the system is overdetermined, meaning that there are more equations than unknowns. In this case, there is no exact solution to the system, and we must find the best solution that minimizes the error between the observed data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> and the predicted data <img src="https://latex.codecogs.com/png.latex?A%5Cvec%7Bx%7D">. In the simplest form of inversion that we can attempt, we can solve the least squares solution. In this case we reject all of the observed data that is from the null space of <img src="https://latex.codecogs.com/png.latex?A"> assuming a zero value for each of those parameters.</p>
+<section id="example" class="level3">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<p>Let <img src="https://latex.codecogs.com/png.latex?A"> be a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%202"> matrix and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> be a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%201"> vector. The <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> that we are trying to solve for is a <img src="https://latex.codecogs.com/png.latex?2%20%5Ctimes%201"> vector. The system of equations is given by:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20%5Cbegin%7Bbmatrix%7D%20%20%5Cvec%7Ba%7D_1%20&amp;%20%5Cvec%7Ba%7D_2%20%5Cend%7Bbmatrix%7D%20%5Cquad%20%5Cvec%7Bx%7D%20=%20%5Cbegin%7Bbmatrix%7D%20x_1%20%5C%5C%20x_2%20%20%5Cend%7Bbmatrix%7D%20%20%5Cquad%20%5Cvec%7Bb%7D%20=%20%5Cbegin%7Bbmatrix%7D%20b_1%20%5C%5C%20b_2%20%5C%5C%20b_3%20%5Cend%7Bbmatrix%7D%20"></p>
+<p>In this case we have an <em>overdetermined</em> system with three equations, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: <img src="https://latex.codecogs.com/png.latex?A:%20%5Cmathbb%7BR%7D%5E2%20%5Crightarrow%20%5Cmathbb%7BR%7D%5E3">. In this case there is no exact solution to the system for any <img src="https://latex.codecogs.com/png.latex?b"> that is not in the column space of <img src="https://latex.codecogs.com/png.latex?A">.</p>
+<p>Instead we can solve for the least squares solution <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D_%7BLS%7D"> by minimizing the error between the observed data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> and the predicted data <img src="https://latex.codecogs.com/png.latex?A%5Cvec%7Bx%7D"> from the forward model.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cvec%7Bx%7D_%7BLS%7D%20=%20%5Carg%20%5Cmin_%7B%5Cvec%7Bx%7D%7D%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2%20"></p>
+<p>We want to find the argument that minimizes the function <img src="https://latex.codecogs.com/png.latex?f(%5Cvec%7Bx%7D)%20=%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2">. By first order optimality conditions, the gradient of the function must be zero at the minimum.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0A%5Cnabla%20f(%5Cvec%7Bx%7D)%20&amp;=%200%20%5C%5C%0A%5Cnabla%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2%20&amp;=%200%20%5C%5C%0A%5Cnabla%20(A%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D)%5ET%20(A%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D)%20&amp;=%200%20%5C%5C%0A%5Cnabla%20%5Cleft(%20%5Cvec%7Bx%7D%5ET%20A%5ET%20A%20%5Cvec%7Bx%7D%20-%202%20%5Cvec%7Bb%7D%5ET%20A%20%5Cvec%7Bx%7D%20+%20%5Cvec%7Bb%7D%5ET%20%5Cvec%7Bb%7D%20%5Cright)%20&amp;=%200%20%5C%5C%0A2%20A%5ET%20A%20%5Cvec%7Bx%7D%20-%202%20A%5ET%20%5Cvec%7Bb%7D%20&amp;=%200%20%5C%5C%0AA%5ET%20A%20%5Cvec%7Bx%7D%20&amp;=%20A%5ET%20%5Cvec%7Bb%7D%20%5C%5C%0A%5Cvec%7Bx%7D_%7BLS%7D%20&amp;=%20(A%5ET%20A)%5E%7B-1%7D%20A%5ET%20%5Cvec%7Bb%7D%0A%5Cend%7Balign%7D%20"></p>
+<p>This is known as the normal equations for the least squares solution. We take a note of caution here that <img src="https://latex.codecogs.com/png.latex?A%5ET%20A"> must be invertible for this solution to exist. If <img src="https://latex.codecogs.com/png.latex?A"> is not full rank then the matrix <img src="https://latex.codecogs.com/png.latex?A%5ET%20A"> will not be invertible and other methods must be used.</p>
+<p>We call the difference between the observed data and the predicted data the residual.</p>
+<p><img src="https://latex.codecogs.com/png.latex?r%20=%20%5Cvec%7Bb%7D%20-%20A%5Cvec%7Bx%7D_%7BLS%7D"></p>
+<p>Using this information, what we really want to minimize is the sum of the squares of the residuals: <img src="https://latex.codecogs.com/png.latex?%7C%7Cr%7C%7C_2%5E2">. This is the same as the sum of the squares of the errors in the data.</p>
+<p>There is an altogether informative way to think about the minimization problem purely in terms of linear algebra and subspaces to derive the same normal equations.</p>
+<div style="display: block; margin-left: auto; margin-right: auto; width: 50%; text-align: center;">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" alt="" width="300">
+<p>
+<em>Least Squares Visual</em>
+</p>
+</div>
+<p>We have the range of <img src="https://latex.codecogs.com/png.latex?A"> or image of <img src="https://latex.codecogs.com/png.latex?A"> as the subspace of <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5E3"> that is spanned by the columns of <img src="https://latex.codecogs.com/png.latex?A">. This subspace is rank <img src="https://latex.codecogs.com/png.latex?2"> because there are only two columns in <img src="https://latex.codecogs.com/png.latex?A">, <img src="https://latex.codecogs.com/png.latex?R(A)%20%5Csubset%20%5Cmathbb%7BR%7D%5E3">. The inaccessible parts of <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5E3"> are in the orthogonal complement of <img src="https://latex.codecogs.com/png.latex?R(A)">, <img src="https://latex.codecogs.com/png.latex?R(A)%5E%5Cperp">. Recalling that <img src="https://latex.codecogs.com/png.latex?R(A)%5E%5Cperp%20=%20N(A%5ET)"> we can diagram the solution to least squares as a minimization of the error vector <img src="https://latex.codecogs.com/png.latex?r"> in the orthogonal complement of <img src="https://latex.codecogs.com/png.latex?R(A)">.</p>
+<p>As seen the <img src="https://latex.codecogs.com/png.latex?r"> vector is perpendicular to the <img src="https://latex.codecogs.com/png.latex?x_%7BLS%7D"> solution, the projection of <img src="https://latex.codecogs.com/png.latex?r"> onto <img src="https://latex.codecogs.com/png.latex?R(A)"> is zero. Since it is in a null space of <img src="https://latex.codecogs.com/png.latex?A%5ET"> then <img src="https://latex.codecogs.com/png.latex?A%5ET%20r%20=%200">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%20A%5ET%20%5Cleft%20(%20Ax_%7BLS%7D%20-%20b%20%5Cright%20)%20&amp;=%200%5C%5C%0AA%5ET%20A%20x_%7BLS%7D%20&amp;=%20A%5ET%20b%20%5C%5C%0A%5Cend%20%7Balign%7D%20"></p>
+<p>So we recover the normal equations without using any of the machinery of calculus.</p>
+<p>For a review on the four fundamental subspaces of a matrix see the UBC Math 307 notes on the topic: <a href="https://ubcmath.github.io/MATH307/orthogonality/complement.html">Math 307</a></p>
+
+
+</section>
+</section>
+</section>
+
+ ]]></description>
+  <category>Optimization</category>
+  <category>Inverse Theory</category>
+  <category>Python</category>
+  <category>Torch</category>
+  <category>SVD</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</guid>
+  <pubDate>Sat, 14 Sep 2024 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" medium="image" type="image/svg+xml"/>
+</item>
+</channel>
+</rss>
+4"/>
 </item>
 <item>
   <title>Lecture 1</title>
