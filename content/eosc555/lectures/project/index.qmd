@@ -638,7 +638,7 @@ $$W = \begin{bmatrix} 1 & -1 & 0 & \cdots & 0 \\0 & 1 & -1 & \cdots & 0 \\\vdots
 
 and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: $$\|W(M)\|^2 = \sum_i^N\sum_j^S\sum_k^Q (M_{i,j,k} - M_{i+1,j,k})^2 + (M_{i,j,k} - M_{i,j+1,k})^2 + (M_{i,j,k} - M_{i,j,k+1})^2$$ We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.
 
-A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm.
+A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm. The regularization term to be defined is the operator before the squared norm is applied.
 
 ```{python}
 # | fig-cap: "Finite difference regularization."
@@ -648,7 +648,8 @@ def regularization(x):
     gx = x[:,:,1:,:,:] - x[:,:,:-1,:,:]
     gy = x[:,:,:,1:,:] - x[:,:,:,:-1,:]
     gz = x[:,:,:,:,1:] - x[:,:,:,:,:-1]
-    return 0.5*(torch.mean(gx**2)+torch.mean(gy**2)+torch.mean(gz**2))
+    # Concatenate the flattened gradients together and return as the W(M) vector    
+    return torch.cat([torch.flatten(gx), torch.flatten(gy), torch.flatten(gz)])
 
 def adjoint(A, v, x_sample):
     """ 
@@ -764,13 +765,14 @@ noise = torch.randn_like(D)
 D = D + 0.001*noise
 
 # Define the forward operator with regularization
-reg_param = 1e10
+reg_param = 1e-4
+reg_func = lambda x: regularization(x)
 def A(x, alpha=reg_param):
     y1 = forMod(x)
     y1 = forMod.adjoint(y1)
     
-    y2 = regularization(x)
-    y2 = adjoint(regularization, y2, x_sample = x)
+    y2 = reg_func(x)
+    y2 = adjoint(reg_func, y2, x)
     return y1 + alpha*y2
 
 b = forMod.adjoint(D)
@@ -785,7 +787,7 @@ xinv = conj_gradient(A, b, x0, niter=20, tol=1e-6, alpha=1e-2, verbose=True)
     
 # Verify that the gradient is zero at the solution
 xtest = xinv.clone().detach().requires_grad_(True)
-loss = 0.5 * (D - forMod(xtest)).norm()**2 + 0.5 * reg_param * regularization(xtest)**2
+loss = 0.5 * (D - forMod(xtest)).norm()**2 + 0.5 * reg_param * torch.sum(reg_func(xtest)**2)
 loss.backward()
 
 # Print the norm of the gradient
@@ -794,7 +796,7 @@ print(f"Gradient norm at xinv: {gradient_norm:.6e}")
 
 # Get misfit and regularization
 misfit = 0.5 * (D - forMod(xinv)).norm()**2
-reg = 0.5 * reg_param * regularization(xinv)**2
+reg = 0.5 * reg_param * torch.sum(reg_func(xtest)**2)
 print(f"Misfit: {misfit:.6e}, Regularization: {reg:.6e}")
 
 
@@ -849,7 +851,7 @@ p.show()
 
 p = pv.Plotter()
 xinv = xinv.detach().cpu()
-p = plot_model_with_forward(xinv, D, h, height=0, zoom = 4.0, threshold_value=0.01, plotter=p)
+p = plot_model_with_forward(xinv, D, h, height=0, zoom = 4.0, threshold_value=.05, plotter=p)
 p.show()
 ```
 

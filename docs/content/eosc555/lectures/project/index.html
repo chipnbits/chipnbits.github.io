@@ -294,7 +294,7 @@ window.Quarto = {
 <section id="coding-the-forward-model" class="level2">
 <h2 class="anchored" data-anchor-id="coding-the-forward-model">Coding the Forward Model</h2>
 <p>The model is programmed into the <code>Magnetics</code> class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.</p>
-<div id="b3c78942" class="cell" data-execution_count="2">
+<div id="f9f08875" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -503,7 +503,7 @@ window.Quarto = {
 </div>
 <p>To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that <span class="math display">\[ \langle A(X), Q \rangle = \langle X, A^*(Q) \rangle \]</span></p>
 <p>where <span class="math inline">\(A\)</span> is the forward operator and <span class="math inline">\(A^*\)</span> is the adjoint operator. The code below performs the adjoint test for the forward model defined above.</p>
-<div id="2286a91c" class="cell" data-execution_count="3">
+<div id="4217d762" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyvista <span class="im">as</span> pv</span>
@@ -550,14 +550,14 @@ window.Quarto = {
 <span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Adjoint test: 4.552471160888672 4.552471160888672</code></pre>
+<pre><code>Adjoint test: 4.638533115386963 4.638533592224121</code></pre>
 </div>
 </div>
 </section>
 <section id="plotting-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-the-model">Plotting the Model</h2>
 <p>A simple toy dataset was used to test the adjoint opearation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of commands that make use of <a href="https://docs.pyvista.org/">Pyvista</a> are provided below.</p>
-<div id="a81be94b" class="cell" data-execution_count="4">
+<div id="2ea5582e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_model_2d(M, n_slices<span class="op">=</span><span class="va">None</span>, cmap<span class="op">=</span><span class="st">"rainbow"</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>)):</span>
@@ -820,7 +820,7 @@ window.Quarto = {
 <span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> plotter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="74abf357" class="cell" data-execution_count="5">
+<div id="c2d7bd9b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> pv.Plotter()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> forMod(M)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> D.squeeze()</span>
@@ -859,38 +859,39 @@ window.Quarto = {
 <p>The finite difference matrix in 1D is</p>
 <p><span class="math display">\[W = \begin{bmatrix} 1 &amp; -1 &amp; 0 &amp; \cdots &amp; 0 \\0 &amp; 1 &amp; -1 &amp; \cdots &amp; 0 \\\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\0 &amp; 0 &amp; 0 &amp; \cdots &amp; -1 \end{bmatrix}\]</span></p>
 <p>and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: <span class="math display">\[\|W(M)\|^2 = \sum_i^N\sum_j^S\sum_k^Q (M_{i,j,k} - M_{i+1,j,k})^2 + (M_{i,j,k} - M_{i,j+1,k})^2 + (M_{i,j,k} - M_{i,j,k+1})^2\]</span> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
-<p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm.</p>
-<div id="81de7ac6" class="cell" data-execution_count="6">
+<p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm. The regularization term to be defined is the operator before the squared norm is applied.</p>
+<div id="290f5297" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularization(x):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    gx <span class="op">=</span> x[:,:,<span class="dv">1</span>:,:,:] <span class="op">-</span> x[:,:,:<span class="op">-</span><span class="dv">1</span>,:,:]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    gy <span class="op">=</span> x[:,:,:,<span class="dv">1</span>:,:] <span class="op">-</span> x[:,:,:,:<span class="op">-</span><span class="dv">1</span>,:]</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    gz <span class="op">=</span> x[:,:,:,:,<span class="dv">1</span>:] <span class="op">-</span> x[:,:,:,:,:<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span><span class="op">*</span>(torch.mean(gx<span class="op">**</span><span class="dv">2</span>)<span class="op">+</span>torch.mean(gy<span class="op">**</span><span class="dv">2</span>)<span class="op">+</span>torch.mean(gz<span class="op">**</span><span class="dv">2</span>))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> adjoint(A, v, x_sample):</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Take the adjoint of the forward operator A with respect to the input vector v.</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">        A (callable): Forward operator.</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">        v (torch.Tensor): Input vector.</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> torch.zeros_like(x_sample)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    x.requires_grad <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> A(x)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the dot product of the forward operator with the input vector</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> torch.<span class="bu">sum</span>(b <span class="op">*</span> v)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the gradient of the dot product with respect to the input image</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    adjoint <span class="op">=</span> torch.autograd.grad(h, x, create_graph<span class="op">=</span><span class="va">True</span>)[<span class="dv">0</span>]</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> adjoint</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Concatenate the flattened gradients together and return as the W(M) vector    </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat([torch.flatten(gx), torch.flatten(gy), torch.flatten(gz)])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> adjoint(A, v, x_sample):</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Take the adjoint of the forward operator A with respect to the input vector v.</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">        A (callable): Forward operator.</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">        v (torch.Tensor): Input vector.</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> torch.zeros_like(x_sample)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    x.requires_grad <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> A(x)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the dot product of the forward operator with the input vector</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> torch.<span class="bu">sum</span>(b <span class="op">*</span> v)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compute the gradient of the dot product with respect to the input image</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    adjoint <span class="op">=</span> torch.autograd.grad(h, x, create_graph<span class="op">=</span><span class="va">True</span>)[<span class="dv">0</span>]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> adjoint</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-set-for-fitting" class="level4">
 <h4 class="anchored" data-anchor-id="data-set-for-fitting">Data Set for Fitting</h4>
 <p>A new data set with three blocks is created for a more interesting test case.</p>
-<div id="87d9a757" class="cell" data-execution_count="7">
+<div id="d6a4c6ff" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gen_true_data(dim):</span>
@@ -939,7 +940,7 @@ window.Quarto = {
 <section id="conjugate-gradient-method" class="level4">
 <h4 class="anchored" data-anchor-id="conjugate-gradient-method">Conjugate Gradient Method</h4>
 <p>The equation to solve is <span class="math inline">\((A^*A + \alpha W^*W) M_{sol} = A^*D\)</span> which should be defined in the standard form for a conjugate gradient problem, <span class="math inline">\(Cx = b\)</span>. To fit this form a new linear operator <span class="math inline">\(C\)</span> is defined as <span class="math inline">\(C := A^*A + \alpha W^*W\)</span> and the right hand side <span class="math inline">\(b = A^*D\)</span>. The conjugate gradient method is then applied to solve the system of equations.</p>
-<div id="9e5461d3" class="cell" data-execution_count="8">
+<div id="78089c79" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conj_gradient(A, b, x0<span class="op">=</span><span class="va">None</span>, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
@@ -984,63 +985,75 @@ window.Quarto = {
 <span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> D <span class="op">+</span> <span class="fl">0.001</span><span class="op">*</span>noise</span>
 <span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the forward operator with regularization</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>reg_param <span class="op">=</span> <span class="fl">1e10</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> A(x, alpha<span class="op">=</span>reg_param):</span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    y1 <span class="op">=</span> forMod(x)</span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    y1 <span class="op">=</span> forMod.adjoint(y1)</span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    y2 <span class="op">=</span> regularization(x)</span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    y2 <span class="op">=</span> adjoint(regularization, y2, x_sample <span class="op">=</span> x)</span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y1 <span class="op">+</span> alpha<span class="op">*</span>y2</span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> forMod.adjoint(D)</span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Check dimensions and functioning</span></span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> A(xtrue)</span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the inverse problem using the conjugate gradient method</span></span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> torch.zeros_like(xtrue)</span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>xinv <span class="op">=</span> conj_gradient(A, b, x0, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify that the gradient is zero at the solution</span></span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>xtest <span class="op">=</span> xinv.clone().detach().requires_grad_(<span class="va">True</span>)</span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (D <span class="op">-</span> forMod(xtest)).norm()<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> reg_param <span class="op">*</span> regularization(xtest)<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>loss.backward()</span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the norm of the gradient</span></span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>gradient_norm <span class="op">=</span> xtest.grad.norm().item()</span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gradient norm at xinv: </span><span class="sc">{</span>gradient_norm<span class="sc">:.6e}</span><span class="ss">"</span>)</span>
-<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Get misfit and regularization</span></span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>misfit <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (D <span class="op">-</span> forMod(xinv)).norm()<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> reg_param <span class="op">*</span> regularization(xinv)<span class="op">**</span><span class="dv">2</span></span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Misfit: </span><span class="sc">{</span>misfit<span class="sc">:.6e}</span><span class="ss">, Regularization: </span><span class="sc">{</span>reg<span class="sc">:.6e}</span><span class="ss">"</span>)</span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>reg_param <span class="op">=</span> <span class="fl">1e-4</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>reg_func <span class="op">=</span> <span class="kw">lambda</span> x: regularization(x)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> A(x, alpha<span class="op">=</span>reg_param):</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    y1 <span class="op">=</span> forMod(x)</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    y1 <span class="op">=</span> forMod.adjoint(y1)</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    y2 <span class="op">=</span> reg_func(x)</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    y2 <span class="op">=</span> adjoint(reg_func, y2, x)</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y1 <span class="op">+</span> alpha<span class="op">*</span>y2</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> forMod.adjoint(D)</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Check dimensions and functioning</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> A(xtrue)</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve the inverse problem using the conjugate gradient method</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> torch.zeros_like(xtrue)</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>xinv <span class="op">=</span> conj_gradient(A, b, x0, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-6</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify that the gradient is zero at the solution</span></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>xtest <span class="op">=</span> xinv.clone().detach().requires_grad_(<span class="va">True</span>)</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (D <span class="op">-</span> forMod(xtest)).norm()<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> reg_param <span class="op">*</span> torch.<span class="bu">sum</span>(reg_func(xtest)<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>loss.backward()</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the norm of the gradient</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>gradient_norm <span class="op">=</span> xtest.grad.norm().item()</span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gradient norm at xinv: </span><span class="sc">{</span>gradient_norm<span class="sc">:.6e}</span><span class="ss">"</span>)</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Get misfit and regularization</span></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>misfit <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (D <span class="op">-</span> forMod(xinv)).norm()<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> reg_param <span class="op">*</span> torch.<span class="bu">sum</span>(reg_func(xtest)<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Misfit: </span><span class="sc">{</span>misfit<span class="sc">:.6e}</span><span class="ss">, Regularization: </span><span class="sc">{</span>reg<span class="sc">:.6e}</span><span class="ss">"</span>)</span>
 <span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Optionally, set a tolerance and assert</span></span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a>tolerance <span class="op">=</span> <span class="fl">1e-4</span></span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gradient_norm <span class="op">&lt;</span> tolerance:</span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Verification Passed: Gradient norm </span><span class="sc">{</span>gradient_norm<span class="sc">:.2e}</span><span class="ss"> is below the tolerance </span><span class="sc">{</span>tolerance<span class="sc">:.2e}</span><span class="ss">."</span>)</span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Verification Failed: Gradient norm </span><span class="sc">{</span>gradient_norm<span class="sc">:.2e}</span><span class="ss"> exceeds the tolerance </span><span class="sc">{</span>tolerance<span class="sc">:.2e}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Optionally, set a tolerance and assert</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>tolerance <span class="op">=</span> <span class="fl">1e-4</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gradient_norm <span class="op">&lt;</span> tolerance:</span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Verification Passed: Gradient norm </span><span class="sc">{</span>gradient_norm<span class="sc">:.2e}</span><span class="ss"> is below the tolerance </span><span class="sc">{</span>tolerance<span class="sc">:.2e}</span><span class="ss">."</span>)</span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Verification Failed: Gradient norm </span><span class="sc">{</span>gradient_norm<span class="sc">:.2e}</span><span class="ss"> exceeds the tolerance </span><span class="sc">{</span>tolerance<span class="sc">:.2e}</span><span class="ss">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>iter =   0    res = 1.47e-01
-iter =   1    res = 3.32e-02
-iter =   2    res = 6.95e-03
-iter =   3    res = 1.32e-03
-iter =   4    res = 2.66e-04
-iter =   5    res = 5.20e-05
-iter =   6    res = 8.94e-06
-iter =   7    res = 1.70e-06
-iter =   8    res = 3.16e-07
-Gradient norm at xinv: 4.102344e-01
-Misfit: 1.019026e-13, Regularization: 7.034114e-02
-Verification Failed: Gradient norm 4.10e-01 exceeds the tolerance 1.00e-04.</code></pre>
+iter =   1    res = 3.31e-02
+iter =   2    res = 6.97e-03
+iter =   3    res = 1.34e-03
+iter =   4    res = 2.93e-04
+iter =   5    res = 1.38e-04
+iter =   6    res = 2.79e-04
+iter =   7    res = 1.43e-03
+iter =   8    res = 4.25e-03
+iter =   9    res = 1.72e-03
+iter =  10    res = 3.04e-04
+iter =  11    res = 7.72e-05
+iter =  12    res = 8.64e-05
+iter =  13    res = 3.84e-04
+iter =  14    res = 1.96e-03
+iter =  15    res = 1.21e-03
+iter =  16    res = 1.94e-04
+iter =  17    res = 6.02e-05
+iter =  18    res = 9.90e-05
+iter =  19    res = 4.94e-04
+Gradient norm at xinv: 4.354817e-04
+Misfit: 7.700652e-08, Regularization: 1.644024e-05
+Verification Failed: Gradient norm 4.35e-04 exceeds the tolerance 1.00e-04.</code></pre>
 </div>
 </div>
 <p>Now that the inversion is performed, the results can be checked against the true forward model to see if they match correctly.</p>
-<div id="3a206017" class="cell" data-execution_count="9">
+<div id="1ee5e04f" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results   </span></span>
@@ -1081,7 +1094,7 @@ Verification Failed: Gradient norm 4.10e-01 exceeds the tolerance 1.00e-04.</cod
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> pv.Plotter()</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>xinv <span class="op">=</span> xinv.detach().cpu()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> plot_model_with_forward(xinv, D, h, height<span class="op">=</span><span class="dv">0</span>, zoom <span class="op">=</span> <span class="fl">4.0</span>, threshold_value<span class="op">=</span><span class="fl">0.01</span>, plotter<span class="op">=</span>p)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> plot_model_with_forward(xinv, D, h, height<span class="op">=</span><span class="dv">0</span>, zoom <span class="op">=</span> <span class="fl">4.0</span>, threshold_value<span class="op">=</span><span class="fl">.05</span>, plotter<span class="op">=</span>p)</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>p.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div id="fig-inverted-comparison" class="quarto-layout-panel">

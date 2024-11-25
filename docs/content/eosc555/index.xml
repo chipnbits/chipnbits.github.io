@@ -10,7 +10,1084 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Fri, 15 Nov 2024 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 22 Nov 2024 08:00:00 GMT</lastBuildDate>
+<item>
+  <title>Lecture 10</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture10/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="hidden">
+<p>$$ </p>
+<p>$$</p>
+</div>
+<section id="gradient-descent-with-score-function" class="level2">
+<h2 class="anchored" data-anchor-id="gradient-descent-with-score-function">Gradient Descent with Score Function</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definitions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 40%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Component</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Dimensions</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?F(x)"></td>
+<td>Forward operator</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En%20%5Crightarrow%20%5Cmathbb%7BR%7D%5Em"></td>
+</tr>
+<tr class="even">
+<td><img src="https://latex.codecogs.com/png.latex?x"></td>
+<td>Model parameters</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En"></td>
+</tr>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?b"></td>
+<td>Observed data</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"></td>
+</tr>
+<tr class="even">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cepsilon"></td>
+<td>Noise</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"></td>
+</tr>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"></td>
+<td>Probability distribution</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%5Ctheta)"></td>
+<td>Potential function</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En%20%5Crightarrow%20%5Cmathbb%7BR%7D"></td>
+</tr>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?%5Ctheta"></td>
+<td>Learnable Parameters</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Ep"></td>
+</tr>
+<tr class="even">
+<td><img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"></td>
+<td>Partition Function</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D"></td>
+</tr>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta)"></td>
+<td>Score Function</td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The classic inverse problem is defined as</p>
+<p><img src="https://latex.codecogs.com/png.latex?b%20=%20F(x)%20+%20%5Cepsilon"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?F(x)"> is the forward operator, <img src="https://latex.codecogs.com/png.latex?b"> is the observed data, and <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> represents the noise in the measurement or process. We often assume that <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> is Gaussian with zero mean and covariance matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma">.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cepsilon%20%5Csim%20%5Cmathcal%7BN%7D(0,%20%5CSigma)%20"></p>
+<p>The probability of deviation of the observed data from the forward model in this case is given by: <img src="https://latex.codecogs.com/png.latex?%0A%5Cpi(%5Cepsilon)%20=%20%5Cfrac%7B1%7D%7B(2%5Cpi)%5E%7Bm/2%7D%7C%5CSigma%7C%5E%7B1/2%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D%5Cepsilon%5E%5Cintercal%20%5CSigma%5E%7B-1%7D%20%5Cepsilon%5Cright)%0A"></p>
+<p>Without any prior information about the error, it is difficult to estimate the covariance matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma">. For the purpose of this analysis we can assume that it is a normal distriution with zero mean and a diagonal <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2%20I"> covariance matrix. The likelihood function simplifies to:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cpi(%5Cepsilon)%20=%20%5Cfrac%7B1%7D%7B(2%5Cpi%20%5Csigma%5E2)%5E%7Bm/2%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20%5Cright)%20"></p>
+<p>To model the probability distribution of the inverse problem parameters <img src="https://latex.codecogs.com/png.latex?x">, we introduce a prior distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)">. To ensure positivity of <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> over the entire domain and proper normalization, we define it using a <strong>potential function</strong> <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)">: <img src="https://latex.codecogs.com/png.latex?%5Cpi(x;%20%5Ctheta)%20=%20%5Cfrac%7Be%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%7D%7BZ(%5Ctheta)%7D"></p>
+<p>Where the <strong>partion function</strong> <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> is given by:</p>
+<p><img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)%20=%20%5Cint_%5COmega%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20dx"></p>
+<p>Note the partition function is required to make the probability distribution integrate to <img src="https://latex.codecogs.com/png.latex?1">. The exponential operator on the potential ensures that all <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> values are positve since <img src="https://latex.codecogs.com/png.latex?e%5E%5Cphi%20%3E%200"> for all <img src="https://latex.codecogs.com/png.latex?z%20%5Cin%20%5Cmathbb%7BR%7D">. In practice, it is often intractable to directly compute the partition function when updating the model parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> for distributions that are more complex than a Gaussian.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta):%20%5Cmathbb%7BR%7D%5En%20%5Crightarrow%20%5Cmathbb%7BR%7D"> maps <img src="https://latex.codecogs.com/png.latex?x"> to a scalar value, and <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> are the parameters of the model. For example if we are modeling a Gaussian, the parameters might include the covariance matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma">. It has a physical interpretation as an energy of a system, where <img src="https://latex.codecogs.com/png.latex?%5Cphi"> values correspond to low probability density regions. For this reason it is often called the <strong>energy function</strong> in physics-inspired models.</p>
+<section id="maximum-a-posteriori-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-a-posteriori-estimation">Maximum A Posteriori Estimation</h3>
+<p>The goal of <strong>maximum a posteriori (MAP)</strong> estimation is to find the most likely <img src="https://latex.codecogs.com/png.latex?x"> given the observed data <img src="https://latex.codecogs.com/png.latex?b"> and model parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, maximize the posterior probability <img src="https://latex.codecogs.com/png.latex?%5Cpi(x%7Cb;%20%5Ctheta)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cmax_x%20%5Cpi(x%7Cb;%20%5Ctheta)%20&amp;=%20%5Cmax_x%20%5Cfrac%7B%5Cpi(b%7Cx;%20%5Ctheta)%20%5Cpi(x;%20%5Ctheta)%7D%7B%5Cpi(b)%7D%5C%5C%0A%5Cmax_x%20%5Cunderbrace%7B%5Cpi(x%7Cb;%20%5Ctheta)%7D_%7B%5Ctext%7BPosterior%7D%7D%20&amp;%20=%20%5Cmax_x%20%5Cunderbrace%7B%5Cpi(b%7Cx;%20%5Ctheta)%7D_%7B%5Ctext%7BLikelihood%7D%7D%20%5Cunderbrace%7B%5Cpi(x;%20%5Ctheta)%7D_%7B%5Ctext%7BPrior%7D%7D%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Since <img src="https://latex.codecogs.com/png.latex?%5Cpi(b)"> is independent of <img src="https://latex.codecogs.com/png.latex?x">, it does not affect the maximization problem. Substituting the likelihood and prior distributions, we have:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;%20=%20%5Cmax_x%20%5Cfrac%7B1%7D%7B(2%5Cpi%20%5Csigma%5E2)%5E%7Bm/2%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20%5Cright)%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The logarithm is a monotonic function, we can maximize the log-likelihood instead of the likelihood with no loss of generality. <img src="https://latex.codecogs.com/png.latex?%5Cmax_x%20%5Cpi(x)%20=%20%5Cmax_x%20%5Clog(%5Cpi(x))">. Intuitively, since the logarithim is always increasing in output, <img src="https://latex.codecogs.com/png.latex?%5Clog(z)%20%3E%20%5Clog(y)"> implies <img src="https://latex.codecogs.com/png.latex?z%20%3E%20y">. In addition the product of two exponentials is the same as the sum of the exponents, and the maximum of a function is the same as the minimum of the negative of the function. This allows us to rewrite the log-likelihood as:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Minimization Objective
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmax_x%20%5Clog%20%5Cpi(x%7Cb;%20%5Ctheta)%20=%20%5Cmin_x%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20+%20%5Cphi(x,%20%5Ctheta)%20%5Cright)"></p>
+</div>
+</div>
+<p>We have looked at methods previously of how to differentiate the forward operator <img src="https://latex.codecogs.com/png.latex?F"> and perform gradient descent. We take the gradient with respect to <img src="https://latex.codecogs.com/png.latex?x"> to find the minimum of the function.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ag%20&amp;=%20%5Cnabla_x%20%5Cleft(%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7Cb-F(x)%5C%7C%5E2%20-%20%5Cphi(x,%20%5Ctheta)%5Cright)%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B%5Csigma%5E2%7D%20%5Cfrac%7B%5Cpartial%20F%7D%7B%5Cpartial%20x%7D%20(F(x)%20-%20b)%20-%20%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B%5Csigma%5E2%7D%20J%5ET(x)%20(F(x)%20-%20b)%20+%20s(x,%20%5Ctheta)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Using gradient descent, we can update the model parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> by taking steps in away from the direction of the gradient <img src="https://latex.codecogs.com/png.latex?g">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?x_%7Bk+1%7D%20=%20x_k%20-%20%5Calpha%20g"></p>
+</section>
+</section>
+<section id="score-function" class="level2">
+<h2 class="anchored" data-anchor-id="score-function">Score Function</h2>
+<p>$s(x;) is known as the <strong>score function</strong> of <img src="https://latex.codecogs.com/png.latex?%5Cpi(x;%20theta)">. <img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta):=%20%5Cnabla_x%20%5Clog%20(%5Cpi(x))%20=%20-%20%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)"></p>
+<p>It is the negative gradient of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> with respect to <img src="https://latex.codecogs.com/png.latex?x">. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish’s “Theory of Statistics” <span class="citation" data-cites="Schervish2012-sk">(Schervish 1995)</span>.</p>
+<p>Score has a physical intution connected to energy potentials and fields. In physics, the electric field <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BE%7D"> is the negative gradient of the electric potential <img src="https://latex.codecogs.com/png.latex?V">: <img src="https://latex.codecogs.com/png.latex?%20%5Cmathbf%7BE%7D%20=%20-%5Cnabla_x%20V(x)"></p>
+<p>Simalarly, the score function is the negative gradient of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> in the case where <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)%20=%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D">. The score function is the direction in which the probability distribution is most likely to change.</p>
+<section id="example-2d-gaussian-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="example-2d-gaussian-distribution">Example: 2D Gaussian Distribution</h4>
+<p>Consider a 2D Gaussian distribution with zero mean and covariance <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2%20I">:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 74%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Function</strong></th>
+<th><strong>Expression</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Probability Distribution</strong></td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cpi(x)%20=%20%5Cfrac%7B1%7D%7B2%5Cpi%20%5Csigma%5E2%7D%5Cexp%5Cleft(%20-%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%20%5C%7C%20x%20%5C%7C%5E2%20%5Cright)"></td>
+</tr>
+<tr class="even">
+<td><strong>Potential Function</strong></td>
+<td><img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)%20=%20%20-%20%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%20%5C%7C%20x%20%5C%7C%5E2%20-%20%5Clog(2%5Cpi%20%5Csigma%5E2)"></td>
+</tr>
+<tr class="odd">
+<td><strong>Score Function</strong></td>
+<td><img src="https://latex.codecogs.com/png.latex?-%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)%20=%20-%5Cleft(%20-%5Cfrac%7Bx%7D%7B%5Csigma%5E2%7D%20x%20%5Cright)%20=%20%5Cfrac%7Bx%7D%7B%5Csigma%5E2%7D"></td>
+</tr>
+</tbody>
+</table>
+<p>In regions of high probability density, the potential function is low becuase the relation <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)%20=%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D"> is monotonic in <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)">. The score funtion is always pointing in the local direction of the largest directional derivative of the probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</p>
+</section>
+<section id="visualization" class="level4">
+<h4 class="anchored" data-anchor-id="visualization">Visualization</h4>
+<p>Below is a visualization of the probability density function (PDF), potential function, and score function of a 2D Gaussian distribution.</p>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Make plots for a 2D Gaussian distribution heatmap, potential function, and score function</span></span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the 2D Gaussian distribution</span></span>
+<span id="cb1-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gaussian_pdf(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb1-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb1-10"></span>
+<span id="cb1-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the potential function</span></span>
+<span id="cb1-12"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> potential_function(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb1-13">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> np.log(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb1-14"></span>
+<span id="cb1-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the score function</span></span>
+<span id="cb1-16"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> score_function(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb1-17">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>np.array([x, y])<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb1-18"></span>
+<span id="cb1-19"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a grid of points</span></span>
+<span id="cb1-20">x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb1-21">y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb1-22">X, Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.meshgrid(x, y)</span>
+<span id="cb1-23"></span>
+<span id="cb1-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the PDF, potential function, and score function</span></span>
+<span id="cb1-25">pdf <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gaussian_pdf(X, Y)</span>
+<span id="cb1-26">potential <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> potential_function(X, Y)</span>
+<span id="cb1-27">score <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> score_function(X, Y)</span>
+<span id="cb1-28"></span>
+<span id="cb1-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the Probability Distribution with a colorbar</span></span>
+<span id="cb1-30">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span>
+<span id="cb1-31">im <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.imshow(pdf, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'viridis'</span>, extent<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>])</span>
+<span id="cb1-32">plt.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'off'</span>)</span>
+<span id="cb1-33">plt.colorbar(im, shrink<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density"</span>)</span>
+<span id="cb1-34">plt.show()</span>
+<span id="cb1-35"></span>
+<span id="cb1-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the Potential Function with a colorbar</span></span>
+<span id="cb1-37">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span>
+<span id="cb1-38">im <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.imshow(potential, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'viridis'</span>, extent<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>])</span>
+<span id="cb1-39">plt.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'off'</span>)</span>
+<span id="cb1-40">plt.colorbar(im, shrink<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Potential"</span>)</span>
+<span id="cb1-41">plt.show()</span>
+<span id="cb1-42"></span>
+<span id="cb1-43"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Downsample the grid for quiver plotting</span></span>
+<span id="cb1-44">step <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Downsample by taking every 50th point</span></span>
+<span id="cb1-45">X_downsampled <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> X[::step, ::step]</span>
+<span id="cb1-46">Y_downsampled <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Y[::step, ::step]</span>
+<span id="cb1-47">score_downsampled <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> score_function(X_downsampled, Y_downsampled)</span>
+<span id="cb1-48"></span>
+<span id="cb1-49"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the Score Function as a quiver plot over the PDF</span></span>
+<span id="cb1-50">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))</span>
+<span id="cb1-51">plt.imshow(pdf, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'viridis'</span>, extent<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>])</span>
+<span id="cb1-52">plt.quiver(</span>
+<span id="cb1-53">    X_downsampled, Y_downsampled, </span>
+<span id="cb1-54">    score_downsampled[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], score_downsampled[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], </span>
+<span id="cb1-55">    color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'black'</span></span>
+<span id="cb1-56">)</span>
+<span id="cb1-57">plt.axis(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'off'</span>)</span>
+<span id="cb1-58"></span>
+<span id="cb1-59"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Save to file</span></span>
+<span id="cb1-60">plt.savefig(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"imgs/score_function.png"</span>, bbox_inches<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'tight'</span>)</span>
+<span id="cb1-61"></span>
+<span id="cb1-62">plt.show()</span></code></pre></div>
+</details>
+<div id="fig-scores" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-scores" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-scores-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture10/index_files/figure-html/fig-scores-output-1.png" data-ref-parent="fig-scores" width="322" height="241" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Probability Distribution
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-scores" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-scores-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture10/index_files/figure-html/fig-scores-output-2.png" data-ref-parent="fig-scores" width="301" height="241" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Potential Function
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-scores" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-scores-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-scores-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture10/index_files/figure-html/fig-scores-output-3.png" data-ref-parent="fig-scores" width="241" height="241" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Score Function
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: PDF, Potential Function, and Score Function of a 2D Gaussian Normal Distribution
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="maximum-likelihood-estimate-from-samples" class="level2">
+<h2 class="anchored" data-anchor-id="maximum-likelihood-estimate-from-samples">Maximum Likelihood Estimate from Samples</h2>
+<p>A common problem is estimating a probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> based on a set of empirical samples <img src="https://latex.codecogs.com/png.latex?%5C%7Bx_1,%20x_2,%20...,%20x_N%5C%7D">. Often in statistical analysis, we are working with an unknown <img src="https://latex.codecogs.com/png.latex?%5Cpi"> and attempting to make our best estimate from sampled data. If we assume that the drawn samples are independent and identically distributed (i.i.d.), then the <strong>likelihood</strong> of the samples is the product of the likelihood of each sample. Recalling that <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)%20=%20%5Cint_%5COmega%20%5Cpi(x)%20dx">, the likelihood of the samples is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cpi(x_1,%20x_2,%20...,%20x_N)%20&amp;=%20%5Cprod_%7Bi=1%7D%5EN%20%5Cpi(x_i)%20=%20%5Cpi(x_1)%20%5Cpi(x_2)%20...%20%5Cpi(x_N)%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%5Cexp%5Cleft(-%5Cphi(x_1,%20%5Ctheta)%5Cright)%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%5Cexp%5Cleft(-%5Cphi(x_2,%20%5Ctheta)%5Cright)%20...%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%5Cexp%5Cleft(-%5Cphi(x_N,%20%5Ctheta)%5Cright)%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7B%5Cleft%5BZ(%5Ctheta)%5Cright%5D%5EN%7D%20%5Cexp%5Cleft(-%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%5Cright)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Since some <img src="https://latex.codecogs.com/png.latex?x"> are observed, the challenge is to find the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> that maximizes the likelihood of the samples, given the model parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> and a fixed family of <img src="https://latex.codecogs.com/png.latex?%5Cphi(,;%5Ctheta)"> functions.</p>
+<p>The <strong>Maximum Likelihood Estimation (MLE)</strong> is the process of finding the parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> that maximize the likelihood of having observed the samples. Unlike the MAP estimate, there is no posterior and prior distribution. So in this case <img src="https://latex.codecogs.com/png.latex?%5Cpi(x%7C%5Ctheta)"> is being directly maximized. This is equivalent to minimizing the negative log-likelihood as before:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Ctext%7BMLE%7D%20&amp;=%20%5Ctext%7Bargmax%7D_%5Ctheta%20%5Cfrac%7B1%7D%7B%5Cleft%5BZ(%5Ctheta)%5Cright%5D%5EN%7D%20%5Cexp%5Cleft(-%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%5Cright)%5C%5C%0A&amp;=%20%5Coperatorname*%7Bargmin%7D_%5Ctheta%20N%20%5Clog(Z(%5Ctheta))%20+%20%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%5C%5C%0A&amp;=%20%5Coperatorname*%7Bargmin%7D_%5Ctheta%20%5Clog(Z(%5Ctheta))%20+%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>However we again run into the problem of the partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> which for most distributions in higher dimensions is intractable to compute. For example we may be trying to solve an integral in <img src="https://latex.codecogs.com/png.latex?100"> dimensions with no analytical solution.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cint_%7Bx_1%7D%20%5Cint_%7Bx_2%7D%20...%20%5Cint_%7Bx_%7B100%7D%7D%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20dx_1%20dx_2%20...%20dx_%7B100%7D%20"></p>
+<section id="minimizing-with-gradient-descent" class="level4">
+<h4 class="anchored" data-anchor-id="minimizing-with-gradient-descent">Minimizing with Gradient Descent</h4>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Minimization Objective
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Ctext%7BMLE%7D%20=%20%5Coperatorname*%7Bargmin%7D_%5Ctheta%20%5Cleft(%20%5Clog(Z(%5Ctheta))%20+%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%20%5Cright)%20"></p>
+</div>
+</div>
+<p>The gradient of the MLE objective with respect to <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ag%20&amp;=%20%5Cnabla_%5Ctheta%20%5Cleft(%20%5Clog(Z(%5Ctheta))%20+%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cphi(x_i,%20%5Ctheta)%20%5Cright)%5C%5C%0A&amp;=%20%5Cnabla_%5Ctheta%20%5Clog(Z(%5Ctheta))%20+%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cnabla_%5Ctheta%20%5Cphi(x_i,%20%5Ctheta)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The left side term can be further reduced by using the definition of the partion function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)%20=%20%20%5Cint_%5COmega%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20dx">, the probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi_%5Ctheta(x)%20=%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cnabla_%5Ctheta%20%5Clog(Z(%5Ctheta))%20&amp;=%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%5Cnabla_%5Ctheta%20%5Cint_%5COmega%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20dx%5C%5C%0A&amp;=%20%5Cint_%5COmega%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%20%5Cnabla_%5Ctheta%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20dx%5C%5C%0A&amp;=%20-%20%5Cint_%5COmega%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D%20%5Cnabla_%5Ctheta%20%5Cphi(x,%20%5Ctheta)%20dx%5C%5C%0A&amp;=%20-%20%5Cint_%5COmega%20%5Cpi(x)%20%5Cnabla_%5Ctheta%20%5Cphi(x,%20%5Ctheta)%20dx%5C%5C%0A&amp;=%20%20%5Cmathbb%7BE%7D_%7Bx%20%5Csim%20%5Cpi_%5Ctheta(x)%7D%20%5Cleft%5B%20-%5Cnabla_%5Ctheta%20%5Cphi(x,%20%5Ctheta)%20%5Cright%5D%5C%5C%0A&amp;%20%5Capproxeq%20%5Cfrac%7B1%7D%7BM%7D%20%5Csum_%7Bi=1%7D%5EM%20-%5Cnabla_%5Ctheta%20%5Cphi(x_i,%20%5Ctheta)%0A%5Cend%7Balign*%7D%0A"></p>
+<p>We estimate the value of <img src="https://latex.codecogs.com/png.latex?%5Cnabla_%5Ctheta%20%5Clog(Z(%5Ctheta))"> by taking the expectation value of the score function over the samples. This is a Monte Carlo approximation of the true integral using the available i.i.d. samples <img src="https://latex.codecogs.com/png.latex?%5C%7B%20x_1,%20x_2,%20...,%20x_N%20%5C%7D">. The gradient of the MLE objective is then:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Score Matching Gradient
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><img src="https://latex.codecogs.com/png.latex?%20g%20=%20%5Cunderbrace%7B-%5Cfrac%7B1%7D%7BM%7D%20%5Csum_%7Bi=1%7D%5EM%20%5Cnabla_%5Ctheta%20%5Cphi(%5Ctilde%20x_i,%20%5Ctheta)%7D_%7B%5Ctext%7BSynthesis%7D%7D%20+%20%5Cunderbrace%7B%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cnabla_%5Ctheta%20%5Cphi(x_i,%20%5Ctheta)%7D_%7B%5Ctext%7BAnalysis%7D%7D"></p>
+</div>
+</div>
+<p>An optimal point is reached by first order optimality conditions, where the gradient is zero. The MLE objective is minimized when the <strong>synthesis</strong> and <strong>analysis</strong> terms are equal. This is known as <strong>score matching</strong> and is a method for estimating the parameters of a probability distribution from samples. The synthesis <img src="https://latex.codecogs.com/png.latex?%5Ctilde%20x_i"> terms are drawn randomly from the proposed score <img src="https://latex.codecogs.com/png.latex?%5Cphi(%5Ctilde%20x_i,%20%5Ctheta)"> , while the analysis <img src="https://latex.codecogs.com/png.latex?x_i"> terms are taken over the samples <img src="https://latex.codecogs.com/png.latex?%5C%7Bx_1,%20x_2,%20...,%20x_N%5C%7D">.</p>
+<p>As before gradient descent can be used to update the model parameters <img src="https://latex.codecogs.com/png.latex?%5Ctheta">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Ctheta_%7Bk+1%7D%20=%20%5Ctheta_k%20-%20%5Calpha%20g"></p>
+</section>
+</section>
+<section id="an-application-of-score-langevin-dynamics" class="level2">
+<h2 class="anchored" data-anchor-id="an-application-of-score-langevin-dynamics">An Application of Score: Langevin Dynamics</h2>
+<p>An example of the usage of a learned score function is in <strong>Langevin Dynamics</strong>. Langevin Dynamics is a method for sampling from a probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> by simulating a stochastic differential equation (SDE) that converges to the distribution. The SDE is given by:</p>
+<p><img src="https://latex.codecogs.com/png.latex?dx%20=%20-%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)%20dt%20+%20%5Csqrt%7B2%7D%20dW"></p>
+<p>The score function pushes samples towards regions of high probability density, since it is a vector that points in the direction of maximum increase of the probability distribution. The noise term <img src="https://latex.codecogs.com/png.latex?dW"> is a Wiener process, which is a continuous-time stochastic process that is normally distributed with mean zero and variance <img src="https://latex.codecogs.com/png.latex?dt">. The Langevin Dynamics algorithm is a discretized version of the SDE:</p>
+<p><img src="https://latex.codecogs.com/png.latex?x_%7Bk+1%7D%20=%20x_k%20-%20%5Cunderbrace%7B%5CDelta%20t%20%5Cnabla_x%20%5Cphi(x_k,%20%5Ctheta)%7D_%5Ctext%7BScore%20Term%7D%20+%20%5Cunderbrace%7B%5Csqrt%7B2%20%5CDelta%20t%7D%20z_k%7D_%5Ctext%7BStochastic%20Term%7D"></p>
+<p>Where <img src="https://latex.codecogs.com/png.latex?z_k%20%5Csim%20%5Cmathcal%7BN%7D(0,1)"> is a random sample from a normal distribution with zero mean and unit variance.</p>
+<p>The score points in the same direciton as the gradient of the probability distribution, so at each time step, the score term moves the sample to a higher probability region. The stochastic term adds noise to the sample, providing randomness to the process.</p>
+<section id="code-example" class="level3">
+<h3 class="anchored" data-anchor-id="code-example">Code Example</h3>
+<p>Below is an example of Langevin Dynamics applied to a 2D Gaussian distribution. The score function is used to push the samples towards the center of the distribution, while the stochastic element adds noise and randomization to the process. The animation show an intial uniform sampling grid of points converging to the shape of the Gaussian distribution.</p>
+<div id="fig-langevin" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-langevin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb2-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.animation <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> animation</span>
+<span id="cb2-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Ensure the Pillow writer is available</span></span>
+<span id="cb2-7"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> matplotlib.animation <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> PillowWriter</span>
+<span id="cb2-8"></span>
+<span id="cb2-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the 2D Gaussian distribution</span></span>
+<span id="cb2-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gaussian_pdf(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb2-11">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-12"></span>
+<span id="cb2-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the potential function</span></span>
+<span id="cb2-14"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> potential_function(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb2-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> np.log(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>np.pi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb2-16"></span>
+<span id="cb2-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the score function</span></span>
+<span id="cb2-18"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> score_function(x, y, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb2-19">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>np.array([x, y])<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb2-20"></span>
+<span id="cb2-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the Langevin Dynamics update</span></span>
+<span id="cb2-22"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> langevin_dynamics(samples, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>):</span>
+<span id="cb2-23">    z <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.normal(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, samples.shape)</span>
+<span id="cb2-24">    score <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> score_function(samples[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], samples[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], sigma)</span>
+<span id="cb2-25">    samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> dt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> score.T <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> np.sqrt(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dt) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> z</span>
+<span id="cb2-26">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> samples</span>
+<span id="cb2-27"></span>
+<span id="cb2-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create a grid of points for the contour plot</span></span>
+<span id="cb2-29">x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb2-30">y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb2-31">X, Y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.meshgrid(x, y)</span>
+<span id="cb2-32"></span>
+<span id="cb2-33"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute the PDF for contour plotting</span></span>
+<span id="cb2-34">sigma <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.5</span></span>
+<span id="cb2-35">pdf <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gaussian_pdf(X, Y, sigma)</span>
+<span id="cb2-36"></span>
+<span id="cb2-37"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Initialize samples on a 5x5 grid</span></span>
+<span id="cb2-38">grid_size <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span></span>
+<span id="cb2-39">grid_range <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.5</span>, grid_size)</span>
+<span id="cb2-40">initial_samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([[x, y] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> x <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> grid_range <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> grid_range])</span>
+<span id="cb2-41">samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> initial_samples.copy()</span>
+<span id="cb2-42"></span>
+<span id="cb2-43"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set up the figure and axis</span></span>
+<span id="cb2-44">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb2-45"></span>
+<span id="cb2-46"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the initial contour</span></span>
+<span id="cb2-47">contour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ax.contourf(X, Y, pdf, levels<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'viridis'</span>)</span>
+<span id="cb2-48">scatter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ax.scatter(samples[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], samples[:, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Samples'</span>)</span>
+<span id="cb2-49"></span>
+<span id="cb2-50"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add a legend</span></span>
+<span id="cb2-51">ax.legend()</span>
+<span id="cb2-52"></span>
+<span id="cb2-53"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Function to update the animation at each frame</span></span>
+<span id="cb2-54"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> update(frame):</span>
+<span id="cb2-55">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">global</span> samples</span>
+<span id="cb2-56">    samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> langevin_dynamics(samples, dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.002</span>, sigma<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>sigma)</span>
+<span id="cb2-57">    scatter.set_offsets(samples)</span>
+<span id="cb2-58">    ax.set_title(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Langevin Dynamics Iteration: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>frame<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-59">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> scatter,</span>
+<span id="cb2-60"></span>
+<span id="cb2-61"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the animation</span></span>
+<span id="cb2-62">ani <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> animation.FuncAnimation(</span>
+<span id="cb2-63">    fig, update, frames<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span>, interval<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>, blit<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, repeat<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span></span>
+<span id="cb2-64">)</span>
+<span id="cb2-65"></span>
+<span id="cb2-66"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Save the animation as a GIF</span></span>
+<span id="cb2-67">ani.save(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"imgs/langevin_dynamics.gif"</span>, writer<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"imagemagick"</span>, fps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span>
+<span id="cb2-68"></span>
+<span id="cb2-69"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Display the animation inline (if supported)</span></span>
+<span id="cb2-70">plt.close(fig)</span></code></pre></div>
+</details>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-langevin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2
+</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="imgs/langevin_dynamics.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Langevin Dynamics to a 2d Gaussian"><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" class="img-fluid figure-img" alt="Langevin Dynamics to a 2d Gaussian"></a></p>
+<figcaption>Langevin Dynamics to a 2d Gaussian</figcaption>
+</figure>
+</div>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-Schervish2012-sk" class="csl-entry">
+Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Statistics. New York, NY: Springer.
+</div>
+</div></section></div> ]]></description>
+  <category>Machine Learning</category>
+  <category>Neural Networks</category>
+  <category>Bayesian Inference</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture10/</guid>
+  <pubDate>Fri, 22 Nov 2024 08:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" medium="image" type="image/gif"/>
+</item>
 <item>
   <title>Project Work 1</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -45,7 +1122,7 @@
 <section id="coding-the-forward-model" class="level2">
 <h2 class="anchored" data-anchor-id="coding-the-forward-model">Coding the Forward Model</h2>
 <p>The model is programmed into the <code>Magnetics</code> class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.</p>
-<div id="b3c78942" class="cell" data-execution_count="2">
+<div id="f9f08875" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
@@ -970,7 +2047,7 @@ font-style: inherit;">return</span> psf, center, rf</span></code></pre></div>
 </div>
 <p>To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that <img src="https://latex.codecogs.com/png.latex?%20%5Clangle%20A(X),%20Q%20%5Crangle%20=%20%5Clangle%20X,%20A%5E*(Q)%20%5Crangle%20"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?A"> is the forward operator and <img src="https://latex.codecogs.com/png.latex?A%5E*"> is the adjoint operator. The code below performs the adjoint test for the forward model defined above.</p>
-<div id="2286a91c" class="cell" data-execution_count="3">
+<div id="4217d762" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -1154,14 +2231,14 @@ font-style: inherit;">0</span>)</span>
 <span id="cb2-42">adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Adjoint test: 4.552471160888672 4.552471160888672</code></pre>
+<pre><code>Adjoint test: 4.638533115386963 4.638533592224121</code></pre>
 </div>
 </div>
 </section>
 <section id="plotting-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-the-model">Plotting the Model</h2>
 <p>A simple toy dataset was used to test the adjoint opearation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of commands that make use of <a href="https://docs.pyvista.org/">Pyvista</a> are provided below.</p>
-<div id="a81be94b" class="cell" data-execution_count="4">
+<div id="2ea5582e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
@@ -2177,7 +3254,7 @@ font-weight: bold;
 font-style: inherit;">return</span> plotter</span></code></pre></div>
 </details>
 </div>
-<div id="74abf357" class="cell" data-execution_count="5">
+<div id="c2d7bd9b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">p <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> pv.Plotter()</span>
@@ -2236,8 +3313,8 @@ font-style: inherit;">=</span>output_file)</span></code></pre></div>
 <p>The finite difference matrix in 1D is</p>
 <p><img src="https://latex.codecogs.com/png.latex?W%20=%20%5Cbegin%7Bbmatrix%7D%201%20&amp;%20-1%20&amp;%200%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C0%20&amp;%201%20&amp;%20-1%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C0%20&amp;%200%20&amp;%200%20&amp;%20%5Ccdots%20&amp;%20-1%20%5Cend%7Bbmatrix%7D"></p>
 <p>and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: <img src="https://latex.codecogs.com/png.latex?%5C%7CW(M)%5C%7C%5E2%20=%20%5Csum_i%5EN%5Csum_j%5ES%5Csum_k%5EQ%20(M_%7Bi,j,k%7D%20-%20M_%7Bi+1,j,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j+1,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j,k+1%7D)%5E2"> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
-<p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm.</p>
-<div id="81de7ac6" class="cell" data-execution_count="6">
+<p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm. The regularization term to be defined is the operator before the squared norm is applied.</p>
+<div id="290f5297" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -2275,85 +3352,68 @@ background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>]</span>
-<span id="cb6-5">    <span class="cf" style="color: #003B4F;
+<span id="cb6-5">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Concatenate the flattened gradients together and return as the W(M) vector    </span></span>
+<span id="cb6-6">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>(torch.mean(gx<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>torch.mean(gy<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span>torch.mean(gz<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>))</span>
-<span id="cb6-6"></span>
-<span id="cb6-7"><span class="kw" style="color: #003B4F;
+font-style: inherit;">return</span> torch.cat([torch.flatten(gx), torch.flatten(gy), torch.flatten(gz)])</span>
+<span id="cb6-7"></span>
+<span id="cb6-8"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> adjoint(A, v, x_sample):</span>
-<span id="cb6-8">    <span class="co" style="color: #5E5E5E;
+<span id="cb6-9">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">""" </span></span>
-<span id="cb6-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    Take the adjoint of the forward operator A with respect to the input vector v.</span></span>
 <span id="cb6-10"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">    </span></span>
+font-style: inherit;">    Take the adjoint of the forward operator A with respect to the input vector v.</span></span>
 <span id="cb6-11"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">    Parameters:</span></span>
+font-style: inherit;">    </span></span>
 <span id="cb6-12"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">        A (callable): Forward operator.</span></span>
+font-style: inherit;">    Parameters:</span></span>
 <span id="cb6-13"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">        v (torch.Tensor): Input vector.</span></span>
+font-style: inherit;">        A (callable): Forward operator.</span></span>
 <span id="cb6-14"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).</span></span>
+font-style: inherit;">        v (torch.Tensor): Input vector.</span></span>
 <span id="cb6-15"><span class="co" style="color: #5E5E5E;
 background-color: null;
+font-style: inherit;">        x_sample (torch.Tensor): Sample input for dimensioning (dummy data).</span></span>
+<span id="cb6-16"><span class="co" style="color: #5E5E5E;
+background-color: null;
 font-style: inherit;">    """</span></span>
-<span id="cb6-16">    </span>
-<span id="cb6-17">    x <span class="op" style="color: #5E5E5E;
+<span id="cb6-17">    </span>
+<span id="cb6-18">    x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.zeros_like(x_sample)</span>
-<span id="cb6-18">    x.requires_grad <span class="op" style="color: #5E5E5E;
+<span id="cb6-19">    x.requires_grad <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span>
-<span id="cb6-19">    b <span class="op" style="color: #5E5E5E;
+<span id="cb6-20">    b <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> A(x)</span>
-<span id="cb6-20">    <span class="co" style="color: #5E5E5E;
+<span id="cb6-21">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Compute the dot product of the forward operator with the input vector</span></span>
-<span id="cb6-21">    h <span class="op" style="color: #5E5E5E;
+<span id="cb6-22">    h <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(b <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> v)</span>
-<span id="cb6-22">    <span class="co" style="color: #5E5E5E;
+<span id="cb6-23">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Compute the gradient of the dot product with respect to the input image</span></span>
-<span id="cb6-23">    adjoint <span class="op" style="color: #5E5E5E;
+<span id="cb6-24">    adjoint <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.autograd.grad(h, x, create_graph<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2362,7 +3422,7 @@ background-color: null;
 font-style: inherit;">True</span>)[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>]</span>
-<span id="cb6-24">    <span class="cf" style="color: #003B4F;
+<span id="cb6-25">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> adjoint</span></code></pre></div>
@@ -2371,7 +3431,7 @@ font-style: inherit;">return</span> adjoint</span></code></pre></div>
 <section id="data-set-for-fitting" class="level4">
 <h4 class="anchored" data-anchor-id="data-set-for-fitting">Data Set for Fitting</h4>
 <p>A new data set with three blocks is created for a more interesting test case.</p>
-<div id="87d9a757" class="cell" data-execution_count="7">
+<div id="d6a4c6ff" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
@@ -2568,7 +3628,7 @@ font-style: inherit;">=</span>output_file)</span></code></pre></div>
 <section id="conjugate-gradient-method" class="level4">
 <h4 class="anchored" data-anchor-id="conjugate-gradient-method">Conjugate Gradient Method</h4>
 <p>The equation to solve is <img src="https://latex.codecogs.com/png.latex?(A%5E*A%20+%20%5Calpha%20W%5E*W)%20M_%7Bsol%7D%20=%20A%5E*D"> which should be defined in the standard form for a conjugate gradient problem, <img src="https://latex.codecogs.com/png.latex?Cx%20=%20b">. To fit this form a new linear operator <img src="https://latex.codecogs.com/png.latex?C"> is defined as <img src="https://latex.codecogs.com/png.latex?C%20:=%20A%5E*A%20+%20%5Calpha%20W%5E*W"> and the right hand side <img src="https://latex.codecogs.com/png.latex?b%20=%20A%5E*D">. The conjugate gradient method is then applied to solve the system of equations.</p>
-<div id="9e5461d3" class="cell" data-execution_count="8">
+<div id="78089c79" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
@@ -2799,29 +3859,33 @@ font-style: inherit;"># Define the forward operator with regularization</span></
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1e10</span></span>
-<span id="cb8-46"><span class="kw" style="color: #003B4F;
+font-style: inherit;">1e-4</span></span>
+<span id="cb8-46">reg_func <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> x: regularization(x)</span>
+<span id="cb8-47"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> A(x, alpha<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>reg_param):</span>
-<span id="cb8-47">    y1 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> forMod(x)</span>
 <span id="cb8-48">    y1 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> forMod.adjoint(y1)</span>
-<span id="cb8-49">    </span>
-<span id="cb8-50">    y2 <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> forMod(x)</span>
+<span id="cb8-49">    y1 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> regularization(x)</span>
+font-style: inherit;">=</span> forMod.adjoint(y1)</span>
+<span id="cb8-50">    </span>
 <span id="cb8-51">    y2 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> adjoint(regularization, y2, x_sample <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> reg_func(x)</span>
+<span id="cb8-52">    y2 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> x)</span>
-<span id="cb8-52">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">=</span> adjoint(reg_func, y2, x)</span>
+<span id="cb8-53">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> y1 <span class="op" style="color: #5E5E5E;
@@ -2829,26 +3893,26 @@ background-color: null;
 font-style: inherit;">+</span> alpha<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span>y2</span>
-<span id="cb8-53"></span>
-<span id="cb8-54">b <span class="op" style="color: #5E5E5E;
+<span id="cb8-54"></span>
+<span id="cb8-55">b <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> forMod.adjoint(D)</span>
-<span id="cb8-55"></span>
-<span id="cb8-56"><span class="co" style="color: #5E5E5E;
+<span id="cb8-56"></span>
+<span id="cb8-57"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Check dimensions and functioning</span></span>
-<span id="cb8-57">y <span class="op" style="color: #5E5E5E;
+<span id="cb8-58">y <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> A(xtrue)</span>
-<span id="cb8-58"></span>
-<span id="cb8-59"><span class="co" style="color: #5E5E5E;
+<span id="cb8-59"></span>
+<span id="cb8-60"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Solve the inverse problem using the conjugate gradient method</span></span>
-<span id="cb8-60">x0 <span class="op" style="color: #5E5E5E;
+<span id="cb8-61">x0 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.zeros_like(xtrue)</span>
-<span id="cb8-61"></span>
-<span id="cb8-62">xinv <span class="op" style="color: #5E5E5E;
+<span id="cb8-62"></span>
+<span id="cb8-63">xinv <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> conj_gradient(A, b, x0, niter<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2867,16 +3931,16 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb8-63">    </span>
-<span id="cb8-64"><span class="co" style="color: #5E5E5E;
+<span id="cb8-64">    </span>
+<span id="cb8-65"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Verify that the gradient is zero at the solution</span></span>
-<span id="cb8-65">xtest <span class="op" style="color: #5E5E5E;
+<span id="cb8-66">xtest <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> xinv.clone().detach().requires_grad_(<span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb8-66">loss <span class="op" style="color: #5E5E5E;
+<span id="cb8-67">loss <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -2896,20 +3960,22 @@ font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> reg_param <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span> regularization(xtest)<span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(reg_func(xtest)<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span></span>
-<span id="cb8-67">loss.backward()</span>
-<span id="cb8-68"></span>
-<span id="cb8-69"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">2</span>)</span>
+<span id="cb8-68">loss.backward()</span>
+<span id="cb8-69"></span>
+<span id="cb8-70"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Print the norm of the gradient</span></span>
-<span id="cb8-70">gradient_norm <span class="op" style="color: #5E5E5E;
+<span id="cb8-71">gradient_norm <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> xtest.grad.norm().item()</span>
-<span id="cb8-71"><span class="bu" style="color: null;
+<span id="cb8-72"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -2920,11 +3986,11 @@ background-color: null;
 font-style: inherit;">:.6e}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb8-72"></span>
-<span id="cb8-73"><span class="co" style="color: #5E5E5E;
+<span id="cb8-73"></span>
+<span id="cb8-74"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Get misfit and regularization</span></span>
-<span id="cb8-74">misfit <span class="op" style="color: #5E5E5E;
+<span id="cb8-75">misfit <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -2937,7 +4003,7 @@ background-color: null;
 font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span></span>
-<span id="cb8-75">reg <span class="op" style="color: #5E5E5E;
+<span id="cb8-76">reg <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -2945,12 +4011,14 @@ font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span> reg_param <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span> regularization(xinv)<span class="op" style="color: #5E5E5E;
+font-style: inherit;">*</span> torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(reg_func(xtest)<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span></span>
-<span id="cb8-76"><span class="bu" style="color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb8-77"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -2967,23 +4035,23 @@ background-color: null;
 font-style: inherit;">:.6e}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb8-77"></span>
 <span id="cb8-78"></span>
-<span id="cb8-79"><span class="co" style="color: #5E5E5E;
+<span id="cb8-79"></span>
+<span id="cb8-80"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Optionally, set a tolerance and assert</span></span>
-<span id="cb8-80">tolerance <span class="op" style="color: #5E5E5E;
+<span id="cb8-81">tolerance <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1e-4</span></span>
-<span id="cb8-81"><span class="cf" style="color: #003B4F;
+<span id="cb8-82"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> gradient_norm <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;</span> tolerance:</span>
-<span id="cb8-82">    <span class="bu" style="color: null;
+<span id="cb8-83">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -3000,11 +4068,11 @@ background-color: null;
 font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">."</span>)</span>
-<span id="cb8-83"><span class="cf" style="color: #003B4F;
+<span id="cb8-84"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">else</span>:</span>
-<span id="cb8-84">    <span class="bu" style="color: null;
+<span id="cb8-85">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -3023,21 +4091,32 @@ background-color: null;
 font-style: inherit;">."</span>)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>iter =   0    res = 1.47e-01
-iter =   1    res = 3.32e-02
-iter =   2    res = 6.95e-03
-iter =   3    res = 1.32e-03
-iter =   4    res = 2.66e-04
-iter =   5    res = 5.20e-05
-iter =   6    res = 8.94e-06
-iter =   7    res = 1.70e-06
-iter =   8    res = 3.16e-07
-Gradient norm at xinv: 4.102344e-01
-Misfit: 1.019026e-13, Regularization: 7.034114e-02
-Verification Failed: Gradient norm 4.10e-01 exceeds the tolerance 1.00e-04.</code></pre>
+iter =   1    res = 3.31e-02
+iter =   2    res = 6.97e-03
+iter =   3    res = 1.34e-03
+iter =   4    res = 2.93e-04
+iter =   5    res = 1.38e-04
+iter =   6    res = 2.79e-04
+iter =   7    res = 1.43e-03
+iter =   8    res = 4.25e-03
+iter =   9    res = 1.72e-03
+iter =  10    res = 3.04e-04
+iter =  11    res = 7.72e-05
+iter =  12    res = 8.64e-05
+iter =  13    res = 3.84e-04
+iter =  14    res = 1.96e-03
+iter =  15    res = 1.21e-03
+iter =  16    res = 1.94e-04
+iter =  17    res = 6.02e-05
+iter =  18    res = 9.90e-05
+iter =  19    res = 4.94e-04
+Gradient norm at xinv: 4.354817e-04
+Misfit: 7.700652e-08, Regularization: 1.644024e-05
+Verification Failed: Gradient norm 4.35e-04 exceeds the tolerance 1.00e-04.</code></pre>
 </div>
 </div>
 <p>Now that the inversion is performed, the results can be checked against the true forward model to see if they match correctly.</p>
-<div id="3a206017" class="cell" data-execution_count="9">
+<div id="1ee5e04f" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
@@ -3144,7 +4223,7 @@ font-style: inherit;">4.0</span>, threshold_value<span class="op" style="color: 
 background-color: null;
 font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.01</span>, plotter<span class="op" style="color: #5E5E5E;
+font-style: inherit;">.05</span>, plotter<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>p)</span>
 <span id="cb11-8">p.show()</span></code></pre></div>
@@ -7300,7 +8379,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="//" data-no-end="false" data-line-number="true" data-pseudocode-number="1" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-pseudocode-number="1" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -8818,7 +9897,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-line-number="true" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
