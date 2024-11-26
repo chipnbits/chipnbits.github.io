@@ -7,8 +7,8 @@ description: >-
     In this mathematical lecture, some of the foundational principles of Bayesian inverse problems and their statistical interpretation are discussed. A set of computational tools are shown that aid in finding the solution to some of these problems.
 categories:
   - Machine Learning
-  - Neural Networks
   - Bayesian Inference
+  - Score
 
 image: "imgs/langevin_dynamics.gif"
 draft: false
@@ -119,10 +119,10 @@ Using gradient descent, we can update the model parameters $\theta$ by taking st
 $$x_{k+1} = x_k - \alpha g$$
 
 
-## Score Function
+## Score Function {#score-function}
 
-$s(x;\theta) is known as the **score function** of $\pi(x; theta)$. 
-$$s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta)$$
+$s(x;\theta)$ is known as the **score function** of $\pi(x; theta)$. 
+$$s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta) + C$$
 
 It is the negative gradient of the potential function $\phi(x, \theta)$ with respect to $x$. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish's "Theory of Statistics"  [@Schervish2012-sk].
 

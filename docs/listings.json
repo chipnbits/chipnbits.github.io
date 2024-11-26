@@ -1,15 +1,8 @@
 [
   {
-    "listing": "/blog/index.html",
-    "items": [
-      "/blog/posts/CAP-conference-poster/index.html",
-      "/blog/posts/scorematching/index.html",
-      "/blog/posts/welcome/index.html"
-    ]
-  },
-  {
     "listing": "/content/eosc555/index.html",
     "items": [
+      "/content/eosc555/lectures/lecture11/index.html",
       "/content/eosc555/lectures/lecture10/index.html",
       "/content/eosc555/lectures/project/index.html",
       "/content/eosc555/lectures/lecture9/index.html",
@@ -21,6 +14,14 @@
       "/content/eosc555/lectures/lecture3/index.html",
       "/content/eosc555/lectures/lecture2/index.html",
       "/content/eosc555/lectures/lecture1-2/index.html"
+    ]
+  },
+  {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/posts/CAP-conference-poster/index.html",
+      "/blog/posts/scorematching/index.html",
+      "/blog/posts/welcome/index.html"
     ]
   }
 ]

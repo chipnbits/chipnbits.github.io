@@ -240,8 +240,8 @@ window.Quarto = {
 <p class="subtitle lead">MAP, MLE, and Score Function</p>
   <div class="quarto-categories">
     <div class="quarto-category">Machine Learning</div>
-    <div class="quarto-category">Neural Networks</div>
     <div class="quarto-category">Bayesian Inference</div>
+    <div class="quarto-category">Score</div>
   </div>
   </div>
 
@@ -412,7 +412,7 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 </section>
 <section id="score-function" class="level2">
 <h2 class="anchored" data-anchor-id="score-function">Score Function</h2>
-<p>$s(x;) is known as the <strong>score function</strong> of <span class="math inline">\(\pi(x; theta)\)</span>. <span class="math display">\[s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta)\]</span></p>
+<p><span class="math inline">\(s(x;\theta)\)</span> is known as the <strong>score function</strong> of <span class="math inline">\(\pi(x; theta)\)</span>. <span class="math display">\[s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta) + C\]</span></p>
 <p>It is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> with respect to <span class="math inline">\(x\)</span>. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish’s “Theory of Statistics” <span class="citation" data-cites="Schervish2012-sk">(<a href="#ref-Schervish2012-sk" role="doc-biblioref">Schervish 1995</a>)</span>.</p>
 <p>Score has a physical intution connected to energy potentials and fields. In physics, the electric field <span class="math inline">\(\mathbf{E}\)</span> is the negative gradient of the electric potential <span class="math inline">\(V\)</span>: <span class="math display">\[ \mathbf{E} = -\nabla_x V(x)\]</span></p>
 <p>Simalarly, the score function is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> in the case where <span class="math inline">\(\pi(x) = e^{-\phi(x, \theta)}\)</span>. The score function is the direction in which the probability distribution is most likely to change.</p>
@@ -1286,7 +1286,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     })(document);
     </script>
   
-<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","loop":false,"openEffect":"zoom","closeEffect":"zoom","selector":".lightbox"});
+<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","openEffect":"zoom","closeEffect":"zoom","selector":".lightbox","loop":false});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

@@ -10,7 +10,665 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Fri, 22 Nov 2024 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 25 Nov 2024 08:00:00 GMT</lastBuildDate>
+<item>
+  <title>Lecture 11</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture11/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="hidden">
+<p>$$ </p>
+<p>$$</p>
+</div>
+<section id="score-matching" class="level2">
+<h2 class="anchored" data-anchor-id="score-matching">Score Matching</h2>
+<p>Previously in <a href="../../../../content/eosc555/lectures/lecture8/index.html#score-function">Lecture 10</a>, the concept of score as the gradient of the log-likelihood was introduced.</p>
+<p>For a probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x,%20%5Ctheta)"> parameterized by <img src="https://latex.codecogs.com/png.latex?%5Ctheta">, the distribution can be thought of as a potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> which is normalized by the partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cpi(x;%20%5Ctheta)%20=%20%5Cunderbrace%7B%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%7D_%7B%5Ctext%7BPartition%7D%7D%20%5Cexp(-%5Cunderbrace%7B%5Cphi(x;%20%5Ctheta)%7D_%7B%5Ctext%7BPotential%7D%7D)%20"></p>
+<p>The score is defined as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?s(x;%20%5Ctheta)%20:=%20%5Cnabla_x%20%5Clog%20%5Cleft(%5Cpi(x)%5Cright)%20=%20-%5Cnabla_x%20%5Cphi(x;%5Ctheta)"></p>
+<section id="the-big-idea" class="level3">
+<h3 class="anchored" data-anchor-id="the-big-idea">The Big Idea</h3>
+<p>Score matching was first proposed by Hyvärinen in 2005 <span class="citation" data-cites="hyvarinen2005scorematching">(Hyvärinen 2005)</span> as a method to estimate model parameters without computing the partition function <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D">, which is often computationally expensive or intractable.</p>
+<p>Hyvärinen suggested directly matching the score of the model to the score of the data by minimizing the expected squared difference between them:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cmin_%5Ctheta%20%5Cmathbb%7BE%7D_%7Bx%20%5Csim%20%5Cpi(x)%7D%20%5Cleft%5B%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20-%20s_%7B%5Ctext%7Btrue%7D(x)%7D%20%5Cright%5C%7C%5E2%20%5Cright%5D%20"></p>
+<section id="inuitive-explanation" class="level4">
+<h4 class="anchored" data-anchor-id="inuitive-explanation">Inuitive Explanation</h4>
+<ol type="1">
+<li>If the gradients of two potential functions are equal, the functions themselves differ by at most a constant:</li>
+</ol>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cnabla_x%20%5Cphi(x;%20%5Ctheta)%20&amp;=%20%5Cnabla_x%20%20%5Cphi_%5Ctext%7Btrue%7D(x)%20%5Cimplies%5C%5C%0A%5Cphi(x;%20%5Ctheta)%20&amp;=%20%5Cphi_%5Ctext%7Btrue%7D(x)%20+%20C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Where <img src="https://latex.codecogs.com/png.latex?C"> is a constant independent of <img src="https://latex.codecogs.com/png.latex?x">. This follows from the fundamental theorem of calculus and is analogous to the principle in physics where two potentials producing the same field differ by a constant.</p>
+<ol start="2" type="1">
+<li>Normalization by the partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> does not affect the relation between the potentials:</li>
+</ol>
+<p>The partition function <img src="https://latex.codecogs.com/png.latex?Z(%5Ctheta)"> adjusts for any constant differences between the potential functions, ensuring the probability distributions are properly normalized:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cpi(x)%20&amp;=%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%5Cexp(-%5Cphi(x;%20%5Ctheta))%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7BZ(%5Ctheta)%7D%20%5Cexp(-%5Cphi_%5Ctext%7Btrue%7D(x)%20-%20C)%20%5C%5C%0A&amp;=%20%5Cfrac%7B%5Cexp(-C)%7D%7BZ(%5Ctheta)%7D%20%5Cexp(-%5Cphi_%5Ctext%7Btrue%7D(x))%20%20%5C%5C%0A&amp;=%20%5Cfrac%7B1%7D%7BZ_%7B%5Ctext%7Btrue%7D%7D%7D%20%5Cexp(-%5Cphi_%5Ctext%7Btrue%7D(x))%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The relation between the two functions is preserved by the partition function, which differs by constant <img src="https://latex.codecogs.com/png.latex?e%5E%7B-C%7D"> for a difference in potential of <img src="https://latex.codecogs.com/png.latex?C">. The probability distributions must be equal, as shown above.</p>
+<p>If we can match the score, then we indirectly match the probability distributions without needing to first compute the partition function. This is the idea behind score matching.</p>
+</section>
+<section id="visualization-of-score-matching-and-potentials" class="level4">
+<h4 class="anchored" data-anchor-id="visualization-of-score-matching-and-potentials">Visualization of Score Matching and Potentials</h4>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set the Seaborn style for modern-looking plots</span></span>
+<span id="cb1-7">sns.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">set</span>(style<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"whitegrid"</span>, context<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"talk"</span>)</span>
+<span id="cb1-8"></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the potential functions</span></span>
+<span id="cb1-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> potential_model(x, shift<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>):</span>
+<span id="cb1-11">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Model potential with an optional scalar shift."""</span></span>
+<span id="cb1-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> shift  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Quadratic potential</span></span>
+<span id="cb1-13"></span>
+<span id="cb1-14"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> potential_data(x):</span>
+<span id="cb1-15">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Data potential."""</span></span>
+<span id="cb1-16">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Quadratic potential with no shift</span></span>
+<span id="cb1-17"></span>
+<span id="cb1-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Analytical gradients (scores)</span></span>
+<span id="cb1-19"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gradient_potential_model(x):</span>
+<span id="cb1-20">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Gradient of the model potential with respect to x."""</span></span>
+<span id="cb1-21">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> x</span>
+<span id="cb1-22"></span>
+<span id="cb1-23"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> gradient_potential_data(x):</span>
+<span id="cb1-24">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Gradient of the data potential with respect to x."""</span></span>
+<span id="cb1-25">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> x</span>
+<span id="cb1-26"></span>
+<span id="cb1-27"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the range of x values</span></span>
+<span id="cb1-28">x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb1-29"></span>
+<span id="cb1-30"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute potentials</span></span>
+<span id="cb1-31">model_potential <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> potential_model(x, shift<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb1-32">data_potential <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> potential_data(x)</span>
+<span id="cb1-33"></span>
+<span id="cb1-34"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute gradients (scores)</span></span>
+<span id="cb1-35">model_gradient <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gradient_potential_model(x)</span>
+<span id="cb1-36">data_gradient <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gradient_potential_data(x)</span>
+<span id="cb1-37"></span>
+<span id="cb1-38"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute partition functions for normalization</span></span>
+<span id="cb1-39">dx <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> x[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Differential element for integration</span></span>
+<span id="cb1-40">Z_model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>model_potential)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dx</span>
+<span id="cb1-41">Z_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>data_potential)) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> dx</span>
+<span id="cb1-42"></span>
+<span id="cb1-43"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute normalized probability densities</span></span>
+<span id="cb1-44">normalized_model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>model_potential) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> Z_model</span>
+<span id="cb1-45">normalized_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.exp(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>data_potential) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> Z_data</span>
+<span id="cb1-46"></span>
+<span id="cb1-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create DataFrames for plotting with Seaborn</span></span>
+<span id="cb1-48">df_potentials <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.DataFrame({</span>
+<span id="cb1-49">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>: np.tile(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb1-50">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Potential'</span>: np.concatenate([model_potential, data_potential]),</span>
+<span id="cb1-51">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>: [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Model Potential (shift=1)'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Data Potential (no shift)'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x)</span>
+<span id="cb1-52">})</span>
+<span id="cb1-53"></span>
+<span id="cb1-54">df_gradients <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.DataFrame({</span>
+<span id="cb1-55">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>: np.tile(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb1-56">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient'</span>: np.concatenate([model_gradient, data_gradient]),</span>
+<span id="cb1-57">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>: [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient of Model Potential'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient of Data Potential'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x)</span>
+<span id="cb1-58">})</span>
+<span id="cb1-59"></span>
+<span id="cb1-60">df_normalized <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.DataFrame({</span>
+<span id="cb1-61">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>: np.tile(x, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb1-62">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability Density'</span>: np.concatenate([normalized_model, normalized_data]),</span>
+<span id="cb1-63">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>: [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Normalized Model Potential'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Normalized Data Potential'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(x)</span>
+<span id="cb1-64">})</span>
+<span id="cb1-65"></span>
+<span id="cb1-66">figsize <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb1-67"></span>
+<span id="cb1-68"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define custom dash patterns</span></span>
+<span id="cb1-69">dash_styles <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb1-70">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Model Potential (shift=1)'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>,</span>
+<span id="cb1-71">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Data Potential (no shift)'</span>: (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>),  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Solid line</span></span>
+<span id="cb1-72">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient of Model Potential'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>,</span>
+<span id="cb1-73">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient of Data Potential'</span>: (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>),</span>
+<span id="cb1-74">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Normalized Model Potential'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>,</span>
+<span id="cb1-75">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Normalized Data Potential'</span>: (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb1-76">}</span>
+<span id="cb1-77"></span>
+<span id="cb1-78">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>figsize)</span>
+<span id="cb1-79"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot potentials</span></span>
+<span id="cb1-80">sns.lineplot(</span>
+<span id="cb1-81">    data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>df_potentials,</span>
+<span id="cb1-82">    x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>,</span>
+<span id="cb1-83">    y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Potential'</span>,</span>
+<span id="cb1-84">    hue<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-85">    style<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-86">    dashes<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dash_styles,</span>
+<span id="cb1-87">    palette<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'deep'</span>,</span>
+<span id="cb1-88">)</span>
+<span id="cb1-89">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>)</span>
+<span id="cb1-90">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Potential Energy'</span>)</span>
+<span id="cb1-91">plt.legend(title<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>)</span>
+<span id="cb1-92">plt.show()</span>
+<span id="cb1-93"></span>
+<span id="cb1-94">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>figsize)</span>
+<span id="cb1-95"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot gradients (scores)</span></span>
+<span id="cb1-96">sns.lineplot(</span>
+<span id="cb1-97">    data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>df_gradients,</span>
+<span id="cb1-98">    x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>,</span>
+<span id="cb1-99">    y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient'</span>,</span>
+<span id="cb1-100">    hue<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-101">    style<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-102">    dashes<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dash_styles,</span>
+<span id="cb1-103">    palette<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'muted'</span>,</span>
+<span id="cb1-104">)</span>
+<span id="cb1-105">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>)</span>
+<span id="cb1-106">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Gradient'</span>)</span>
+<span id="cb1-107">plt.legend(title<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>)</span>
+<span id="cb1-108">plt.show()</span>
+<span id="cb1-109"></span>
+<span id="cb1-110">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>figsize)</span>
+<span id="cb1-111"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot normalized probability densities</span></span>
+<span id="cb1-112">sns.lineplot(</span>
+<span id="cb1-113">    data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>df_normalized,</span>
+<span id="cb1-114">    x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>,</span>
+<span id="cb1-115">    y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability Density'</span>,</span>
+<span id="cb1-116">    hue<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-117">    style<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Type'</span>,</span>
+<span id="cb1-118">    dashes<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dash_styles,</span>
+<span id="cb1-119">    palette<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bright'</span>,</span>
+<span id="cb1-120">)</span>
+<span id="cb1-121">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x'</span>)</span>
+<span id="cb1-122">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability Density'</span>)</span>
+<span id="cb1-123">plt.legend(title<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>)</span>
+<span id="cb1-124">plt.show()</span></code></pre></div>
+</details>
+<div id="25d8585b" class="cell quarto-layout-panel" data-execution_count="2" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-1.png" class="img-fluid" width="448"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-2.png" class="img-fluid" width="461"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-3.png" class="img-fluid" width="467"></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="eliminating-true-score" class="level3">
+<h3 class="anchored" data-anchor-id="eliminating-true-score">Eliminating True Score</h3>
+<p>The score for the data <img src="https://latex.codecogs.com/png.latex?s_%7B%5Ctext%7Btrue%7D%7D"> is unknown, but it can be eliminated using calculus tricks, as shown in <span class="citation" data-cites="hyvarinen2005scorematching">(Hyvärinen 2005)</span>. The expected squared difference can be rewritten as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;%20%5C%20%5Cmin_%5Ctheta%20%5Cmathbb%7BE%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5B%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20-%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cright%5C%7C%5E2%20%5Cright%5D%20%5C%5C%0A&amp;=%20%5Cmin_%5Ctheta%20%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Cint_%5COmega%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20-%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cright%5C%7C%5E2%20%5Cpi(x)%20%5C,%20dx%20%5C%5C%0A&amp;=%20%5Cmin_%5Ctheta%20%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Cint_%5COmega%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20%5Cright%5C%7C%5E2%20%5Cpi(x)%20%5C,%20dx%20-%20%5Cint_%5COmega%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%5E%5Cintercal%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cpi(x)%20%5C,%20dx%20+%20%5Cfrac%7B1%7D%7B2%7D%20%5Cint_%5COmega%20%5Cleft%5C%7C%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cright%5C%7C%5E2%20%5Cpi(x)%20%5C,%20dx%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>But <img src="https://latex.codecogs.com/png.latex?%5C%7Cs_%7B%5Ctext%7Btrue%7D%7D%5C%7C"> is a constant since it is not a variable that can be changed, it can be discarded from the minimization problem:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;=%20%5Cmin_%5Ctheta%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Cint_%5COmega%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20%5Cright%5C%7C%5E2%20%5Cpi(x)%20%5C,%20dx%20-%20%5Cint_%5COmega%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%5E%5Cintercal%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cpi(x)%20%5C,%20dx%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>To eliminate <img src="https://latex.codecogs.com/png.latex?s_%7B%5Ctext%7Btrue%7D%7D">, the definition of score can be used to rewrite the term:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;%20%5C%20-%5Cint_%5COmega%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%5E%5Cintercal%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cpi(x)%20%5C,%20dx%5C%5C%0A&amp;=%20-%5Cint_%5COmega%20%20%5Cpi(x)%20%5Cleft(%5Cnabla_x%20%5Clog(%5Cpi(x))%5Cright)%5E%5Cintercal%20%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A&amp;%20=%20-%5Cint_%5COmega%20%20%5Cfrac%7B%5Cpi(x)%7D%7B%5Cpi(x)%7D%5Cleft(%5Cnabla_x%20%5Cpi(x)%5Cright)%5E%5Cintercal%20%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A&amp;%20=%20-%5Cint_%5COmega%20%20%5Cnabla_x%20%5Cpi(x)%5E%5Cintercal%20%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Integration by parts allows for the gradient term to be swapped to the score term. If we assume that the probability of the true distribution goes to zero <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)%20%5Crightarrow%200"> at the boundaries <img src="https://latex.codecogs.com/png.latex?%5Cpartial%20%5COmega">, then the flux integral boundary term from integration by parts vanishes. When working with integration by parts in multivarible calculus, the gradient <img src="https://latex.codecogs.com/png.latex?%5Cnabla"> and negative divergence <img src="https://latex.codecogs.com/png.latex?-%5Cnabla%20%5Ccdot"> opeartors are adjoints of each other, <img src="https://latex.codecogs.com/png.latex?%5Cnabla%20=%20(-%5Cnabla%20%5Ccdot)%5E%5Cintercal">. This allows for the gradient to be swapped to the score term:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;%20=%20-%5Cint_%5COmega%20%20%5Cnabla_x%20%5Cpi(x)%5E%5Cintercal%20%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A&amp;=%20-%5Cint_%7B%5Cpartial%20%5COmega%7D%20%5Cpi(x)%20s_%5Ctheta(x;%20%5Ctheta)%20%5Ccdot%20dx%20+%20%5Cint_%5COmega%20%20%5Cpi(x)%20%5Cnabla_x%20%5Ccdot%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A&amp;=%20%5Cint_%5COmega%20%20%5Cpi(x)%20%5Cnabla_x%20%5Ccdot%20s_%5Ctheta(x;%20%5Ctheta)%20%5C,%20dx%20%5C%5C%0A%5Cint_%5COmega%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%5E%5Cintercal%20s_%7B%5Ctext%7Btrue%7D%7D(x)%20%5Cpi(x)%20%5C,%20dx%20&amp;=%20%5Cint_%5COmega%20%20%5Cpi(x)%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5C,%20dx%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>Back to the minimization problem, this term can be substituted back in:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A&amp;%20%5C%20%5Cmin_%5Ctheta%20%5Cmathbb%7BE%7D_%7Bx%20%5Csim%20%5Cpi(x)%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cleft%5B%20%5Cleft%5C%7C%20s_%7B%5Ctheta%7D(x,%20%5Ctheta)%20-%20s_%7B%5Ctext%7Btrue%7D(x)%7D%20%5Cright%5C%7C%5E2%20%5Cright%5D%5C%5C%0A&amp;=%20%5Cmin%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Cint_%5COmega%20%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x;%5Ctheta)%20%5Cright%5C%7C%5E2%20%5Cpi(x)%20%5C,%20dx%20+%20%5Cint_%5COmega%20%20%5Cpi(x)%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5C,%20dx%20%5C%5C%0A&amp;=%20%5Cmin_%7Btheta%7D%20%5Cmathbb%7BE%7D_%7Bx%20%5Csim%20%5Cpi(x)%7D%20%5Cleft%5B%20%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x;%5Ctheta)%20%5Cright%5C%7C%5E2%20+%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5Cright%5D%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+</section>
+</section>
+<section id="evaluation-of-the-objective" class="level2">
+<h2 class="anchored" data-anchor-id="evaluation-of-the-objective">Evaluation of the Objective</h2>
+<p>The minimization objective does not require using the true score which has been eliminated. The <img src="https://latex.codecogs.com/png.latex?%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)"> term can be evaluated as the trace of the Hessian matrix of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x;%5Ctheta)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20=%20%5Ctext%7BTr%7D%20%5Cleft(%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5Cright)%20=%20%5Csum_i%20%5Cfrac%7B%5Cpartial%5E2%20%5Cphi(x;%5Ctheta)%7D%7B%5Cpartial%20x_i%5E2%7D%0A"></p>
+<p>This component places a penalty on positive curvature in the potential function, preferring highly negative curvature in regions of high probability density, similar to a Gaussian or peaked distribution. It can be though of as a regularization term that prefers peaked distributions.</p>
+<p>The <img src="https://latex.codecogs.com/png.latex?%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x;%5Ctheta)%20%5Cright%5C%7C%5E2"> term is the squared norm of the gradient, which penalizes large gradients. With this term alone, the optimal distribution would be as flat as possible to make the gradient as small as possible. It is the opposition of the minimization objective of the two terms that leads to a balanced and matched distribution.</p>
+<p>In practice, we can estimate the true expectation over all <img src="https://latex.codecogs.com/png.latex?x"> by sampling from the model distribution. Once such way is to use the empiral samples <img src="https://latex.codecogs.com/png.latex?%5C%7Bx_1,%20x_2,%20%5Cldots,%20x_N%5C%7D"> to estimate the expectation. If they are assumed to be i.i.d. samples from the model distribution, the expectation can be approximated as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cmathbb%7BE%7D_%7Bx%20%5Csim%20%5Cpi(x)%7D%20%5Cleft%5B%20%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x;%5Ctheta)%20%5Cright%5C%7C%5E2%20+%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5Cright%5D%20&amp;%5Capprox%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x_i;%5Ctheta)%20%5Cright%5C%7C%5E2%20+%20%5Cnabla_x%5E2%20%5Cphi(x_i;%5Ctheta)%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<p>This can be applied to all samples, or batches of samples to get a gradient estimate for the minimization objective in <img src="https://latex.codecogs.com/png.latex?%5Ctheta">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Ag%20&amp;%5Capprox%20%5Cnabla_%5Ctheta%20%5Cleft%5B%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20%5Cleft%5C%7C%20%5Cnabla_x%20%5Cphi(x_i;%5Ctheta)%20%5Cright%5C%7C%5E2%20+%20%5Cnabla_x%5E2%20%5Cphi(x_i;%5Ctheta)%20%5Cright%5D%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<section id="computing-the-laplacian" class="level3">
+<h3 class="anchored" data-anchor-id="computing-the-laplacian">Computing the Laplacian</h3>
+<p>The Laplacian of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x;%5Ctheta)"> can be computed as the trace of the Hessian matrix of the potential function:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20&amp;=%20%5Ctext%7Btr%7D%20%5Cleft(%20%5Cnabla_x%5E2%20%5Cphi(x;%5Ctheta)%20%5Cright)%20%5C%5C%0A&amp;=%20%5Csum_i%20%5Cfrac%7B%5Cpartial%5E2%20%5Cphi(x;%5Ctheta)%7D%7B%5Cpartial%20x_i%5E2%7D%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The trace of a matrix such as a Hessian which is a linear operator can be estimated without having to know the explicit matrix. For example the Hessian may be an operator that is too large to store in memory. Or the Hessian may not be explicitly known, but the operation <img src="https://latex.codecogs.com/png.latex?Hx"> can be computed for example.</p>
+<p>A process first proposed by Hutchinson <span class="citation" data-cites="Hutchinson1990">(Hutchinson 1990)</span>, known as randomized linear algebra allows for computing the trace when only the <img src="https://latex.codecogs.com/png.latex?H(x)"> operation is known. A random varible is used to sample as follows:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Ctext%7Btr%7D%20%5Cleft(A%5Cright)%20&amp;=%20%5Ctext%7Btr%7D%20%5Cleft(AI%5Cright)%20%5C%5C%0A&amp;=%20%5Ctext%7Btr%7D%20%5Cleft(%20A%20%5Cmathbb%7BE%7D_%7Bx%5Csim%5Cmathcal%7BN%7D(0,I)%7D%20x%20x%5E%5Cintercal%20%5Cright)%5C%5C%0A&amp;=%20%5Cmathbb%7BE%7D_%7Bx%5Csim%5Cmathcal%7BN%7D(0,I)%7D%20%5Ctext%7Btr%7D%20%5Cleft(%20A%20x%20x%5E%5Cintercal%20%5Cright)%5C%5C%0A&amp;=%20%5Cmathbb%7BE%7D%20%5Ctext%7Btr%7D%20%5Cleft(x%5E%5Cintercal%20A%20x%20%20%5Cright)%5C%5C%0A&amp;%5Capproxeq%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20x_i%5E%5Cintercal%20A%20x_i%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The normal distribution by definition has a covariance matrix that is identity <img src="https://latex.codecogs.com/png.latex?I"> so the expectation of the outer product of the random variable <img src="https://latex.codecogs.com/png.latex?x"> is the identity matrix. Other random variables can be used as well, further details on the process can be found in Bai, Fahey, and Golub <span class="citation" data-cites="Bai1996">(Bai, Fahey, and Golub 1996)</span>.</p>
+</section>
+</section>
+<section id="applications-of-learned-score" class="level2">
+<h2 class="anchored" data-anchor-id="applications-of-learned-score">Applications of Learned Score</h2>
+<section id="map-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="map-estimation">MAP Estimation</h3>
+<p>Now that we have a method to learn the score of a distribution, it can be used as the regularization term of the gradient in MAP estimation. In <a href="../../../../content/eosc555/lectures/lecture10/index.html">Lecture10</a>, the score was used as part of the MAP minimization gradient.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+MAP Estimation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Objective:</strong> <img src="https://latex.codecogs.com/png.latex?%5Cmin_x%20%5Cleft(%20%5Cfrac%7B1%7D%7B2%5Csigma%5E2%7D%5C%7CF(x)-b%5C%7C%5E2%20+%20%5Cphi(x,%20%5Ctheta)%20%5Cright)"> <strong>Gradient:</strong> <img src="https://latex.codecogs.com/png.latex?%20g%20=%20%5Cfrac%7B1%7D%7B%5Csigma%5E2%7D%20J%5ET(x)%20(F(x)%20-%20b)%20+%20s(x,%20%5Ctheta)"> <strong>Gradient Descent:</strong> <img src="https://latex.codecogs.com/png.latex?%20x_%7Bk+1%7D%20=%20x_k%20-%20%5Cmu%20J%5ET(x)%20(F(x)%20-%20b)%20-%20s(x,%20%5Ctheta)"></p>
+</div>
+</div>
+<p>So using many empirically drawn samples <img src="https://latex.codecogs.com/png.latex?x_i">, the <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)"> distribution can be indirectly estimated using score matching, learning the score <img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta)">. The learned score can then be used for the gradient of the MAP estimation problem, where it is representative of the regularization term, informed by the prior distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)">. In the case of a matrix operator for the forward problem <img src="https://latex.codecogs.com/png.latex?F(x)%20=%20Ax">, its Jacobian <img src="https://latex.codecogs.com/png.latex?J(x)"> is the same as the matrix operator <img src="https://latex.codecogs.com/png.latex?J(x)%20=%20A">.</p>
+</section>
+<section id="diffusion-models-and-homotopy" class="level3">
+<h3 class="anchored" data-anchor-id="diffusion-models-and-homotopy">Diffusion Models and Homotopy</h3>
+<p>In <a href="../../../../content/eosc555/lectures/lecture7/index.html">Lecture 7</a>, the concept of a homotopy beteween two functions was introduced. A homotopy provides a continuous path between an smoothing function <img src="https://latex.codecogs.com/png.latex?g(x)"> and a target function <img src="https://latex.codecogs.com/png.latex?f(x)">, parameterized by a scalar <img src="https://latex.codecogs.com/png.latex?t">. In the case of a gaussian smoothing function <img src="https://latex.codecogs.com/png.latex?g(x)">, <img src="https://latex.codecogs.com/png.latex?t"> acts as a variance parameter: <img src="https://latex.codecogs.com/png.latex?%0Ah(x,%20t)%20=%20t%20f(x)%20+%20(1-t)%20g(x)%0A"></p>
+<section id="proposition-convolution-of-random-variables" class="level4">
+<h4 class="anchored" data-anchor-id="proposition-convolution-of-random-variables">Proposition: Convolution of Random Variables</h4>
+<p>The sum of two independent random variables is a convolution of their probability distributions. If <img src="https://latex.codecogs.com/png.latex?X%20%5Csim%20%5Cpi_x(x)"> and <img src="https://latex.codecogs.com/png.latex?Y%20%5Csim%20%5Cpi_y(y)">, then the sum <img src="https://latex.codecogs.com/png.latex?W%20=%20X%20+%20Y"> has a probability distribution <img src="https://latex.codecogs.com/png.latex?%5Cpi_w(w)"> that is the convolution of the two distributions:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cpi_w(w)%20&amp;=%20%5Cint%20%5Cpi_x(x)%20%5Cpi_y(z-x)%20%5C,%20dx%20%5C%5C%0A%5Cend%7Balign*%7D%0A"></p>
+<hr>
+<p>For a dataset <img src="https://latex.codecogs.com/png.latex?x%5Csim%20%5Cpi(x)"> and a latent variable <img src="https://latex.codecogs.com/png.latex?z%5Csim%20%5Cmathcal%7BN%7D(0,%20I)">, then define a new random variable <img src="https://latex.codecogs.com/png.latex?x_t"> that is the sum of the two variables:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ax_t%20=%20%5Csqrt%7Bt%7Dx%20+%20%5Csqrt%7B1-t%7D%20z%0A"></p>
+<p>The homotopy proceeds slightlt differently with the time scheduling but it still begins and ends with the starting and target distributions. This new random variable <img src="https://latex.codecogs.com/png.latex?x_t"> will be the convolution of the two distributions, such that <img src="https://latex.codecogs.com/png.latex?%5Cpi_%7Bx_t%7D(x_t)"> is the convolution of <img src="https://latex.codecogs.com/png.latex?t%20%5Cpi(x)"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BN%7D(0,%20(1-t)I)">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%20%5Cpi(x_t)%20=%20%5Cint%20%5Cpi(x-%5Cfrac%7B%5Cxi%7D%7Bt%7D)%20%5Cexp%5Cleft(-%5Cfrac%7B%5C%7C%5Cxi%5C%7C%5E2%7D%7B2(1-t)%7D%5Cright)%20%5C,%20d%5Cxi%20"></p>
+
+
+
+</section>
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-Bai1996" class="csl-entry">
+Bai, Zhaojun, Gark Fahey, and Gene Golub. 1996. <span>“Some Large-Scale Matrix Computation Problems.”</span> <em>Journal of Computational and Applied Mathematics</em> 74 (1–2): 71–89. <a href="https://doi.org/10.1016/0377-0427(96)00018-0">https://doi.org/10.1016/0377-0427(96)00018-0</a>.
+</div>
+<div id="ref-Hutchinson1990" class="csl-entry">
+Hutchinson, M. F. 1990. <span>“A Stochastic Estimator of the Trace of the Influence Matrix for Laplacian Smoothing Splines.”</span> <em>Communications in Statistics - Simulation and Computation</em> 19 (2): 433–50. <a href="https://doi.org/10.1080/03610919008812866">https://doi.org/10.1080/03610919008812866</a>.
+</div>
+<div id="ref-hyvarinen2005scorematching" class="csl-entry">
+Hyvärinen, Aapo. 2005. <span>“Estimation of Non-Normalized Statistical Models by Score Matching.”</span> <em>Journal of Machine Learning Research</em> 6: 695–709. <a href="https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf">https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf</a>.
+</div>
+</div></section></div> ]]></description>
+  <category>Machine Learning</category>
+  <category>Neural Networks</category>
+  <category>Score Matching</category>
+  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture11/</guid>
+  <pubDate>Mon, 25 Nov 2024 08:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Lecture 10</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -139,7 +797,7 @@ Minimization Objective
 </section>
 <section id="score-function" class="level2">
 <h2 class="anchored" data-anchor-id="score-function">Score Function</h2>
-<p>$s(x;) is known as the <strong>score function</strong> of <img src="https://latex.codecogs.com/png.latex?%5Cpi(x;%20theta)">. <img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta):=%20%5Cnabla_x%20%5Clog%20(%5Cpi(x))%20=%20-%20%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)"></p>
+<p><img src="https://latex.codecogs.com/png.latex?s(x;%5Ctheta)"> is known as the <strong>score function</strong> of <img src="https://latex.codecogs.com/png.latex?%5Cpi(x;%20theta)">. <img src="https://latex.codecogs.com/png.latex?s(x,%20%5Ctheta):=%20%5Cnabla_x%20%5Clog%20(%5Cpi(x))%20=%20-%20%5Cnabla_x%20%5Cphi(x,%20%5Ctheta)%20+%20C"></p>
 <p>It is the negative gradient of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> with respect to <img src="https://latex.codecogs.com/png.latex?x">. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish’s “Theory of Statistics” <span class="citation" data-cites="Schervish2012-sk">(Schervish 1995)</span>.</p>
 <p>Score has a physical intution connected to energy potentials and fields. In physics, the electric field <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BE%7D"> is the negative gradient of the electric potential <img src="https://latex.codecogs.com/png.latex?V">: <img src="https://latex.codecogs.com/png.latex?%20%5Cmathbf%7BE%7D%20=%20-%5Cnabla_x%20V(x)"></p>
 <p>Simalarly, the score function is the negative gradient of the potential function <img src="https://latex.codecogs.com/png.latex?%5Cphi(x,%20%5Ctheta)"> in the case where <img src="https://latex.codecogs.com/png.latex?%5Cpi(x)%20=%20e%5E%7B-%5Cphi(x,%20%5Ctheta)%7D">. The score function is the direction in which the probability distribution is most likely to change.</p>
@@ -1117,8 +1775,8 @@ Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Stati
 </div>
 </div></section></div> ]]></description>
   <category>Machine Learning</category>
-  <category>Neural Networks</category>
   <category>Bayesian Inference</category>
+  <category>Score</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture10/</guid>
   <pubDate>Fri, 22 Nov 2024 08:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" medium="image" type="image/gif"/>
@@ -7026,7 +7684,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
 <p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <img src="https://latex.codecogs.com/png.latex?v"> contributed to the <code>jvp</code> result.</p>
 <p>The fundamental use of the <code>jvp</code> or the <code>vjp</code> is to compute the directional derivate or its transpose without computing the gradient with respect to <img src="https://latex.codecogs.com/png.latex?v">. This is because the jacobian matrix encodes the directional derivatives of the function at a point.</p>
 <p><img src="https://latex.codecogs.com/png.latex?d_k%20=%20J_k%5ET%20v"></p>
-<div id="jvp" class="cell" data-execution_count="1">
+<div id="jvp" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
@@ -7272,7 +7930,7 @@ tensor([[2., 1.],
 <h3 class="anchored" data-anchor-id="rk4-and-lotka-volterra-model">RK4 and Lotka-Volterra Model</h3>
 <p>The Runge-Kutta 4th order method is a numerical solver for ODEs that is of higher order than the Euler method, reducing the error in the solution to <img src="https://latex.codecogs.com/png.latex?O(h%5E4)">. A more detailed description of the method can be found in the <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Wikipedia article</a>.</p>
 <p>The Lotka-Volterra model is implemented this time in PyTorch, but to run the custom optimization algorithm, it is better to avoid the object-oriented approach and use a functional form of the model. The model is defined as a function that takes the parameters and returns the population at the next time step. The model is also made time variant by adding a perturbation term to the parameters.</p>
-<div id="cell-lotka-volterra" class="cell" data-execution_count="2">
+<div id="cell-lotka-volterra" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
@@ -7643,7 +8301,7 @@ font-style: inherit;">"Population"</span>)</span>
 </div>
 </div>
 <p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method. To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations. Then select the first realization to plot the time series and phase space of the model.</p>
-<div id="9a8ce1c5" class="cell" data-execution_count="3">
+<div id="9a8ce1c5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
@@ -8063,7 +8721,7 @@ font-style: inherit;">"Predator Population"</span>)</span>
 <h3 class="anchored" data-anchor-id="jacobian-vector-product-and-directional-derivatives">Jacobian Vector Product and Directional Derivatives</h3>
 <p>Now is a good time to code and check a working system to take the jacobian vector products that are required for the Gauss-Newton method using the functions defined earlier. We will assume that we have the prey data and we are trying to recover. To check the correctness of the coding, we can compare the results of the <code>jvp</code> and the <code>vjp</code> functions by checking using the adjoint. The value <img src="https://latex.codecogs.com/png.latex?%5Clangle%20w,%20J_k%20v%20%5Crangle"> is scalar and so it should equal its transpose: <img src="https://latex.codecogs.com/png.latex?%20%5Clangle%20w,%20J_k%20v%20%5Crangle%20=%20%5Clangle%20v,%20J_k%5ET%20w%20%20%5Crangle"></p>
 <p>One other thing to note is that both the <code>jvp</code> and the <code>vjp</code> functions will output the value of the function evaluated at the point that is passed to it, about which the jacobian is computed. So we get both <img src="https://latex.codecogs.com/png.latex?F(p)"> and <img src="https://latex.codecogs.com/png.latex?J_k%20v"> from the <code>jvp</code> function, and a similar result for the <code>vjp</code> function.</p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="4">
+<div id="jacobian-vector-product" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
@@ -8162,7 +8820,7 @@ font-style: inherit;">*</span> v))</span></code></pre></div>
 <p>The Gauss-Newton method will need to make use of some important subfunctions to operate efficiently. One will be the computation of its components using the <code>jvp</code> and <code>vjp</code> functions, and the other will be the conjugate gradient descent method to solve the normal equations.</p>
 <p>To implement this in code, we will also need to make a conjugate gradient solver for the problem <img src="https://latex.codecogs.com/png.latex?%20J_G(p_k)%5ET%20J_G(p_k)s_k%20=%20J_k%5ET%20r_k"></p>
 <p>keeping in mind that we want to avoid explicit computation of the entire jacobian when the goal is only to take a directional derivative. To do this the <img src="https://latex.codecogs.com/png.latex?J_G(p_k)%5ET%20J_G(p_k)"> operator can be coded as a single function <code>Hmv</code> that takes a vector and returns the product of the Hessian estimate with the vector. We then use this defined function in a standard implementation of the conjugate gradient method. The conjugate gradient method below has been setup to accept a callable funtion <img src="https://latex.codecogs.com/png.latex?A"> that acts like the matrix operator <img src="https://latex.codecogs.com/png.latex?A">, except we have bypassed the need to compute the full matrix, since we are only ever using it with a product.</p>
-<div id="conjugate-gradient" class="cell" data-execution_count="5">
+<div id="conjugate-gradient" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
@@ -8414,13 +9072,13 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-line-number="true" data-comment-delimiter="//" data-indent-size="1.2em" data-no-end="false" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number-punc=":" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 <p>Then combining all the previous stages of code we have:</p>
-<div id="gauss-newton" class="cell" data-execution_count="6">
+<div id="gauss-newton" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># fix all parts of the problem except the parameters</span></span>
@@ -8665,7 +9323,7 @@ font-style: inherit;">return</span> params, predictions</span></code></pre></div
 <section id="testing-the-gauss-newton-optimizer" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-gauss-newton-optimizer">Testing the Gauss-Newton Optimizer</h3>
 <p>A run of the Gauss-Newton optimization method can be performed on the Lotka-Volterra model to fit the prey population data. The optimization method will be run for a maximum of <img src="https://latex.codecogs.com/png.latex?40"> iterations with a tolerance that will exit early if the step size becomes small enough indicating a local minimum. The results of the optimization can be plotted against the true data, both prey and predator, to see how well the optimization method has performed to recover the missing predator population.</p>
-<div id="cell-gauss-newton-test" class="cell" data-execution_count="7">
+<div id="cell-gauss-newton-test" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">period <span class="op" style="color: #5E5E5E;
@@ -8826,7 +9484,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 </div>
 </div>
 <p>The plot outputs the successive iterations of the method and the data of the forward model as it is fitting in the predicitons tensor. The optimization process can be animated from the successive predictions to get a visual understanding of the optimization method.</p>
-<div id="animation" class="cell" data-execution_count="8">
+<div id="animation" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="im" style="color: #00769E;
@@ -9015,7 +9673,7 @@ font-style: inherit;">"imgs/fitting_animation.gif"</span>,</span>
 <p>Although the previous examples have been for a fixed set of parameters, it is entirely possible in natural systems that the parameters of the model are time dependent. The formulation of the Lotka-Volterra model has incorporated this design from the start by expanding the initial four parameters across the time dimension. However we can pass a full tensor of time varying parameters that is size <img src="https://latex.codecogs.com/png.latex?%5Bnt,%204%5D"> to the model and the optimization algorithm. The rest of the code does not change at all since the PyTorch library can perform the required gradient computations on a 2D tensor as well.</p>
 <p>The range of possible solutions and the dimensionality of the problem expands from <img src="https://latex.codecogs.com/png.latex?4"> parameters to <img src="https://latex.codecogs.com/png.latex?4%20%5Ctimes%20nt"> parameters which means more parameters than there are actual data points. This means that any set of data could be fit perfectly, but it might not be the correct fit. This issue is a hallmark of ill-posed inverse problems. The optimization algorithm will still converge to a solution, but it might not be the correct one.</p>
 <p>Since the ground truth of both predator and prey populations is known, the optimization algorithm can be run with time dependent parameters which will allow more overfitting. The parameters being fixed in time is a sort of regularization that can applied to the problem, and removing it will change the results of the optimization.</p>
-<div id="cell-time-varying-parameters" class="cell" data-execution_count="9">
+<div id="cell-time-varying-parameters" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Start with an initial guess for the parameters</span></span>
@@ -9174,7 +9832,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 <section id="the-forward-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-forward-problem">The Forward Problem</h3>
 <p>We start with an initial time <img src="https://latex.codecogs.com/png.latex?t_0"> and initial conditions <img src="https://latex.codecogs.com/png.latex?x_0,%20y_0">, with parameters <img src="https://latex.codecogs.com/png.latex?%5Calpha,%20%5Cbeta,%20%5Cgamma,%20%5Cdelta"> to run a forward version of the problem using a variant of the forward Euler method, the RK4.</p>
-<div id="cell-pred-prey-forward" class="cell" data-execution_count="1">
+<div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -9700,7 +10358,7 @@ font-style: inherit;">'imgs/lotka_volterra.png'</span>)</span>
 </div>
 </div>
 <p>We can additionally look at the phase space of the system for various initial conditions to see how the different solutions are periodic.</p>
-<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="2">
+<div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
@@ -9932,7 +10590,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-indent-size="1.2em" data-line-number-punc=":" data-comment-delimiter="//" data-line-number="true">
+<div class="pseudocode-container quarto-float" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -10087,7 +10745,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 </tbody>
 </table>
 <p>As we can see all three methods have a similar form and offer some mechanism for controlling the noise induced by the small singular values of <img src="https://latex.codecogs.com/png.latex?A">.</p>
-<div id="cell-comp-plot" class="cell" data-execution_count="1">
+<div id="cell-comp-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -12763,7 +13421,7 @@ font-style: inherit;">'off'</span>)</span>
 </section>
 <section id="code-implementation" class="level1">
 <h1>Code Implementation</h1>
-<div id="8a8dac11" class="cell" data-execution_count="1">
+<div id="8a8dac11" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -12843,7 +13501,7 @@ font-style: inherit;">import</span> torch.fft</span></code></pre></div>
 <h3 class="anchored" data-anchor-id="gaussian-example">Gaussian Example</h3>
 <p>The multivariate extension of the gaussian function is given by: <img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D%20(x-%5Cmu)%5ET%20%5CSigma%5E%7B-1%7D%20(x-%5Cmu)%5Cright)"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmu"> is the mean vector, <img src="https://latex.codecogs.com/png.latex?x"> is a position vector, and <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using <img src="https://latex.codecogs.com/png.latex?C"> as the inverse of the covariance matrix and working with a <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> value.</p>
-<div id="mv-plot" class="cell" data-execution_count="2">
+<div id="mv-plot" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
@@ -13284,7 +13942,7 @@ font-style: inherit;">'equal'</span>)</span>
 <p>We can compute the MV gaussian from the inverse covariance matrix <img src="https://latex.codecogs.com/png.latex?C"> with a mean of <img src="https://latex.codecogs.com/png.latex?%5Cmu=0"> along with a dimensional scaling metric <img src="https://latex.codecogs.com/png.latex?t">. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AS_x%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%200%20&amp;%201%20%5C%5C%20-2%20&amp;%200%20&amp;%202%20%5C%5C%20-1%20&amp;%200%20&amp;%201%20%5Cend%7Bbmatrix%7D%20%5C%5C%0AS_y%20&amp;=%20%5Cfrac%7B1%7D%7B4%7D%20%5Cbegin%7Bbmatrix%7D%20-1%20&amp;%20-2%20&amp;%20-1%20%5C%5C%200%20&amp;%200%20&amp;%200%20%5C%5C%201%20&amp;%202%20&amp;%201%20%5Cend%7Bbmatrix%7D%0A%5Cend%7Balign%7D%0A"></p>
 <p>These operators act like edge detection or derivatives. The <img src="https://latex.codecogs.com/png.latex?n_0">, <img src="https://latex.codecogs.com/png.latex?n_x">, and <img src="https://latex.codecogs.com/png.latex?n_y"> parameters in the code are used to scale the gaussian and the derivatives.</p>
-<div id="9bb0f07a" class="cell" data-execution_count="3">
+<div id="9bb0f07a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
@@ -13882,7 +14540,7 @@ font-style: inherit;">return</span> PSF_combined, center</span></code></pre></di
 <section id="creating-a-toy-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-toy-dataset">Creating a Toy Dataset</h3>
 <p>Often in computational science we test our strategies on toy datasets, simplified data that allows for easier debugging and understanding of the problem at task. In this case, rather than use a real image, we construct a geometric image that will be easier to analyse visually for its correctness when it comes to denoising and deblurring. The dataset is also dimensioned to have a batch and color channel to follow some of the conventions for working with torch tensors, and later some machine learning frameworks. That is <img src="https://latex.codecogs.com/png.latex?B%20%5Ctimes%20C%20%5Ctimes%20H%20%5Ctimes%20W">, with a single sample, single channel, and a 256x256 image having dimensions <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%201%20%5Ctimes%20256%20%5Ctimes%20256">.</p>
-<div id="cell-toy-dataset" class="cell" data-execution_count="4">
+<div id="cell-toy-dataset" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">x <span class="op" style="color: #5E5E5E;
@@ -13948,7 +14606,7 @@ font-style: inherit;">0</span>,:,:])</span></code></pre></div>
 </div>
 </div>
 <p>This simple image is a high and a low signal shown as two square regions, which we will try to recover after applying a point spread function to it (the forward model). The forward model is the convolution of the image with the PSF.</p>
-<div id="cell-forward-model" class="cell" data-execution_count="5">
+<div id="cell-forward-model" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">C <span class="op" style="color: #5E5E5E;
@@ -14034,7 +14692,7 @@ font-style: inherit;">print</span>()</span></code></pre></div>
 <p>Note that we are working with a rolling PSF which has a strange effect in that it assumes a periodic boundary condition in both <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y">. When it comes to convolution, there are many different ways to treat the boundary condition, such as using zero padding or mirroring the boundary. Coding this by hand is a good exercise to understand the convolution operation, but not the purpose of this exercise.</p>
 <section id="direct-recovery-of-convolution-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="direct-recovery-of-convolution-matrix">Direct Recovery of Convolution Matrix</h4>
-<div id="cell-convolution-matrix" class="cell" data-execution_count="6">
+<div id="cell-convolution-matrix" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">dim <span class="op" style="color: #5E5E5E;
@@ -14247,7 +14905,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <p>Since the convolution operation that is being performed is linear, one way to recover the matrix operator under this assumption is to pass through the basis vectors and recover the column vectors in this fashion:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D%20a_1%20%5Cmid%20a_2%20%5Cmid%20%5Cldots%20%5Cmid%20a_n%20%5Cend%7Bbmatrix%7D%20%5Cmathbf%7Be%7D_i%20=%20%5Cmathbf%7BA%7D%20%5Cmathbf%7Be%7D_i%20%20=%20%5Cmathbf%7Ba%7D_i"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Be%7D_i"> is the <img src="https://latex.codecogs.com/png.latex?i">th basis vector.</p>
-<div id="cell-convolution-matrix-2" class="cell" data-execution_count="7">
+<div id="cell-convolution-matrix-2" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">A_conv_lin <span class="op" style="color: #5E5E5E;
@@ -14344,7 +15002,7 @@ font-style: inherit;">'Difference from Direct'</span>)</span>
 </div>
 </div>
 <p>Now comparing this method against the known convolution result using the class defined earlier with the forward model:</p>
-<div id="5700fdc9" class="cell" data-execution_count="8">
+<div id="5700fdc9" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">b_forward <span class="op" style="color: #5E5E5E;
@@ -14408,7 +15066,7 @@ font-style: inherit;">2</span>:]))</span></code></pre></div>
 </div>
 </div>
 <p>We can see that there are some differences between the two methods but in principle they should be the same, (Not sure where the difference is coming from). The important method is actually the one which extracts the columns, as it is more generalizable. So we will continue with that.</p>
-<div id="final-conv-matrix" class="cell" data-execution_count="9">
+<div id="final-conv-matrix" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">Amat <span class="op" style="color: #5E5E5E;
@@ -14423,7 +15081,7 @@ font-style: inherit;">=</span> A_conv_lin</span></code></pre></div>
 <p>Now that we have a matrix operator recovered we can formulate the forward problem as <img src="https://latex.codecogs.com/png.latex?A%5Cmathbf%7Bx%7D%20=%20%5Cmathbf%7Bb%7D"> with our known <img src="https://latex.codecogs.com/png.latex?A"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bb%7D">, and we want to recover <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D">. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.</p>
 <section id="svd-decomposition" class="level3">
 <h3 class="anchored" data-anchor-id="svd-decomposition">SVD Decomposition</h3>
-<div id="1783112b" class="cell" data-execution_count="10">
+<div id="1783112b" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">U, S, V <span class="op" style="color: #5E5E5E;
@@ -14435,7 +15093,7 @@ font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
 </details>
 </div>
 <p>Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the <img src="https://latex.codecogs.com/png.latex?10%5E%7B-6%7D"> mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.</p>
-<div id="cell-svd-decomposition" class="cell" data-execution_count="11">
+<div id="cell-svd-decomposition" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">plt.semilogy(S)</span>
@@ -14482,7 +15140,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 <section id="initial-attempt-at-pseudoinverse" class="level3">
 <h3 class="anchored" data-anchor-id="initial-attempt-at-pseudoinverse">Initial Attempt at Pseudoinverse</h3>
 <p>To recover the original image data we first naively try to invert the matrix to see what happens.</p>
-<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="12">
+<div id="cell-naive-pseudoinverse" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">xhat <span class="op" style="color: #5E5E5E;
@@ -14539,7 +15197,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <section id="pseudoinverse-with-filtering" class="level3">
 <h3 class="anchored" data-anchor-id="pseudoinverse-with-filtering">Pseudoinverse with Filtering</h3>
 <p>We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?U">.</p>
-<div id="d9ddde55" class="cell" data-execution_count="13">
+<div id="d9ddde55" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">n<span class="op" style="color: #5E5E5E;
@@ -14591,7 +15249,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 </div>
 </div>
 <p>For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix <img src="https://latex.codecogs.com/png.latex?V">. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.</p>
-<div id="25228293" class="cell" data-execution_count="14">
+<div id="25228293" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">n<span class="op" style="color: #5E5E5E;
@@ -14695,7 +15353,7 @@ font-style: inherit;">'</span>)</span>
 </div>
 </div>
 <p>These modes are the most important ones, as they contain the big-picture detail without the high frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.</p>
-<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="15">
+<div id="cell-pseudoinverse-filter" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -14867,7 +15525,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <section id="adding-noise-to-the-signal" class="level3">
 <h3 class="anchored" data-anchor-id="adding-noise-to-the-signal">Adding Noise to the Signal</h3>
 <p>Now we add some noise to the signal and try least squares again for the direct solution</p>
-<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="16">
+<div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">b_flat <span class="op" style="color: #5E5E5E;
@@ -14957,7 +15615,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 </div>
 </div>
 <p>The reconstruction is not very good, the noise has been amplifed all over the image. We can try the pseudoinverse method again with the noise added to the signal.</p>
-<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="17">
+<div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">Amat_noisy <span class="op" style="color: #5E5E5E;
@@ -15149,119 +15807,6 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</guid>
   <pubDate>Sun, 15 Sep 2024 07:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="115" width="144"/>
-</item>
-<item>
-  <title>Lecture 1</title>
-  <dc:creator>Simon Ghyselincks</dc:creator>
-  <link>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="what-is-inverse-theory" class="level1">
-<h1>What is Inverse Theory?</h1>
-<p>Inverse theory is a set of mathematical techniques used to infer the properties of a physical system from observations of its output. It is a fundamental tool in many scientific disciplines, including geophysics, seismology, and medical imaging. Inverse theory is used to solve a wide range of problems, such as:</p>
-<ul>
-<li><strong>Parameter Estimation</strong>: Determining the values of unknown parameters in a model that best fit the observed data.</li>
-<li><strong>System Identification</strong>: Identifying the structure and dynamics of a system from input-output data.</li>
-<li><strong>Image Reconstruction</strong>: Reconstructing an image or object from noisy or incomplete measurements.</li>
-</ul>
-<p>What many of these tasks have in common is that we are working with incomplete information. There is a <em>forward</em> problem that has generated the data that we observe <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> from a set of input data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D">, and we want to infer the <em>inverse</em> problem that generated the data. However the inverse problem is often ill-posed, meaning that there are multiple solutions that can fit the data equally well. Inverse theory provides a framework for finding the best solution to these problems.</p>
-<p>The forward problem can be described for example as a differetial equation or operator <img src="https://latex.codecogs.com/png.latex?L"> that takes in some measured parameters <img src="https://latex.codecogs.com/png.latex?u"> with model parameters <img src="https://latex.codecogs.com/png.latex?x"> :</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20L(x)%5Bu%5D%20=%20q%20%5Ciff%20u%20=%20L%5E%7B-1%7D(x)%5Bq%5D%20"></p>
-<p>For example making measurements of an electromagnetic field in correspondence to conductivity values that are underground we have:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cnabla%20%5Csigma%20%5Cnabla%20u%20=%20q%20+%20%5Ctext%7BBC%7D"></p>
-<p>We measure the <img src="https://latex.codecogs.com/png.latex?u"> at some points and use that to try and form an estimate of the conductivity <img src="https://latex.codecogs.com/png.latex?%5Csigma">. The forward problem is to solve for <img src="https://latex.codecogs.com/png.latex?u"> given <img src="https://latex.codecogs.com/png.latex?%5Csigma"> and the inverse problem is to solve for <img src="https://latex.codecogs.com/png.latex?%5Csigma"> given <img src="https://latex.codecogs.com/png.latex?u">. The forward problem is often well-posed and the inverse problem is often ill-posed.</p>
-<p>For a computational framework we can discretize the the equation so that the operator is a matrix <img src="https://latex.codecogs.com/png.latex?A"> and the data is a vector <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D">:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cunderbrace%7BA%7D_%7B%5Ctext%7BForward%20Map%7D%7D%20%5Cunderbrace%7B%5Cvec%7Bx%7D%7D_%7B%5Ctext%7BModel%20Parameters%7D%7D%20+%20%5Cepsilon%20=%20%5Cunderbrace%7B%5Cvec%7Bb%7D%7D_%7B%5Ctext%7BObserved%20Data%7D%7D%20"></p>
-<p>In this case we may have a sparse set of measurements <img src="https://latex.codecogs.com/png.latex?b"> and a large set of <img src="https://latex.codecogs.com/png.latex?x"> making the problem underdetermined. The goal of inverse theory is to find the best estimate of <img src="https://latex.codecogs.com/png.latex?x"> given <img src="https://latex.codecogs.com/png.latex?b">.</p>
-<section id="example-the-triathlon-problem" class="level3">
-<h3 class="anchored" data-anchor-id="example-the-triathlon-problem">Example: The Triathlon Problem</h3>
-<p>To illustrate the concept of inverse theory, consider the following example:</p>
-<blockquote class="blockquote">
-<p>Suppose that you have agreed to meet a friend to watch them during a triathlon race but you showed up late and missed the start. They are expecting for you to have been there at some point during the time at which they were changing from a running phase to a cycle phase. They expect you to know the time at which they made the transition. However you only know the overall start time and finish time of the race.</p>
-<p>If the race starts at time <img src="https://latex.codecogs.com/png.latex?t=0"> and then ends at time <img src="https://latex.codecogs.com/png.latex?t=b"> how do you use this information to deduce the actual time <img src="https://latex.codecogs.com/png.latex?t_r%20%5Cin%20%5B0,b%5D"> at which they crossed the transition zone of the race?</p>
-</blockquote>
-<p>The first restriction on feasible solutions is the domain <img src="https://latex.codecogs.com/png.latex?%5B0,b%5D"> so that we know that <img src="https://latex.codecogs.com/png.latex?0%3Ct_r%3Cb">.</p>
-<p>After this there are some other techniquest that we could use to better inform the probability of the occurence at different times. For example, we might have a good idea of their fitness level or average running speed from previous experience. Or in the abscence of this information there might be average times for the competitors that are available to further inform the problem and reduce the amount of error in the estimate.</p>
-</section>
-<section id="the-singular-value-decomposition" class="level2">
-<h2 class="anchored" data-anchor-id="the-singular-value-decomposition">The Singular Value Decomposition</h2>
-<p>For cases where the matrix <img src="https://latex.codecogs.com/png.latex?A"> is not full rank, the singular value decomposition (SVD) provides a more general framework for solving the least squares problem. The SVD decomposes the matrix <img src="https://latex.codecogs.com/png.latex?A"> into three matrices <img src="https://latex.codecogs.com/png.latex?U">, <img src="https://latex.codecogs.com/png.latex?%5CSigma">, and <img src="https://latex.codecogs.com/png.latex?V"></p>
-<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20U%20%5CSigma%20V%5ET%20"></p>
-<p>The matrices have the following special properties:</p>
-<ul>
-<li><em>Orthogonal Subspaces</em>: <img src="https://latex.codecogs.com/png.latex?U"> and <img src="https://latex.codecogs.com/png.latex?V"> are orthogonal matrices, meaning that <img src="https://latex.codecogs.com/png.latex?U%5ETU%20=%20I"> and <img src="https://latex.codecogs.com/png.latex?V%5ETV%20=%20I">, that is <img src="https://latex.codecogs.com/png.latex?U%5ET%20=%20U%5E%7B-1%7D"> and $V^T = V^{-1}.</li>
-<li><em>Ordered Singular Values</em>: <img src="https://latex.codecogs.com/png.latex?%5CSigma"> is a diagonal matrix with non-negative values on the diagonal, known as the singular values of <img src="https://latex.codecogs.com/png.latex?A">. The singular values are ordered such that <img src="https://latex.codecogs.com/png.latex?%5Csigma_1%20%5Cgeq%20%5Csigma_2%20%5Cgeq%20%5Cldots%20%5Cgeq%20%5Csigma_r">. The number of non-zero singular values is equal to the rank of <img src="https://latex.codecogs.com/png.latex?A">.</li>
-</ul>
-<p>Supposed that we have a <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Brank%7D(A)%20=%20r"> matrix <img src="https://latex.codecogs.com/png.latex?A"> which maps from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em%5Crightarrow%20%5Cmathbb%7BR%7D%5En">. A fundamental way to view this mapping is as a composition of three linear transformations: a rotation <img src="https://latex.codecogs.com/png.latex?V">, a scaling <img src="https://latex.codecogs.com/png.latex?%5CSigma">, and another rotation <img src="https://latex.codecogs.com/png.latex?U">. The orthogonal matrix <img src="https://latex.codecogs.com/png.latex?V"> has the property that all of its rows and columns are orthogonal to each other, and the vectors themselves are normalized to <img src="https://latex.codecogs.com/png.latex?1">. To see this property of the orthogonal matrix consider that <img src="https://latex.codecogs.com/png.latex?V%5ET%20V%20=%20I"> and <img src="https://latex.codecogs.com/png.latex?V%20V%5ET%20=%20I">:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0AZ%20=%20V%5ET%20V%20&amp;=%20I%20%5C%5C%0Az_%7Bij%7D%20=%20%5Clangle%20v_i,%20v_j%20%5Crangle%20&amp;=%20%5Cdelta_%7Bij%7D%20%5Cend%7Balign%7D%20"></p>
-<p>Each of the elements of the matrix <img src="https://latex.codecogs.com/png.latex?V%5ET"> is the dot product of the <img src="https://latex.codecogs.com/png.latex?i">th and <img src="https://latex.codecogs.com/png.latex?j">th columns of <img src="https://latex.codecogs.com/png.latex?V">. The dotproduct of all vectors against themselves is <img src="https://latex.codecogs.com/png.latex?1"> and the dotproduct of any two different vectors is <img src="https://latex.codecogs.com/png.latex?0">. So from this we can see that all of the columns of <img src="https://latex.codecogs.com/png.latex?V"> are orthogonal to each other. The same property holds for <img src="https://latex.codecogs.com/png.latex?U">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?V%5ET"> by our definition of <img src="https://latex.codecogs.com/png.latex?A"> must accept a vector from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"> and the matrix is square, indicating an <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%20m"> matrix. The matrix <img src="https://latex.codecogs.com/png.latex?U"> must output a vector in <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En"> and the matrix is square, indicating an <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20n"> matrix. The matrix <img src="https://latex.codecogs.com/png.latex?%5CSigma"> must be <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20m"> to map from <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5Em"> to <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5En">.</p>
-<p>In all its glory:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0AA_%7Bn%20%5Ctimes%20m%7D%20&amp;=%20U_%7Bn%20%5Ctimes%20n%7D%20%5C,%20%5CSigma_%7Bn%20%5Ctimes%20m%7D%20%5C,%20V%5ET_%7Bm%20%5Ctimes%20m%7D%20%5C%5C%0A&amp;=%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7Cccc%7D%0A%5Cmathbf%7Bu%7D_1%20&amp;%20%5Ccdots%20&amp;%20%5Cmathbf%7Bu%7D_r%20&amp;%20%5Cmathbf%7Bu%7D_%7Br+1%7D%20&amp;%20%5Ccdots%20&amp;%20%5Cmathbf%7Bu%7D_n%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20n%7D%0A%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%20&amp;%20%20&amp;%20%20%5C%5C%0A&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A&amp;%20%20&amp;%20%5Csigma_r%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20m%7D%0A%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7Cccc%7D%0A%5Cmathbf%7Bv%7D%5ET_1%20%5C%5C%0A%5Cvdots%20%5C%5C%0A%5Cmathbf%7Bv%7D%5ET_r%20%5C%5C%0A%5Cmathbf%7Bv%7D%5ET_%7Br+1%7D%20%5C%5C%0A%5Cvdots%20%5C%5C%0A%20%20%5Cmathbf%7Bv%7D%5ET_m%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bm%20%5Ctimes%20m%7D%0A%5Cend%7Baligned%7D%0A"></p>
-<p>In this case the first <img src="https://latex.codecogs.com/png.latex?r"> columns of <img src="https://latex.codecogs.com/png.latex?U"> are the range of <img src="https://latex.codecogs.com/png.latex?A">, the rest of <img src="https://latex.codecogs.com/png.latex?U"> is filled with its orthogonal complement. The first <img src="https://latex.codecogs.com/png.latex?r"> columns of <img src="https://latex.codecogs.com/png.latex?V"> are the domain of <img src="https://latex.codecogs.com/png.latex?A">, the rest of <img src="https://latex.codecogs.com/png.latex?V"> is filled with its orthogonal complement. These are the four fundamental subspaces of the matrix <img src="https://latex.codecogs.com/png.latex?A">, more information on this can be found at: <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">Wikipedia: SVD</a></p>
-<p>The matrices as shown above are for a rectangular <img src="https://latex.codecogs.com/png.latex?A"> where <img src="https://latex.codecogs.com/png.latex?n%3Em"> but the same properties hold for all <img src="https://latex.codecogs.com/png.latex?n,m">. Some of the singular values <img src="https://latex.codecogs.com/png.latex?%5Csigma_i"> may be zero, in which case the matrix <img src="https://latex.codecogs.com/png.latex?A"> is not full rank.</p>
-<p>Another way to decompose the SVD is to write it as a sum of outer products that are scaled by the diagonal matrix of singular values:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20%5Csum_%7Bi=1%7D%5Er%20%5Csigma_i%20%5Cmathbf%7Bu%7D_i%20%5Cmathbf%7Bv%7D_i%5ET%20"></p>
-<p>If <img src="https://latex.codecogs.com/png.latex?%5Csigma_i%3E0"> then <img src="https://latex.codecogs.com/png.latex?v_i"> is not in the null space of <img src="https://latex.codecogs.com/png.latex?A"> because <img src="https://latex.codecogs.com/png.latex?A%20v_i%20=%20%5Csigma_i%20u_i">. If <img src="https://latex.codecogs.com/png.latex?%5Csigma_i%20=%200"> then <img src="https://latex.codecogs.com/png.latex?v_i"> is in the null space of <img src="https://latex.codecogs.com/png.latex?A"> because <img src="https://latex.codecogs.com/png.latex?A%20v_i%20=%200">.</p>
-<section id="the-pseudoinverse" class="level3">
-<h3 class="anchored" data-anchor-id="the-pseudoinverse">The Pseudoinverse</h3>
-<p>Back to the task of inverting <img src="https://latex.codecogs.com/png.latex?Ax%20+%20%5Cepsilon%20=%20b"> we can apply the SVD decomposition:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Balign%7D%0AU%20%5CSigma%20V%5ET%20x%20+%20%5Cepsilon%20&amp;=%20b%20%5C%5C%0A%5CSigma%20V%5ET%20x%20+&amp;=%20U%5ET%20(b-%5Cepsilon)%20%5C%5C%0AV%20%5CSigma%5E%7B-1%7D%20U%5ET%20(b-%5Cepsilon)%20&amp;=%20x%5C%5C%0AA%5E+%20(b-%5Cepsilon)%20&amp;=%20%5Chat%7Bx%7D%0A%5Cend%7Balign%7D"></p>
-<p>Where <img src="https://latex.codecogs.com/png.latex?A%5E+%20=%20V%20%5CSigma%5E%7B-1%7D%20U%5ET"> is the pseudoinverse of <img src="https://latex.codecogs.com/png.latex?A">. The pseudoinverse is a generalization of the matrix inverse for non-square matrices. We recover a square matrix by removing all of the absent or zero singular values from <img src="https://latex.codecogs.com/png.latex?%5CSigma"> and inverting the rest, giving an <img src="https://latex.codecogs.com/png.latex?r%20%5Ctimes%20r"> diagonal matrix whose inverse is simply the inverse of each element.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%20&amp;%20%20&amp;%20%20%5C%5C%0A&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A&amp;%20%20&amp;%20%5Csigma_r%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%20%5C%5C%0A%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5C%5C%0A0%20&amp;%20%5Ccdots%20&amp;%200%0A%5Cend%7Barray%7D%20%5Cright%5D_%7Bn%20%5Ctimes%20m%7D%0A%5Crightarrow%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bccc%7D%0A%5Csigma_1%5E%7B-1%7D%20&amp;%20%20&amp;%20%20%5C%5C%0A%20%20&amp;%20%5Cddots%20&amp;%20%20%5C%5C%0A%20%20&amp;%20%20&amp;%20%5Csigma_r%5E%7B-1%7D%20%5C%5C%0A%20%20%5Cend%7Barray%7D%20%5Cright%5D_%7Br%20%5Ctimes%20r%7D"></p>
-<p>Then <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D%20=%20%5Csum_i%5EN%20%5Csigma_i%5E%7B-1%7D%20%5Cmathbf%7Bu%7D_i%5ET%20(b-%5Cepsilon)%20%5Cmathbf%7Bv%7D_i"> is the solution to the least squares problem. This can be solved also as a truncated sum since <img src="https://latex.codecogs.com/png.latex?0%3CN%3Cr">. In actual practice with real world measurement we end up with many singular values that may be effectively <img src="https://latex.codecogs.com/png.latex?0"> by nature of being very small relative to the noise in the data and the largest single value. We have that the solution <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D"> is a sum of <img src="https://latex.codecogs.com/png.latex?v_i"> components that form an orthogonal basis <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bx%7D%20=%20%5Csum_i%20%5Cbeta_i%20v_i"> where <img src="https://latex.codecogs.com/png.latex?%5Cbeta_i%20=%20%5Cfrac%7Bu_i%5ET%20(b-%5Cepsilon)%7D%7B%5Csigma_i%7D">. These small singular values blow up in size when inverted and so extra truncation is often necessary to avoid numerical instability and excessive amplification of noise <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">.</p>
-</section>
-</section>
-<section id="least-squares" class="level2">
-<h2 class="anchored" data-anchor-id="least-squares">Least Squares</h2>
-<p>Least squares and matrix inversion is a classic starting point for understanding inverse theory. Suppose that we have input data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> and output data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> that are related by a linear system of equations: <img src="https://latex.codecogs.com/png.latex?Ax%20=%20b"> where <img src="https://latex.codecogs.com/png.latex?A"> is a matrix of coefficients. In many cases, the system is overdetermined, meaning that there are more equations than unknowns. In this case, there is no exact solution to the system, and we must find the best solution that minimizes the error between the observed data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> and the predicted data <img src="https://latex.codecogs.com/png.latex?A%5Cvec%7Bx%7D">. In the simplest form of inversion that we can attempt, we can solve the least squares solution. In this case we reject all of the observed data that is from the null space of <img src="https://latex.codecogs.com/png.latex?A"> assuming a zero value for each of those parameters.</p>
-<section id="example" class="level3">
-<h3 class="anchored" data-anchor-id="example">Example</h3>
-<p>Let <img src="https://latex.codecogs.com/png.latex?A"> be a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%202"> matrix and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> be a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%201"> vector. The <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D"> that we are trying to solve for is a <img src="https://latex.codecogs.com/png.latex?2%20%5Ctimes%201"> vector. The system of equations is given by:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20A%20=%20%5Cbegin%7Bbmatrix%7D%20%20%5Cvec%7Ba%7D_1%20&amp;%20%5Cvec%7Ba%7D_2%20%5Cend%7Bbmatrix%7D%20%5Cquad%20%5Cvec%7Bx%7D%20=%20%5Cbegin%7Bbmatrix%7D%20x_1%20%5C%5C%20x_2%20%20%5Cend%7Bbmatrix%7D%20%20%5Cquad%20%5Cvec%7Bb%7D%20=%20%5Cbegin%7Bbmatrix%7D%20b_1%20%5C%5C%20b_2%20%5C%5C%20b_3%20%5Cend%7Bbmatrix%7D%20"></p>
-<p>In this case we have an <em>overdetermined</em> system with three equations, two unknowns, and three data samples. If the system of equations is full rank then we are trying to map from a 2D space to a 3D space: <img src="https://latex.codecogs.com/png.latex?A:%20%5Cmathbb%7BR%7D%5E2%20%5Crightarrow%20%5Cmathbb%7BR%7D%5E3">. In this case there is no exact solution to the system for any <img src="https://latex.codecogs.com/png.latex?b"> that is not in the column space of <img src="https://latex.codecogs.com/png.latex?A">.</p>
-<p>Instead we can solve for the least squares solution <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bx%7D_%7BLS%7D"> by minimizing the error between the observed data <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D"> and the predicted data <img src="https://latex.codecogs.com/png.latex?A%5Cvec%7Bx%7D"> from the forward model.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cvec%7Bx%7D_%7BLS%7D%20=%20%5Carg%20%5Cmin_%7B%5Cvec%7Bx%7D%7D%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2%20"></p>
-<p>We want to find the argument that minimizes the function <img src="https://latex.codecogs.com/png.latex?f(%5Cvec%7Bx%7D)%20=%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2">. By first order optimality conditions, the gradient of the function must be zero at the minimum.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%0A%5Cnabla%20f(%5Cvec%7Bx%7D)%20&amp;=%200%20%5C%5C%0A%5Cnabla%20%7C%7CA%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D%7C%7C_2%5E2%20&amp;=%200%20%5C%5C%0A%5Cnabla%20(A%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D)%5ET%20(A%5Cvec%7Bx%7D%20-%20%5Cvec%7Bb%7D)%20&amp;=%200%20%5C%5C%0A%5Cnabla%20%5Cleft(%20%5Cvec%7Bx%7D%5ET%20A%5ET%20A%20%5Cvec%7Bx%7D%20-%202%20%5Cvec%7Bb%7D%5ET%20A%20%5Cvec%7Bx%7D%20+%20%5Cvec%7Bb%7D%5ET%20%5Cvec%7Bb%7D%20%5Cright)%20&amp;=%200%20%5C%5C%0A2%20A%5ET%20A%20%5Cvec%7Bx%7D%20-%202%20A%5ET%20%5Cvec%7Bb%7D%20&amp;=%200%20%5C%5C%0AA%5ET%20A%20%5Cvec%7Bx%7D%20&amp;=%20A%5ET%20%5Cvec%7Bb%7D%20%5C%5C%0A%5Cvec%7Bx%7D_%7BLS%7D%20&amp;=%20(A%5ET%20A)%5E%7B-1%7D%20A%5ET%20%5Cvec%7Bb%7D%0A%5Cend%7Balign%7D%20"></p>
-<p>This is known as the normal equations for the least squares solution. We take a note of caution here that <img src="https://latex.codecogs.com/png.latex?A%5ET%20A"> must be invertible for this solution to exist. If <img src="https://latex.codecogs.com/png.latex?A"> is not full rank then the matrix <img src="https://latex.codecogs.com/png.latex?A%5ET%20A"> will not be invertible and other methods must be used.</p>
-<p>We call the difference between the observed data and the predicted data the residual.</p>
-<p><img src="https://latex.codecogs.com/png.latex?r%20=%20%5Cvec%7Bb%7D%20-%20A%5Cvec%7Bx%7D_%7BLS%7D"></p>
-<p>Using this information, what we really want to minimize is the sum of the squares of the residuals: <img src="https://latex.codecogs.com/png.latex?%7C%7Cr%7C%7C_2%5E2">. This is the same as the sum of the squares of the errors in the data.</p>
-<p>There is an altogether informative way to think about the minimization problem purely in terms of linear algebra and subspaces to derive the same normal equations.</p>
-<div style="display: block; margin-left: auto; margin-right: auto; width: 50%; text-align: center;">
-<img src="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" alt="" width="300">
-<p>
-<em>Least Squares Visual</em>
-</p>
-</div>
-<p>We have the range of <img src="https://latex.codecogs.com/png.latex?A"> or image of <img src="https://latex.codecogs.com/png.latex?A"> as the subspace of <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5E3"> that is spanned by the columns of <img src="https://latex.codecogs.com/png.latex?A">. This subspace is rank <img src="https://latex.codecogs.com/png.latex?2"> because there are only two columns in <img src="https://latex.codecogs.com/png.latex?A">, <img src="https://latex.codecogs.com/png.latex?R(A)%20%5Csubset%20%5Cmathbb%7BR%7D%5E3">. The inaccessible parts of <img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BR%7D%5E3"> are in the orthogonal complement of <img src="https://latex.codecogs.com/png.latex?R(A)">, <img src="https://latex.codecogs.com/png.latex?R(A)%5E%5Cperp">. Recalling that <img src="https://latex.codecogs.com/png.latex?R(A)%5E%5Cperp%20=%20N(A%5ET)"> we can diagram the solution to least squares as a minimization of the error vector <img src="https://latex.codecogs.com/png.latex?r"> in the orthogonal complement of <img src="https://latex.codecogs.com/png.latex?R(A)">.</p>
-<p>As seen the <img src="https://latex.codecogs.com/png.latex?r"> vector is perpendicular to the <img src="https://latex.codecogs.com/png.latex?x_%7BLS%7D"> solution, the projection of <img src="https://latex.codecogs.com/png.latex?r"> onto <img src="https://latex.codecogs.com/png.latex?R(A)"> is zero. Since it is in a null space of <img src="https://latex.codecogs.com/png.latex?A%5ET"> then <img src="https://latex.codecogs.com/png.latex?A%5ET%20r%20=%200">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%20%5Cbegin%7Balign%7D%20A%5ET%20%5Cleft%20(%20Ax_%7BLS%7D%20-%20b%20%5Cright%20)%20&amp;=%200%5C%5C%0AA%5ET%20A%20x_%7BLS%7D%20&amp;=%20A%5ET%20b%20%5C%5C%0A%5Cend%20%7Balign%7D%20"></p>
-<p>So we recover the normal equations without using any of the machinery of calculus.</p>
-<p>For a review on the four fundamental subspaces of a matrix see the UBC Math 307 notes on the topic: <a href="https://ubcmath.github.io/MATH307/orthogonality/complement.html">Math 307</a></p>
-
-
-</section>
-</section>
-</section>
-
- ]]></description>
-  <category>Optimization</category>
-  <category>Inverse Theory</category>
-  <category>Python</category>
-  <category>Torch</category>
-  <category>SVD</category>
-  <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</guid>
-  <pubDate>Sat, 14 Sep 2024 07:00:00 GMT</pubDate>
-  <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" medium="image" type="image/svg+xml"/>
-</item>
-</channel>
-</rss>
-4"/>
 </item>
 <item>
   <title>Lecture 1</title>
