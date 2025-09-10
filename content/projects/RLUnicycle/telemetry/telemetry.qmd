@@ -274,6 +274,7 @@ Below is an example Python script for publishing messages to the MQTT broker. Th
 The package is installed using pip: `pip install paho-mqtt`
 
 ```{python}
+#| eval: false
 import json
 import time
 import paho.mqtt.client as mqtt
@@ -515,6 +516,7 @@ Building these queries through the script editor is a good way to get the correc
 To illustrate how this can be integrated into Python for data analysis, here is a simple example. This script queries the last one minute of data from the database and plots the acceleration data over time.
 
 ```{python}
+#| eval: false
 #| freeze: true
 
 import pandas as pd
