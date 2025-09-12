@@ -1,4 +1,4 @@
 /.quarto
 /.quarto/
 desktop.ini
-.jupyter_cache/
+**/.jupyter_cache/
