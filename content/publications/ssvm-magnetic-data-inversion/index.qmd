@@ -13,7 +13,6 @@ authors:
 date: 2025-05-17
 venue: "International Conference on Scale Space and Variational Methods in Computer Vision (SSVM)"
 description: "Integrates dictionary learning and scale-space methods for adaptive magnetic data inversion, improving reconstruction accuracy and robustness in geophysical applications."
-image: linked.png
 categories:
   - Machine Learning
   - Geophysics

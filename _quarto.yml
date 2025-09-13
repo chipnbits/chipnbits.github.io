@@ -1,6 +1,10 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "**"                   
+    - "!content/eosc555/**"  # EXCLUDE EOSC 555 from builds (frozen)
+    - "!blog/**"             # EXCLUDE RL unicycle from builds (frozen
 
 website:
   title: "Simon Ghyselincks"

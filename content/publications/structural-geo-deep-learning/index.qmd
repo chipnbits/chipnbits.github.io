@@ -1,0 +1,26 @@
+---
+title: " Structural Geology Meets Deep Learning"
+authors: 
+  - name: "Simon Ghyselincks"
+  - name: "Valeriia Okhmak"
+  - name: "Stefano Zampini"
+  - name: "George Turkiyyah"
+  - name: "David Keyes"
+  - name: "Eldad Haber"
+
+date: 2025-06-17
+venue: "arXiv preprint (under review at journal)"
+description: "A 3d geological simulation engine that can produce fast computation samples is presented. The synthetic dataset is used to train a generative AI model that can be used as a prior for solving difficult inverse problems in geophysics."
+categories:
+  - Structural Geology
+  - Machine Learning
+  - Generative AI
+draft: false
+website:
+  open-graph: true
+---
+
+**Links:**
+- [Preprint (arXiv)](https://arxiv.org/abs/2506.11164)
+- [Geological Simulation Engine (GitHub)](https://github.com/eldadHaber/StructuralGeo/releases/tag/v1.0)
+- [Generative Model (GitHub)](https://github.com/chipnbits/flowtrain_stochastic_interpolation/releases/tag/v1.0.1)
