@@ -1,5 +1,11 @@
 [
   {
+    "listing": "/content/publications/index.html",
+    "items": [
+      "/content/publications/ssvm-magnetic-data-inversion/index.html"
+    ]
+  },
+  {
     "listing": "/content/eosc555/index.html",
     "items": [
       "/content/eosc555/lectures/lecture11/index.html",

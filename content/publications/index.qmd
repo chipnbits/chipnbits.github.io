@@ -1,0 +1,15 @@
+---
+title: "Publications"
+listing:
+  contents: .
+  sort: "date desc"
+  type: table
+  categories: true
+  fields: [title, date, venue, description]
+  date-format: "YYYY"
+  field-display-names:
+    venue: "Venue"
+    date: "Year"
+---
+
+Below is a list of my recent publications. For a complete list please visit my [Google Scholar](https://scholar.google.ca/citations?user=BJEuhwcAAAAJ&hl=en) profile.

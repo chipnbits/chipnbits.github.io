@@ -1,0 +1,31 @@
+---
+title: "Inversion of Magnetic Data Using Learned Dictionaries and Scale Space"
+authors: 
+  - name: "Shadab Ahamed"
+  - name: "Simon Ghyselincks"
+  - name: "Pablo Chang Huang Arias"
+  - name: "Julian Kloiber"
+  - name: "Yasin Ranjbar"
+  - name: "Jingrong Tang"
+  - name: "Niloufar Zakariaei"
+  - name: "Eldad Haber"
+
+date: 2025-05-17
+venue: "International Conference on Scale Space and Variational Methods in Computer Vision (SSVM)"
+description: "Integrates dictionary learning and scale-space methods for adaptive magnetic data inversion, improving reconstruction accuracy and robustness in geophysical applications."
+image: linked.png
+categories:
+  - Machine Learning
+  - Geophysics
+  - Dictionary Learning
+  - Scale Space Methods
+draft: false
+website:
+  open-graph: true
+---
+**Note:** S. Ahamed and S. Ghyselincks—Equal contribution.
+
+**Links:**
+- [Paper (Springer)](https://link.springer.com/chapter/10.1007/978-3-031-92369-2_26)
+- [Preprint (arXiv)](https://arxiv.org/abs/2502.05451)
+- [Code Repository](https://github.com/ahxmeds/magnetic-inversion-dictionary.git)

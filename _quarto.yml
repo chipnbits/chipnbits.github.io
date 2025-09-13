@@ -13,33 +13,21 @@ website:
     left:
       - text: "Home"
         href: index.qmd
-      - text: "Learning to Balance"
-        href: content/projects/RLUnicycle/introduction.qmd
+      - text: "Publications"
+        href: content/publications/index.qmd
       - text: "Blog" 
         href: blog/index.qmd
       # - text: "CV"
       #   href: www/cv/CV.pdf
       - text: "EOSC 555"  # New navigation item
         href: content/eosc555/index.qmd
+      - text: "Learning to Balance"
+        href: content/projects/RLUnicycle/introduction.qmd
       - text: "Bio"
         href: content/about/biography.qmd
 
-  sidebar:
-    style: "docked"
-    search: true
-    contents:
-      - section: "Projects"
-        contents:
-          - content/projects/projects.qmd
-          - section: "Learning to Balance"
-            contents:
-              - content/projects/RLUnicycle/introduction.qmd
-              - content/projects/RLUnicycle/rtkernel/rtpatch.qmd
-              - content/projects/RLUnicycle/telemetry/telemetry.qmd
-              - content/projects/RLUnicycle/dynamics/dynamics.qmd
-
   page-footer: 
-    left: '© 2024, Simon Ghyselincks'
+    left: '© 2025, Simon Ghyselincks'
     right: 
       - icon: house
         href: https://chipnbits.github.io/
