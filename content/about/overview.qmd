@@ -2,9 +2,12 @@
 Welcome to my personal site! I'm Simon Ghyselincks, a PhD-track student at the University of British Columbia (UBC) in the Department of Computer Science. 
 
 
-## Academics and Projects
+## Academics
+I completed my BASc in Engineering Physics with a minor in Computer Science at UBC in 2025. My undergraduate two-year senior capstone project was "Learning to Balance" which explored the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about it [here](/content/projects/RLUnicycle/introduction.qmd).
 
-I am currently working with [Eldad Haber](https://scholar.google.ca/citations?user=NZmEIS8AAAAJ&hl=en) from UBC Earth and Ocean Sciences and [Michael Friedlander](https://friedlander.io/) in Computer Science on generative AI and optimization with application to geophysics. My recent work explores the application of advances in normalizing flows with stochastic interpolants to generate 3d models of the earth's crust. My undergraduate two-year senior capstone project is "Learning to Balance" which explores the application of reinforcement learning to a reaction wheel robot with complex dynamics. Read more about my projects [here](/content/projects/projects.qmd).
+I am currently working with [Eldad Haber](https://scholar.google.ca/citations?user=NZmEIS8AAAAJ&hl=en) from UBC Earth and Ocean Sciences and [Michael Friedlander](https://friedlander.io/) in Computer Science on generative AI and optimization with applications to geophysics and other fields. You can find out more about my recent publications [here](/content/publications/index.qmd).
+
+
 
 <!-- ## Looking Forward
 
