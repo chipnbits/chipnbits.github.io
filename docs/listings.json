@@ -2,6 +2,8 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/Johnson-Lindenstrauss/index.html",
+      "/blog/posts/Johnson-Lindenstrauss/index_obs.html",
       "/blog/posts/CAP-conference-poster/index.html",
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
