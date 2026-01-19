@@ -43,3 +43,5 @@ format:
     css: styles.css
     toc: true
     include-in-header: google-site-verification.html
+    filters: 
+      - shinylive

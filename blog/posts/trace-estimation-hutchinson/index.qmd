@@ -79,7 +79,7 @@ $$
 ## Abstract
 Implicit matrix trace estimation using only matrix-vector products is a problem that commonly arises in many areas of scientific computing and machine learning. When the matrix is only accessible through matrix-vector products $\mA \vv$ or is excessively large, classical deterministic methods for computing the trace are infeasible. This work presents a survey and comparative analysis of randomized algorithms for trace estimation, building from the foundational Hutchinson's estimator to modern variance-reduced techniques like Hutch++. We synthesize the evolution of theoretical guarantees, moving from initial variance-based analysis to rigorous $(\epsilon, \delta)$-concentration bounds. Furthermore, we evaluate the practical performance of these methods through numerical experiments on matrices with varying spectral properties. We empirically verify the optimal convergence rates of Hutch++ on matrices with decaying spectra and discuss the trade-offs between different probing vector distributions. 
 
-Code is available at \url{https://gist.github.com/chipnbits/a0f572042b04e5292cde6038be407002}.
+Code is available at [GitHub Gist](https://gist.github.com/chipnbits/a0f572042b04e5292cde6038be407002)
 :::
 
 # Introduction
@@ -406,6 +406,17 @@ We empirically verified the theoretical bounds using a modestly large SPSD matri
 
 **Evaluation Metrics**
 For each of these tasks, the Rademacher and Gaussian variants of Hutchinson and Hutch++ were run for a range of MVP budgets $m$. The true trace $\tr(\mA)$ was computed directly for error calculation, and the convergence behavior was recorded. The relative error $|\tr(\mA) - T|/\tr(\mA)$ is averaged over 50 trials, with the variance shown to $\pm \frac{1}{2}\sigma$.
+
+## Code and Trials
+
+Select a matrix type and adjust the parameters to see how Hutch++ outperforms standard Hutchinson in real-time.
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.fft import dct, idct
+import time
+```
 
 ## Results and Discussion
 The results are presented in @fig-hutch-vs-hutchpp.
