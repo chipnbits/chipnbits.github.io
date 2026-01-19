@@ -63,7 +63,7 @@ div.csl-indent {
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-3afa3c1d40b2b6596a68a89724d4a96e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -186,17 +186,12 @@ window.Quarto = {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
   <ul class="collapse">
   <li><a href="#trace-estimation-applications" id="toc-trace-estimation-applications" class="nav-link" data-scroll-target="#trace-estimation-applications"><span class="header-section-number">1.1</span> Trace Estimation Applications</a></li>
-  <li><a href="#project-contribution" id="toc-project-contribution" class="nav-link" data-scroll-target="#project-contribution"><span class="header-section-number">1.2</span> Project Contribution</a></li>
+  <li><a href="#scope-of-this-review" id="toc-scope-of-this-review" class="nav-link" data-scroll-target="#scope-of-this-review"><span class="header-section-number">1.2</span> Scope of this Review</a></li>
   </ul></li>
   <li><a href="#sec-background" id="toc-sec-background" class="nav-link" data-scroll-target="#sec-background"><span class="header-section-number">2</span> Background</a>
   <ul class="collapse">
   <li><a href="#notation-and-definitions" id="toc-notation-and-definitions" class="nav-link" data-scroll-target="#notation-and-definitions"><span class="header-section-number">2.1</span> Notation and Definitions</a></li>
-  <li><a href="#trace-and-spsd-matrices" id="toc-trace-and-spsd-matrices" class="nav-link" data-scroll-target="#trace-and-spsd-matrices"><span class="header-section-number">2.2</span> Trace and SPSD Matrices</a>
-  <ul class="collapse">
-  <li><a href="#trace-as-the-sum-of-eigenvalues." id="toc-trace-as-the-sum-of-eigenvalues." class="nav-link" data-scroll-target="#trace-as-the-sum-of-eigenvalues."><span class="header-section-number">2.2.1</span> Trace as the sum of eigenvalues.</a></li>
-  <li><a href="#symmetric-positive-semi-definite-matrices" id="toc-symmetric-positive-semi-definite-matrices" class="nav-link" data-scroll-target="#symmetric-positive-semi-definite-matrices"><span class="header-section-number">2.2.2</span> Symmetric Positive Semi-Definite Matrices</a></li>
-  <li><a href="#matrix-vector-product-oracle" id="toc-matrix-vector-product-oracle" class="nav-link" data-scroll-target="#matrix-vector-product-oracle"><span class="header-section-number">2.2.3</span> Matrix-Vector Product Oracle</a></li>
-  </ul></li>
+  <li><a href="#trace-and-spsd-matrices" id="toc-trace-and-spsd-matrices" class="nav-link" data-scroll-target="#trace-and-spsd-matrices"><span class="header-section-number">2.2</span> Trace and SPSD Matrices</a></li>
   <li><a href="#problem-statement" id="toc-problem-statement" class="nav-link" data-scroll-target="#problem-statement"><span class="header-section-number">2.3</span> Problem Statement</a></li>
   <li><a href="#prior-work-and-complexity-bounds" id="toc-prior-work-and-complexity-bounds" class="nav-link" data-scroll-target="#prior-work-and-complexity-bounds"><span class="header-section-number">2.4</span> Prior Work and Complexity Bounds</a></li>
   </ul></li>
@@ -208,9 +203,27 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#gaussian-estimator-t_gm-example" id="toc-gaussian-estimator-t_gm-example" class="nav-link" data-scroll-target="#gaussian-estimator-t_gm-example"><span class="header-section-number">4.1</span> Gaussian Estimator <span class="math inline">\(T_{GM}\)</span> Example</a>
   <ul class="collapse">
-  <li><a href="#weak-epsilon-delta-bound-for-t_gm" id="toc-weak-epsilon-delta-bound-for-t_gm" class="nav-link" data-scroll-target="#weak-epsilon-delta-bound-for-t_gm"><span class="header-section-number">4.1.1</span> Weak <span class="math inline">\((\epsilon, \delta)\)</span> Bound for <span class="math inline">\(T_{GM}\)</span></a></li>
+  <li><a href="#weak-epsilon-delta-bound-for-t_gm" id="toc-weak-epsilon-delta-bound-for-t_gm" class="nav-link" data-scroll-target="#weak-epsilon-delta-bound-for-t_gm">Weak <span class="math inline">\((\epsilon, \delta)\)</span> Bound for <span class="math inline">\(T_{GM}\)</span></a></li>
   </ul></li>
   <li><a href="#summary-of-avron-and-toledo-analysis" id="toc-summary-of-avron-and-toledo-analysis" class="nav-link" data-scroll-target="#summary-of-avron-and-toledo-analysis"><span class="header-section-number">4.2</span> Summary of Avron and Toledo Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-hutchplusplus" id="toc-sec-hutchplusplus" class="nav-link" data-scroll-target="#sec-hutchplusplus"><span class="header-section-number">5</span> Hutch++: Variance Reduction via Low-Rank Approximation</a>
+  <ul class="collapse">
+  <li><a href="#theoretical-guarantees" id="toc-theoretical-guarantees" class="nav-link" data-scroll-target="#theoretical-guarantees"><span class="header-section-number">5.1</span> Theoretical Guarantees</a></li>
+  </ul></li>
+  <li><a href="#sec-experiments" id="toc-sec-experiments" class="nav-link" data-scroll-target="#sec-experiments"><span class="header-section-number">6</span> Numerical Experiments</a>
+  <ul class="collapse">
+  <li><a href="#experimental-setup" id="toc-experimental-setup" class="nav-link" data-scroll-target="#experimental-setup"><span class="header-section-number">6.1</span> Experimental Setup</a></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion"><span class="header-section-number">6.2</span> Results and Discussion</a></li>
+  </ul></li>
+  <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">7</span> Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#future-work-and-applications" id="toc-future-work-and-applications" class="nav-link" data-scroll-target="#future-work-and-applications"><span class="header-section-number">7.1</span> Future Work and Applications</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.2</span> Summary</a></li>
+  </ul></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">8</span> Appendix</a>
+  <ul class="collapse">
+  <li><a href="#stronger-bound-for-t_gm" id="toc-stronger-bound-for-t_gm" class="nav-link" data-scroll-target="#stronger-bound-for-t_gm">Stronger Bound for <span class="math inline">\(T_{GM}\)</span></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -260,6 +273,26 @@ window.Quarto = {
 </header>
 
 
+<style>
+/* BOXED THEOREMS/DEFINITIONS */
+.definition, .theorem, .lemma, .proposition {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #444;
+  padding: 1em;
+  border-radius: 4px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* THEOREM TITLE STYLING (The Fix) */
+span.theorem-title {
+  display: block;          /* Forces the text to the next line */
+  margin-bottom: 0.5rem;   /* Adds space between title and body */
+  font-weight: 900;        /* Make it extra bold */
+  color: #333;
+}
+</style>
 <p><span class="math display">\[
 \newcommand{\mA}{\mathbf{A}}
 \newcommand{\mI}{\mathbf{I}}
@@ -275,10 +308,9 @@ window.Quarto = {
 \newcommand{\vw}{\mathbf{w}}
 \newcommand{\va}{\mathbf{a}}
 \newcommand{\ve}{\mathbf{e}}
-\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\tr}{\operatorname{Tr}}
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Pr}{\mathbb{P}}
-\newcommand{\mathbb}{\mathbf}
 \]</span></p>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -290,21 +322,22 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Implicit matrix trace estimation using only matrix-vector products is a problem that commonly arises in many areas of scientific computing and machine learning. When the matrix is only accessible through matrix-vector products <span class="math inline">\(\mA \vv\)</span> or is excessively large, classical deterministic methods for computing the trace are infeasible. This work explores randomized algorithms for trace estimation, building upon Hutchinson’s estimator and its variants. The theoretical bounds, including <span class="math inline">\((\epsilon, \delta)\)</span>-approximations, are analyzed, and the performance of these methods is evaluated through numerical experiments on matrices with different spectral properties. A review of prior work and recent advancements in this area is also provided.</p>
+<p>Implicit matrix trace estimation using only matrix-vector products is a problem that commonly arises in many areas of scientific computing and machine learning. When the matrix is only accessible through matrix-vector products <span class="math inline">\(\mA \vv\)</span> or is excessively large, classical deterministic methods for computing the trace are infeasible. This work presents a survey and comparative analysis of randomized algorithms for trace estimation, building from the foundational Hutchinson’s estimator to modern variance-reduced techniques like Hutch++. We synthesize the evolution of theoretical guarantees, moving from initial variance-based analysis to rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-concentration bounds. Furthermore, we evaluate the practical performance of these methods through numerical experiments on matrices with varying spectral properties. We empirically verify the optimal convergence rates of Hutch++ on matrices with decaying spectra and discuss the trade-offs between different probing vector distributions.</p>
+<p>Code is available at .</p>
 </div>
 </div>
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>Implicit matrix trace estimation for a matrix <span class="math inline">\(\mA\)</span> using only the matrix-vector product <span class="math inline">\(\mA \vv\)</span> over some set of <span class="math inline">\(\mA \vv_1,\mA \vv_2,...\mA \vv_m \in \mathbb{R}^N\)</span> is a problem that commonly arises in scientific computing and machine learning <span class="citation" data-cites="UbaruSaad2018">(<a href="#ref-UbaruSaad2018" role="doc-biblioref">Ubaru and Saad 2018</a>)</span>. When <span class="math inline">\(\mA\)</span> is only accessible through the map <span class="math inline">\(x \mapsto \mA x\)</span>, there is no direct access to its matrix elements, and we call this an implicit representation. Even in the case where <span class="math inline">\(\mA\)</span> is explicitly computable, it may be of an excessively large dimension, making it infeasible to store and compute the full matrix. Similarly, for <span class="math inline">\(\mA \in \mathbb{R}^{N \times N}\)</span>, although <span class="math inline">\(\tr(\mA)\)</span> is simply the sum of diagonal elements, it requires evaluating <span class="math inline">\(\sum_{i\in [N]} e_i^\top \mA e_i\)</span>, which for large <span class="math inline">\(n\)</span> may be computationally expensive, intractable, or unnecessary for the level of precision required.</p>
 <p>Often these problems arise within an iterative process, where an estimation will suffice under the expectation that future algorithmic steps will further refine the problem solution <span class="citation" data-cites="woodruffOptimalQueryComplexities">(<a href="#ref-woodruffOptimalQueryComplexities" role="doc-biblioref">Woodruff, Zhang, and Zhang 2022</a>)</span>. This problem formulation is well suited to randomized numerical linear algebra (RNLA) techniques, and as discussed below, can even be effectively paired with other randomized algorithms such as low-rank matrix estimation for further efficiency gains <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span>.</p>
-<p>The goal of trace <em>estimation</em> then is to find an approximation within some error tolerance such that the total required matrix-vector products scale sublinearly in <span class="math inline">\(N\)</span>, avoiding <span class="math inline">\(O(N)\)</span> complexity. A naive approach would be to randomly sample a subset of the diagonal elements of <span class="math inline">\(\mA\)</span> as an estimator, but the diagonal elements may be highly concentrated, resulting in the same variance issues posed by sparse sampling <span class="citation" data-cites="Harvey2021Randomized2">(see <a href="#ref-Harvey2021Randomized2" role="doc-biblioref">Harvey 2021</a>, Ch 24.3.1)</span>. Thus we must employ more sophisticated methods to gain better approximations at a cheaper cost, as measured by both computational complexity and the total matrix-vector products. This motivates the need for generalizable methods capable of probing the structure of <span class="math inline">\(\mA\)</span> using a limited number of matrix-vector products or other implicit representations.</p>
+<p>The goal of trace <em>estimation</em> then is to find an approximation within some error tolerance such that the total required matrix-vector products scale sublinearly in <span class="math inline">\(N\)</span>, avoiding <span class="math inline">\(O(N)\)</span> complexity. A naive approach would be to randomly sample a subset of the diagonal elements of <span class="math inline">\(\mA\)</span> as an estimator, but the diagonal elements may be highly concentrated, resulting in the same variance issues posed by sparse sampling <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">(<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">Avron and Toledo 2011</a>)</span>. Thus we must employ more sophisticated methods to gain better approximations at a cheaper cost, as measured by both computational complexity and the total matrix-vector products. This motivates the need for generalizable methods capable of probing the structure of <span class="math inline">\(\mA\)</span> using a limited number of matrix-vector products or other implicit representations.</p>
 <section id="trace-estimation-applications" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="trace-estimation-applications"><span class="header-section-number">1.1</span> Trace Estimation Applications</h2>
-<p>Examples of trace estimation problems are abundant <span class="citation" data-cites="UbaruSaad2018">(<a href="#ref-UbaruSaad2018" role="doc-biblioref">Ubaru and Saad 2018</a>)</span>. In deep learning, large and complex models often require the estimation of traces of Hessian matrices <span class="math inline">\(\mH\)</span> for optimization and uncertainty quantification. A common architecture such as ResNet-50 has a <span class="math inline">\(25 \text{ million} \times 25 \text{ million}\)</span> matrix <span class="math inline">\(\mH\)</span> that is prohibitive to store, but whose matrix-vector product <span class="math inline">\(\mH \vv\)</span> can be efficiently computed using Pearlmutter’s trick <span class="citation" data-cites="pearlmutter1994fast">(<a href="#ref-pearlmutter1994fast" role="doc-biblioref">Pearlmutter 1994</a>)</span>. High-dimensional trace estimation is also used for training Physics Informed Neural Networks (PINNs) <span class="citation" data-cites="HU2024116883">(<a href="#ref-HU2024116883" role="doc-biblioref">Hu et al. 2024</a>)</span>. In probabilistic machine learning, trace estimation is used in score-matching methods <span class="citation" data-cites="haber_lecture11_2025">(<a href="#ref-haber_lecture11_2025" role="doc-biblioref">Haber 2024</a>)</span>.</p>
+<p>Examples of trace estimation problems are abundant <span class="citation" data-cites="UbaruSaad2018">(<a href="#ref-UbaruSaad2018" role="doc-biblioref">Ubaru and Saad 2018</a>)</span>. In deep learning, large and complex models often require the estimation of traces of Hessian matrices <span class="math inline">\(\mH\)</span> for optimization and uncertainty quantification. A common architecture such as ResNet-50 has a <span class="math inline">\(25 \text{ million} \times 25 \text{ million}\)</span> matrix <span class="math inline">\(\mH\)</span> that is prohibitive to store, but whose matrix-vector product <span class="math inline">\(\mH \vv\)</span> can be efficiently computed using Pearlmutter’s trick <span class="citation" data-cites="pearlmutter1994fast">(<a href="#ref-pearlmutter1994fast" role="doc-biblioref">Pearlmutter 1994</a>)</span>. High-dimensional trace estimation is also used for training Physics Informed Neural Networks (PINNs) <span class="citation" data-cites="HU2024116883">(<a href="#ref-HU2024116883" role="doc-biblioref">Hu et al. 2024</a>)</span>. In probabilistic machine learning, trace estimation is used in score-matching methods <span class="citation" data-cites="Song2019SlicedSM">(<a href="#ref-Song2019SlicedSM" role="doc-biblioref">Song et al. 2019</a>)</span>.</p>
 </section>
-<section id="project-contribution" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="project-contribution"><span class="header-section-number">1.2</span> Project Contribution</h2>
-<p>This work explores and summarizes the progression of Randomized Numerical Linear Algebra (RNLA) methods for trace estimation, analyzes their theoretical properties, and evaluates their performance through numerical experiments. Specifically, we:</p>
+<section id="scope-of-this-review" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="scope-of-this-review"><span class="header-section-number">1.2</span> Scope of this Review</h2>
+<p>This article synthesizes the progression of Randomized Numerical Linear Algebra (RNLA) methods for trace estimation, analyzes their theoretical properties, and evaluates their performance through numerical experiments. Specifically, we:</p>
 <ol type="1">
 <li>Review the foundational Hutchinson’s estimator <span class="citation" data-cites="Hutchinson01011990">(<a href="#ref-Hutchinson01011990" role="doc-biblioref">Hutchinson 1990</a>)</span>.</li>
 <li>Analyze the <span class="math inline">\((\epsilon, \delta)\)</span> bounds derived by <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>.</li>
@@ -318,13 +351,14 @@ window.Quarto = {
 <section id="notation-and-definitions" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="notation-and-definitions"><span class="header-section-number">2.1</span> Notation and Definitions</h2>
 <p>In this work, lower case <span class="math inline">\(a\)</span> denotes a scalar, capital <span class="math inline">\(A\)</span> denotes a random variable, lower case bold <span class="math inline">\(\va\)</span> denotes a vector, and upper case bold <span class="math inline">\(\mA\)</span> denotes a matrix. A summary of the notation used is found below in <a href="#tbl-notation" class="quarto-xref">Table&nbsp;1</a>.</p>
-<div id="tbl-notation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div style="max-width: 400px; margin: 0 auto;">
+<div id="tbl-notation" class="table-sm quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Summary of Notation
 </figcaption>
 <div aria-describedby="tbl-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<table class="table-sm small caption-top table">
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
@@ -373,14 +407,15 @@ Table&nbsp;1: Summary of Notation
 </div>
 </figure>
 </div>
+</div>
 </section>
 <section id="trace-and-spsd-matrices" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="trace-and-spsd-matrices"><span class="header-section-number">2.2</span> Trace and SPSD Matrices</h2>
 <p>The trace operator <span class="math inline">\(\tr(\mA)\)</span> is defined only over square matrices and has two equivalent definitions: either the sum of the diagonal elements or the sum of the eigenvalues <span class="math inline">\(\lambda_1, \lambda_2, \ldots, \lambda_N\)</span> of <span class="math inline">\(\mA\)</span>, <span class="math display">\[
 \tr(\mA) := \sum_{i=1}^N \mA_{ii} = \sum_{i=1}^N \lambda_i.
 \]</span></p>
-<section id="trace-as-the-sum-of-eigenvalues." class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="trace-as-the-sum-of-eigenvalues."><span class="header-section-number">2.2.1</span> Trace as the sum of eigenvalues.</h3>
+<section id="trace-as-the-sum-of-eigenvalues" class="level4">
+<h4 class="anchored" data-anchor-id="trace-as-the-sum-of-eigenvalues">Trace as the sum of eigenvalues</h4>
 <p>Recall that for a square matrix <span class="math inline">\(\mA\)</span>, the eigenvalues are defined as the roots of the characteristic polynomial <span class="math display">\[
 p(t) := \det(\mA - t\mI).
 \]</span> The expansion of the determinant has <span class="math inline">\(t^n\)</span> and <span class="math inline">\(t^{n-1}\)</span> coefficients that will only arise from the products of diagonal elements. The first two terms then are <span class="math display">\[
@@ -389,12 +424,12 @@ p(t)= (-1)^n \left(t^n - \tr(\mA) t^{n-1} + \cdots + (-1)^n \det(\mA)\right),
 p(t) = \prod_{i=1}^N (\lambda_i - t) = (-1)^n \left( t^n - \left(\sum_{i=1}^N \lambda_i\right) t^{n-1} + \cdots + \prod_{i=1}^N \lambda_i \right).
 \]</span> Since the two definitions are equivalent and valid for all <span class="math inline">\(t\)</span>, the coefficients must be equal, and we have shown that <span class="math inline">\(\tr(\mA) = \sum_{i=1}^N \lambda_i\)</span>.</p>
 </section>
-<section id="symmetric-positive-semi-definite-matrices" class="level3" data-number="2.2.2">
-<h3 data-number="2.2.2" class="anchored" data-anchor-id="symmetric-positive-semi-definite-matrices"><span class="header-section-number">2.2.2</span> Symmetric Positive Semi-Definite Matrices</h3>
+<section id="symmetric-positive-semi-definite-matrices" class="level4">
+<h4 class="anchored" data-anchor-id="symmetric-positive-semi-definite-matrices">Symmetric Positive Semi-Definite Matrices</h4>
 <p>The analysis and algorithms ahead are restricted to symmetric positive semi-definite (SPSD) matrices, where <span class="math inline">\(A = A^\top\)</span> and all eigenvalues are non-negative (<span class="math inline">\(\lambda_i \geq 0\)</span>), denoted <span class="math inline">\(\mA \succeq 0\)</span>. This restriction is commonly imposed in the literature, as it simplifies the theoretical analysis and many of the aforementioned practical problems have SPSD matrices <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span>, while analysis by <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> also assumes this. An SPSD matrix has useful properties such as real-valued eigenvalues, orthogonal eigenvectors, a diagonalizable form which coincides with the singular value decomposition, strictly non-negative diagonal elements, and a non-negative quadratic form <span class="math inline">\(\vv^\top \mA \vv \geq 0\)</span> for all <span class="math inline">\(\vv \in \mathbb{R}^n\)</span>.</p>
 </section>
-<section id="matrix-vector-product-oracle" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="matrix-vector-product-oracle"><span class="header-section-number">2.2.3</span> Matrix-Vector Product Oracle</h3>
+<section id="matrix-vector-product-oracle" class="level4">
+<h4 class="anchored" data-anchor-id="matrix-vector-product-oracle">Matrix-Vector Product Oracle</h4>
 <p>To generalize the problem setting to both large explicit and implicit matrices, we assume only that there exists an <em>oracle</em> that can compute matrix-vector products (MVPs) <span class="math inline">\(\mA \vz\)</span> for any vector <span class="math inline">\(\vz \in \mathbb{R}^N\)</span>. The oracle is assumed to operate at a fixed cost per query, such that the total computational cost of an algorithm is proportional to the number of queries made.</p>
 </section>
 </section>
@@ -411,6 +446,7 @@ p(t) = \prod_{i=1}^N (\lambda_i - t) = (-1)^n \left( t^n - \left(\sum_{i=1}^N \l
 <section id="prior-work-and-complexity-bounds" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="prior-work-and-complexity-bounds"><span class="header-section-number">2.4</span> Prior Work and Complexity Bounds</h2>
 <p><span class="citation" data-cites="Hutchinson01011990">Hutchinson (<a href="#ref-Hutchinson01011990" role="doc-biblioref">1990</a>)</span> first proposed a randomized algorithm for an unbiased trace estimator in 1989 in the context of calculating Laplacian smoothing splines. Its advancements over prior work include the use of Rademacher random variables instead of Gaussian vector entries, and performing a variance analysis of the estimator. However, the analysis does not provide rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-bounds for the estimator, focusing instead on variance alone. Later work by <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> in 2011 revisits Hutchinson’s estimator and provides the first rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-bounds for a variety of related estimators, including Hutchinson’s. Their contributions include constructing methods that are oblivious to the basis of <span class="math inline">\(\mA\)</span> and proving rigorous <span class="math inline">\(O(\epsilon^{-2} \ln(1/\delta))\)</span> bounds for the number of samples required. More recent work by <span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> improves these guarantees using Hutch++, achieving only (O(^{-1} (1/))) matrix–vector products for a ((1)) approximation by combining the exact trace estimate for a randomized low-rank approximation with a stochastic estimator for the residual. A summary of prior work is given in <a href="#tbl-prior-work" class="quarto-xref">Table&nbsp;2</a>.</p>
+<div style="max-width: 600px; margin: 0 auto;">
 <div id="tbl-prior-work" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prior-work-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -451,6 +487,7 @@ Table&nbsp;2: Summary of Prior Work on Trace Estimation
 </div>
 </figure>
 </div>
+</div>
 </section>
 </section>
 <section id="sec-hutchinson" class="level1" data-number="3">
@@ -458,8 +495,8 @@ Table&nbsp;2: Summary of Prior Work on Trace Estimation
 <p><span class="citation" data-cites="Hutchinson01011990">Hutchinson (<a href="#ref-Hutchinson01011990" role="doc-biblioref">1990</a>)</span> proposes the Rademacher-based estimator <span class="math inline">\(T_{H}\)</span> <span class="math display">\[
 T_{H} := \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\pm 1\}^N \text{ i.i.d. Rademacher random vectors,}
 \]</span> with <span class="math inline">\(m\)</span> calls to the MVP oracle. This estimator is unbiased, i.e., <span class="math inline">\(\mathbb{E}[T_H] = \tr(\mA)\)</span>.</p>
-<section id="unbiased-estimators" class="level4" data-number="3.0.0.1">
-<h4 data-number="3.0.0.1" class="anchored" data-anchor-id="unbiased-estimators"><span class="header-section-number">3.0.0.1</span> Unbiased Estimators</h4>
+<section id="unbiased-estimators" class="level4">
+<h4 class="anchored" data-anchor-id="unbiased-estimators">Unbiased Estimators</h4>
 <p>Let <span class="math inline">\(\vv\)</span> be a random vector with i.i.d. entries <span class="math inline">\(v_i \sim V\)</span> such that <span class="math inline">\(\mathbb{E}[v_i] = 0\)</span> and <span class="math inline">\(\mathbb{E}[v_i^2] = \sigma^2\)</span>. Then <span class="math display">\[
 \begin{align}
 \mathbb{E}[\vv^\top \mA \vv]
@@ -494,8 +531,8 @@ T_{H} := \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\pm 1\
 \mathbb{E}[T_H] = \tr(\mA), \quad \Var(T_H) = \frac{1}{m} \left( 2 \sum_{i \neq j} A_{ij}^2 \right).
 \]</span> This is the minimum variance unbiased estimator using i.i.d. entries with a mean of zero for the random vectors <span class="math inline">\(\vv_j\)</span>, <em>for a fixed coordinate system</em>.</p>
 </section>
-<section id="variance-analysis" class="level4" data-number="3.0.0.2">
-<h4 data-number="3.0.0.2" class="anchored" data-anchor-id="variance-analysis"><span class="header-section-number">3.0.0.2</span> Variance Analysis</h4>
+<section id="variance-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="variance-analysis">Variance Analysis</h4>
 <p>The variance only depends on the off-diagonal elements of <span class="math inline">\(\mA\)</span>, so in the special case of a diagonal matrix, the variance is zero. In the context of SPSD matrices, this would amount to the spectral basis being aligned with the standard basis. This estimator clearly performs best when the diagonal elements dominate the off-diagonal elements, or equivalently when the eigenvectors are closely aligned with the standard basis. This poses the question: are there better choices of random vectors that are oblivious to the basis of <span class="math inline">\(\mA\)</span>? If the eigenbasis of <span class="math inline">\(\mA\)</span> is known, then one could trivially perform a change of basis on <span class="math inline">\(\vv\)</span> to align it with the diagonalization of <span class="math inline">\(\mA\)</span>.</p>
 <p>Rademacher vectors are sensitive to the basis in which <span class="math inline">\(\mA\)</span> is represented, while the Gaussian version of the estimator is rotationally invariant, however at the cost of strictly higher variance. Given i.i.d. standard Gaussian vector entries, the fourth moment is <span class="math inline">\(\mathbb{E}[G^4] = 3\)</span>, giving the Gaussian trace estimator <span class="math display">\[
 \Var(T_G) =  \frac{2}{m} \left( \sum_{i \neq j} A_{ij}^2 + \sum_{i} A_{ii}^2 \right)= \frac{2}{m} \|\mA\|_F^2.
@@ -509,30 +546,31 @@ T_{H} := \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\pm 1\
 </section>
 <section id="sec-avron" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Theoretical Analysis of <span class="math inline">\((\epsilon, \delta)\)</span>-Estimators</h1>
-<p><span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> revisit the Hutchinson estimator in 2011 to provide the first instance of rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-guarantees as formulated in <a href="#def-estimator" class="quarto-xref">Definition&nbsp;1</a>. Their work generalizes the analysis to a broader class of probing vectors than solely Rademacher or Gaussian and addresses the issue of basis sensitivity with randomized mixing matrices.</p>
-<div id="def-avron-estimators" class="theorem definition">
+<p><span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> revisit the Hutchinson estimator in 2011 to provide the first instance of rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-guarantees. Their work generalizes the analysis to a broader class of probing vectors than solely Rademacher or Gaussian and addresses the issue of basis sensitivity with randomized mixing matrices.</p>
+<div id="def-avron" class="definition theorem">
 <p><span class="theorem-title"><strong>Definition 2 (Avron and Toledo Estimators)</strong></span> The three main estimators analyzed by Avron and Toledo are: <span class="math display">\[
-\begin{align*}
+\begin{align}
     T_{GM} &amp;= \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\vv \mid \text{ i.i.d. entries }\sim \mathcal{N}(0,1)\}, \\
     T_{RM} &amp;= \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\vv \mid \|\vv\|=N, \ \mathbb{E}\vv^\top \mA \vv=\tr \mA\}, \\
     T_{HM} &amp;= \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\vv \mid \text{ i.i.d. entries } \sim \{-1,1\} \}, \\
     T_{UM} &amp;= \frac{N}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\ve_1, \ve_2, \ldots, \ve_N\}.
-\end{align*}
+\end{align}
 \]</span></p>
 </div>
 <p>The normalized Rayleigh-quotient estimator <span class="math inline">\(T_{RM}\)</span> and the unit vector estimator <span class="math inline">\(T_{UM}\)</span> are new forms not previously discussed by Hutchinson. The advantage of the newly proposed estimators is that they require fewer random bits to generate—<span class="math inline">\(O(\log n)\)</span> versus <span class="math inline">\(\Omega(n)\)</span> for the others—as their sample spaces are smaller. To address the basis sensitivity posed by the sparse sampling regime of <span class="math inline">\(T_{UM}\)</span>, the authors use a unitary random mixing matrix <span class="math inline">\(\mathcal{F}=\mF \mD\)</span> based on the Fast Johnson-Lindenstrauss (FJL) Transform <span class="citation" data-cites="ailonChazelle2006ApproximateNearest">(<a href="#ref-ailonChazelle2006ApproximateNearest" role="doc-biblioref">Ailon and Chazelle 2006</a>)</span>.</p>
-<div id="def-mixing-matrix" class="theorem definition">
+<div id="def-mixing" class="definition theorem">
 <p><span class="theorem-title"><strong>Definition 3 (Randomized Mixing Matrix)</strong></span> A randomized mixing matrix <span class="math inline">\(\mathcal{F} = \mF \mD\)</span> is composed of a fixed unitary matrix <span class="math inline">\(\mF\)</span> (e.g., Discrete Fourier, Discrete Cosine, or Walsh-Hadamard matrix) and a random diagonal matrix <span class="math inline">\(\mD\)</span> with i.i.d. Rademacher entries.</p>
 </div>
-<p>While there are subtleties to the cost of forming vectors <span class="math inline">\(\vv_j\)</span> in practice, the MVP computation is typically the dominant cost, so Fourier-type transforms are suggested by Avron and Toledo, in contrast to the Walsh-Hadamard used in the analysis of FJL which requires <span class="math inline">\(N\)</span> to be padded to a power of two <span class="citation" data-cites="Harvey2021Randomized2">(<a href="#ref-Harvey2021Randomized2" role="doc-biblioref">Harvey 2021</a>)</span>.</p>
-<p>A summary and comparison of the estimators and their properties as derived by <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> is given in <a href="#tbl-estimator-comparison" class="quarto-xref">Table&nbsp;3</a>. The basis-oblivious estimators <span class="math inline">\(T_{GM}\)</span> and <span class="math inline">\(T_{UM}\)</span> (mixed) have bounds that do not depend on the structure of <span class="math inline">\(\mA\)</span>, while the others do. The mixed unit vector, however, does depend on the dimension <span class="math inline">\(n\)</span>. Note that the variance for <span class="math inline">\(T_{RM}\)</span> and <span class="math inline">\(T_{UM}\)</span> (mixed) are not given. Notice that despite worse variance, <span class="math inline">\(T_{GM}\)</span> has a better <span class="math inline">\((\epsilon,\delta)\)</span> bound. All of the results are of order <span class="math inline">\(\epsilon^{-2} \ln(1/\delta)\)</span>, indicating a large similarity in their performance and an unfortunate limitation in the error bound. To halve the error we require four times as many samples; however, this result is later improved upon by Hutch++ in Section~<span class="math inline">\(\ref{sec:hutchplusplus}\)</span>.</p>
-<div id="tbl-estimator-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<p>While there are subtleties to the cost of forming vectors <span class="math inline">\(\vv_j\)</span> in practice, the MVP computation is typically the dominant cost, so Fourier-type transforms are suggested by Avron and Toledo, in contrast to the Walsh-Hadamard used in the analysis of FJL which requires <span class="math inline">\(N\)</span> to be padded to a power of two <span class="citation" data-cites="ailonChazelle2006ApproximateNearest">(<a href="#ref-ailonChazelle2006ApproximateNearest" role="doc-biblioref">Ailon and Chazelle 2006</a>)</span>.</p>
+<p>A summary and comparison of the estimators and their properties as derived by <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> is given in <a href="#tbl-estimator-comparison" class="quarto-xref">Table&nbsp;3</a>. The basis-oblivious estimators <span class="math inline">\(T_{GM}\)</span> and <span class="math inline">\(T_{UM}\)</span> (mixed) have bounds that do not depend on the structure of <span class="math inline">\(\mA\)</span>, while the others do. The mixed unit vector, however, does depend on the dimension <span class="math inline">\(n\)</span>. Note that the variance for <span class="math inline">\(T_{RM}\)</span> and <span class="math inline">\(T_{UM}\)</span> (mixed) are not given. Notice that despite worse variance, <span class="math inline">\(T_{GM}\)</span> has a better <span class="math inline">\((\epsilon,\delta)\)</span> bound. All of the results are of order <span class="math inline">\(\epsilon^{-2} \ln(1/\delta)\)</span>, indicating a large similarity in their performance and an unfortunate limitation in the error bound. To halve the error we require four times as many samples; however, this result is later improved upon by Hutch++ in <a href="#sec-hutchplusplus" class="quarto-xref">Section&nbsp;5</a>.</p>
+<div style="max-width: 800px; margin: 0 auto;">
+<div id="tbl-estimator-comparison" class="table-sm quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-estimator-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random bit usage.
 </figcaption>
 <div aria-describedby="tbl-estimator-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<table class="table-sm small caption-top table">
 <colgroup>
 <col style="width: 25%">
 <col style="width: 25%">
@@ -543,37 +581,37 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 <tr class="header">
 <th style="text-align: left;">Estimator</th>
 <th style="text-align: left;">Variance</th>
-<th style="text-align: left;">Bound on # samples for <span class="math inline">\((\varepsilon,\delta)\)</span>-approx</th>
+<th style="text-align: left;">Bound on # samples <br> for <span class="math inline">\((\varepsilon,\delta)\)</span>-approx</th>
 <th style="text-align: left;">Random bits</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong><span class="math inline">\(T_{GM}\)</span> (Gaussian)</strong></td>
+<td style="text-align: left;"><span class="math inline">\(T_{GM}\)</span> (Gaussian)</td>
 <td style="text-align: left;"><span class="math inline">\(2\lVert A\rVert_F^2\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(20\varepsilon^{-2}\ln(2/\delta)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\Theta(n)\)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong><span class="math inline">\(T_{RM}\)</span> (Rayleigh-Quotient)</strong></td>
+<td style="text-align: left;"><span class="math inline">\(T_{RM}\)</span> (Rayleigh)</td>
 <td style="text-align: left;">–</td>
 <td style="text-align: left;"><span class="math inline">\(\tfrac12\,\varepsilon^{-2}n^{-2}\operatorname{rank}^2(\mA)\ln(2/\delta)\kappa_f^2(\mA)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\Theta(n)\)</span></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong><span class="math inline">\(T_{HM}\)</span> (Rademacher)</strong></td>
-<td style="text-align: left;"><span class="math inline">\(2\big(\lVert A\rVert_F^2-\sum_{i=1}^n A_{ii}^2\big)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(T_{HM}\)</span> (Rademacher)</td>
+<td style="text-align: left;"><span class="math inline">\(2\big(\lVert A\rVert_F^2-\sum A_{ii}^2\big)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(6 \epsilon^{-2}\ln\left(2 \operatorname{rank}(\mA)/\delta\right)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\Theta(\log n)\)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong><span class="math inline">\(T_{UM}\)</span> (Unit Vector)</strong></td>
-<td style="text-align: left;"><span class="math inline">\(n\sum_{i=1}^n A_{ii}^2-\tr^2(\mA)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(T_{UM}\)</span> (Unit Vector)</td>
+<td style="text-align: left;"><span class="math inline">\(n\sum A_{ii}^2-\tr^2(\mA)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\tfrac12\,\varepsilon^{-2}\ln(2/\delta)\,n\,\dfrac{\max_i A_{ii}}{\tr(\mA)}\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\Theta(\log n)\)</span></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong><span class="math inline">\(T_{UM}\)</span> (With Mixing <span class="math inline">\(\mathcal{F}\)</span>)</strong></td>
+<td style="text-align: left;"><span class="math inline">\(T_{UM}\)</span> (Mixed)</td>
 <td style="text-align: left;">–</td>
 <td style="text-align: left;"><span class="math inline">\(8\varepsilon^{-2}\ln(4n^2/\delta)\ln(4/\delta)\)</span></td>
 <td style="text-align: left;"><span class="math inline">\(\Theta(\log n)\)</span></td>
@@ -583,33 +621,199 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 </div>
 </figure>
 </div>
+</div>
 <section id="gaussian-estimator-t_gm-example" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="gaussian-estimator-t_gm-example"><span class="header-section-number">4.1</span> Gaussian Estimator <span class="math inline">\(T_{GM}\)</span> Example</h2>
-<p>For brevity, only one of the estimator derivations is given in detail, as the full proofs are available in <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>. Proceeding from the variance in Equation~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation, as shown by <span class="citation" data-cites="Harvey2021Randomized2">Harvey (<a href="#ref-Harvey2021Randomized2" role="doc-biblioref">2021, sec. 24.4</a>)</span>, so we can diagonalize <span class="math inline">\(\mA = \mU \Lambda \mU^\top\)</span> and consider <span class="math inline">\(\vw_j = \mU^\top \vv_j\)</span> as a Gaussian vector, without loss of generality. Then the estimator becomes:</p>
-<p><span class="math display">\[
-T_{GM} =\vv^\top \mA \vv = \frac{1}{m}\sum_j^{m}\sum_{i=1}^N \lambda_i w_{ij}^2 = \frac{1}{m}\sum_{i=1}^N \lambda_i \sum_{j=1}^m w_{ij}^2,
-\]</span></p>
-<p>where <span class="math inline">\(w_{ij} \sim \mathcal{N}(0,1)\)</span>, and so each <span class="math inline">\(w_{ij}^2\)</span> is a <span class="math inline">\(\chi^2\)</span> random variable with one degree of freedom. The sum of <span class="math inline">\(m\)</span> i.i.d. <span class="math inline">\(\chi^2\)</span> random variables is a <span class="math inline">\(\chi^2\)</span> random variable with <span class="math inline">\(m\)</span> degrees of freedom, <span class="math inline">\(\sum_j^m w_{ij}^2 \sim \chi^2_m\)</span>.</p>
+<p>For brevity, only one of the estimator derivations is given in detail, as the full proofs are available in <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>. Proceeding from the variance in Equation~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation so we can diagonalize <span class="math inline">\(\mA = \mU \Lambda \mU^\top\)</span> and consider <span class="math inline">\(\vw_j = \mU^\top \vv_j\)</span> as a Gaussian vector, without loss of generality. Then the estimator becomes <span class="math display">\[
+   T_{GM} =\vv^\top \mA \vv = \frac{1}{m}\sum_j^{m}\sum_{i=1}^N \lambda_i w_{ij}^2 = \frac{1}{m}\sum_{i=1}^N \lambda_i \sum_{j=1}^m w_{ij}^2,
+\]</span> where <span class="math inline">\(w_{ij} \sim \mathcal{N}(0,1)\)</span>, and so each <span class="math inline">\(w_{ij}^2\)</span> is a <span class="math inline">\(\chi^2\)</span> random variable with one degree of freedom. The sum of <span class="math inline">\(m\)</span> i.i.d. <span class="math inline">\(\chi^2\)</span> random variables is a <span class="math inline">\(\chi^2\)</span> random variable with <span class="math inline">\(m\)</span> degrees of freedom, <span class="math inline">\(\sum_j^m w_{ij}^2 \sim \chi^2_m\)</span>.</p>
 <p>The tail bounds for the <span class="math inline">\(\chi^2\)</span> distribution are well studied. Using the following lemma we can derive a weak <span class="math inline">\((\epsilon, \delta)\)</span> bound for <span class="math inline">\(T_{GM}\)</span>, after which a stronger bound by Chernoff-style analysis is given by Avron and Toledo.</p>
-<section id="weak-epsilon-delta-bound-for-t_gm" class="level3" data-number="4.1.1">
-<h3 data-number="4.1.1" class="anchored" data-anchor-id="weak-epsilon-delta-bound-for-t_gm"><span class="header-section-number">4.1.1</span> Weak <span class="math inline">\((\epsilon, \delta)\)</span> Bound for <span class="math inline">\(T_{GM}\)</span></h3>
-<div id="lem-chi-squared-tail" class="theorem lemma">
-<p><span class="theorem-title"><strong>Lemma 1 (Chi-Squared Tail Bound)</strong></span> Let <span class="math inline">\(X \sim \chi^2_m\)</span>. Then for any <span class="math inline">\(\epsilon \in (0,1)\)</span>, <span class="math display">\[
-\Pr\left[|X - m| \geq \epsilon m\right] \leq 2 \exp\left(-\frac{m}{8}\epsilon^2\right).
-\]</span> Source: <span class="citation" data-cites="Harvey2021Randomized2">Harvey (<a href="#ref-Harvey2021Randomized2" role="doc-biblioref">2021</a>, Lemma 24.2.4)</span></p>
+<section id="weak-epsilon-delta-bound-for-t_gm" class="level3">
+<h3 class="anchored" data-anchor-id="weak-epsilon-delta-bound-for-t_gm">Weak <span class="math inline">\((\epsilon, \delta)\)</span> Bound for <span class="math inline">\(T_{GM}\)</span></h3>
+<div id="lem-chi-squared" class="lemma theorem">
+<p><span class="theorem-title"><strong>Lemma 1 (Tail Bound for <span class="math inline">\(\chi^2\)</span>)</strong></span> Let <span class="math inline">\(X \sim \chi^2_m\)</span>. Then for any <span class="math inline">\(\epsilon \in (0,1)\)</span>, <span class="math display">\[
+    \Pr\left[|X - m| \geq \epsilon m\right] \leq 2 \exp\left(-\frac{m}{8}\epsilon^2\right).
+\]</span> Source: Lemma 24.2.4 in <span class="citation" data-cites="Harvey2021Randomized2">Harvey (<a href="#ref-Harvey2021Randomized2" role="doc-biblioref">2021</a>)</span>.</p>
 </div>
 <p>Let <span class="math inline">\(X_i = \sum_{j=1}^m w_{ij}^2\)</span>, then <span class="math inline">\(X_i \sim \chi^2_m\)</span> with <span class="math inline">\(\mathbb{E}[X_i] = m\)</span>. The estimator can be written as <span class="math display">\[
-T_{GM} = \frac{1}{m} \sum_{i=1}^N \lambda_i X_i.
-\]</span> <a href="#lem-chi-squared-tail" class="quarto-xref">Lemma&nbsp;1</a> gives <span class="math inline">\(\epsilon\)</span> failure probability in terms of <span class="math inline">\(m\)</span> such that <span class="math inline">\(\delta \leq 2 \exp\left(-\frac{m}{8}\epsilon^2\right)\)</span>. Then a standard union bound over all <span class="math inline">\(N\)</span> non-zero eigenvalues gives <span class="math inline">\(\delta_{\text{total}} \leq 2 \text{rank}(\mA) \exp\left(-\frac{m}{8}\epsilon^2\right)\)</span>. Solving for <span class="math inline">\(m\)</span> then gives the required number of samples for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation of <span class="math display">\[
-m \geq \frac{8}{\epsilon^2} \ln\left(\frac{2 \operatorname{rank}(\mA)}{\delta}\right).
+    T_{GM} = \frac{1}{m} \sum_{i=1}^N \lambda_i X_i.
+\]</span> <a href="#lem-chi-squared" class="quarto-xref">Lemma&nbsp;1</a> gives <span class="math inline">\(\epsilon\)</span> failure probability in terms of <span class="math inline">\(m\)</span> such that <span class="math inline">\(\delta \leq 2 \exp\left(-\frac{m}{8}\epsilon^2\right)\)</span>. Then a standard union bound over all <span class="math inline">\(N\)</span> non-zero eigenvalues gives <span class="math inline">\(\delta_{\text{total}} \leq 2 \text{rank}(\mA) \exp\left(-\frac{m}{8}\epsilon^2\right)\)</span>. Solving for <span class="math inline">\(m\)</span> then gives the required number of samples for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation of <span class="math display">\[
+    m \geq \frac{8}{\epsilon^2} \ln\left(\frac{2 \operatorname{rank}(\mA)}{\delta}\right).
 \]</span></p>
-<p>To improve this bound further, Avron and Toledo apply a Chernoff-style argument directly to the weighted sum of <span class="math inline">\(\chi^2\)</span> random variables, giving the final bound in <a href="#tbl-estimator-comparison" class="quarto-xref">Table&nbsp;3</a>. A detailed proof using elementary symmetric polynomials, Markov’s inequality, and moment generating functions for <span class="math inline">\(\chi^2\)</span> random variables is shown in Appendix <span class="math inline">\(\ref{app:stronger_bound}\)</span>.</p>
+<p>To improve this bound further, Avron and Toledo apply a Chernoff-style argument directly to the weighted sum of <span class="math inline">\(\chi^2\)</span> random variables, giving the final bound in <a href="#tbl-estimator-comparison" class="quarto-xref">Table&nbsp;3</a>. A detailed proof using elementary symmetric polynomials, Markov’s inequality, and moment generating functions for <span class="math inline">\(\chi^2\)</span> random variables is shown in the Appendix.</p>
 </section>
 </section>
 <section id="summary-of-avron-and-toledo-analysis" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="summary-of-avron-and-toledo-analysis"><span class="header-section-number">4.2</span> Summary of Avron and Toledo Analysis</h2>
 <p>By rederiving the bounds in a Chernoff-style for particular matrix structures, even stronger bounds can be attained in the Gaussian case. For <span class="math inline">\(T_{RM}\)</span> the proof proceeds with a much simpler Hoeffding’s inequality argument after bounding the output of the MVP. The original Hutchinson’s <span class="math inline">\(T_{HM}\)</span> is bounded by diagonalizing <span class="math inline">\(\mA\)</span> and applying a lemma for bounding the oblivious Rademacher vectors that have been mixed by the arbitrary unitary matrix that is the basis of <span class="math inline">\(\mA=\mU^\top \Lambda \mU\)</span>, then union bounding over <span class="math inline">\(\text{rank}(\mA)\)</span>, finally conjecturing a tighter bound without rank may exist. Comparing bounds directly between estimators is not always conclusive, as the authors themselves conjecture that they have not found the tightest bounds. The final estimator <span class="math inline">\(T_{UM}\)</span> is bounded similarly using a lemma for the mixed unit vectors.</p>
 <p>Their work shows that each estimator requires a specialized treatment to achieve their best possible <span class="math inline">\((\epsilon, \delta)\)</span> bounds, and that the basis sensitivity of estimators can be mitigated by the use of randomized mixing matrices. The <span class="math inline">\(m = O(\epsilon^{-2})\)</span> dependence on the number of samples greatly limits the practical use of the method for high-accuracy trace estimation, with the suggestion for example of using a <span class="math inline">\(\epsilon=0.01\)</span> estimate to seed iterative methods for higher accuracy. Reducing this dependence to <span class="math inline">\(\epsilon^{-1}\)</span> would make higher degrees of accuracy more feasible, motivating the development of Hutch++ in the next section. In many applications of trace estimation the eigenvalue spectrum is dominated by few large values, which contribute the majority of the variance, as is seen in Principal Component Analysis and the SVD decomposition. Given a method of isolating the bulk of the variance, a stochastic estimator can be improved, forming the motivation behind Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span>.</p>
+</section>
+</section>
+<section id="sec-hutchplusplus" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Hutch++: Variance Reduction via Low-Rank Approximation</h1>
+<p>Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span> forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound <span class="math inline">\(\delta\)</span> with regular Hutchinson <span class="math inline">\(T_{HM}\)</span>, the bound on MVP queries is <span class="math inline">\(m=O(1/\epsilon^2)\)</span>. Remarkably, Hutch++ improves this to <span class="math inline">\(m=O(1/\epsilon)\)</span>, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a>.</p>
+<div id="alg-hutchplusplus" class="definition theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 1 (Algorithm 1: Hutch++ Improved Trace Estimator)</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
+<strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
+<ol type="1">
+<li>Sample <span class="math inline">\(\mS \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> and <span class="math inline">\(\mG \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> with i.i.d. <span class="math inline">\(\{+1, -1\}\)</span> entries.</li>
+<li><strong>Matrix sketch:</strong> Compute an orthonormal basis <span class="math inline">\(\mQ \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> for the span of <span class="math inline">\(\mA \mS\)</span> (e.g., via QR decomposition).</li>
+<li><strong>Return</strong> Hutch++<span class="math inline">\((\mA) = \tr(\mQ^\top \mA \mQ) + \frac{3}{m} \tr(\mG^\top (\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top) \mG)\)</span>.</li>
+</ol>
+</div>
+<p>The algorithm splits the MVP budget <span class="math inline">\(m\)</span> into three equal portions to perform the following steps:</p>
+<ol type="1">
+<li><strong>Matrix sketch:</strong> <span class="math inline">\((m/3)\)</span> MVPs, generate a random sketching matrix <span class="math inline">\(\mA \mS\)</span> of size <span class="math inline">\(N \times m/3\)</span> (where <span class="math inline">\(s \approx m/3\)</span>) and compute the orthonormal basis <span class="math inline">\(\mQ\)</span> for its range.</li>
+<li><strong>Low-rank trace:</strong> <span class="math inline">\((m/3)\)</span> MVPs, the trace of a low-rank “heavy-hitters” approximation is computed implicitly as <span class="math inline">\(\tr(\hat{\mA}) = \tr(\mQ^\top \mA \mQ)\)</span>.</li>
+<li><strong>Hutchinson’s estimator on the residual:</strong> <span class="math inline">\((m/3)\)</span> MVPs, estimate <span class="math inline">\(\tr(\mA - \hat{\mA})\)</span> using standard Hutchinson estimator <span class="math inline">\(T_H\)</span> on the residual projection <span class="math inline">\((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)\)</span>.</li>
+</ol>
+<p>More explicitly, <span class="math inline">\(\tr(\mA)\)</span> is decomposed as <span class="math display">\[
+    \tr(\mA) = \tr(\hat \mA) + \tr(\mA - \hat \mA) = \tr(\mQ^\top \mA \mQ) + \tr((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)),
+\]</span> where the first term is computed exactly and the second term with Hutchinson. While <span class="math inline">\(\mQ\)</span> may not perfectly align with the dominant eigenbasis, it is expected to be a good approximation, and is certain to be a valid projection due to the <span class="math inline">\(QR\)</span> factorization step. This is the opposite of the basis sensitivity issue discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a>, as here the algorithm is exploiting the basis structure of <span class="math inline">\(\mA\)</span> to reduce variance. In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual <span class="math inline">\(\mA - \hat \mA\)</span> is expected to contain only the tail of the spectrum, <span class="math inline">\(\|\mA - \hat \mA\|_F^2\)</span> is smaller in expectation, reducing the variance shown in Eqs.~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, <span class="math inline">\(\ref{eq:hutchinson_variance}\)</span>. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.</p>
+<section id="theoretical-guarantees" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="theoretical-guarantees"><span class="header-section-number">5.1</span> Theoretical Guarantees</h2>
+<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> prove the complexity bound of <span class="math inline">\(m=O(1/\epsilon)\)</span> for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation using Hutch++. The main theorem is reproduced below.</p>
+<div id="thm-hutchplusplus-main" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1 (Hutch++ Main Theorem)</strong></span> For <span class="math inline">\(m = O\left(\sqrt{\log(1/\delta)}/\epsilon + \log(1/\delta)\right)\)</span> MVP queries to a PSD matrix <span class="math inline">\(\mA\)</span> the Hutch++ algorithm produces an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
+</div>
+<p>The standard bound on Hutchinson’s estimator for general sub-Gaussian vectors <span class="math inline">\(\vv\)</span>, including Gaussian and Rademacher, is similar to the results from <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>. For some constant <span class="math inline">\(c,C\)</span>, if <span class="math inline">\(m &gt; c \log(1/\delta)\)</span>, then with probability at least <span class="math inline">\(1-\delta\)</span>, <span class="math display">\[
+   |T - \tr(\mA)| \leq C \sqrt{\frac{\log(1/\delta)}{m}} \|\mA\|_F.
+\]</span> Since <span class="math inline">\(\mA\)</span> is PSD, <span class="math inline">\(\|\mA\|_F \leq \tr(\mA)\)</span>, giving the <span class="math inline">\(O(\epsilon^{-2})\)</span> bound for Hutchinson queries. But as the authors point out this is only tight in the worst case when the diagonalization is sparse, i.e., only one large eigenvalue. Supposing that <span class="math inline">\(\mQ\)</span> captures the top <span class="math inline">\(k\)</span> eigenvalues of <span class="math inline">\(\mA\)</span>, then the residual Frobenius norm is <span class="math display">\[
+    \|\mA - \hat \mA\|_F^2 = \sum_{i=k+1}^n \lambda_i^2 \leq \lambda_{k+1} \sum_{i=k+1}^n \lambda_i \leq \frac{1}{k} \left(\sum_{i=k+1}^n \lambda_i\right)^2 \leq \frac{1}{k} \tr(\mA)^2.
+\]</span> Combining these results gives the variance of the residual Hutchinson estimator as <span class="math display">\[
+    |T_{\hat \mA} - \tr(\hat \mA)| \leq C \sqrt{\frac{\log(1/\delta)}{mk}}  \tr(\mA).
+\]</span> Setting <span class="math inline">\(k = O(1/\epsilon)\)</span> and supposing a solved basis for <span class="math inline">\(\mQ\)</span> already gives an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation with <span class="math inline">\(O(1/\epsilon)\)</span> samples as stated in <a href="#thm-hutchplusplus-main" class="quarto-xref">Theorem&nbsp;1</a>. The main remaining challenge is then to show that the randomized sketching step can produce a basis <span class="math inline">\(\mQ\)</span> that approximates the top <span class="math inline">\(k\)</span> eigenvalues in <span class="math inline">\(O(1/\epsilon)\)</span> MVPs well enough with high probability.</p>
+<p>The details of matrix sketching lie outside of the scope of this work and the trace estimation paper, but applying Corollary 7 and Claim 1 from <span class="citation" data-cites="musco2020projectioncostpreservingsketchesproofstrategies">Musco and Musco (<a href="#ref-musco2020projectioncostpreservingsketchesproofstrategies" role="doc-biblioref">2020</a>)</span> shows that for <span class="math inline">\(\frac{m}{3}\geq(k+\log(1/\delta))\)</span> the residual will stay bounded with high probability <span class="math inline">\(\geq 1-\delta\)</span>: <span class="math display">\[
+    \|\mA - \mA \mQ \mQ^\top\|_F^2 \leq 2 \| \mA - \mA_k\|_F^2.
+\]</span> This type of low-rank concentration bound is common in RLNA literature <span class="citation" data-cites="woodruff2014SketchingToolNumerical">(<a href="#ref-woodruff2014SketchingToolNumerical" role="doc-biblioref">Woodruff 2014</a>)</span>. The bound is for the residual being at most twice the optimal rank-<span class="math inline">\(k\)</span> approximation error, which is sufficient for replacing the bound in the residual equation by one that is twice as large, preserving the <span class="math inline">\(O(1/\epsilon)\)</span> complexity. Combining all of these results gives the final proof of <a href="#thm-hutchplusplus-main" class="quarto-xref">Theorem&nbsp;1</a>. The only PSD assumption made is in the residual Frobenius norm, providing an avenue for non-PSD extensions which are covered by the authors in their paper, but that are not the focus of this work.</p>
+<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> also go on to prove that <span class="math inline">\(O(1/\epsilon)\)</span> is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below in <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. The analysis and performance is similar, but with simpler variance bounds.</p>
+<div id="alg-hutchplusplus-gaussian" class="definition theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 2 (Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++))</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
+<strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
+<ol type="1">
+<li>Sample <span class="math inline">\(\mS \in \mathbb{R}^{n \times \frac{m+2}{4}}\)</span> with i.i.d.&nbsp;<span class="math inline">\(\mathcal{N}(0,1)\)</span> entries and <span class="math inline">\(\mG \in \mathbb{R}^{n \times \frac{m-2}{2}}\)</span> with i.i.d.&nbsp;Rademacher entries.</li>
+<li>Compute an orthonormal basis <span class="math inline">\(\mQ \in \mathbb{R}^{n \times \frac{m+2}{4}}\)</span> for the span of <span class="math inline">\(\mA\mS\)</span> (e.g., via QR decomposition).</li>
+<li><strong>Return</strong> Gaussian-Hutch++<span class="math inline">\((\mA)= \tr(\mQ^\top \mA \mQ) + \frac{2}{m-2}\,\tr\!\big(\mG^\top(\mI-\mQ\mQ^\top)\mA(\mI-\mQ\mQ^\top)\mG\big)\)</span>.</li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-experiments" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Numerical Experiments</h1>
+<p>To verify the theoretical improvements of Hutch++ over the standard Hutchinson estimator and to contrast the Gaussian and Rademacher variants, we implemented the original Hutchinson estimator along with <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a> and <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a> in Python using NumPy.</p>
+<section id="experimental-setup" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="experimental-setup"><span class="header-section-number">6.1</span> Experimental Setup</h2>
+<p><strong>Matrix Construction</strong> We empirically verified the theoretical bounds using a modestly large SPSD matrix with dimension <span class="math inline">\(N=4000\)</span>. The goal was to measure performance on four spectral regimes that highlight the strengths and weaknesses of each estimator. Recall that an SPSD matrix <span class="math inline">\(\mA\)</span> can be diagonalized as <span class="math inline">\(\mA = \mQ \mD \mQ^\top\)</span> where <span class="math inline">\(\mD\)</span> is a diagonal matrix of eigenvalues <span class="math inline">\(\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_N \geq 0\)</span> and <span class="math inline">\(\mQ\)</span> is an orthogonal matrix of eigenvectors. The same Discrete Cosine Transform (DCT) mixing matrix <span class="math inline">\(\mQ\)</span> discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a> is applied as a unitary operation for the basis-oblivious construction of dense test matrices from diagonal eigenvalue matrices <span class="math inline">\(\mD\)</span>. A diagonal-heavy matrix with concentrated blocks along the diagonal is used to evaluate performance on structured sparse matrices.</p>
+<ul>
+<li><strong>Slow Decay (<span class="math inline">\(\lambda_k \propto k^{-1}\)</span>):</strong> The slow decay matrix is more uniform with fewer “heavy-hitters”; the eigenbasis is randomized with DCT.</li>
+<li><strong>Fast Decay (<span class="math inline">\(\lambda_k \propto k^{-2}\)</span>):</strong> The quadratic decay has concentrated spectral energy in the leading eigenvalues; the eigenbasis is randomized with DCT.</li>
+<li><strong>Diagonal-Heavy:</strong> A block diagonal matrix with correlated blocks to concentrate <span class="math inline">\(\|\mA\|_F\)</span> in the diagonal elements, creating a favorable scenario for Rademacher vectors in Hutchinson. A sample matrix of this form is shown in <a href="#fig-diag-heavy" class="quarto-xref">Figure&nbsp;1</a>.</li>
+<li><strong>Spiked Identity:</strong> An identity matrix with a low-rank signal added to create a few large eigenvalues. A sample matrix of this form is shown in <a href="#fig-diag-heavy" class="quarto-xref">Figure&nbsp;1</a>.</li>
+</ul>
+<div id="fig-diag-heavy" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-diag-heavy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figs/test_matrices_small.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diag-heavy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrices used in experiments, showing concentrated blocks along the diagonal.
+</figcaption>
+</figure>
+</div>
+<p><strong>Evaluation Metrics</strong> For each of these tasks, the Rademacher and Gaussian variants of Hutchinson and Hutch++ were run for a range of MVP budgets <span class="math inline">\(m\)</span>. The true trace <span class="math inline">\(\tr(\mA)\)</span> was computed directly for error calculation, and the convergence behavior was recorded. The relative error <span class="math inline">\(|\tr(\mA) - T|/\tr(\mA)\)</span> is averaged over 50 trials, with the variance shown to <span class="math inline">\(\pm \frac{1}{2}\sigma\)</span>.</p>
+</section>
+<section id="results-and-discussion" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="results-and-discussion"><span class="header-section-number">6.2</span> Results and Discussion</h2>
+<p>The results are presented in <a href="#fig-hutch-vs-hutchpp" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<div id="fig-hutch-vs-hutchpp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hutch-vs-hutchpp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figs/convergence_full.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hutch-vs-hutchpp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.
+</figcaption>
+</figure>
+</div>
+<p><strong>Impact of Decay Rate</strong> As expected, the Hutch++ performance gain is most pronounced in a fast decay spectrum, where the low-rank approximation concentrates the MVP budget on the largest contributors to variance in the trace estimate. The difference is accentuated by the log-log scale where Hutch++ quickly attains several orders of magnitude lower error for the same number of MVPs. For slow decays and smaller numbers of queries, the advantage is less pronounced over the standard Hutchinson.</p>
+<p><strong>Rademacher vs Gaussian</strong> Interestingly, the choice of random variable does not have a significant impact on performance, despite the theoretical bounds and methods to attain them being quite different. Rademacher only shows a clear advantage in the diagonal-heavy regime, where it is able to even outperform the Hutch++ methods. Note that the Gaussian variant of Hutch++ only uses Gaussian variables for the sketching matrix, while the residual estimation still uses Rademacher vectors.</p>
+<p><strong>Convergence Slope</strong> In all regimes, the performance follows the slope of the bounds quite closely, indicating that the theoretical analysis is tight. In the fast decay regime, Hutch++ outperforms the theoretical bounds, which make no assumptions on the rate of decay. Note that the error is compared against the number of queries; the inverse relationship is thus <span class="math inline">\(O(1/m)\)</span>, giving a slope of -1 on the log-log plots, while Hutchinson has a slope of -0.5 as expected from the <span class="math inline">\(O(1/\sqrt{m})\)</span> dependence. The slope of Hutch++ in fast decay is even steeper, showing the adaptive leveraging of the spectrum.</p>
+<p><strong>Wall Clock Time</strong> The focus of this work has been on the bounds and theoretical convergence for trace estimation. However, factorization steps such as the <span class="math inline">\(QR\)</span> decomposition and generation of random vectors add time to the overhead. To get a better sense of practical performance with time as a resource instead of MVPs, a wall clock time comparison is shown in <a href="#fig-time-comparison" class="quarto-xref">Figure&nbsp;3</a>. The time taken scales linearly with the queries, indicating that the MVP query bounds are roughly equivalent to the time bounds, as claimed by <span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span>.</p>
+<div id="fig-time-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figs/timing_comparison.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-conclusion" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Conclusion</h1>
+<section id="future-work-and-applications" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="future-work-and-applications"><span class="header-section-number">7.1</span> Future Work and Applications</h2>
+<p>One impactful application for matrix-free implicit trace estimation with Hutch++ is in the training of continuous normalizing flows and diffusion models. Recent work by <span class="citation" data-cites="liu2025optimal">Liu et al. (<a href="#ref-liu2025optimal" role="doc-biblioref">2025</a>)</span> directly leverages the Hutch++ estimator to improve divergence-based likelihood estimation. The process of <span class="math inline">\(QR\)</span> decomposition is modified to share the same decomposition of <span class="math inline">\(Q\)</span> across multiple time steps of the integration, reducing the overhead cost of the method without sacrificing too much performance, as the top eigenbasis of the Jacobian does not change significantly over small time intervals of the normalizing flow. To this effect, the problem above can be seen as a dynamic trace estimation problem where the implicit matrices are strongly correlated. <span class="citation" data-cites="woodruffOptimalQueryComplexities">Woodruff, Zhang, and Zhang (<a href="#ref-woodruffOptimalQueryComplexities" role="doc-biblioref">2022</a>)</span> addresses this optimization, building upon the original Hutch++ framework to improve the query complexity while also proving new lower bounds for Hutchinson, resolving the open question of tightness for original Hutchinson in <span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span>.</p>
+</section>
+<section id="summary" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="summary"><span class="header-section-number">7.2</span> Summary</h2>
+<p>This work presents a review of randomized algorithms for implicit trace estimation with a focus on SPSD matrices. The progression of analysis from variance in Hutchinson’s original Rademacher estimator, to the Chernoff-style bounds of <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>, to the optimal Hutch++ algorithm of <span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> with provable lower bounds and optimality is presented. The progression of authorship and style is notable, with each work contributing further to a broad understanding of optimal implicit trace estimation in many settings. Numerical experiments confirm the theory, showing that Hutch++ is both theoretically and practically superior to Hutchinson in all but the most diagonal-heavy cases. Finally, the application of Hutch++ to generative AI models such as continuous normalizing flows and diffusion models is discussed, demonstrating the relevance of these methods to modern machine learning and research in this area.</p>
+<p>The technique of adaptive variance reduction by isolating the top contributors to variance and attributing more resources to them is a powerful idea that we may expect to have further applications in randomized numerical linear algebra and beyond. The first step to many problems is identifying the nature of the problem itself, which the low-rank approximation step of Hutch++ effectively does, providing a provably optimal method for implicit trace estimation.</p>
+</section>
+</section>
+<section id="appendix" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Appendix</h1>
+<section id="stronger-bound-for-t_gm" class="level3">
+<h3 class="anchored" data-anchor-id="stronger-bound-for-t_gm">Stronger Bound for <span class="math inline">\(T_{GM}\)</span></h3>
+<p><span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span> do much better starting with the moment generating function (MGF) of the <span class="math inline">\(\chi^2\)</span> distribution to derive a Chernoff-style bound. Taking <span class="math inline">\(Z=m T_{GM} = \sum_{i=1}^N \lambda_i X_i\)</span> where <span class="math inline">\(X_i \sim \chi^2_m\)</span>.</p>
+<div id="lem-chi-squared-mgf" class="lemma theorem">
+<p><span class="theorem-title"><strong>Lemma 2</strong></span> Let <span class="math inline">\(X \sim \chi^2_m\)</span>. Then the moment generating function of <span class="math inline">\(X\)</span> is <span class="math display">\[
+    M_{X}(t) = (1 - 2t)^{-m/2}, \quad t &lt; \frac{1}{2}.
+\]</span></p>
+</div>
+<div id="def-elem-symmetric" class="definition theorem">
+<p><span class="theorem-title"><strong>Definition 4 (Elementary Symmetric Polynomial)</strong></span> The <span class="math inline">\(s\)</span>-th elementary symmetric polynomial of variables <span class="math inline">\(\lambda_1, \ldots, \lambda_N\)</span> is defined as <span class="math display">\[
+    e_s(\lambda_1, \ldots, \lambda_N) := \sum_{S \subseteq \{\lambda_1,\ldots,\lambda_N\}, |S|=s} \prod_{\lambda \in S} \lambda.
+\]</span></p>
+</div>
+<div id="lem-elem-symmetric-bound" class="lemma theorem">
+<p><span class="theorem-title"><strong>Lemma 3 (Elementary symmetric polynomial bound)</strong></span> Let <span class="math inline">\(\lambda_1,\ldots,\lambda_N \ge 0\)</span>. Then for all <span class="math inline">\(s \ge 2\)</span>, <span class="math display">\[
+e_s(\lambda)
+\le
+\frac{1}{s!}\left(\sum_{i=1}^N \lambda_i\right)^s
+= \frac{1}{s!}\,\tr(\mA)^s.
+\]</span></p>
+</div>
+<p><strong>Proof.</strong> By the definition, <span class="math inline">\(e_s\)</span> gives all products of <span class="math inline">\(s\)</span> distinct <span class="math inline">\(\lambda_i\)</span>’s, that is with multiplicity one. On the other hand, expanding <span class="math inline">\(\left(\sum_{i=1}^N \lambda_i\right)^s\)</span>, gives each distinct multiplicity one term <span class="math inline">\(s!\)</span> times due to permutations being included in the expansion. In addition there are terms with multiplicities higher than one which are not in <span class="math inline">\(e_s\)</span>. Thus we have <span class="math display">\[
+\left(\sum_{i=1}^N \lambda_i\right)^s = s! \cdot e_s(\lambda_1, \ldots, \lambda_N) + \text{(higher multiplicities)}
+\]</span> <span class="math display">\[
+\geq s! \cdot e_s(\lambda_1, \ldots, \lambda_N) \quad \text{ since } \lambda_i \geq 0
+\]</span> <span class="math display">\[
+e_s(\lambda_1, \ldots, \lambda_N)  \leq \frac{1}{s!}\left(\sum_{i=1}^N \lambda_i\right)^s \quad \square
+\]</span></p>
+<p>To prove the tighter bound for <span class="math inline">\(T_{GM}\)</span>, we derive the MGF for <span class="math inline">\(Z\)</span> using the independence of the <span class="math inline">\(X_i\)</span>’s and the scaling property of MGFs. <span class="math display">\[
+\begin{align}
+M_{Z}(t) &amp;= \mathbb{E}\left[e^{t Z}\right] \\
+&amp;= \prod_{i=1}^N M_{X_i}(\lambda_i t) \\
+&amp;= \prod_{i=1}^N (1 - 2 \lambda_i t)^{-m/2}, \quad t &lt; \frac{1}{2 \max_i \lambda_i}.
+\end{align}
+\]</span> The next step is to take the expansion of the product and bound the terms, noting that <span class="math inline">\(\lambda_i \geq 0\)</span> for SPSD matrices. Using the definition of the elementary symmetric polynomials, we have <span class="math display">\[
+M_{Z}(t) = \left(1-2 t \tr(\mA) + \sum_{s=2}^{N}(-2)^st^s e_s(\lambda_1, \ldots, \lambda_N) \right)^{-m/2}
+\]</span> Using <a href="#lem-elem-symmetric-bound" class="quarto-xref">Lemma&nbsp;3</a> to bound the elementary symmetric polynomials, we have <span class="math display">\[
+    \left|  \sum_{s=2}^{N}(-2)^st^s e_s(\lambda_1, \ldots, \lambda_N) \right|  \leq \sum_{s=2}^{N} 2^s |t|^s \frac{1}{s!} \tr(\mA)^s  \le \sum_{s=2}^{N} \left(2 t \tr(\mA)\right)^s
+\]</span> Setting <span class="math inline">\(t_0 = \frac{\epsilon}{4 \tr(\mA)(1+\epsilon/2)}\)</span> ensures that <span class="math inline">\(t_0 &lt; \frac{1}{2 \max_i \lambda_i}\)</span> and the MGF is valid. Recalling that for a geometric series <span class="math inline">\(\sum_{s=2}^N r^s \leq \sum_{s=2}^\infty r^s = \frac{r^2}{1-r}\)</span> for <span class="math inline">\(|r|&lt;1\)</span>, then we have <span class="math display">\[
+    \left|  \sum_{s=2}^{N}(-2)^{s}t_0^{s} e_s(\lambda_1, \ldots, \lambda_N) \right|  \leq \left(\frac{\epsilon}{2(1+\epsilon/2)}\right)^2 \left(1 - \frac{\epsilon}{2(1+\epsilon/2)}\right)^{-1} = \frac{\epsilon^2}{4(1+\epsilon/2)}
+\]</span></p>
+<p>The proof is then completed using Markov’s inequality on the MGF shown in brief form here: <span class="math display">\[
+\begin{align}
+    \Pr\left[ T_{GM} \geq (1+\epsilon) \tr(\mA) \right] &amp;= \Pr\left[ Z \geq m(1+\epsilon) \tr(\mA) \right] \\
+    &amp;= \Pr\left[ \exp({t_0 Z}) \geq \exp({t_0 m(1+\epsilon) \tr(\mA)}) \right] \\
+    &amp;\leq M_{Z}(t_0)\exp\left({-t_0 m(1+\epsilon) \tr(\mA)}\right) \\
+    &amp; \leq \exp\left(-m\epsilon^2/20\right).
+\end{align}
+\]</span> The full proof is given in <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>, Theorem 5.2)</span>. The same result is applied to the lower tail, with a union bound over both failure <span class="math inline">\(\delta/2\)</span> events giving the final result that for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation we require.</p>
 
 
 
@@ -623,9 +827,6 @@ Ailon, Nir, and Bernard Chazelle. 2006. <span>“Approximate Nearest Neighbors a
 <div id="ref-avron2011RandomizedAlgorithmsEstimating" class="csl-entry" role="listitem">
 Avron, Haim, and Sivan Toledo. 2011. <span>“Randomized Algorithms for Estimating the Trace of an Implicit Symmetric Positive Semi-Definite Matrix.”</span> <em>J. ACM</em> 58 (2): 8:1–34. <a href="https://doi.org/10.1145/1944345.1944349">https://doi.org/10.1145/1944345.1944349</a>.
 </div>
-<div id="ref-haber_lecture11_2025" class="csl-entry" role="listitem">
-Haber, Eldad. 2024. <span>“EOSC 555: Lecture 11 Notes.”</span> <a href="https://chipnbits.github.io/content/eosc555/lectures/lecture11/">https://chipnbits.github.io/content/eosc555/lectures/lecture11/</a>.
-</div>
 <div id="ref-Harvey2021Randomized2" class="csl-entry" role="listitem">
 Harvey, Nicholas J. A. 2021. <span>“A Second Course in Randomized Algorithms.”</span> University of British Columbia, Course Textbook Draft. <a href="https://www.cs.ubc.ca/~nickhar/Book2.pdf">https://www.cs.ubc.ca/~nickhar/Book2.pdf</a>.
 </div>
@@ -635,14 +836,26 @@ Hu, Zheyuan, Zekun Shi, George Em Karniadakis, and Kenji Kawaguchi. 2024. <span>
 <div id="ref-Hutchinson01011990" class="csl-entry" role="listitem">
 Hutchinson, M. F. 1990. <span>“A Stochastic Estimator of the Trace of the Influence Matrix for Laplacian Smoothing Splines.”</span> <em>Communications in Statistics - Simulation and Computation</em> 19 (2): 433–50. <a href="https://doi.org/10.1080/03610919008812866">https://doi.org/10.1080/03610919008812866</a>.
 </div>
+<div id="ref-liu2025optimal" class="csl-entry" role="listitem">
+Liu, Xinyang, Hengrong Du, Wei Deng, and Ruqi Zhang. 2025. <span>“Optimal Stochastic Trace Estimation in Generative Modeling.”</span> <em>arXiv Preprint arXiv:2502.18808</em>.
+</div>
 <div id="ref-meyer2021HutchOptimalStochastic" class="csl-entry" role="listitem">
 Meyer, Raphael A., Cameron Musco, Christopher Musco, and David P. Woodruff. 2021. <span>“Hutch++: <span>Optimal</span> <span>Stochastic</span> <span>Trace</span> <span>Estimation</span>.”</span> arXiv. <a href="https://doi.org/10.48550/arXiv.2010.09649">https://doi.org/10.48550/arXiv.2010.09649</a>.
+</div>
+<div id="ref-musco2020projectioncostpreservingsketchesproofstrategies" class="csl-entry" role="listitem">
+Musco, Cameron, and Christopher Musco. 2020. <span>“Projection-Cost-Preserving Sketches: Proof Strategies and Constructions.”</span> <a href="https://arxiv.org/abs/2004.08434">https://arxiv.org/abs/2004.08434</a>.
 </div>
 <div id="ref-pearlmutter1994fast" class="csl-entry" role="listitem">
 Pearlmutter, Barak A. 1994. <span>“Fast Exact Multiplication by the Hessian.”</span> <em>Neural Computation</em> 6 (1): 147–60. <a href="https://mural.maynoothuniversity.ie/id/eprint/5501/">https://mural.maynoothuniversity.ie/id/eprint/5501/</a>.
 </div>
+<div id="ref-Song2019SlicedSM" class="csl-entry" role="listitem">
+Song, Yang, Sahaj Garg, Jiaxin Shi, and Stefano Ermon. 2019. <span>“Sliced Score Matching: A Scalable Approach to Density and Score Estimation.”</span> In <em>Conference on Uncertainty in Artificial Intelligence</em>. <a href="https://api.semanticscholar.org/CorpusID:158047026">https://api.semanticscholar.org/CorpusID:158047026</a>.
+</div>
 <div id="ref-UbaruSaad2018" class="csl-entry" role="listitem">
 Ubaru, Shashanka, and Yousef Saad. 2018. <span>“Applications of Trace Estimation Techniques.”</span> In <em>High Performance Computing in Science and Engineering</em>, edited by Tomáš Kozubek, Martin Čermák, Petr Tichý, Radim Blaheta, Jakub Šístek, Dalibor Lukáš, and Jiří Jaroš, 19–33. Cham: Springer International Publishing.
+</div>
+<div id="ref-woodruff2014SketchingToolNumerical" class="csl-entry" role="listitem">
+Woodruff, David P. 2014. <span>“Sketching as a <span>Tool</span> for <span>Numerical</span> <span>Linear</span> <span>Algebra</span>.”</span> <em>Foundations and Trends® in Theoretical Computer Science</em> 10 (1-2): 1–157. <a href="https://doi.org/10.1561/0400000060">https://doi.org/10.1561/0400000060</a>.
 </div>
 <div id="ref-woodruffOptimalQueryComplexities" class="csl-entry" role="listitem">
 Woodruff, David P., Fred Zhang, and Qiuyi (Richard) Zhang. 2022. <span>“Optimal Query Complexities for Dynamic Trace Estimation.”</span> In <em>Proceedings of the 36th International Conference on Neural Information Processing Systems</em>. NIPS ’22. Red Hook, NY, USA: Curran Associates Inc.
