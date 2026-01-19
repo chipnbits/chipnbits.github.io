@@ -65,6 +65,8 @@ $$
 \newcommand{\mS}{\mathbf{S}}
 \newcommand{\mG}{\mathbf{G}}
 \newcommand{\mU}{\mathbf{U}}
+\newcommand{\mV}{\mathbf{V}}
+\newcommand{\mY}{\mathbf{Y}}
 \newcommand{\vv}{\mathbf{v}}
 \newcommand{\vz}{\mathbf{z}}
 \newcommand{\vw}{\mathbf{w}}
@@ -409,13 +411,93 @@ For each of these tasks, the Rademacher and Gaussian variants of Hutchinson and 
 
 ## Code and Trials
 
-Select a matrix type and adjust the parameters to see how Hutch++ outperforms standard Hutchinson in real-time.
+#### Algorithm Implementation
+
+Starting with Hutchinson's estimator, the implementation is straightforward as shown below. The multiple queries are modeled as a matrix-matrix product for efficiency where $\mV$ is a matrix of $m$ random vectors as columns. Using the property that the trace can be expressed as a Frobenius inner product, we have:
+
+$$
+\begin{align}
+    T_H &= \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j = \frac{1}{m} \sum_{j=1}^m [\mV^\top \mA \mV]_{jj} \\
+    &= \frac{1}{m} \tr(\mV^\top \mA \mV) \\
+        &= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
+\end{align}
+$$
+which is computed by summing the elementwise product of $\mV$ and $\mY = \mA \mV$.
 
 ```{python}
+#| code-fold: false
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import dct, idct
 import time
+
+def hutchinson(A, num_queries, dist="rademacher"):
+    n = A.shape[0]
+    if dist == "rademacher":
+        V = np.random.randint(0, 2, size=(n, num_queries)) * 2 - 1
+    elif dist == "gaussian":
+        V = np.random.randn(n, num_queries)
+
+    Y = A @ V
+    trace_est = np.sum(V * Y) / num_queries
+    return trace_est
+```
+
+The Hutch++ implementation follows the steps outlined in @alg-hutchplusplus and @alg-hutchplusplus-gaussian. In this case we optimize the computation step by noting that the projection $(\mI - \mQ \mQ^\top)$ can be applied efficiently without explicitly forming the projection matrix. For the projection matrix $P = \mI - \mQ \mQ^\top$, we have that $P = P^\top$ and $P^2 = P$. Thus for any matrix $\mG$ the projected MVP can be computed as $\Tr(P \mA P) = \Tr(\mA P)$ and so using standard Hutchinson on the residual becomes
+$$
+    \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
+$$
+
+```{python}
+#| code-fold: false
+def hutch_plus_plus(A, num_queries, dist="rademacher"):
+    """
+    Hutch++ with support for Rademacher or Gaussian sketching.
+
+    Args:
+        A (ndarray): The input matrix.
+        num_queries (int): Total matrix-vector product budget (m).
+        dist (str): 'rademacher' or 'gaussian'. Controls the distribution of the
+                    sketching matrix Omega and the query split ratio.
+    """
+    n = A.shape[0]
+    m = num_queries
+
+    # 1. construct the sketching matrix based on distribution
+    if dist == "rademacher":
+        # Rademacher uses m/3 split
+        s_queries = max(2, int(m / 3))
+        S = np.random.randint(0, 2, size=(n, s_queries)) * 2 - 1
+    elif dist == "gaussian":
+        # Gaussian uses (m+2)/4 split
+        s_queries = max(2, int((m + 2) / 4))
+        S = np.random.randn(n, s_queries)
+    else:
+        raise ValueError("dist must be 'rademacher' or 'gaussian'")
+        
+    # 2. Compute the orthonormal basis Q for the sketch AS via QR decomposition
+    Y = A @ S
+    Q, _ = np.linalg.qr(Y)
+
+    # 3. Compute combination of lowrank trace with the residual hutchinson
+    AQ = A @ Q
+    tr_low_rank = np.sum(Q * AQ) # Frobenius inner product for trace
+
+    # Remaining queries for residual Hutchinson
+    m_rem = m - 2 * s_queries
+    if m_rem <= 0:
+        return tr_low_rank
+
+    # Sample new Rademacher vectors for residual trace estimation
+    G = np.random.randint(0, 2, size=(n, m_rem)) * 2 - 1
+    AG = A @ G
+
+    AG_proj = AG - Q @ (Q.T @ AG)  # Project AG onto the orthogonal complement of Q
+
+    # Each column product corresponds to one sample of the residual trace
+    tr_res = np.sum(G* AG_proj) / m_rem
+
+    return tr_low_rank + tr_res
 ```
 
 ## Results and Discussion

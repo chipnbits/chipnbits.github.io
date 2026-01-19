@@ -1,0 +1,6 @@
+# Preview profile - disables freeze for live preview
+# Activated automatically when running: quarto preview --profile preview
+# Or via VSCode Quarto extension settings
+
+execute:
+  freeze: false
