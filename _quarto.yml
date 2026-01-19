@@ -7,7 +7,7 @@ project:
     - "!blog/**"             # EXCLUDE RL unicycle from builds (frozen
 
 website:
-  title: "Simon Ghyselincks"
+  title: "Simon's Personal Website"
   description: "A personal page for Simon Ghyselincks"
   site-url: "https://chipnbits.github.io"
   site-path: "/"

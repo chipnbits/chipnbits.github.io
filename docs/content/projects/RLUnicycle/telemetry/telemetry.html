@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Ghyselincks, Team 2411">
-<meta name="dcterms.date" content="2025-09-12">
+<meta name="dcterms.date" content="2026-01-03">
 
-<title>Telemetry and Database Systems for Capstone Projects – Simon Ghyselincks</title>
+<title>Telemetry and Database Systems for Capstone Projects – Simon’s Personal Website</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,7 +149,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../../../index.html">
-    <span class="navbar-title">Simon Ghyselincks</span>
+    <span class="navbar-title">Simon’s Personal Website</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -266,7 +266,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 12, 2025</p>
+      <p class="date">January 3, 2026</p>
     </div>
   </div>
   
@@ -571,7 +571,7 @@ For important devices like the server or the Jetson, assign static IP addresses 
 <p>MQTT interfaces with Python, Node-RED, and Grafana to provide a network of communication topics. The broker can be accessed by any device on the ZeroTier network; messages can be sent to a topic, or actions can be taken based on a message received from a topic.</p>
 <p>Below is an example Python script for publishing messages to the MQTT broker. This script publishes a test message to the topic <code>jetson/telemetry</code> every second. Note that the two key components of a successful message are the topic and the message payload. The topic is the address to which the message is sent, and the payload is the data being sent. The payload can be a string, a number, or a JSON object. For our project, we use JSON objects to send data.</p>
 <p>The package is installed using pip: <code>pip install paho-mqtt</code></p>
-<div id="e34e1ba5" class="cell" data-execution_count="2">
+<div id="9c6cd46f" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> paho.mqtt.client <span class="im">as</span> mqtt</span>
@@ -780,7 +780,7 @@ def apply(metric):
 <section id="example-python-query" class="level3">
 <h3 class="anchored" data-anchor-id="example-python-query">Example Python Query</h3>
 <p>To illustrate how this can be integrated into Python for data analysis, here is a simple example. This script queries the last one minute of data from the database and plots the acceleration data over time.</p>
-<div id="8f406480" class="cell" data-freeze="true" data-execution_count="3">
+<div id="af00b236" class="cell" data-freeze="true" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1077,7 +1077,7 @@ def apply(metric):
 <p>The <code>@dataclass</code> decorator in Python is used to define structures that hold the data in fields. A method to convert them to dictionary/JSON is also included in a TelemetryData base class. A generalist debug data class is also provided to allow for ad-hoc data to be sent to the telemetry system during development that has not been assigned a specific topic. The fields are coupled with the MQTT topic and the database measurement name within the dataclass object.</p>
 <p>A sample of the abstract class and a data class for IMU data is shown below:</p>
 <p><strong>Code Example: A sample of the abstract class and a data class for IMU data.</strong></p>
-<div id="5a46ab71" class="cell" data-execution_count="5">
+<div id="743e8c09" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> abc <span class="im">import</span> ABC, abstractmethod</span>
@@ -1159,7 +1159,7 @@ def apply(metric):
 <h4 class="anchored" data-anchor-id="telemetry-process-communicationmqtt.py">Telemetry Process <code>communication/mqtt.py</code></h4>
 <p>The telemetry process is essentially a wrapper around the existing Paho MQTT client. It is designed to unpack the data classes from the incoming queue and send them to their corresponding topics. It additionally handles downsampling the data to a lower rate for the Grafana panels. It has a standby loop that listens for incoming commands over a control topic and routes them to the control cycle through the command queue as needed.</p>
 <p><strong>Code Example: Parsing of TelemetryData objects and sending them to the MQTT broker.</strong></p>
-<div id="a1d2b2d9" class="cell" data-execution_count="7">
+<div id="ea21d807" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> telemetry_loop(<span class="va">self</span>):</span>

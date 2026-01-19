@@ -1,0 +1,242 @@
+
+@article{avron2011RandomizedAlgorithmsEstimating,
+	title = {Randomized algorithms for estimating the trace of an implicit symmetric positive semi-definite matrix},
+	volume = {58},
+	issn = {0004-5411},
+	url = {https://dl.acm.org/doi/10.1145/1944345.1944349},
+	doi = {10.1145/1944345.1944349},
+	abstract = {We analyze the convergence of randomized trace estimators. Starting at 1989, several algorithms have been proposed for estimating the trace of a matrix by 1/MΣi=1M ziT Azi, where the zi are random vectors; different estimators use different distributions for the zis, all of which lead to E(1/MΣi=1M ziT Azi) = trace(A). These algorithms are useful in applications in which there is no explicit representation of A but rather an efficient method compute zTAz given z. Existing results only analyze the variance of the different estimators. In contrast, we analyze the number of samples M required to guarantee that with probability at least 1-δ, the relative error in the estimate is at most ϵ. We argue that such bounds are much more useful in applications than the variance. We found that these bounds rank the estimators differently than the variance; this suggests that minimum-variance estimators may not be the best.We also make two additional contributions to this area. The first is a specialized bound for projection matrices, whose trace (rank) needs to be computed in electronic structure calculations. The second is a new estimator that uses less randomness than all the existing estimators.},
+	number = {2},
+	urldate = {2025-11-16},
+	journal = {J. ACM},
+	author = {Avron, Haim and Toledo, Sivan},
+	month = apr,
+	year = {2011},
+	pages = {8:1--8:34},
+	file = {Full Text PDF:C\:\\Users\\sghys\\Zotero\\storage\\QHJ9WVTN\\Avron and Toledo - 2011 - Randomized algorithms for estimating the trace of an implicit symmetric positive semi-definite matri.pdf:application/pdf},
+}
+
+
+@article{woodruff2014SketchingToolNumerical,
+	title = {Sketching as a {Tool} for {Numerical} {Linear} {Algebra}},
+	volume = {10},
+	issn = {1551-305X, 1551-3068},
+	url = {http://arxiv.org/abs/1411.4357},
+	doi = {10.1561/0400000060},
+	abstract = {This survey highlights the recent advances in algorithms for numerical linear algebra that have come from the technique of linear sketching, whereby given a matrix, one first compresses it to a much smaller matrix by multiplying it by a (usually) random matrix with certain properties. Much of the expensive computation can then be performed on the smaller matrix, thereby accelerating the solution for the original problem. In this survey we consider least squares as well as robust regression problems, low rank approximation, and graph sparsification. We also discuss a number of variants of these problems. Finally, we discuss the limitations of sketching methods.},
+	number = {1-2},
+	urldate = {2025-11-17},
+	journal = {Foundations and Trends® in Theoretical Computer Science},
+	author = {Woodruff, David P.},
+	year = {2014},
+	note = {arXiv:1411.4357 [cs]},
+	keywords = {Computer Science - Data Structures and Algorithms},
+	pages = {1--157},
+	annote = {Comment: fixed minor errors/typos in section 4.3, e.g., Fact 6 and its propagation, clarified when Lemma 4.2 can be applied, typos in section 4.2.3 (G should be applied on the left), other typos throughout},
+	file = {Full Text PDF:C\:\\Users\\sghys\\Zotero\\storage\\9MJMES8Y\\Woodruff - 2014 - Sketching as a Tool for Numerical Linear Algebra.pdf:application/pdf;Snapshot:C\:\\Users\\sghys\\Zotero\\storage\\GQUEBUCT\\1411.html:text/html},
+}
+
+
+@article{halko2011FindingStructureRandomness,
+	title = {Finding {Structure} with {Randomness}: {Probabilistic} {Algorithms} for {Constructing} {Approximate} {Matrix} {Decompositions}},
+	volume = {53},
+	issn = {0036-1445},
+	shorttitle = {Finding {Structure} with {Randomness}},
+	url = {https://www.jstor.org/stable/23065163},
+	abstract = {Low-rank matrix approximations, such as the truncated singular value decomposition and the rank-revealing QR decomposition, play a central role in data analysis and scientific computing. This work surveys and extends recent research which demonstrates that randomization offers a powerful tool for performing low-rank matrix approximation. These techniques exploit modern computational architectures more fully than classical methods and open the possibility of dealing with truly massive data sets. This paper presents a modular framework for constructing randomized algorithms that compute partial matrix decompositions. These methods use random sampling to identify a subspace that captures most of the action of a matrix. The input matrix is then compressed—either explicitly or implicitly—to this subspace, and the reduced matrix is manipulated deterministically to obtain the desired low-rank factorization. In many cases, this approach beats its classical competitors in terms of accuracy, robustness, and/or speed. These claims are supported by extensive numerical experiments and a detailed error analysis. The specific benefits of randomized techniques depend on the computational environment. Consider the model problem of finding the k dominant components of the singular value decomposition of an m × n matrix. (i) For a dense input matrix, randomized algorithms require O(mn log(k)) floating-point operations (flops) in contrast to O(mnk) for classical algorithms. (ii) For a sparse input matrix, the flop count matches classical Krylov subspace methods, but the randomized approach is more robust and can easily be reorganized to exploit multi-processor architectures. (iii) For a matrix that is too large to fit in fast memory, the randomized techniques require only a constant number of passes over the data, as opposed to O(k) passes for classical algorithms. In fact, it is sometimes possible to perform matrix approximation with a single pass over the data.},
+	number = {2},
+	urldate = {2025-11-16},
+	journal = {SIAM Review},
+	author = {Halko, N. and Martinsson, P. G. and Tropp, J. A.},
+	year = {2011},
+	note = {Publisher: Society for Industrial and Applied Mathematics},
+	pages = {217--288},
+	annote = {Summary: Using randomization for low rank matrix computations
+},
+	file = {JSTOR Full Text PDF:C\:\\Users\\sghys\\Zotero\\storage\\ZHHRN8DS\\Halko et al. - 2011 - Finding Structure with Randomness Probabilistic Algorithms for Constructing Approximate Matrix Deco.pdf:application/pdf},
+}
+
+
+@misc{meyer2021HutchOptimalStochastic,
+	title = {Hutch++: {Optimal} {Stochastic} {Trace} {Estimation}},
+	shorttitle = {Hutch++},
+	url = {http://arxiv.org/abs/2010.09649},
+	doi = {10.48550/arXiv.2010.09649},
+	abstract = {We study the problem of estimating the trace of a matrix \$A\$ that can only be accessed through matrix-vector multiplication. We introduce a new randomized algorithm, Hutch++, which computes a \$(1 {\textbackslash}pm ε)\$ approximation to \$tr(A)\$ for any positive semidefinite (PSD) \$A\$ using just \$O(1/ε)\$ matrix-vector products. This improves on the ubiquitous Hutchinson's estimator, which requires \$O(1/ε{\textasciicircum}2)\$ matrix-vector products. Our approach is based on a simple technique for reducing the variance of Hutchinson's estimator using a low-rank approximation step, and is easy to implement and analyze. Moreover, we prove that, up to a logarithmic factor, the complexity of Hutch++ is optimal amongst all matrix-vector query algorithms, even when queries can be chosen adaptively. We show that it significantly outperforms Hutchinson's method in experiments. While our theory mainly requires \$A\$ to be positive semidefinite, we provide generalized guarantees for general square matrices, and show empirical gains in such applications.},
+	urldate = {2025-11-17},
+	publisher = {arXiv},
+	author = {Meyer, Raphael A. and Musco, Cameron and Musco, Christopher and Woodruff, David P.},
+	month = jun,
+	year = {2021},
+	note = {arXiv:2010.09649 [cs]},
+	keywords = {Computer Science - Data Structures and Algorithms, Computer Science - Machine Learning, Mathematics - Numerical Analysis},
+	annote = {Comment: SIAM Symposium on Simplicity in Algorithms (SOSA21)},
+	file = {Full Text PDF:C\:\\Users\\sghys\\Zotero\\storage\\WVAZC6AC\\Meyer et al. - 2021 - Hutch++ Optimal Stochastic Trace Estimation.pdf:application/pdf;Snapshot:C\:\\Users\\sghys\\Zotero\\storage\\M5YEMQV2\\2010.html:text/html},
+}
+
+@misc{haber_lecture11_2025,
+  author  = {Haber, Eldad},
+  year    = {2024},
+  title   = {EOSC 555: Lecture 11 Notes},
+  url     = {https://chipnbits.github.io/content/eosc555/lectures/lecture11/},
+  urldate = {2025-02-06},
+  note    = {Scribed by Simon Ghyselincks}
+}
+
+@article{HU2024116883,
+title = {Hutchinson Trace Estimation for high-dimensional and high-order Physics-Informed Neural Networks},
+journal = {Computer Methods in Applied Mechanics and Engineering},
+volume = {424},
+pages = {116883},
+year = {2024},
+issn = {0045-7825},
+doi = {https://doi.org/10.1016/j.cma.2024.116883},
+url = {https://www.sciencedirect.com/science/article/pii/S0045782524001397},
+author = {Zheyuan Hu and Zekun Shi and George Em Karniadakis and Kenji Kawaguchi},
+keywords = {Physics-Informed Neural Networks, Curse of dimensionality, High-dimensional and high-order partial differential equation, Hutchinson trace estimation},
+abstract = {Physics-Informed Neural Networks (PINNs) have proven effective in solving partial differential equations (PDEs), especially when some data are available by seamlessly blending data and physics. However, extending PINNs to high-dimensional and even high-order PDEs encounters significant challenges due to the computational cost associated with automatic differentiation in the residual loss function calculation. Herein, we address the limitations of PINNs in handling high-dimensional and high-order PDEs by introducing the Hutchinson Trace Estimation (HTE) method. Starting with the second-order high-dimensional PDEs, which are ubiquitous in scientific computing, HTE is applied to transform the calculation of the entire Hessian matrix into a Hessian vector product (HVP). This approach not only alleviates the computational bottleneck via Taylor-mode automatic differentiation but also significantly reduces memory consumption from the Hessian matrix to an HVP’s scalar output. We further showcase HTE’s convergence to the original PINN loss and its unbiased behavior under specific conditions. Comparisons with the Stochastic Dimension Gradient Descent (SDGD) highlight the distinct advantages of HTE, particularly in scenarios with significant variability and variance among dimensions. We further extend the application of HTE to higher-order and higher-dimensional PDEs, specifically addressing the biharmonic equation. By employing tensor-vector products (TVP), HTE efficiently computes the colossal tensor associated with the fourth-order high-dimensional biharmonic equation, saving memory and enabling rapid computation. The effectiveness of HTE is illustrated through experimental setups, demonstrating comparable convergence rates with SDGD under memory and speed constraints. Additionally, HTE proves valuable in accelerating the Gradient-Enhanced PINN (gPINN) version as well as the Biharmonic equation. Overall, HTE opens up a new capability in scientific machine learning for tackling high-order and high-dimensional PDEs.}
+}
+
+@article{Hutchinson01011990,
+author = {M.F. Hutchinson},
+title = {A stochastic estimator of the trace of the influence matrix for laplacian smoothing splines},
+journal = {Communications in Statistics - Simulation and Computation},
+volume = {19},
+number = {2},
+pages = {433--450},
+year = {1990},
+publisher = {Taylor \& Francis},
+doi = {10.1080/03610919008812866},
+URL = { 
+    
+        https://doi.org/10.1080/03610919008812866
+},
+eprint = { 
+    
+        https://doi.org/10.1080/03610919008812866
+
+}
+}
+
+@article{Hyvarinen2005ScoreMatching,
+  title   = {Estimation of Non-Normalized Statistical Models by Score Matching},
+  author  = {Hyv{\"a}rinen, Aapo},
+  journal = {Journal of Machine Learning Research},
+  volume  = {6},
+  pages   = {695--709},
+  year    = {2005},
+  url     = {https://www.jmlr.org/papers/volume6/hyvarinen05a/hyvarinen05a.pdf}
+}
+@InProceedings{LiuDuDengZhang2025,
+  title     = {Optimal Stochastic Trace Estimation in Generative Modeling},
+  author    = {Liu, Xinyang and Du, Hengrong and Deng, Wei and Zhang, Ruqi},
+  booktitle = {Proceedings of the 28th International Conference on Artificial Intelligence and Statistics},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {258},
+  pages     = {4600--4608},
+  year      = {2025},
+  month     = {05},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v258/liu25k.html}
+}
+
+
+@article{pearlmutter1994fast,
+       publisher = {MIT Press},
+           title = {Fast Exact Multiplication by the Hessian},
+          number = {1},
+           pages = {147--160},
+          volume = {6},
+         journal = {Neural Computation},
+            year = {1994},
+        keywords = {Fast Exact Multiplication; Hessian;},
+             url = {https://mural.maynoothuniversity.ie/id/eprint/5501/},
+        abstract = {Just storing the Hessian H (the matrix of second derivatives a2E/aw, aw, of the error E with
+respect to each pair of weights) of a large neural network is difficult. Since a common use of
+a large matrix like H is to compute its product with various vectors, we derive a technique
+that directly calculates Hv, where v is an arbitrary vector. To calculate Hv, we first define a
+differential operator .},
+            issn = {0899-7667},
+          author = {Pearlmutter, Barak A.}
+}
+
+@InProceedings{UbaruSaad2018,
+	author="Ubaru, Shashanka
+	and Saad, Yousef",
+	editor="Kozubek, Tom{\'a}{\v{s}}
+	and {\v{C}}erm{\'a}k, Martin
+	and Tich{\'y}, Petr
+	and Blaheta, Radim
+	and {\v{S}}{\'i}stek, Jakub
+	and Luk{\'a}{\v{s}}, Dalibor
+	and Jaro{\v{s}}, Ji{\v{r}}{\'i}",
+	title="Applications of Trace Estimation Techniques",
+	booktitle="High Performance Computing in Science and Engineering",
+	year="2018",
+	publisher="Springer International Publishing",
+	address="Cham",
+	pages="19--33",
+	abstract="We discuss various applications of trace estimation techniques for evaluating functions of the form {\$}{\$}{\backslash}mathtt {\{}tr{\}}(f(A)){\$}{\$}where f is certain function. The first problem we consider that can be cast in this form is that of approximating the Spectral density or Density of States (DOS) of a matrix. The DOS is a probability density distribution that measures the likelihood of finding eigenvalues of the matrix at a given point on the real line, and it is an important function in solid state physics. We also present a few non-standard applications of spectral densities. Other trace estimation problems we discuss include estimating the trace of a matrix inverse {\$}{\$}{\backslash}mathtt {\{}tr{\}}(A^{\{}-1{\}}){\$}{\$}, the problem of counting eigenvalues and estimating the rank, and approximating the log-determinant (trace of log function). We also discuss a few similar computations that arise in machine learning applications. We review two computationally inexpensive methods to compute traces of matrix functions, namely, the Chebyshev expansion and the Lanczos Quadrature methods. A few numerical examples are presented to illustrate the performances of these methods in different applications.",
+	isbn="978-3-319-97136-0"
+}
+
+@inproceedings{woodruffOptimalQueryComplexities,
+author = {Woodruff, David P. and Zhang, Fred and Zhang, Qiuyi (Richard)},
+title = {Optimal query complexities for dynamic trace estimation},
+year = {2022},
+isbn = {9781713871088},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {We consider the problem of minimizing the number of matrix-vector queries needed for accurate trace estimation in the dynamic setting where our underlying matrix is changing slowly, such as during an optimization process. Specifically, for any m matrices <b>A</b>1, ..., <b>A</b>m with consecutive differences bounded in Schatten-1 norm by α, we provide a novel binary tree summation procedure that simultaneously estimates all m traces up to ε error with δ failure probability with an optimal query complexity of $widetilde{O}(m alphasqrt{log(1/delta)}/epsilon + mlog(1/delta))$, improving the dependence on both α and δ from Dharangutte and Musco (NeurIPS, 2021). Our procedure works without additional norm bounds on Ai and can be generalized to a bound for the p-th Schatten norm for p ∈ [1, 2], giving a complexity of $widetilde{O}(m alpha(sqrt{log(1/delta)}/epsilon)^p +m log(1/delta))$. By using novel reductions to communication complexity and information-theoretic analyses of Gaussian matrices, we provide matching lower bounds for static and dynamic trace estimation in all relevant parameters, including the failure probability. Our lower bounds (1) give the first tight bounds for Hutchinson's estimator in the matrix-vector product model with Frobenius norm error even in the static setting, and (2) are the first unconditional lower bounds for dynamic trace estimation, resolving open questions of prior work.},
+booktitle = {Proceedings of the 36th International Conference on Neural Information Processing Systems},
+articleno = {2540},
+numpages = {12},
+location = {New Orleans, LA, USA},
+series = {NIPS '22}
+}
+
+@misc{Harvey2021Randomized2,
+  author       = {Harvey, Nicholas J. A.},
+  title        = {A Second Course in Randomized Algorithms},
+  howpublished = {University of British Columbia, Course Textbook Draft},
+  year         = {2021},
+  url          = {https://www.cs.ubc.ca/~nickhar/Book2.pdf},
+  note         = {Accessed: 2025-12-16}
+}
+
+@inproceedings{ailonChazelle2006ApproximateNearest,
+author = {Ailon, Nir and Chazelle, Bernard},
+title = {Approximate nearest neighbors and the fast Johnson-Lindenstrauss transform},
+year = {2006},
+isbn = {1595931341},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1132516.1132597},
+doi = {10.1145/1132516.1132597},
+abstract = {We introduce a new low-distortion embedding f l2d into lpO(log n) (p=1,2), called the Fast-Johnson-Linden-strauss-Transform. The FJLT is faster than standard random projections and just as easy to implement. It is based upon the preconditioning of a sparse projection matrix with a randomized Fourier transform. Sparse random projections are unsuitable for low-distortion embeddings. We overcome this handicap by exploiting the "Heisenberg principle" of the Fourier transform, ie, its local-global duality. The FJLT can be used to speed up search algorithms based on low-distortion embeddings in l1 and l2. We consider the case of approximate nearest neighbors in l2d. We provide a faster algorithm using classical projections, which we then further speed up by plugging in the FJLT. We also give a faster algorithm for searching over the hypercube.},
+booktitle = {Proceedings of the Thirty-Eighth Annual ACM Symposium on Theory of Computing},
+pages = {557–563},
+numpages = {7},
+keywords = {Fourier transform, Johnson-Lindenstrauss dimension reduction, approximate nearest neighbor searching, high-dimensional geometry},
+location = {Seattle, WA, USA},
+series = {STOC '06}
+}
+
+@misc{musco2020projectioncostpreservingsketchesproofstrategies,
+      title={Projection-Cost-Preserving Sketches: Proof Strategies and Constructions}, 
+      author={Cameron Musco and Christopher Musco},
+      year={2020},
+      eprint={2004.08434},
+      archivePrefix={arXiv},
+      primaryClass={cs.DS},
+      url={https://arxiv.org/abs/2004.08434}, 
+}
+
+@article{liu2025optimal,
+  title={Optimal Stochastic Trace Estimation in Generative Modeling},
+  author={Liu, Xinyang and Du, Hengrong and Deng, Wei and Zhang, Ruqi},
+  journal={arXiv preprint arXiv:2502.18808},
+  year={2025}
+}
+
+
