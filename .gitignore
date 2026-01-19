@@ -1,5 +1,14 @@
-/.quarto
+# Quarto
 /.quarto/
+/_site/
+/docs/
+
+# OS files
 desktop.ini
-**/.jupyter_cache/
+.DS_Store
+
+# IDE
 /.claude
+
+# Jupyter cache (redundant with _freeze/)
+**/.jupyter_cache/
