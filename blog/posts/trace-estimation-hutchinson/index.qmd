@@ -443,7 +443,7 @@ def hutchinson(A, num_queries, dist="rademacher"):
     return trace_est
 ```
 
-The Hutch++ implementation follows the steps outlined in @alg-hutchplusplus and @alg-hutchplusplus-gaussian. In this case we optimize the computation step by noting that the projection $(\mI - \mQ \mQ^\top)$ can be applied efficiently without explicitly forming the projection matrix. For the projection matrix $P = \mI - \mQ \mQ^\top$, we have that $P = P^\top$ and $P^2 = P$. Thus for any matrix $\mG$ the projected MVP can be computed as $\Tr(P \mA P) = \Tr(\mA P)$ and so using standard Hutchinson on the residual becomes
+The Hutch++ implementation follows the steps outlined in @alg-hutchplusplus and @alg-hutchplusplus-gaussian. In this case we optimize the computation step by noting that the projection $(\mI - \mQ \mQ^\top)$ can be applied efficiently without explicitly forming the projection matrix. For the projection matrix $P = \mI - \mQ \mQ^\top$, we have that $P = P^\top$ and $P^2 = P$. Thus for any matrix $\mG$ the projected MVP can be computed as $\tr(P \mA P) = \tr(\mA P)$ and so using standard Hutchinson on the residual becomes
 $$
     \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
 $$
