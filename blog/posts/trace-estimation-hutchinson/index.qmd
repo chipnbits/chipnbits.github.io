@@ -1,6 +1,6 @@
 ---
 title: "Trace Estimation for Implicit Matrices"
-subtitle: "CPSC 536M Project"
+subtitle: "A Hutchinson's and Hutch++ Survey"
 date: 2026-01-18
 author: "Simon Ghyselincks"
 description: >-
