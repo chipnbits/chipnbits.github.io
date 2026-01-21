@@ -500,10 +500,148 @@ def hutch_plus_plus(A, num_queries, dist="rademacher"):
     return tr_low_rank + tr_res
 ```
 
-## Results and Discussion
-The results are presented in @fig-hutch-vs-hutchpp.
+For experimentation, a generalized construction method for PSD with different spectral profiles is implemented by sampling eigenvalues from a $1/n^k$ decay function and applying the discrete cosine transform for mixing. The diagonal-heavy and spiked identity matrices are constructed directly.
 
-![Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.](figs/convergence_full.png){#fig-hutch-vs-hutchpp}
+```{python}
+def generate_dct_rotated_matrix(n, decay_power):
+    """
+    Constructs A = Q D Q^T SPSD matrix with:
+    - D: Diagonal with eigenvalues decaying as 1/k^decay_power
+    """
+    # 1. Eigenvalues (Diagonal D)
+    evals = 1.0 / np.arange(1, n + 1) ** decay_power
+    D = np.diag(evals)
+
+    # 2. Construct Q via Randomized DCT
+    I = np.eye(n)
+    Q_dct = dct(I, type=2, norm="ortho", axis=0)
+    signs = np.random.choice([-1, 1], size=n)
+    Q = Q_dct * signs[:, np.newaxis]  # Broadcasting to multiply rows
+
+    # 3. Construct A = Q D Q^T
+    A = Q @ D @ Q.T
+
+    return A, np.sum(evals)
+
+def generate_clustered_covariance(N, n_clusters=5, cross_talk=0.01):
+    """
+    Generates a Block Diagonal-ish Matrix (Clustered Correlation).
+    - 'n_clusters' dense blocks along the diagonal.
+    - 'cross_talk' weak random correlation between blocks.
+    """
+    block_size = N // n_clusters
+    remainder = N % n_clusters
+
+    # Start with noise background (weak cross-talk)
+    # Construct as B * B^T to ensure SPSD
+    B_noise = np.random.randn(N, max(10, N // 10)) * np.sqrt(cross_talk)
+    A = B_noise @ B_noise.T
+
+    # Add dense blocks to diagonal
+    current_idx = 0
+    for i in range(n_clusters):
+        size = block_size + (1 if i < remainder else 0)
+
+        # Create a random dense correlation matrix for this block
+        # Spectrum: Linear decay (standard random matrix)
+        X_block = np.random.randn(size, size)
+        C_block = X_block @ X_block.T
+
+        # Normalize block to have reasonable scale (e.g., max eigenvalue ~ 1)
+        C_block /= np.linalg.norm(C_block, 2)
+
+        # Add to the big matrix diagonal
+        A[current_idx : current_idx + size, current_idx : current_idx + size] += C_block
+        current_idx += size
+
+    return A, np.trace(A)
+
+def generate_spiked_identity(N, rank=50, signal_strength=100.0):
+    """
+    Generates a 'Spiked Identity' matrix: A = I + U S U^T.
+    - N: Size of the matrix.
+    - rank: Rank of the low-rank signal.
+    - signal_strength: Controls the magnitude of the spikes.
+    
+
+    """
+    # 1. Identity (Noise floor)
+    A = np.eye(N)
+    
+    # 2. Add Low Rank Signal (Spikes)
+    # Random subspace U
+    U = np.random.randn(N, rank)
+    U, _ = np.linalg.qr(U)
+    
+    # Eigenvalues for the signal part (decaying)
+    evals_signal = np.linspace(signal_strength, signal_strength/10, rank)
+    
+    # Update A: A = I + U * diag(S) * U^T
+    A += U @ (np.diag(evals_signal) @ U.T)
+    
+    true_trace = N + np.sum(evals_signal)
+    return A, true_trace
+```
+
+## Results and Discussion
+The results are presented below in @fig-trace-performance:
+
+```{python}
+#| label: fig-trace-performance
+#| fig-cap: "Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis."
+#| code-fold: true
+
+import time
+
+# --- Setup and Execution ---
+np.random.seed(42)
+N, trials = 2000, 30 
+query_counts = np.unique(np.geomspace(12, 1200, num=12, dtype=int))
+
+# Generate Matrices (Functions must be defined in a previous cell)
+datasets = [
+    ("Slow Decay ($1/k$)", generate_dct_rotated_matrix(N, 1.0)),
+    ("Fast Decay ($1/k^2$)", generate_dct_rotated_matrix(N, 2.0)),
+    ("Clustered Covariance", generate_clustered_covariance(N, 15)),
+    ("Spiked Identity ($I + LR$)", generate_spiked_identity(N, 40, 50.0)),        
+]
+
+methods = [
+    ("Hutch (Rad)",   lambda A, q: hutchinson(A, q, "rademacher"),      "#1f77b4", "o-"),
+    ("Hutch (Gauss)", lambda A, q: hutchinson(A, q, "gaussian"),        "#ff7f0e", "s--"),
+    ("H++ (Rad)",     lambda A, q: hutch_plus_plus(A, q, "rademacher"), "#2ca02c", "^-"),
+    ("H++ (Gauss)",   lambda A, q: hutch_plus_plus(A, q, "gaussian"),   "#9467bd", "d-."),
+]
+
+# These variables are now in the global scope
+timing_results = {label: np.zeros(len(query_counts)) for label, _, _, _ in methods}
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+axes_flat = axes.flatten()
+
+for ax, (name, (A, true_tr)) in zip(axes_flat, datasets):
+    for label, func, color, fmt in methods:
+        errors = np.zeros((len(query_counts), trials))
+        for i, q in enumerate(query_counts):
+            for t in range(trials):
+                t0 = time.perf_counter()
+                est = func(A, q)
+                timing_results[label][i] += (time.perf_counter() - t0)
+                errors[i, t] = np.abs(est - true_tr) / true_tr
+
+        mu = np.mean(errors, axis=1)
+        ax.loglog(query_counts, mu, fmt, label=label, color=color, lw=1.5)
+
+    ax.loglog(query_counts, 1.0/np.sqrt(query_counts), "k:", label=r"$O(1/\sqrt{m})$", alpha=0.4)
+    ax.loglog(query_counts, 1.0/query_counts, "k-.", label=r"$O(1/m)$", alpha=0.4)
+    ax.set_title(name)
+    if name == datasets[0][0]: ax.legend(fontsize="small")
+
+plt.tight_layout()
+plt.show()
+```
+
+<!-- ![Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.](figs/convergence_full.png){#fig-hutch-vs-hutchpp} -->
 
 **Impact of Decay Rate**
 As expected, the Hutch++ performance gain is most pronounced in a fast decay spectrum, where the low-rank approximation concentrates the MVP budget on the largest contributors to variance in the trace estimate. The difference is accentuated by the log-log scale where Hutch++ quickly attains several orders of magnitude lower error for the same number of MVPs. For slow decays and smaller numbers of queries, the advantage is less pronounced over the standard Hutchinson.
@@ -517,7 +655,28 @@ In all regimes, the performance follows the slope of the bounds quite closely, i
 **Wall Clock Time**
 The focus of this work has been on the bounds and theoretical convergence for trace estimation. However, factorization steps such as the $QR$ decomposition and generation of random vectors add time to the overhead. To get a better sense of practical performance with time as a resource instead of MVPs, a wall clock time comparison is shown in @fig-time-comparison. The time taken scales linearly with the queries, indicating that the MVP query bounds are roughly equivalent to the time bounds, as claimed by @meyer2021HutchOptimalStochastic. 
 
-![Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time.](figs/timing_comparison.png){#fig-time-comparison}
+```{python}
+#| label: fig-time-comparison
+#| fig-cap: "Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time."
+#| code-fold: true
+
+plt.figure(figsize=(10, 6))
+# Normalization: total trials across all 4 datasets
+normalization = 4 * 30 
+
+# Accessing global variables from the cell above
+for label, _, color, fmt in methods:
+    plt.plot(query_counts, timing_results[label] / normalization, 
+             fmt, label=label, color=color, lw=1.5)
+    
+plt.title("Average Wall-Clock Time per Estimator")
+plt.xlabel("Number of Queries (m)")
+plt.ylabel("Time (seconds)")
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
 
 # Conclusion {#sec-conclusion}
 
