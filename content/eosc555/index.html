@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.53">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -32,15 +32,17 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-listing/list.min.js"></script>
 <script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -119,7 +121,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -138,7 +140,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../../styles.css">
 <link rel="alternate" type="application/rss+xml" title="Simon's Personal Website" href="index.xml" data-external="1"></head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -192,7 +194,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(12)</span></div><div class="category" data-category="Adjoint">Adjoint <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Automatic Differentiation">Automatic Differentiation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Bayesian Inference">Bayesian Inference <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Fourier Transform">Fourier Transform <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Gauss-Newton">Gauss-Newton <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Geophysics">Geophysics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Homotopy">Homotopy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Inverse Theory">Inverse Theory <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Machine Learning">Machine Learning <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Neural Networks">Neural Networks <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Optimization">Optimization <span class="quarto-category-count">(7)</span></div><div class="category" data-category="Probability">Probability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PyTorch">PyTorch <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(4)</span></div><div class="category" data-category="SVD">SVD <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Score">Score <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Score Matching">Score Matching <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Torch">Torch <span class="quarto-category-count">(3)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(12)</span></div><div class="category" data-category="QWRqb2ludA==">Adjoint <span class="quarto-category-count">(1)</span></div><div class="category" data-category="QXV0b21hdGljJTIwRGlmZmVyZW50aWF0aW9u">Automatic Differentiation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="QmF5ZXNpYW4lMjBJbmZlcmVuY2U=">Bayesian Inference <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Rm91cmllciUyMFRyYW5zZm9ybQ==">Fourier Transform <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R2F1c3MtTmV3dG9u">Gauss-Newton <span class="quarto-category-count">(2)</span></div><div class="category" data-category="R2VvcGh5c2ljcw==">Geophysics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SG9tb3RvcHk=">Homotopy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SW52ZXJzZSUyMFRoZW9yeQ==">Inverse Theory <span class="quarto-category-count">(4)</span></div><div class="category" data-category="TWFjaGluZSUyMExlYXJuaW5n">Machine Learning <span class="quarto-category-count">(4)</span></div><div class="category" data-category="TmV1cmFsJTIwTmV0d29ya3M=">Neural Networks <span class="quarto-category-count">(3)</span></div><div class="category" data-category="T3B0aW1pemF0aW9u">Optimization <span class="quarto-category-count">(7)</span></div><div class="category" data-category="UHJvYmFiaWxpdHk=">Probability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UHl0aG9u">Python <span class="quarto-category-count">(4)</span></div><div class="category" data-category="UHlUb3JjaA==">PyTorch <span class="quarto-category-count">(2)</span></div><div class="category" data-category="U2NvcmU=">Score <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U2NvcmUlMjBNYXRjaGluZw==">Score Matching <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U1ZE">SVD <span class="quarto-category-count">(2)</span></div><div class="category" data-category="VG9yY2g=">Torch <span class="quarto-category-count">(3)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -222,581 +224,523 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-left" data-index="0" data-categories="Machine Learning,Neural Networks,Score Matching" data-listing-date-sort="1732521600000" data-listing-file-modified-sort="1768794063880" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1946">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">
-<p class="card-img-top"><img src="lectures\lecture11\index_files\figure-html\cell-2-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="0" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDTmV1cmFsJTIwTmV0d29ya3MlMkNTY29yZSUyME1hdGNoaW5n" data-listing-date-sort="1732492800000" data-listing-file-modified-sort="1768957084566" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1946">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">
+
+<p class="card-img-top"><img src="lectures/lecture11/index_files/figure-html/cell-2-output-1.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">Lecture 11</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">Score Matching and Diffusion</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">
+<p>Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture11/index.html" class="no-external">
 <div class="listing-date">
 Nov 25, 2024
 </div>
-<div class="listing-reading-time">
-10 min
-</div>
+<div class="listing-reading-time">10 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="1" data-categories="Machine Learning,Bayesian Inference,Score" data-listing-date-sort="1732262400000" data-listing-file-modified-sort="1768794063625" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3547">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="1" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDQmF5ZXNpYW4lMjBJbmZlcmVuY2UlMkNTY29yZQ==" data-listing-date-sort="1732233600000" data-listing-file-modified-sort="1768957084389" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3547">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">Lecture 10</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">MAP, MLE, and Score Function</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">In this mathematical lecture, some of the foundational principles of Bayesian inverse problems and their statistical interpretation are discussed. A set of computational tools are shown that aid in finding the solution to some of these problems.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">
+<p>In this mathematical lecture, some of the foundational principles of Bayesian inverse problems and their statistical interpretation are discussed. A set of computational tools are shown that aid in finding the solution to some of these problems.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture10/index.html" class="no-external">
 <div class="listing-date">
 Nov 22, 2024
 </div>
-<div class="listing-reading-time">
-18 min
-</div>
+<div class="listing-reading-time">18 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="2" data-categories="Machine Learning,Neural Networks,Geophysics" data-listing-date-sort="1731657600000" data-listing-file-modified-sort="1768794064169" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="34" data-listing-word-count-sort="6653">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/project/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/project/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/project/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="2" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDTmV1cmFsJTIwTmV0d29ya3MlMkNHZW9waHlzaWNz" data-listing-date-sort="1731628800000" data-listing-file-modified-sort="1768957084722" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="34" data-listing-word-count-sort="6653">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/project/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/project/index.html" class="no-external">Project Work 1</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/project/index.html" class="no-external">Applications of Machine Learning in Geophysics</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/project/index.html" class="no-external">Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/project/index.html" class="no-external">
+<p>Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/project/index.html" class="no-external">
 <div class="listing-date">
 Nov 15, 2024
 </div>
-<div class="listing-reading-time">
-34 min
-</div>
+<div class="listing-reading-time">34 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="3" data-categories="Machine Learning,Neural Networks" data-listing-date-sort="1730793600000" data-listing-file-modified-sort="1768794064036" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3412">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">
-<p class="card-img-top"><img src="lectures\lecture9\index_files\figure-html\fig-nonlinear-rank-recovery-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="3" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDTmV1cmFsJTIwTmV0d29ya3M=" data-listing-date-sort="1730764800000" data-listing-file-modified-sort="1768957084643" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3412">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">
+
+<p class="card-img-top"><img src="lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">Lecture 9</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">Machine Learning and Neural Networks</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">
+<p>Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture9/index.html" class="no-external">
 <div class="listing-date">
 Nov 5, 2024
 </div>
-<div class="listing-reading-time">
-18 min
-</div>
+<div class="listing-reading-time">18 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="4" data-categories="Probability,Bayesian Inference" data-listing-date-sort="1730617200000" data-listing-file-modified-sort="1768794064017" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1908">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture8/imgs/regularization_effects.png" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="4" data-categories="UHJvYmFiaWxpdHklMkNCYXllc2lhbiUyMEluZmVyZW5jZQ==" data-listing-date-sort="1730592000000" data-listing-file-modified-sort="1768957084635" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1908">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture8/imgs/regularization_effects.png" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">Lecture 8</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">Regularization and Priors in Inverse Problems</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">Inverse problems often have multiple or infinite solutions. Regularization and priors can be used to constrain the solution space and find a unique solution. This lecture covers the role of regularization and priors in solving inverse problems.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">
+<p>Inverse problems often have multiple or infinite solutions. Regularization and priors can be used to constrain the solution space and find a unique solution. This lecture covers the role of regularization and priors in solving inverse problems.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture8/index.html" class="no-external">
 <div class="listing-date">
 Nov 3, 2024
 </div>
-<div class="listing-reading-time">
-10 min
-</div>
+<div class="listing-reading-time">10 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="5" data-categories="Optimization,PyTorch,Homotopy,Fourier Transform" data-listing-date-sort="1729580400000" data-listing-file-modified-sort="1768794063988" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3111">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="5" data-categories="T3B0aW1pemF0aW9uJTJDUHlUb3JjaCUyQ0hvbW90b3B5JTJDRm91cmllciUyMFRyYW5zZm9ybQ==" data-listing-date-sort="1729555200000" data-listing-file-modified-sort="1768957084622" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3111">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">Lecture 7</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">Homotopy Optimization</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help scape local minima.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">
+<p>Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help scape local minima.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture7/index.html" class="no-external">
 <div class="listing-date">
 Oct 22, 2024
 </div>
-<div class="listing-reading-time">
-16 min
-</div>
+<div class="listing-reading-time">16 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="6" data-categories="Optimization,Gauss-Newton,Automatic Differentiation,PyTorch" data-listing-date-sort="1728370800000" data-listing-file-modified-sort="1768794063951" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4455">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture6/imgs/fitting_animation_time_varying.gif" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="6" data-categories="T3B0aW1pemF0aW9uJTJDR2F1c3MtTmV3dG9uJTJDQXV0b21hdGljJTIwRGlmZmVyZW50aWF0aW9uJTJDUHlUb3JjaA==" data-listing-date-sort="1728345600000" data-listing-file-modified-sort="1768957084603" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4455">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture6/imgs/fitting_animation_time_varying.gif" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">Lecture 6</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">Autodiff and Coding Gauss-Newton for Least Squares</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">Automatic differentiation is a powerful tool for solving optimization problems that can be used to automate the process of Gauss-Newton optimization. Here we put together an implementation of the Gauss-Newton method using PyTorch.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">
+<p>Automatic differentiation is a powerful tool for solving optimization problems that can be used to automate the process of Gauss-Newton optimization. Here we put together an implementation of the Gauss-Newton method using PyTorch.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture6/index.html" class="no-external">
 <div class="listing-date">
 Oct 8, 2024
 </div>
-<div class="listing-reading-time">
-23 min
-</div>
+<div class="listing-reading-time">23 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="7" data-categories="Optimization,Gauss-Newton" data-listing-date-sort="1727247600000" data-listing-file-modified-sort="1768794063925" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3324">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="7" data-categories="T3B0aW1pemF0aW9uJTJDR2F1c3MtTmV3dG9u" data-listing-date-sort="1727222400000" data-listing-file-modified-sort="1768957084586" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3324">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">Lecture 5</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">Gauss Newton for Non-Linear Least Squares Optimization</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form <span class="math inline">\(\min_{p} \frac{1}{2}\|F(p)-d\|^2\)</span>. In this lecture, a derivation of the method is presented along with a comparison to Newton’s method. Finally an algorithm for solving the problem is given.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">
+<p>The Gauss-Newton method is a powerful optimization technique for solving non-linear least squares problems of the form <span class="math inline">\(\min_{p} \frac{1}{2}\|F(p)-d\|^2\)</span>. In this lecture, a derivation of the method is presented along with a comparison to Newton’s method. Finally an algorithm for solving the problem is given.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture5/index.html" class="no-external">
 <div class="listing-date">
 Sep 25, 2024
 </div>
-<div class="listing-reading-time">
-17 min
-</div>
+<div class="listing-reading-time">17 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="8" data-categories="Optimization,Inverse Theory,Python" data-listing-date-sort="1726815600000" data-listing-file-modified-sort="1768794063917" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1342">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture4/imgs/tikhonov_regularization.png" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="8" data-categories="T3B0aW1pemF0aW9uJTJDSW52ZXJzZSUyMFRoZW9yeSUyQ1B5dGhvbg==" data-listing-date-sort="1726790400000" data-listing-file-modified-sort="1768957084582" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1342">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture4/imgs/tikhonov_regularization.png" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">Lecture 4</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">Regularization and the Conjugate Gradient Methods</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">Tikhonov regularization is a common technique used in inverse theory to stabilize ill-posed problems. In this lecture, we derive the Tikhonov regularization technique, we also have a look at a least squares solution that does not require the computation of the full SVD of the matrix <span class="math inline">\(A\)</span>, using the conjugate gradient method.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">
+<p>Tikhonov regularization is a common technique used in inverse theory to stabilize ill-posed problems. In this lecture, we derive the Tikhonov regularization technique, we also have a look at a least squares solution that does not require the computation of the full SVD of the matrix <span class="math inline">\(A\)</span>, using the conjugate gradient method.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture4/index.html" class="no-external">
 <div class="listing-date">
 Sep 20, 2024
 </div>
-<div class="listing-reading-time">
-7 min
-</div>
+<div class="listing-reading-time">7 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="9" data-categories="Optimization,Inverse Theory,Python,Torch,Adjoint" data-listing-date-sort="1726556400000" data-listing-file-modified-sort="1768794063910" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4319">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="9" data-categories="T3B0aW1pemF0aW9uJTJDSW52ZXJzZSUyMFRoZW9yeSUyQ1B5dGhvbiUyQ1RvcmNoJTJDQWRqb2ludA==" data-listing-date-sort="1726531200000" data-listing-file-modified-sort="1768957084579" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4319">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">Lecture 3</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">Image Denoising with Gradient Descent and Early Stopping</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">In continuation of Lecture 2, we now look at an alternative approach to image denoising using gradient descent and early stopping. We will derive the least squares gradient descent algorithm and analyze it as an ordinary differential equation.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">
+<p>In continuation of Lecture 2, we now look at an alternative approach to image denoising using gradient descent and early stopping. We will derive the least squares gradient descent algorithm and analyze it as an ordinary differential equation.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture3/index.html" class="no-external">
 <div class="listing-date">
 Sep 17, 2024
 </div>
-<div class="listing-reading-time">
-22 min
-</div>
+<div class="listing-reading-time">22 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="10" data-categories="Optimization,Inverse Theory,Python,Torch,SVD" data-listing-date-sort="1726383600000" data-listing-file-modified-sort="1768794063893" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4262">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="10" data-categories="T3B0aW1pemF0aW9uJTJDSW52ZXJzZSUyMFRoZW9yeSUyQ1B5dGhvbiUyQ1RvcmNoJTJDU1ZE" data-listing-date-sort="1726358400000" data-listing-file-modified-sort="1768957084573" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4262">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">Lecture 2</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">Image Denoising with SVD</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">Image denoising and deblurring are important techniques in signal processing and recovery. I this coding exercise, we will explore the application of least squares, SVD, and the pseudoinverse to denoise and deblur images.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">
+<p>Image denoising and deblurring are important techniques in signal processing and recovery. I this coding exercise, we will explore the application of least squares, SVD, and the pseudoinverse to denoise and deblur images.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture2/index.html" class="no-external">
 <div class="listing-date">
 Sep 15, 2024
 </div>
-<div class="listing-reading-time">
-22 min
-</div>
+<div class="listing-reading-time">22 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="11" data-categories="Optimization,Inverse Theory,Python,Torch,SVD" data-listing-date-sort="1726297200000" data-listing-file-modified-sort="1768794063330" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2155">
-<div class="thumbnail">
-<p><a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external"></a></p><a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">
-<p><img loading="lazy" src="../../content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" class="thumbnail-image"></p>
-</a><p><a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-left" data-index="11" data-categories="T3B0aW1pemF0aW9uJTJDSW52ZXJzZSUyMFRoZW9yeSUyQ1B5dGhvbiUyQ1RvcmNoJTJDU1ZE" data-listing-date-sort="1726272000000" data-listing-file-modified-sort="1768957084166" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2155">
+<div class="thumbnail"><a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">
+
+<img loading="lazy" src="../../content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">Lecture 1</a>
 </h3>
-<div class="listing-subtitle">
-<a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">Introduction to Inverse Theory</a>
-</div>
-<div class="listing-description">
-<a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.</a>
-</div>
+<div class="delink listing-description"><a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">
+<p>Inverse theory has broad applications across many scientific disciplines. This lecture introduces the concept of least squares and the singular value decomposition (SVD) as a foundation for understanding inverse theory. We then use these properties to analyse the stability and conditioning of linear systems for solving inverse problems using the pseudoinverse and ML techniques.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="../../content/eosc555/lectures/lecture1-2/index.html" class="no-external">
 <div class="listing-date">
 Sep 14, 2024
 </div>
-<div class="listing-reading-time">
-11 min
-</div>
+<div class="listing-reading-time">11 min</div>
 </a>
 </div>
 </div>
 </div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
+<div class="listing-no-matching d-none">No matching items</div>
 </div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
         }
-        return container.innerHTML
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -804,185 +748,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

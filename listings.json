@@ -1,12 +1,9 @@
 [
   {
-    "listing": "/blog/index.html",
+    "listing": "/content/publications/index.html",
     "items": [
-      "/blog/posts/trace-estimation-hutchinson/index.html",
-      "/blog/posts/Johnson-Lindenstrauss/index.html",
-      "/blog/posts/CAP-conference-poster/index.html",
-      "/blog/posts/scorematching/index.html",
-      "/blog/posts/welcome/index.html"
+      "/content/publications/structural-geo-deep-learning/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html"
     ]
   },
   {
@@ -27,10 +24,13 @@
     ]
   },
   {
-    "listing": "/content/publications/index.html",
+    "listing": "/blog/index.html",
     "items": [
-      "/content/publications/structural-geo-deep-learning/index.html",
-      "/content/publications/ssvm-magnetic-data-inversion/index.html"
+      "/blog/posts/trace-estimation-hutchinson/index.html",
+      "/blog/posts/Johnson-Lindenstrauss/index.html",
+      "/blog/posts/CAP-conference-poster/index.html",
+      "/blog/posts/scorematching/index.html",
+      "/blog/posts/welcome/index.html"
     ]
   }
 ]
