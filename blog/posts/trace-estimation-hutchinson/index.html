@@ -777,7 +777,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
         &amp;= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
 \end{align}
 \]</span> which is computed by summing the elementwise product of <span class="math inline">\(\mV\)</span> and <span class="math inline">\(\mY = \mA \mV\)</span>.</p>
-<div id="f9290c41" class="cell" data-execution_count="1">
+<div id="67cc966f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.fft <span class="im">import</span> dct, idct</span>
@@ -797,7 +797,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <p>The Hutch++ implementation follows the steps outlined in <span class="citation" data-cites="alg-hutchplusplus">(<a href="#ref-alg-hutchplusplus" role="doc-biblioref"><strong>alg-hutchplusplus?</strong></a>)</span> and <span class="citation" data-cites="alg-hutchplusplus-gaussian">(<a href="#ref-alg-hutchplusplus-gaussian" role="doc-biblioref"><strong>alg-hutchplusplus-gaussian?</strong></a>)</span>. In this case we optimize the computation step by noting that the projection <span class="math inline">\((\mI - \mQ \mQ^\top)\)</span> can be applied efficiently without explicitly forming the projection matrix. For the projection matrix <span class="math inline">\(P = \mI - \mQ \mQ^\top\)</span>, we have that <span class="math inline">\(P = P^\top\)</span> and <span class="math inline">\(P^2 = P\)</span>. Thus for any matrix <span class="math inline">\(\mG\)</span> the projected MVP can be computed as <span class="math inline">\(\tr(P \mA P) = \tr(\mA P)\)</span> and so using standard Hutchinson on the residual becomes <span class="math display">\[
     \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
 \]</span></p>
-<div id="ae4d6102" class="cell" data-execution_count="2">
+<div id="0ad9e9c5" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutch_plus_plus(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Hutch++ with support for Rademacher or Gaussian sketching.</span></span>
@@ -847,34 +847,197 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tr_low_rank <span class="op">+</span> tr_res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>For experimentation, a generalized construction method for PSD with different spectral profiles is implemented by sampling eigenvalues from a <span class="math inline">\(1/n^k\)</span> decay function and applying the discrete cosine transform for mixing. The diagonal-heavy and spiked identity matrices are constructed directly.</p>
+<div id="5d114e96" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_dct_rotated_matrix(n, decay_power):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Constructs A = Q D Q^T SPSD matrix with:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    - D: Diagonal with eigenvalues decaying as 1/k^decay_power</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Eigenvalues (Diagonal D)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    evals <span class="op">=</span> <span class="fl">1.0</span> <span class="op">/</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>) <span class="op">**</span> decay_power</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    D <span class="op">=</span> np.diag(evals)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Construct Q via Randomized DCT</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    I <span class="op">=</span> np.eye(n)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    Q_dct <span class="op">=</span> dct(I, <span class="bu">type</span><span class="op">=</span><span class="dv">2</span>, norm<span class="op">=</span><span class="st">"ortho"</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    signs <span class="op">=</span> np.random.choice([<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], size<span class="op">=</span>n)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    Q <span class="op">=</span> Q_dct <span class="op">*</span> signs[:, np.newaxis]  <span class="co"># Broadcasting to multiply rows</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Construct A = Q D Q^T</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> Q <span class="op">@</span> D <span class="op">@</span> Q.T</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> A, np.<span class="bu">sum</span>(evals)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_clustered_covariance(N, n_clusters<span class="op">=</span><span class="dv">5</span>, cross_talk<span class="op">=</span><span class="fl">0.01</span>):</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Generates a Block Diagonal-ish Matrix (Clustered Correlation).</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">    - 'n_clusters' dense blocks along the diagonal.</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">    - 'cross_talk' weak random correlation between blocks.</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    block_size <span class="op">=</span> N <span class="op">//</span> n_clusters</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    remainder <span class="op">=</span> N <span class="op">%</span> n_clusters</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start with noise background (weak cross-talk)</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct as B * B^T to ensure SPSD</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    B_noise <span class="op">=</span> np.random.randn(N, <span class="bu">max</span>(<span class="dv">10</span>, N <span class="op">//</span> <span class="dv">10</span>)) <span class="op">*</span> np.sqrt(cross_talk)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> B_noise <span class="op">@</span> B_noise.T</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add dense blocks to diagonal</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    current_idx <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_clusters):</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        size <span class="op">=</span> block_size <span class="op">+</span> (<span class="dv">1</span> <span class="cf">if</span> i <span class="op">&lt;</span> remainder <span class="cf">else</span> <span class="dv">0</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a random dense correlation matrix for this block</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Spectrum: Linear decay (standard random matrix)</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        X_block <span class="op">=</span> np.random.randn(size, size)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        C_block <span class="op">=</span> X_block <span class="op">@</span> X_block.T</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Normalize block to have reasonable scale (e.g., max eigenvalue ~ 1)</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        C_block <span class="op">/=</span> np.linalg.norm(C_block, <span class="dv">2</span>)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add to the big matrix diagonal</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        A[current_idx : current_idx <span class="op">+</span> size, current_idx : current_idx <span class="op">+</span> size] <span class="op">+=</span> C_block</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        current_idx <span class="op">+=</span> size</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> A, np.trace(A)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_spiked_identity(N, rank<span class="op">=</span><span class="dv">50</span>, signal_strength<span class="op">=</span><span class="fl">100.0</span>):</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co">    Generates a 'Spiked Identity' matrix: A = I + U S U^T.</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">    - N: Size of the matrix.</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">    - rank: Rank of the low-rank signal.</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">    - signal_strength: Controls the magnitude of the spikes.</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Identity (Noise floor)</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.eye(N)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Add Low Rank Signal (Spikes)</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Random subspace U</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    U <span class="op">=</span> np.random.randn(N, rank)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    U, _ <span class="op">=</span> np.linalg.qr(U)</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Eigenvalues for the signal part (decaying)</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>    evals_signal <span class="op">=</span> np.linspace(signal_strength, signal_strength<span class="op">/</span><span class="dv">10</span>, rank)</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Update A: A = I + U * diag(S) * U^T</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>    A <span class="op">+=</span> U <span class="op">@</span> (np.diag(evals_signal) <span class="op">@</span> U.T)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>    true_trace <span class="op">=</span> N <span class="op">+</span> np.<span class="bu">sum</span>(evals_signal)</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> A, true_trace</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 </section>
 <section id="results-and-discussion" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="results-and-discussion"><span class="header-section-number">6.3</span> Results and Discussion</h2>
-<p>The results are presented in <a href="#fig-hutch-vs-hutchpp" class="quarto-xref">Figure&nbsp;2</a>.</p>
-<div id="fig-hutch-vs-hutchpp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<p>The results are presented below in <a href="#fig-trace-performance" class="quarto-xref">Figure&nbsp;2</a>:</p>
+<div id="cell-fig-trace-performance" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Setup and Execution ---</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>N, trials <span class="op">=</span> <span class="dv">2000</span>, <span class="dv">30</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> np.unique(np.geomspace(<span class="dv">12</span>, <span class="dv">1200</span>, num<span class="op">=</span><span class="dv">12</span>, dtype<span class="op">=</span><span class="bu">int</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate Matrices (Functions must be defined in a previous cell)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> [</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Slow Decay ($1/k$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">1.0</span>)),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Fast Decay ($1/k^2$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">2.0</span>)),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Clustered Covariance"</span>, generate_clustered_covariance(N, <span class="dv">15</span>)),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Spiked Identity ($I + LR$)"</span>, generate_spiked_identity(N, <span class="dv">40</span>, <span class="fl">50.0</span>)),        </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Rad)"</span>,   <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"rademacher"</span>),      <span class="st">"#1f77b4"</span>, <span class="st">"o-"</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Gauss)"</span>, <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"gaussian"</span>),        <span class="st">"#ff7f0e"</span>, <span class="st">"s--"</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Rad)"</span>,     <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"rademacher"</span>), <span class="st">"#2ca02c"</span>, <span class="st">"^-"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Gauss)"</span>,   <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"gaussian"</span>),   <span class="st">"#9467bd"</span>, <span class="st">"d-."</span>),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># These variables are now in the global scope</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>timing_results <span class="op">=</span> {label: np.zeros(<span class="bu">len</span>(query_counts)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods}</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, (A, true_tr)) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, func, color, fmt <span class="kw">in</span> methods:</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        errors <span class="op">=</span> np.zeros((<span class="bu">len</span>(query_counts), trials))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, q <span class="kw">in</span> <span class="bu">enumerate</span>(query_counts):</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(trials):</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                est <span class="op">=</span> func(A, q)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                timing_results[label][i] <span class="op">+=</span> (time.perf_counter() <span class="op">-</span> t0)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                errors[i, t] <span class="op">=</span> np.<span class="bu">abs</span>(est <span class="op">-</span> true_tr) <span class="op">/</span> true_tr</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        mu <span class="op">=</span> np.mean(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        ax.loglog(query_counts, mu, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span><span class="op">/</span>np.sqrt(query_counts), <span class="st">"k:"</span>, label<span class="op">=</span><span class="vs">r"$O(1/\sqrt</span><span class="sc">{m}</span><span class="vs">)$"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span><span class="op">/</span>query_counts, <span class="st">"k-."</span>, label<span class="op">=</span><span class="vs">r"$O(1/m)$"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]: ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-trace-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-hutch-vs-hutchpp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="figs/convergence_full.png" class="img-fluid figure-img">
+<div aria-describedby="fig-trace-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-trace-performance-output-1.png" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hutch-vs-hutchpp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trace-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.
 </figcaption>
 </figure>
 </div>
+</div>
+</div>
+<!-- ![Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.](figs/convergence_full.png){#fig-hutch-vs-hutchpp} -->
 <p><strong>Impact of Decay Rate</strong> As expected, the Hutch++ performance gain is most pronounced in a fast decay spectrum, where the low-rank approximation concentrates the MVP budget on the largest contributors to variance in the trace estimate. The difference is accentuated by the log-log scale where Hutch++ quickly attains several orders of magnitude lower error for the same number of MVPs. For slow decays and smaller numbers of queries, the advantage is less pronounced over the standard Hutchinson.</p>
 <p><strong>Rademacher vs Gaussian</strong> Interestingly, the choice of random variable does not have a significant impact on performance, despite the theoretical bounds and methods to attain them being quite different. Rademacher only shows a clear advantage in the diagonal-heavy regime, where it is able to even outperform the Hutch++ methods. Note that the Gaussian variant of Hutch++ only uses Gaussian variables for the sketching matrix, while the residual estimation still uses Rademacher vectors.</p>
 <p><strong>Convergence Slope</strong> In all regimes, the performance follows the slope of the bounds quite closely, indicating that the theoretical analysis is tight. In the fast decay regime, Hutch++ outperforms the theoretical bounds, which make no assumptions on the rate of decay. Note that the error is compared against the number of queries; the inverse relationship is thus <span class="math inline">\(O(1/m)\)</span>, giving a slope of -1 on the log-log plots, while Hutchinson has a slope of -0.5 as expected from the <span class="math inline">\(O(1/\sqrt{m})\)</span> dependence. The slope of Hutch++ in fast decay is even steeper, showing the adaptive leveraging of the spectrum.</p>
 <p><strong>Wall Clock Time</strong> The focus of this work has been on the bounds and theoretical convergence for trace estimation. However, factorization steps such as the <span class="math inline">\(QR\)</span> decomposition and generation of random vectors add time to the overhead. To get a better sense of practical performance with time as a resource instead of MVPs, a wall clock time comparison is shown in <a href="#fig-time-comparison" class="quarto-xref">Figure&nbsp;3</a>. The time taken scales linearly with the queries, indicating that the MVP query bounds are roughly equivalent to the time bounds, as claimed by <span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span>.</p>
+<div id="cell-fig-time-comparison" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalization: total trials across all 4 datasets</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>normalization <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> <span class="dv">30</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Accessing global variables from the cell above</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, _, color, fmt <span class="kw">in</span> methods:</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    plt.plot(query_counts, timing_results[label] <span class="op">/</span> normalization, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>             fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Average Wall-Clock Time per Estimator"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Queries (m)"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Time (seconds)"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
 <div id="fig-time-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="figs/timing_comparison.png" class="img-fluid figure-img">
+<img src="index_files/figure-html/fig-time-comparison-output-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time.
 </figcaption>
 </figure>
+</div>
+</div>
 </div>
 </section>
 </section>
