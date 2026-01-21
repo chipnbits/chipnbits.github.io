@@ -18,10 +18,16 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Set up Python and install dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip' # optional: caches dependencies for faster subsequent runs
+
+      - name: Install dependencies
         run: |
-          python install 3.12
-          pip install --system jupyter nbformat numpy scipy matplotlib
+          python -m pip install --upgrade pip
+          pip install jupyter nbformat numpy scipy matplotlib
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
