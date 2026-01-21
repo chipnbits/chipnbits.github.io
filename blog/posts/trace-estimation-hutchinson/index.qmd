@@ -219,14 +219,14 @@ $$
 
 When at least one index is distinct, the expectation is zero by independence and zero mean. When indices are paired, we get contributions of $\sigma^2$ for each unique double pair. When all four indices are equal, we get a contribution of $\mathbb{E}[V^4]$. The variance is then found by subtracting the square of the mean. 
 
-Any random vector with the above properties will then function as an unbiased estimator when $\Var(V)=\sigma^2=1$ and will have minimum variance when $\mathbb{E}[V^4] - \sigma^4$ is minimized. The Rademacher random variable satisfies $\mathbb{E}[V] = 0$, $\Var(V) = 1$, and minimizes $\mathbb{E}[V^4] - \sigma^4$. In fact, by Jensen's inequality for any $V$, $\mathbb{E}[V^4] \geq (\mathbb{E}[V^2])^2 = \sigma^4$, such that the minimum is achieved when $\mathbb{E}[V^4] = \sigma^4$. Thus, the Rademacher distribution gives the minimum variance unbiased estimator for the trace using this framework of MVPs with i.i.d. entries. By extension, we expect this to translate to the best possible $\epsilon, \delta$ bounds when applying concentration inequalities, as is seen below in Section~\ref{sec:avron}.
+Any random vector with the above properties will then function as an unbiased estimator when $\Var(V)=\sigma^2=1$ and will have minimum variance when $\mathbb{E}[V^4] - \sigma^4$ is minimized. The Rademacher random variable satisfies $\mathbb{E}[V] = 0$, $\Var(V) = 1$, and minimizes $\mathbb{E}[V^4] - \sigma^4$. In fact, by Jensen's inequality for any $V$, $\mathbb{E}[V^4] \geq (\mathbb{E}[V^2])^2 = \sigma^4$, such that the minimum is achieved when $\mathbb{E}[V^4] = \sigma^4$. Thus, the Rademacher distribution gives the minimum variance unbiased estimator for the trace using this framework of MVPs with i.i.d. entries. By extension, we expect this to translate to the best possible $\epsilon, \delta$ bounds when applying concentration inequalities, as is seen below in @sec-avron.
 
 Note that because $\vv^\top \mA \vv$ is an unbiased estimator, the average of $m$ independent samples is also unbiased with variance reduced by a factor of $m$. This is because for independent random variables $X_1, X_2, \ldots, X_m$, we have $\Var\left(\frac{1}{m} \sum_{i=1}^m X_i\right) = \frac{1}{m^2} \sum_{i=1}^m \Var(X_i) = \frac{1}{m} \Var(X_1)$.
 
 Let $\vv_1, \ldots, \vv_m$ be i.i.d. Rademacher random vectors. Then the Hutchinson estimator $T_H$ is unbiased with variance
 $$
 \mathbb{E}[T_H] = \tr(\mA), \quad \Var(T_H) = \frac{1}{m} \left( 2 \sum_{i \neq j} A_{ij}^2 \right).
-$$
+$${#eq-hutch-variance}
 This is the minimum variance unbiased estimator using i.i.d. entries with a mean of zero for the random vectors $\vv_j$, *for a fixed coordinate system*.
 
 #### Variance Analysis
@@ -235,7 +235,7 @@ The variance only depends on the off-diagonal elements of $\mA$, so in the speci
 Rademacher vectors are sensitive to the basis in which $\mA$ is represented, while the Gaussian version of the estimator is rotationally invariant, however at the cost of strictly higher variance. Given i.i.d. standard Gaussian vector entries, the fourth moment is $\mathbb{E}[G^4] = 3$, giving the Gaussian trace estimator
 $$
 \Var(T_G) =  \frac{2}{m} \left( \sum_{i \neq j} A_{ij}^2 + \sum_{i} A_{ii}^2 \right)= \frac{2}{m} \|\mA\|_F^2.
-$$
+$${#eq-gaussian_variance}
 However, for matrix $\mA$ there are no guarantees on how well aligned the eigenbasis is to the standard basis, and so the variance for Rademacher may approach that of Gaussian in the worst case. In both cases, the variance in the worst case scales with the squared Frobenius norm $\|\mA\|_F^2$ which is equal to the sum of squared eigenvalues $\sum_{i} \lambda_i^2$.
 
 ## Limitations of the Original Analysis
@@ -285,7 +285,7 @@ A summary and comparison of the estimators and their properties as derived by @a
 
 ## Gaussian Estimator $T_{GM}$ Example
 For brevity, only one of the estimator derivations is given in detail, as the full proofs are available in @avron2011RandomizedAlgorithmsEstimating.
-Proceeding from the variance in Equation~\ref{eq:gaussian_variance}, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation so we can diagonalize $\mA = \mU \Lambda \mU^\top$ and consider $\vw_j = \mU^\top \vv_j$ as a Gaussian vector, without loss of generality. Then the estimator becomes
+Proceeding from the variance in @eq-gaussian_variance, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation so we can diagonalize $\mA = \mU \Lambda \mU^\top$ and consider $\vw_j = \mU^\top \vv_j$ as a Gaussian vector, without loss of generality. Then the estimator becomes
 $$
    T_{GM} =\vv^\top \mA \vv = \frac{1}{m}\sum_j^{m}\sum_{i=1}^N \lambda_i w_{ij}^2 = \frac{1}{m}\sum_{i=1}^N \lambda_i \sum_{j=1}^m w_{ij}^2,
 $$
@@ -323,9 +323,9 @@ Their work shows that each estimator requires a specialized treatment to achieve
 
 # Hutch++: Variance Reduction via Low-Rank Approximation {#sec-hutchplusplus}
 
-Hutch++ [@meyer2021HutchOptimalStochastic] forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound $\delta$ with regular Hutchinson $T_{HM}$, the bound on MVP queries is $m=O(1/\epsilon^2)$. Remarkably, Hutch++ improves this to $m=O(1/\epsilon)$, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below in @alg-hutchplusplus.
+Hutch++ [@meyer2021HutchOptimalStochastic] forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound $\delta$ with regular Hutchinson $T_{HM}$, the bound on MVP queries is $m=O(1/\epsilon^2)$. Remarkably, Hutch++ improves this to $m=O(1/\epsilon)$, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below.
 
-::: {#alg-hutchplusplus .definition}
+::: {#alg-hutchplusplus}
 ## Algorithm 1: Hutch++ Improved Trace Estimator
 
 **Require:** Matrix-vector multiplication oracle for matrix $\mA \in \mathbb{R}^{n \times n}$. Number of queries, $m$.  
@@ -345,9 +345,9 @@ The algorithm splits the MVP budget $m$ into three equal portions to perform the
 More explicitly, $\tr(\mA)$ is decomposed as 
 $$
     \tr(\mA) = \tr(\hat \mA) + \tr(\mA - \hat \mA) = \tr(\mQ^\top \mA \mQ) + \tr((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)),
-$$
+$${#eq-hutchpp-decomp}
 where the first term is computed exactly and the second term with Hutchinson. While $\mQ$ may not perfectly align with the dominant eigenbasis, it is expected to be a good approximation, and is certain to be a valid projection due to the $QR$ factorization step. This is the opposite of the basis sensitivity issue discussed in @sec-avron, as here the algorithm is exploiting the basis structure of $\mA$ to reduce variance. 
-In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual $\mA - \hat \mA$ is expected to contain only the tail of the spectrum, $\|\mA - \hat \mA\|_F^2$ is smaller in expectation, reducing the variance shown in Eqs.~\ref{eq:gaussian_variance}, \ref{eq:hutchinson_variance}. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.
+In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual $\mA - \hat \mA$ is expected to contain only the tail of the spectrum, $\|\mA - \hat \mA\|_F^2$ is smaller in expectation, reducing the variance shown in @eq-gaussian_variance, @eq-hutch-variance. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.
 
 ## Theoretical Guarantees
 @meyer2021HutchOptimalStochastic prove the complexity bound of $m=O(1/\epsilon)$ for an $(\epsilon, \delta)$-approximation using Hutch++. The main theorem is reproduced below.
@@ -377,10 +377,10 @@ $$
 $$
 This type of low-rank concentration bound is common in RLNA literature [@woodruff2014SketchingToolNumerical]. The bound is for the residual being at most twice the optimal rank-$k$ approximation error, which is sufficient for replacing the bound in the residual equation by one that is twice as large, preserving the $O(1/\epsilon)$ complexity. Combining all of these results gives the final proof of @thm-hutchplusplus-main. The only PSD assumption made is in the residual Frobenius norm, providing an avenue for non-PSD extensions which are covered by the authors in their paper, but that are not the focus of this work.
 
-@meyer2021HutchOptimalStochastic also go on to prove that $O(1/\epsilon)$ is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below in @alg-hutchplusplus-gaussian. The analysis and performance is similar, but with simpler variance bounds. 
+@meyer2021HutchOptimalStochastic also go on to prove that $O(1/\epsilon)$ is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below. The analysis and performance is similar, but with simpler variance bounds. 
 
-::: {#alg-hutchplusplus-gaussian .definition}
-## Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++)
+::: {#alg-hutchplusplus-gaussian}
+## Algorithm 2: Gaussian-Hutch++
 
 **Require:** Matrix-vector multiplication oracle for matrix $\mA \in \mathbb{R}^{n \times n}$. Number of queries, $m$.  
 **Ensure:** Approximation to $\tr(\mA)$.
@@ -588,22 +588,25 @@ The results are presented below in @fig-trace-performance:
 
 ```{python}
 #| label: fig-trace-performance
-#| fig-cap: "Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis."
+#| fig-cap: "Relative error of trace estimators as a function of query budget $m$."
 #| code-fold: true
+#| out-width: "100%"
 
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 # --- Setup and Execution ---
 np.random.seed(42)
-N, trials = 2000, 30 
-query_counts = np.unique(np.geomspace(12, 1200, num=12, dtype=int))
+N, trials = 5000, 30
+query_counts = np.unique(np.geomspace(10, 500, num=10, dtype=int))
 
-# Generate Matrices (Functions must be defined in a previous cell)
+# Define datasets (Functions assumed to be defined in a previous cell)
 datasets = [
     ("Slow Decay ($1/k$)", generate_dct_rotated_matrix(N, 1.0)),
     ("Fast Decay ($1/k^2$)", generate_dct_rotated_matrix(N, 2.0)),
     ("Clustered Covariance", generate_clustered_covariance(N, n_clusters=20, cross_talk=0.00)),
-    ("Spiked Identity ($I + LR$)", generate_spiked_identity(N, rank=50, signal_strength=100.0)),        
+    ("Spiked Identity ($I + LR$)", generate_spiked_identity(N, rank=50, signal_strength=100.0)),         
 ]
 
 methods = [
@@ -614,43 +617,42 @@ methods = [
 ]
 
 # GLOBAL STORAGE for the timing/efficiency plot
-timing_results = {label: np.zeros(len(query_counts)) for label, _, _, _ in methods}
-trial_errors_fast_decay = {label: np.zeros((len(query_counts), trials)) for label, _, _, _ in methods}
+timing_results = {name: {label: np.zeros(len(query_counts)) for label, _, _, _ in methods} for name, _ in datasets}
+trial_errors = {name: {label: np.zeros((len(query_counts), trials)) for label, _, _, _ in methods} for name, _ in datasets}
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 axes_flat = axes.flatten()
 
 for ax, (name, (A, true_tr)) in zip(axes_flat, datasets):
     for label, func, color, fmt in methods:
-        # Array to store errors for all trials to calculate standard deviation
         errors = np.zeros((len(query_counts), trials))
         
         for i, q in enumerate(query_counts):
             for t in range(trials):
                 t0 = time.perf_counter()
                 est = func(A, q)
-                timing_results[label][i] += (time.perf_counter() - t0)
+                elapsed = time.perf_counter() - t0
+                
+                timing_results[name][label][i] += elapsed
                 errors[i, t] = np.abs(est - true_tr) / true_tr
 
-        # Synchronized plotting logic
+        trial_errors[name][label] = errors.copy()
         mu = np.mean(errors, axis=1)
         sigma = np.std(errors, axis=1)
 
         ax.loglog(query_counts, mu, fmt, label=label, color=color, lw=1.5, markersize=4)
         
-        # Consistent background shading: mu +/- 0.5*sigma
         lower = np.maximum(mu - 0.5 * sigma, 1e-10)
         upper = np.minimum(mu + 0.5 * sigma, 1.0)
         ax.fill_between(query_counts, lower, upper, color=color, alpha=0.1)
 
-    # Theoretical reference lines
     ax.loglog(query_counts, 1.0 / np.sqrt(query_counts), "k:", label=r"$O(1/\sqrt{m})$", alpha=0.4)
     ax.loglog(query_counts, 1.0 / query_counts, "k-.", label=r"$O(1/m)$", alpha=0.4)
     
     ax.set_title(name)
     ax.set_xlabel("Matrix-Vector Queries (m)")
     ax.set_ylabel("Relative Error")
-    ax.grid(True, which="both", alpha=0.15)
+    ax.grid(True, which="both", ls="-", alpha=0.3)
     if name == datasets[0][0]:
         ax.legend(fontsize="small", loc="upper right")
 
@@ -674,21 +676,29 @@ The focus of this work has been on the bounds and theoretical convergence for tr
 
 ```{python}
 #| label: fig-time-comparison
-#| fig-cap: "Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time."
+#| fig-cap: "Efficiency Frontier: Relative Error vs. Average Wall-Clock Time across different spectra."
 #| code-fold: true
+#| out-width: "100%"
 
-plt.figure(figsize=(10, 6))
-normalization = len(datasets) * trials
-for label, _, color, fmt in methods:
-    mu_error = np.mean(trial_errors_fast_decay[label], axis=1) 
-    avg_time = timing_results[label] / normalization
-    plt.loglog(avg_time, mu_error, fmt, label=label, color=color, lw=2, markersize=6)
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+axes_flat = axes.flatten()
 
-plt.title("Trace Estimation Efficiency (Fast Decay Spectrum)")
-plt.xlabel("Average Wall-Clock Time (seconds)")
-plt.ylabel("Relative Error")
-plt.grid(True, which="both", alpha=0.3)
-plt.legend()
+for ax, (name, _) in zip(axes_flat, datasets):
+    for label, _, color, fmt in methods:
+        mu_error = np.mean(trial_errors[name][label], axis=1)
+        # Average time across trials for THIS specific dataset
+        avg_time = timing_results[name][label] / trials
+        
+        # Plot Time on X-axis and Error on Y-axis
+        ax.loglog(avg_time, mu_error, fmt, label=label, color=color, lw=2, markersize=6)
+
+    ax.set_title(name)
+    ax.set_xlabel("Average Wall-Clock Time (seconds)")
+    ax.set_ylabel("Relative Error")
+    ax.grid(True, which="both", ls="-", alpha=0.3)
+    if name == datasets[0][0]:
+        ax.legend(fontsize="small", loc="upper right")
+
 plt.tight_layout()
 plt.show()
 ```
