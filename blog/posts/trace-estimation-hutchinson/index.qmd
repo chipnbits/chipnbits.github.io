@@ -18,7 +18,7 @@ draft: false
 
 execute:
   jupyter: python3
-  freeze: false
+  freeze: true
 
 format:
   html:
@@ -602,8 +602,8 @@ query_counts = np.unique(np.geomspace(12, 1200, num=12, dtype=int))
 datasets = [
     ("Slow Decay ($1/k$)", generate_dct_rotated_matrix(N, 1.0)),
     ("Fast Decay ($1/k^2$)", generate_dct_rotated_matrix(N, 2.0)),
-    ("Clustered Covariance", generate_clustered_covariance(N, 15)),
-    ("Spiked Identity ($I + LR$)", generate_spiked_identity(N, 40, 50.0)),        
+    ("Clustered Covariance", generate_clustered_covariance(N, n_clusters=20, cross_talk=0.00)),
+    ("Spiked Identity ($I + LR$)", generate_spiked_identity(N, rank=50, signal_strength=100.0)),        
 ]
 
 methods = [
@@ -613,7 +613,7 @@ methods = [
     ("H++ (Gauss)",   lambda A, q: hutch_plus_plus(A, q, "gaussian"),   "#9467bd", "d-."),
 ]
 
-# These variables are now in the global scope
+# Initialize global timing results
 timing_results = {label: np.zeros(len(query_counts)) for label, _, _, _ in methods}
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
@@ -621,7 +621,9 @@ axes_flat = axes.flatten()
 
 for ax, (name, (A, true_tr)) in zip(axes_flat, datasets):
     for label, func, color, fmt in methods:
+        # Array to store errors for all trials to calculate standard deviation
         errors = np.zeros((len(query_counts), trials))
+        
         for i, q in enumerate(query_counts):
             for t in range(trials):
                 t0 = time.perf_counter()
@@ -629,13 +631,27 @@ for ax, (name, (A, true_tr)) in zip(axes_flat, datasets):
                 timing_results[label][i] += (time.perf_counter() - t0)
                 errors[i, t] = np.abs(est - true_tr) / true_tr
 
+        # Synchronized plotting logic
         mu = np.mean(errors, axis=1)
-        ax.loglog(query_counts, mu, fmt, label=label, color=color, lw=1.5)
+        sigma = np.std(errors, axis=1)
 
-    ax.loglog(query_counts, 1.0/np.sqrt(query_counts), "k:", label=r"$O(1/\sqrt{m})$", alpha=0.4)
-    ax.loglog(query_counts, 1.0/query_counts, "k-.", label=r"$O(1/m)$", alpha=0.4)
+        ax.loglog(query_counts, mu, fmt, label=label, color=color, lw=1.5, markersize=4)
+        
+        # Consistent background shading: mu +/- 0.5*sigma
+        lower = np.maximum(mu - 0.5 * sigma, 1e-10)
+        upper = np.minimum(mu + 0.5 * sigma, 1.0)
+        ax.fill_between(query_counts, lower, upper, color=color, alpha=0.1)
+
+    # Theoretical reference lines
+    ax.loglog(query_counts, 1.0 / np.sqrt(query_counts), "k:", label=r"$O(1/\sqrt{m})$", alpha=0.4)
+    ax.loglog(query_counts, 1.0 / query_counts, "k-.", label=r"$O(1/m)$", alpha=0.4)
+    
     ax.set_title(name)
-    if name == datasets[0][0]: ax.legend(fontsize="small")
+    ax.set_xlabel("Matrix-Vector Queries (m)")
+    ax.set_ylabel("Relative Error")
+    ax.grid(True, which="both", alpha=0.15)
+    if name == datasets[0][0]:
+        ax.legend(fontsize="small", loc="upper right")
 
 plt.tight_layout()
 plt.show()
@@ -661,13 +677,9 @@ The focus of this work has been on the bounds and theoretical convergence for tr
 #| code-fold: true
 
 plt.figure(figsize=(10, 6))
-# Normalization: total trials across all 4 datasets
-normalization = 4 * 30 
-
-# Accessing global variables from the cell above
+normalization = len(datasets) * trials
 for label, _, color, fmt in methods:
-    plt.plot(query_counts, timing_results[label] / normalization, 
-             fmt, label=label, color=color, lw=1.5)
+    plt.plot(query_counts, timing_results[label] / normalization, fmt, color=color, label=label)
     
 plt.title("Average Wall-Clock Time per Estimator")
 plt.xlabel("Number of Queries (m)")
