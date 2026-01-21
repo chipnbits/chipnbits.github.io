@@ -772,7 +772,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
         &amp;= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
 \end{align}
 \]</span> which is computed by summing the elementwise product of <span class="math inline">\(\mV\)</span> and <span class="math inline">\(\mY = \mA \mV\)</span>.</p>
-<div id="bd93fd55" class="cell" data-execution_count="1">
+<div id="7f725f95" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.fft <span class="im">import</span> dct, idct</span>
@@ -792,7 +792,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <p>The Hutch++ implementation follows the steps outlined in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a> and <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. In this case we optimize the computation step by noting that the projection <span class="math inline">\((\mI - \mQ \mQ^\top)\)</span> can be applied efficiently without explicitly forming the projection matrix. For the projection matrix <span class="math inline">\(P = \mI - \mQ \mQ^\top\)</span>, we have that <span class="math inline">\(P = P^\top\)</span> and <span class="math inline">\(P^2 = P\)</span>. Thus for any matrix <span class="math inline">\(\mG\)</span> the projected MVP can be computed as <span class="math inline">\(\tr(P \mA P) = \tr(\mA P)\)</span> and so using standard Hutchinson on the residual becomes <span class="math display">\[
     \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
 \]</span></p>
-<div id="af44537c" class="cell" data-execution_count="2">
+<div id="62062717" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutch_plus_plus(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Hutch++ with support for Rademacher or Gaussian sketching.</span></span>
@@ -843,7 +843,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tr_low_rank <span class="op">+</span> tr_res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For experimentation, a generalized construction method for PSD with different spectral profiles is implemented by sampling eigenvalues from a <span class="math inline">\(1/n^k\)</span> decay function and applying the discrete cosine transform for mixing. The diagonal-heavy and spiked identity matrices are constructed directly.</p>
-<div id="fc862130" class="cell" data-execution_count="3">
+<div id="4fcd6c0b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_dct_rotated_matrix(n, decay_power):</span>
@@ -937,69 +937,120 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Setup and Execution ---</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>N, trials <span class="op">=</span> <span class="dv">5000</span>, <span class="dv">30</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> np.unique(np.geomspace(<span class="dv">10</span>, <span class="dv">500</span>, num<span class="op">=</span><span class="dv">10</span>, dtype<span class="op">=</span><span class="bu">int</span>))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Define datasets (Functions assumed to be defined in a previous cell)</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> [</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Slow Decay ($1/k$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">1.0</span>)),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Fast Decay ($1/k^2$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">2.0</span>)),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Clustered Covariance"</span>, generate_clustered_covariance(N, n_clusters<span class="op">=</span><span class="dv">20</span>, cross_talk<span class="op">=</span><span class="fl">0.00</span>)),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Spiked Identity ($I + LR$)"</span>, generate_spiked_identity(N, rank<span class="op">=</span><span class="dv">50</span>, signal_strength<span class="op">=</span><span class="fl">100.0</span>)),         </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Rad)"</span>,   <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"rademacher"</span>),      <span class="st">"#1f77b4"</span>, <span class="st">"o-"</span>),</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Gauss)"</span>, <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"gaussian"</span>),        <span class="st">"#ff7f0e"</span>, <span class="st">"s--"</span>),</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Rad)"</span>,     <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"rademacher"</span>), <span class="st">"#2ca02c"</span>, <span class="st">"^-"</span>),</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Gauss)"</span>,   <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"gaussian"</span>),   <span class="st">"#9467bd"</span>, <span class="st">"d-."</span>),</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># GLOBAL STORAGE for the timing/efficiency plot</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>timing_results <span class="op">=</span> {name: {label: np.zeros(<span class="bu">len</span>(query_counts)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods} <span class="cf">for</span> name, _ <span class="kw">in</span> datasets}</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>trial_errors <span class="op">=</span> {name: {label: np.zeros((<span class="bu">len</span>(query_counts), trials)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods} <span class="cf">for</span> name, _ <span class="kw">in</span> datasets}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>N, trials <span class="op">=</span> <span class="dv">5000</span>, <span class="dv">30</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> np.unique(np.geomspace(<span class="dv">10</span>, <span class="dv">500</span>, num<span class="op">=</span><span class="dv">10</span>, dtype<span class="op">=</span><span class="bu">int</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Define datasets (Functions assumed to be defined in a previous cell)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> [</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Slow Decay ($1/k$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">1.0</span>)),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Fast Decay ($1/k^2$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">2.0</span>)),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Clustered Covariance"</span>, generate_clustered_covariance(N, n_clusters<span class="op">=</span><span class="dv">20</span>, cross_talk<span class="op">=</span><span class="fl">0.00</span>)),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Spiked Identity ($I + LR$)"</span>, generate_spiked_identity(N, rank<span class="op">=</span><span class="dv">50</span>, signal_strength<span class="op">=</span><span class="fl">100.0</span>)),         </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Rad)"</span>,   <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"rademacher"</span>),      <span class="st">"#1f77b4"</span>, <span class="st">"o-"</span>),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Gauss)"</span>, <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"gaussian"</span>),        <span class="st">"#ff7f0e"</span>, <span class="st">"s--"</span>),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Rad)"</span>,     <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"rademacher"</span>), <span class="st">"#2ca02c"</span>, <span class="st">"^-"</span>),</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Gauss)"</span>,   <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"gaussian"</span>),   <span class="st">"#9467bd"</span>, <span class="st">"d-."</span>),</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>cache_file <span class="op">=</span> <span class="st">"trace_estimation_results.pkl"</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>run_simulation <span class="op">=</span> <span class="kw">not</span> os.path.exists(cache_file)</span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, (A, true_tr)) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, func, color, fmt <span class="kw">in</span> methods:</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        errors <span class="op">=</span> np.zeros((<span class="bu">len</span>(query_counts), trials))</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, q <span class="kw">in</span> <span class="bu">enumerate</span>(query_counts):</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(trials):</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                t0 <span class="op">=</span> time.perf_counter()</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                est <span class="op">=</span> func(A, q)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                timing_results[name][label][i] <span class="op">+=</span> elapsed</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                errors[i, t] <span class="op">=</span> np.<span class="bu">abs</span>(est <span class="op">-</span> true_tr) <span class="op">/</span> true_tr</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        trial_errors[name][label] <span class="op">=</span> errors.copy()</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        mu <span class="op">=</span> np.mean(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        sigma <span class="op">=</span> np.std(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        ax.loglog(query_counts, mu, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>        lower <span class="op">=</span> np.maximum(mu <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1e-10</span>)</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>        upper <span class="op">=</span> np.minimum(mu <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1.0</span>)</span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        ax.fill_between(query_counts, lower, upper, color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> np.sqrt(query_counts), <span class="st">"k:"</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/</span><span class="dv">\s</span><span class="vs">qrt{m}</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> query_counts, <span class="st">"k-."</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/m</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Matrix-Vector Queries (m)"</span>)</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]:</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> run_simulation:</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"No cache found. Running simulations (this may take a while)..."</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Data structures to store results</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We store the raw trial errors to allow for flexible re-plotting of variance/mean</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    trial_results <span class="op">=</span> {} </span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    timing_stats <span class="op">=</span> {}</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, (A, true_tr) <span class="kw">in</span> datasets:</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        trial_results[name] <span class="op">=</span> {}</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        timing_stats[name] <span class="op">=</span> {}</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> label, func, _, _ <span class="kw">in</span> methods:</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>            errors <span class="op">=</span> np.zeros((<span class="bu">len</span>(query_counts), trials))</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>            times <span class="op">=</span> np.zeros(<span class="bu">len</span>(query_counts))</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i, q <span class="kw">in</span> <span class="bu">enumerate</span>(query_counts):</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                t_start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(trials):</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>                    est <span class="op">=</span> func(A, q)</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                    errors[i, t] <span class="op">=</span> np.<span class="bu">abs</span>(est <span class="op">-</span> true_tr) <span class="op">/</span> true_tr</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                times[i] <span class="op">=</span> (time.perf_counter() <span class="op">-</span> t_start) <span class="op">/</span> trials <span class="co"># Avg time per query</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>            trial_results[name][label] <span class="op">=</span> errors</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            timing_stats[name][label] <span class="op">=</span> times</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bundle everything for pickle</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    payload <span class="op">=</span> {</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>        <span class="st">"trial_results"</span>: trial_results,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">"timing_stats"</span>: timing_stats,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>        <span class="st">"query_counts"</span>: query_counts,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>        <span class="st">"N"</span>: N,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>        <span class="st">"trials"</span>: trials</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(cache_file, <span class="st">"wb"</span>) <span class="im">as</span> f:</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>        pickle.dump(payload, f)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Results saved to </span><span class="sc">{</span>cache_file<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(cache_file, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> pickle.load(f)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    trial_results <span class="op">=</span> data[<span class="st">"trial_results"</span>]</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    timing_stats <span class="op">=</span> data[<span class="st">"timing_stats"</span>]</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    query_counts <span class="op">=</span> data[<span class="st">"query_counts"</span>]</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Define style mapping here so you can change colors/markers without re-computing</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>style_map <span class="op">=</span> {</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hutch (Rad)"</span>:   {<span class="st">"color"</span>: <span class="st">"#1f77b4"</span>, <span class="st">"fmt"</span>: <span class="st">"o-"</span>},</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hutch (Gauss)"</span>: {<span class="st">"color"</span>: <span class="st">"#ff7f0e"</span>, <span class="st">"fmt"</span>: <span class="st">"s--"</span>},</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    <span class="st">"H++ (Rad)"</span>:     {<span class="st">"color"</span>: <span class="st">"#2ca02c"</span>, <span class="st">"fmt"</span>: <span class="st">"^-"</span>},</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    <span class="st">"H++ (Gauss)"</span>:   {<span class="st">"color"</span>: <span class="st">"#9467bd"</span>, <span class="st">"fmt"</span>: <span class="st">"d-."</span>},</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, labels_dict) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, trial_results.items()):</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, errors <span class="kw">in</span> labels_dict.items():</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Retrieve style</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> style_map[label][<span class="st">"color"</span>]</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>        fmt <span class="op">=</span> style_map[label][<span class="st">"fmt"</span>]</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate statistics from raw trial data</span></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>        mu <span class="op">=</span> np.mean(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>        sigma <span class="op">=</span> np.std(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Main Plot</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>        ax.loglog(query_counts, mu, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Confidence Interval (shaded area)</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>        lower <span class="op">=</span> np.maximum(mu <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1e-10</span>)</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>        upper <span class="op">=</span> np.minimum(mu <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1.0</span>)</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>        ax.fill_between(query_counts, lower, upper, color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reference Complexity Lines</span></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> np.sqrt(query_counts), <span class="st">"k:"</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/</span><span class="dv">\s</span><span class="vs">qrt{m}</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> query_counts, <span class="st">"k-."</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/m</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Matrix-Vector Queries (m)"</span>)</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax <span class="op">==</span> axes_flat[<span class="dv">0</span>]: <span class="co"># Legend only on first plot to reduce clutter</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>, frameon<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-trace-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -1025,30 +1076,36 @@ Figure&nbsp;2: Relative error of trace estimators as a function of query budget 
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, _) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, _, color, fmt <span class="kw">in</span> methods:</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        mu_error <span class="op">=</span> np.mean(trial_errors[name][label], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Average time across trials for THIS specific dataset</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        avg_time <span class="op">=</span> timing_results[name][label] <span class="op">/</span> trials</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate through datasets using the keys in trial_results</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, labels_dict) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, trial_results.items()):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, errors_matrix <span class="kw">in</span> labels_dict.items():</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> style_map[label][<span class="st">"color"</span>]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        fmt <span class="op">=</span> style_map[label][<span class="st">"fmt"</span>]</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot Time on X-axis and Error on Y-axis</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        ax.loglog(avg_time, mu_error, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Average Wall-Clock Time (seconds)"</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]:</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        mu_error <span class="op">=</span> np.mean(errors_matrix, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        avg_time <span class="op">=</span> timing_stats[name][label]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot Time (X) vs. Error (Y)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        ax.loglog(avg_time, mu_error, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"Efficiency: </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Average Wall-Clock Time (seconds)"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Legend on the first subplot</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax <span class="op">==</span> axes_flat[<span class="dv">0</span>]:</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>, frameon<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"Efficiency Frontier: Accuracy vs. Computational Cost"</span>, fontsize<span class="op">=</span><span class="dv">16</span>, y<span class="op">=</span><span class="fl">1.02</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-time-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-time-comparison-output-1.png" width="1141" height="947" class="figure-img">
+<img src="index_files/figure-html/fig-time-comparison-output-1.png" width="1141" height="982" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Efficiency Frontier: Relative Error vs.&nbsp;Average Wall-Clock Time across different spectra.
