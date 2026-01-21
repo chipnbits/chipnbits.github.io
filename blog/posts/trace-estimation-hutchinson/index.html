@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.5.53">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -53,17 +87,15 @@ div.csl-indent {
 <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../">
-<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-3afa3c1d40b2b6596a68a89724d4a96e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -126,7 +158,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -209,12 +241,15 @@ window.Quarto = {
   </ul></li>
   <li><a href="#sec-hutchplusplus" id="toc-sec-hutchplusplus" class="nav-link" data-scroll-target="#sec-hutchplusplus"><span class="header-section-number">5</span> Hutch++: Variance Reduction via Low-Rank Approximation</a>
   <ul class="collapse">
-  <li><a href="#theoretical-guarantees" id="toc-theoretical-guarantees" class="nav-link" data-scroll-target="#theoretical-guarantees"><span class="header-section-number">5.1</span> Theoretical Guarantees</a></li>
+  <li><a href="#algorithm-1-hutch-improved-trace-estimator" id="toc-algorithm-1-hutch-improved-trace-estimator" class="nav-link" data-scroll-target="#algorithm-1-hutch-improved-trace-estimator"><span class="header-section-number">5.1</span> Algorithm 1: Hutch++ Improved Trace Estimator</a></li>
+  <li><a href="#theoretical-guarantees" id="toc-theoretical-guarantees" class="nav-link" data-scroll-target="#theoretical-guarantees"><span class="header-section-number">5.2</span> Theoretical Guarantees</a></li>
+  <li><a href="#algorithm-2-gaussian-hutch-gaussian-variant-of-hutch" id="toc-algorithm-2-gaussian-hutch-gaussian-variant-of-hutch" class="nav-link" data-scroll-target="#algorithm-2-gaussian-hutch-gaussian-variant-of-hutch"><span class="header-section-number">5.3</span> Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++)</a></li>
   </ul></li>
   <li><a href="#sec-experiments" id="toc-sec-experiments" class="nav-link" data-scroll-target="#sec-experiments"><span class="header-section-number">6</span> Numerical Experiments</a>
   <ul class="collapse">
   <li><a href="#experimental-setup" id="toc-experimental-setup" class="nav-link" data-scroll-target="#experimental-setup"><span class="header-section-number">6.1</span> Experimental Setup</a></li>
-  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion"><span class="header-section-number">6.2</span> Results and Discussion</a></li>
+  <li><a href="#code-and-trials" id="toc-code-and-trials" class="nav-link" data-scroll-target="#code-and-trials"><span class="header-section-number">6.2</span> Code and Trials</a></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion"><span class="header-section-number">6.3</span> Results and Discussion</a></li>
   </ul></li>
   <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">7</span> Conclusion</a>
   <ul class="collapse">
@@ -303,6 +338,8 @@ span.theorem-title {
 \newcommand{\mS}{\mathbf{S}}
 \newcommand{\mG}{\mathbf{G}}
 \newcommand{\mU}{\mathbf{U}}
+\newcommand{\mV}{\mathbf{V}}
+\newcommand{\mY}{\mathbf{Y}}
 \newcommand{\vv}{\mathbf{v}}
 \newcommand{\vz}{\mathbf{z}}
 \newcommand{\vw}{\mathbf{w}}
@@ -318,12 +355,12 @@ span.theorem-title {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Abstract
+Abstract
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Implicit matrix trace estimation using only matrix-vector products is a problem that commonly arises in many areas of scientific computing and machine learning. When the matrix is only accessible through matrix-vector products <span class="math inline">\(\mA \vv\)</span> or is excessively large, classical deterministic methods for computing the trace are infeasible. This work presents a survey and comparative analysis of randomized algorithms for trace estimation, building from the foundational Hutchinson’s estimator to modern variance-reduced techniques like Hutch++. We synthesize the evolution of theoretical guarantees, moving from initial variance-based analysis to rigorous <span class="math inline">\((\epsilon, \delta)\)</span>-concentration bounds. Furthermore, we evaluate the practical performance of these methods through numerical experiments on matrices with varying spectral properties. We empirically verify the optimal convergence rates of Hutch++ on matrices with decaying spectra and discuss the trade-offs between different probing vector distributions.</p>
-<p>Code is available at .</p>
+<p>Code is available at <a href="https://gist.github.com/chipnbits/a0f572042b04e5292cde6038be407002">GitHub Gist</a></p>
 </div>
 </div>
 <section id="introduction" class="level1" data-number="1">
@@ -651,15 +688,18 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 </section>
 <section id="sec-hutchplusplus" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Hutch++: Variance Reduction via Low-Rank Approximation</h1>
-<p>Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span> forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound <span class="math inline">\(\delta\)</span> with regular Hutchinson <span class="math inline">\(T_{HM}\)</span>, the bound on MVP queries is <span class="math inline">\(m=O(1/\epsilon^2)\)</span>. Remarkably, Hutch++ improves this to <span class="math inline">\(m=O(1/\epsilon)\)</span>, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a>.</p>
-<div id="alg-hutchplusplus" class="definition theorem algorithm">
-<p><span class="theorem-title"><strong>Algorithm 1 (Algorithm 1: Hutch++ Improved Trace Estimator)</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
+<p>Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span> forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound <span class="math inline">\(\delta\)</span> with regular Hutchinson <span class="math inline">\(T_{HM}\)</span>, the bound on MVP queries is <span class="math inline">\(m=O(1/\epsilon^2)\)</span>. Remarkably, Hutch++ improves this to <span class="math inline">\(m=O(1/\epsilon)\)</span>, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below in <span class="citation" data-cites="alg-hutchplusplus">(<a href="#ref-alg-hutchplusplus" role="doc-biblioref"><strong>alg-hutchplusplus?</strong></a>)</span>.</p>
+<div id="alg-hutchplusplus" class="definition">
+<section id="algorithm-1-hutch-improved-trace-estimator" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="algorithm-1-hutch-improved-trace-estimator"><span class="header-section-number">5.1</span> Algorithm 1: Hutch++ Improved Trace Estimator</h2>
+<p><strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
 <strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
 <ol type="1">
 <li>Sample <span class="math inline">\(\mS \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> and <span class="math inline">\(\mG \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> with i.i.d. <span class="math inline">\(\{+1, -1\}\)</span> entries.</li>
 <li><strong>Matrix sketch:</strong> Compute an orthonormal basis <span class="math inline">\(\mQ \in \mathbb{R}^{n \times \frac{m}{3}}\)</span> for the span of <span class="math inline">\(\mA \mS\)</span> (e.g., via QR decomposition).</li>
 <li><strong>Return</strong> Hutch++<span class="math inline">\((\mA) = \tr(\mQ^\top \mA \mQ) + \frac{3}{m} \tr(\mG^\top (\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top) \mG)\)</span>.</li>
 </ol>
+</section>
 </div>
 <p>The algorithm splits the MVP budget <span class="math inline">\(m\)</span> into three equal portions to perform the following steps:</p>
 <ol type="1">
@@ -670,8 +710,8 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 <p>More explicitly, <span class="math inline">\(\tr(\mA)\)</span> is decomposed as <span class="math display">\[
     \tr(\mA) = \tr(\hat \mA) + \tr(\mA - \hat \mA) = \tr(\mQ^\top \mA \mQ) + \tr((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)),
 \]</span> where the first term is computed exactly and the second term with Hutchinson. While <span class="math inline">\(\mQ\)</span> may not perfectly align with the dominant eigenbasis, it is expected to be a good approximation, and is certain to be a valid projection due to the <span class="math inline">\(QR\)</span> factorization step. This is the opposite of the basis sensitivity issue discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a>, as here the algorithm is exploiting the basis structure of <span class="math inline">\(\mA\)</span> to reduce variance. In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual <span class="math inline">\(\mA - \hat \mA\)</span> is expected to contain only the tail of the spectrum, <span class="math inline">\(\|\mA - \hat \mA\|_F^2\)</span> is smaller in expectation, reducing the variance shown in Eqs.~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, <span class="math inline">\(\ref{eq:hutchinson_variance}\)</span>. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.</p>
-<section id="theoretical-guarantees" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="theoretical-guarantees"><span class="header-section-number">5.1</span> Theoretical Guarantees</h2>
+<section id="theoretical-guarantees" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="theoretical-guarantees"><span class="header-section-number">5.2</span> Theoretical Guarantees</h2>
 <p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> prove the complexity bound of <span class="math inline">\(m=O(1/\epsilon)\)</span> for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation using Hutch++. The main theorem is reproduced below.</p>
 <div id="thm-hutchplusplus-main" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 1 (Hutch++ Main Theorem)</strong></span> For <span class="math inline">\(m = O\left(\sqrt{\log(1/\delta)}/\epsilon + \log(1/\delta)\right)\)</span> MVP queries to a PSD matrix <span class="math inline">\(\mA\)</span> the Hutch++ algorithm produces an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
@@ -686,21 +726,24 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 <p>The details of matrix sketching lie outside of the scope of this work and the trace estimation paper, but applying Corollary 7 and Claim 1 from <span class="citation" data-cites="musco2020projectioncostpreservingsketchesproofstrategies">Musco and Musco (<a href="#ref-musco2020projectioncostpreservingsketchesproofstrategies" role="doc-biblioref">2020</a>)</span> shows that for <span class="math inline">\(\frac{m}{3}\geq(k+\log(1/\delta))\)</span> the residual will stay bounded with high probability <span class="math inline">\(\geq 1-\delta\)</span>: <span class="math display">\[
     \|\mA - \mA \mQ \mQ^\top\|_F^2 \leq 2 \| \mA - \mA_k\|_F^2.
 \]</span> This type of low-rank concentration bound is common in RLNA literature <span class="citation" data-cites="woodruff2014SketchingToolNumerical">(<a href="#ref-woodruff2014SketchingToolNumerical" role="doc-biblioref">Woodruff 2014</a>)</span>. The bound is for the residual being at most twice the optimal rank-<span class="math inline">\(k\)</span> approximation error, which is sufficient for replacing the bound in the residual equation by one that is twice as large, preserving the <span class="math inline">\(O(1/\epsilon)\)</span> complexity. Combining all of these results gives the final proof of <a href="#thm-hutchplusplus-main" class="quarto-xref">Theorem&nbsp;1</a>. The only PSD assumption made is in the residual Frobenius norm, providing an avenue for non-PSD extensions which are covered by the authors in their paper, but that are not the focus of this work.</p>
-<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> also go on to prove that <span class="math inline">\(O(1/\epsilon)\)</span> is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below in <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. The analysis and performance is similar, but with simpler variance bounds.</p>
-<div id="alg-hutchplusplus-gaussian" class="definition theorem algorithm">
-<p><span class="theorem-title"><strong>Algorithm 2 (Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++))</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
+<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> also go on to prove that <span class="math inline">\(O(1/\epsilon)\)</span> is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below in <span class="citation" data-cites="alg-hutchplusplus-gaussian">(<a href="#ref-alg-hutchplusplus-gaussian" role="doc-biblioref"><strong>alg-hutchplusplus-gaussian?</strong></a>)</span>. The analysis and performance is similar, but with simpler variance bounds.</p>
+</section>
+<div id="alg-hutchplusplus-gaussian" class="definition">
+<section id="algorithm-2-gaussian-hutch-gaussian-variant-of-hutch" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="algorithm-2-gaussian-hutch-gaussian-variant-of-hutch"><span class="header-section-number">5.3</span> Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++)</h2>
+<p><strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
 <strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
 <ol type="1">
 <li>Sample <span class="math inline">\(\mS \in \mathbb{R}^{n \times \frac{m+2}{4}}\)</span> with i.i.d.&nbsp;<span class="math inline">\(\mathcal{N}(0,1)\)</span> entries and <span class="math inline">\(\mG \in \mathbb{R}^{n \times \frac{m-2}{2}}\)</span> with i.i.d.&nbsp;Rademacher entries.</li>
 <li>Compute an orthonormal basis <span class="math inline">\(\mQ \in \mathbb{R}^{n \times \frac{m+2}{4}}\)</span> for the span of <span class="math inline">\(\mA\mS\)</span> (e.g., via QR decomposition).</li>
 <li><strong>Return</strong> Gaussian-Hutch++<span class="math inline">\((\mA)= \tr(\mQ^\top \mA \mQ) + \frac{2}{m-2}\,\tr\!\big(\mG^\top(\mI-\mQ\mQ^\top)\mA(\mI-\mQ\mQ^\top)\mG\big)\)</span>.</li>
 </ol>
-</div>
 </section>
+</div>
 </section>
 <section id="sec-experiments" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Numerical Experiments</h1>
-<p>To verify the theoretical improvements of Hutch++ over the standard Hutchinson estimator and to contrast the Gaussian and Rademacher variants, we implemented the original Hutchinson estimator along with <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a> and <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a> in Python using NumPy.</p>
+<p>To verify the theoretical improvements of Hutch++ over the standard Hutchinson estimator and to contrast the Gaussian and Rademacher variants, we implemented the original Hutchinson estimator along with <span class="citation" data-cites="alg-hutchplusplus">(<a href="#ref-alg-hutchplusplus" role="doc-biblioref"><strong>alg-hutchplusplus?</strong></a>)</span> and <span class="citation" data-cites="alg-hutchplusplus-gaussian">(<a href="#ref-alg-hutchplusplus-gaussian" role="doc-biblioref"><strong>alg-hutchplusplus-gaussian?</strong></a>)</span> in Python using NumPy.</p>
 <section id="experimental-setup" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="experimental-setup"><span class="header-section-number">6.1</span> Experimental Setup</h2>
 <p><strong>Matrix Construction</strong> We empirically verified the theoretical bounds using a modestly large SPSD matrix with dimension <span class="math inline">\(N=4000\)</span>. The goal was to measure performance on four spectral regimes that highlight the strengths and weaknesses of each estimator. Recall that an SPSD matrix <span class="math inline">\(\mA\)</span> can be diagonalized as <span class="math inline">\(\mA = \mQ \mD \mQ^\top\)</span> where <span class="math inline">\(\mD\)</span> is a diagonal matrix of eigenvalues <span class="math inline">\(\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_N \geq 0\)</span> and <span class="math inline">\(\mQ\)</span> is an orthogonal matrix of eigenvectors. The same Discrete Cosine Transform (DCT) mixing matrix <span class="math inline">\(\mQ\)</span> discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a> is applied as a unitary operation for the basis-oblivious construction of dense test matrices from diagonal eigenvalue matrices <span class="math inline">\(\mD\)</span>. A diagonal-heavy matrix with concentrated blocks along the diagonal is used to evaluate performance on structured sparse matrices.</p>
@@ -722,8 +765,92 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 </div>
 <p><strong>Evaluation Metrics</strong> For each of these tasks, the Rademacher and Gaussian variants of Hutchinson and Hutch++ were run for a range of MVP budgets <span class="math inline">\(m\)</span>. The true trace <span class="math inline">\(\tr(\mA)\)</span> was computed directly for error calculation, and the convergence behavior was recorded. The relative error <span class="math inline">\(|\tr(\mA) - T|/\tr(\mA)\)</span> is averaged over 50 trials, with the variance shown to <span class="math inline">\(\pm \frac{1}{2}\sigma\)</span>.</p>
 </section>
-<section id="results-and-discussion" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="results-and-discussion"><span class="header-section-number">6.2</span> Results and Discussion</h2>
+<section id="code-and-trials" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="code-and-trials"><span class="header-section-number">6.2</span> Code and Trials</h2>
+<section id="algorithm-implementation" class="level4">
+<h4 class="anchored" data-anchor-id="algorithm-implementation">Algorithm Implementation</h4>
+<p>Starting with Hutchinson’s estimator, the implementation is straightforward as shown below. The multiple queries are modeled as a matrix-matrix product for efficiency where <span class="math inline">\(\mV\)</span> is a matrix of <span class="math inline">\(m\)</span> random vectors as columns. Using the property that the trace can be expressed as a Frobenius inner product, we have:</p>
+<p><span class="math display">\[
+\begin{align}
+    T_H &amp;= \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j = \frac{1}{m} \sum_{j=1}^m [\mV^\top \mA \mV]_{jj} \\
+    &amp;= \frac{1}{m} \tr(\mV^\top \mA \mV) \\
+        &amp;= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
+\end{align}
+\]</span> which is computed by summing the elementwise product of <span class="math inline">\(\mV\)</span> and <span class="math inline">\(\mY = \mA \mV\)</span>.</p>
+<div id="f9290c41" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.fft <span class="im">import</span> dct, idct</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutchinson(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> A.shape[<span class="dv">0</span>]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> dist <span class="op">==</span> <span class="st">"rademacher"</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        V <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>(n, num_queries)) <span class="op">*</span> <span class="dv">2</span> <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> dist <span class="op">==</span> <span class="st">"gaussian"</span>:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        V <span class="op">=</span> np.random.randn(n, num_queries)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> A <span class="op">@</span> V</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    trace_est <span class="op">=</span> np.<span class="bu">sum</span>(V <span class="op">*</span> Y) <span class="op">/</span> num_queries</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> trace_est</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Hutch++ implementation follows the steps outlined in <span class="citation" data-cites="alg-hutchplusplus">(<a href="#ref-alg-hutchplusplus" role="doc-biblioref"><strong>alg-hutchplusplus?</strong></a>)</span> and <span class="citation" data-cites="alg-hutchplusplus-gaussian">(<a href="#ref-alg-hutchplusplus-gaussian" role="doc-biblioref"><strong>alg-hutchplusplus-gaussian?</strong></a>)</span>. In this case we optimize the computation step by noting that the projection <span class="math inline">\((\mI - \mQ \mQ^\top)\)</span> can be applied efficiently without explicitly forming the projection matrix. For the projection matrix <span class="math inline">\(P = \mI - \mQ \mQ^\top\)</span>, we have that <span class="math inline">\(P = P^\top\)</span> and <span class="math inline">\(P^2 = P\)</span>. Thus for any matrix <span class="math inline">\(\mG\)</span> the projected MVP can be computed as <span class="math inline">\(\tr(P \mA P) = \tr(\mA P)\)</span> and so using standard Hutchinson on the residual becomes <span class="math display">\[
+    \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
+\]</span></p>
+<div id="ae4d6102" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutch_plus_plus(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Hutch++ with support for Rademacher or Gaussian sketching.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">        A (ndarray): The input matrix.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">        num_queries (int): Total matrix-vector product budget (m).</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">        dist (str): 'rademacher' or 'gaussian'. Controls the distribution of the</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">                    sketching matrix Omega and the query split ratio.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> A.shape[<span class="dv">0</span>]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> num_queries</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. construct the sketching matrix based on distribution</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> dist <span class="op">==</span> <span class="st">"rademacher"</span>:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Rademacher uses m/3 split</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        s_queries <span class="op">=</span> <span class="bu">max</span>(<span class="dv">2</span>, <span class="bu">int</span>(m <span class="op">/</span> <span class="dv">3</span>))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>(n, s_queries)) <span class="op">*</span> <span class="dv">2</span> <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> dist <span class="op">==</span> <span class="st">"gaussian"</span>:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Gaussian uses (m+2)/4 split</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        s_queries <span class="op">=</span> <span class="bu">max</span>(<span class="dv">2</span>, <span class="bu">int</span>((m <span class="op">+</span> <span class="dv">2</span>) <span class="op">/</span> <span class="dv">4</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        S <span class="op">=</span> np.random.randn(n, s_queries)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"dist must be 'rademacher' or 'gaussian'"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Compute the orthonormal basis Q for the sketch AS via QR decomposition</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> A <span class="op">@</span> S</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    Q, _ <span class="op">=</span> np.linalg.qr(Y)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Compute combination of lowrank trace with the residual hutchinson</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    AQ <span class="op">=</span> A <span class="op">@</span> Q</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    tr_low_rank <span class="op">=</span> np.<span class="bu">sum</span>(Q <span class="op">*</span> AQ) <span class="co"># Frobenius inner product for trace</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remaining queries for residual Hutchinson</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    m_rem <span class="op">=</span> m <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> s_queries</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> m_rem <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tr_low_rank</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sample new Rademacher vectors for residual trace estimation</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    G <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>(n, m_rem)) <span class="op">*</span> <span class="dv">2</span> <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    AG <span class="op">=</span> A <span class="op">@</span> G</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    AG_proj <span class="op">=</span> AG <span class="op">-</span> Q <span class="op">@</span> (Q.T <span class="op">@</span> AG)  <span class="co"># Project AG onto the orthogonal complement of Q</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Each column product corresponds to one sample of the residual trace</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    tr_res <span class="op">=</span> np.<span class="bu">sum</span>(G<span class="op">*</span> AG_proj) <span class="op">/</span> m_rem</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tr_low_rank <span class="op">+</span> tr_res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="results-and-discussion" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="results-and-discussion"><span class="header-section-number">6.3</span> Results and Discussion</h2>
 <p>The results are presented in <a href="#fig-hutch-vs-hutchpp" class="quarto-xref">Figure&nbsp;2</a>.</p>
 <div id="fig-hutch-vs-hutchpp" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -862,243 +989,239 @@ Woodruff, David P., Fred Zhang, and Qiuyi (Richard) Zhang. 2022. <span>“Optima
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
     }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
         }
       }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
     }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1106,161 +1229,185 @@ Woodruff, David P., Fred Zhang, and Qiuyi (Richard) Zhang. 2022. <span>“Optima
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
     }
-  });
-  </script>
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
