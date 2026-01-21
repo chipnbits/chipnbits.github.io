@@ -563,18 +563,18 @@ T_{H} := \frac{1}{m} \sum_{j=1}^m \vv_j^\top \mA \vv_j, \quad \vv_j \in \{\pm 1\
 \]</span></p>
 </div>
 <p>When at least one index is distinct, the expectation is zero by independence and zero mean. When indices are paired, we get contributions of <span class="math inline">\(\sigma^2\)</span> for each unique double pair. When all four indices are equal, we get a contribution of <span class="math inline">\(\mathbb{E}[V^4]\)</span>. The variance is then found by subtracting the square of the mean.</p>
-<p>Any random vector with the above properties will then function as an unbiased estimator when <span class="math inline">\(\Var(V)=\sigma^2=1\)</span> and will have minimum variance when <span class="math inline">\(\mathbb{E}[V^4] - \sigma^4\)</span> is minimized. The Rademacher random variable satisfies <span class="math inline">\(\mathbb{E}[V] = 0\)</span>, <span class="math inline">\(\Var(V) = 1\)</span>, and minimizes <span class="math inline">\(\mathbb{E}[V^4] - \sigma^4\)</span>. In fact, by Jensen’s inequality for any <span class="math inline">\(V\)</span>, <span class="math inline">\(\mathbb{E}[V^4] \geq (\mathbb{E}[V^2])^2 = \sigma^4\)</span>, such that the minimum is achieved when <span class="math inline">\(\mathbb{E}[V^4] = \sigma^4\)</span>. Thus, the Rademacher distribution gives the minimum variance unbiased estimator for the trace using this framework of MVPs with i.i.d. entries. By extension, we expect this to translate to the best possible <span class="math inline">\(\epsilon, \delta\)</span> bounds when applying concentration inequalities, as is seen below in Section~<span class="math inline">\(\ref{sec:avron}\)</span>.</p>
+<p>Any random vector with the above properties will then function as an unbiased estimator when <span class="math inline">\(\Var(V)=\sigma^2=1\)</span> and will have minimum variance when <span class="math inline">\(\mathbb{E}[V^4] - \sigma^4\)</span> is minimized. The Rademacher random variable satisfies <span class="math inline">\(\mathbb{E}[V] = 0\)</span>, <span class="math inline">\(\Var(V) = 1\)</span>, and minimizes <span class="math inline">\(\mathbb{E}[V^4] - \sigma^4\)</span>. In fact, by Jensen’s inequality for any <span class="math inline">\(V\)</span>, <span class="math inline">\(\mathbb{E}[V^4] \geq (\mathbb{E}[V^2])^2 = \sigma^4\)</span>, such that the minimum is achieved when <span class="math inline">\(\mathbb{E}[V^4] = \sigma^4\)</span>. Thus, the Rademacher distribution gives the minimum variance unbiased estimator for the trace using this framework of MVPs with i.i.d. entries. By extension, we expect this to translate to the best possible <span class="math inline">\(\epsilon, \delta\)</span> bounds when applying concentration inequalities, as is seen below in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a>.</p>
 <p>Note that because <span class="math inline">\(\vv^\top \mA \vv\)</span> is an unbiased estimator, the average of <span class="math inline">\(m\)</span> independent samples is also unbiased with variance reduced by a factor of <span class="math inline">\(m\)</span>. This is because for independent random variables <span class="math inline">\(X_1, X_2, \ldots, X_m\)</span>, we have <span class="math inline">\(\Var\left(\frac{1}{m} \sum_{i=1}^m X_i\right) = \frac{1}{m^2} \sum_{i=1}^m \Var(X_i) = \frac{1}{m} \Var(X_1)\)</span>.</p>
-<p>Let <span class="math inline">\(\vv_1, \ldots, \vv_m\)</span> be i.i.d. Rademacher random vectors. Then the Hutchinson estimator <span class="math inline">\(T_H\)</span> is unbiased with variance <span class="math display">\[
+<p>Let <span class="math inline">\(\vv_1, \ldots, \vv_m\)</span> be i.i.d. Rademacher random vectors. Then the Hutchinson estimator <span class="math inline">\(T_H\)</span> is unbiased with variance <span id="eq-hutch-variance"><span class="math display">\[
 \mathbb{E}[T_H] = \tr(\mA), \quad \Var(T_H) = \frac{1}{m} \left( 2 \sum_{i \neq j} A_{ij}^2 \right).
-\]</span> This is the minimum variance unbiased estimator using i.i.d. entries with a mean of zero for the random vectors <span class="math inline">\(\vv_j\)</span>, <em>for a fixed coordinate system</em>.</p>
+\tag{1}\]</span></span> This is the minimum variance unbiased estimator using i.i.d. entries with a mean of zero for the random vectors <span class="math inline">\(\vv_j\)</span>, <em>for a fixed coordinate system</em>.</p>
 </section>
 <section id="variance-analysis" class="level4">
 <h4 class="anchored" data-anchor-id="variance-analysis">Variance Analysis</h4>
 <p>The variance only depends on the off-diagonal elements of <span class="math inline">\(\mA\)</span>, so in the special case of a diagonal matrix, the variance is zero. In the context of SPSD matrices, this would amount to the spectral basis being aligned with the standard basis. This estimator clearly performs best when the diagonal elements dominate the off-diagonal elements, or equivalently when the eigenvectors are closely aligned with the standard basis. This poses the question: are there better choices of random vectors that are oblivious to the basis of <span class="math inline">\(\mA\)</span>? If the eigenbasis of <span class="math inline">\(\mA\)</span> is known, then one could trivially perform a change of basis on <span class="math inline">\(\vv\)</span> to align it with the diagonalization of <span class="math inline">\(\mA\)</span>.</p>
-<p>Rademacher vectors are sensitive to the basis in which <span class="math inline">\(\mA\)</span> is represented, while the Gaussian version of the estimator is rotationally invariant, however at the cost of strictly higher variance. Given i.i.d. standard Gaussian vector entries, the fourth moment is <span class="math inline">\(\mathbb{E}[G^4] = 3\)</span>, giving the Gaussian trace estimator <span class="math display">\[
+<p>Rademacher vectors are sensitive to the basis in which <span class="math inline">\(\mA\)</span> is represented, while the Gaussian version of the estimator is rotationally invariant, however at the cost of strictly higher variance. Given i.i.d. standard Gaussian vector entries, the fourth moment is <span class="math inline">\(\mathbb{E}[G^4] = 3\)</span>, giving the Gaussian trace estimator <span id="eq-gaussian_variance"><span class="math display">\[
 \Var(T_G) =  \frac{2}{m} \left( \sum_{i \neq j} A_{ij}^2 + \sum_{i} A_{ii}^2 \right)= \frac{2}{m} \|\mA\|_F^2.
-\]</span> However, for matrix <span class="math inline">\(\mA\)</span> there are no guarantees on how well aligned the eigenbasis is to the standard basis, and so the variance for Rademacher may approach that of Gaussian in the worst case. In both cases, the variance in the worst case scales with the squared Frobenius norm <span class="math inline">\(\|\mA\|_F^2\)</span> which is equal to the sum of squared eigenvalues <span class="math inline">\(\sum_{i} \lambda_i^2\)</span>.</p>
+\tag{2}\]</span></span> However, for matrix <span class="math inline">\(\mA\)</span> there are no guarantees on how well aligned the eigenbasis is to the standard basis, and so the variance for Rademacher may approach that of Gaussian in the worst case. In both cases, the variance in the worst case scales with the squared Frobenius norm <span class="math inline">\(\|\mA\|_F^2\)</span> which is equal to the sum of squared eigenvalues <span class="math inline">\(\sum_{i} \lambda_i^2\)</span>.</p>
 </section>
 <section id="limitations-of-the-original-analysis" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="limitations-of-the-original-analysis"><span class="header-section-number">3.1</span> Limitations of the Original Analysis</h2>
@@ -662,7 +662,7 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 </div>
 <section id="gaussian-estimator-t_gm-example" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="gaussian-estimator-t_gm-example"><span class="header-section-number">4.1</span> Gaussian Estimator <span class="math inline">\(T_{GM}\)</span> Example</h2>
-<p>For brevity, only one of the estimator derivations is given in detail, as the full proofs are available in <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>. Proceeding from the variance in Equation~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation so we can diagonalize <span class="math inline">\(\mA = \mU \Lambda \mU^\top\)</span> and consider <span class="math inline">\(\vw_j = \mU^\top \vv_j\)</span> as a Gaussian vector, without loss of generality. Then the estimator becomes <span class="math display">\[
+<p>For brevity, only one of the estimator derivations is given in detail, as the full proofs are available in <span class="citation" data-cites="avron2011RandomizedAlgorithmsEstimating">Avron and Toledo (<a href="#ref-avron2011RandomizedAlgorithmsEstimating" role="doc-biblioref">2011</a>)</span>. Proceeding from the variance in <a href="#eq-gaussian_variance" class="quarto-xref">Equation&nbsp;2</a>, Avron and Toledo take the typical path of applying a Chernoff-style argument. The Gaussian distribution is invariant under rotation so we can diagonalize <span class="math inline">\(\mA = \mU \Lambda \mU^\top\)</span> and consider <span class="math inline">\(\vw_j = \mU^\top \vv_j\)</span> as a Gaussian vector, without loss of generality. Then the estimator becomes <span class="math display">\[
    T_{GM} =\vv^\top \mA \vv = \frac{1}{m}\sum_j^{m}\sum_{i=1}^N \lambda_i w_{ij}^2 = \frac{1}{m}\sum_{i=1}^N \lambda_i \sum_{j=1}^m w_{ij}^2,
 \]</span> where <span class="math inline">\(w_{ij} \sim \mathcal{N}(0,1)\)</span>, and so each <span class="math inline">\(w_{ij}^2\)</span> is a <span class="math inline">\(\chi^2\)</span> random variable with one degree of freedom. The sum of <span class="math inline">\(m\)</span> i.i.d. <span class="math inline">\(\chi^2\)</span> random variables is a <span class="math inline">\(\chi^2\)</span> random variable with <span class="math inline">\(m\)</span> degrees of freedom, <span class="math inline">\(\sum_j^m w_{ij}^2 \sim \chi^2_m\)</span>.</p>
 <p>The tail bounds for the <span class="math inline">\(\chi^2\)</span> distribution are well studied. Using the following lemma we can derive a weak <span class="math inline">\((\epsilon, \delta)\)</span> bound for <span class="math inline">\(T_{GM}\)</span>, after which a stronger bound by Chernoff-style analysis is given by Avron and Toledo.</p>
@@ -689,8 +689,8 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 </section>
 <section id="sec-hutchplusplus" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Hutch++: Variance Reduction via Low-Rank Approximation</h1>
-<p>Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span> forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound <span class="math inline">\(\delta\)</span> with regular Hutchinson <span class="math inline">\(T_{HM}\)</span>, the bound on MVP queries is <span class="math inline">\(m=O(1/\epsilon^2)\)</span>. Remarkably, Hutch++ improves this to <span class="math inline">\(m=O(1/\epsilon)\)</span>, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a>.</p>
-<div id="alg-hutchplusplus" class="definition theorem algorithm">
+<p>Hutch++ <span class="citation" data-cites="meyer2021HutchOptimalStochastic">(<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">Meyer et al. 2021</a>)</span> forms the current state of the art when it comes to optimal trace estimation. For a fixed probability bound <span class="math inline">\(\delta\)</span> with regular Hutchinson <span class="math inline">\(T_{HM}\)</span>, the bound on MVP queries is <span class="math inline">\(m=O(1/\epsilon^2)\)</span>. Remarkably, Hutch++ improves this to <span class="math inline">\(m=O(1/\epsilon)\)</span>, the optimal rate for MVP-based algorithms. The algorithm from the paper is reproduced below.</p>
+<div id="alg-hutchplusplus" class="theorem algorithm">
 <p><span class="theorem-title"><strong>Algorithm 1 (Algorithm 1: Hutch++ Improved Trace Estimator)</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
 <strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
 <ol type="1">
@@ -705,9 +705,9 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 <li><strong>Low-rank trace:</strong> <span class="math inline">\((m/3)\)</span> MVPs, the trace of a low-rank “heavy-hitters” approximation is computed implicitly as <span class="math inline">\(\tr(\hat{\mA}) = \tr(\mQ^\top \mA \mQ)\)</span>.</li>
 <li><strong>Hutchinson’s estimator on the residual:</strong> <span class="math inline">\((m/3)\)</span> MVPs, estimate <span class="math inline">\(\tr(\mA - \hat{\mA})\)</span> using standard Hutchinson estimator <span class="math inline">\(T_H\)</span> on the residual projection <span class="math inline">\((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)\)</span>.</li>
 </ol>
-<p>More explicitly, <span class="math inline">\(\tr(\mA)\)</span> is decomposed as <span class="math display">\[
+<p>More explicitly, <span class="math inline">\(\tr(\mA)\)</span> is decomposed as <span id="eq-hutchpp-decomp"><span class="math display">\[
     \tr(\mA) = \tr(\hat \mA) + \tr(\mA - \hat \mA) = \tr(\mQ^\top \mA \mQ) + \tr((\mI - \mQ \mQ^\top) \mA (\mI - \mQ \mQ^\top)),
-\]</span> where the first term is computed exactly and the second term with Hutchinson. While <span class="math inline">\(\mQ\)</span> may not perfectly align with the dominant eigenbasis, it is expected to be a good approximation, and is certain to be a valid projection due to the <span class="math inline">\(QR\)</span> factorization step. This is the opposite of the basis sensitivity issue discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a>, as here the algorithm is exploiting the basis structure of <span class="math inline">\(\mA\)</span> to reduce variance. In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual <span class="math inline">\(\mA - \hat \mA\)</span> is expected to contain only the tail of the spectrum, <span class="math inline">\(\|\mA - \hat \mA\|_F^2\)</span> is smaller in expectation, reducing the variance shown in Eqs.~<span class="math inline">\(\ref{eq:gaussian_variance}\)</span>, <span class="math inline">\(\ref{eq:hutchinson_variance}\)</span>. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.</p>
+\tag{3}\]</span></span> where the first term is computed exactly and the second term with Hutchinson. While <span class="math inline">\(\mQ\)</span> may not perfectly align with the dominant eigenbasis, it is expected to be a good approximation, and is certain to be a valid projection due to the <span class="math inline">\(QR\)</span> factorization step. This is the opposite of the basis sensitivity issue discussed in <a href="#sec-avron" class="quarto-xref">Section&nbsp;4</a>, as here the algorithm is exploiting the basis structure of <span class="math inline">\(\mA\)</span> to reduce variance. In this sense, the authors note that the algorithm is adaptive, as the Rademacher vector alignment is chosen based on the computed basis. Since the residual <span class="math inline">\(\mA - \hat \mA\)</span> is expected to contain only the tail of the spectrum, <span class="math inline">\(\|\mA - \hat \mA\|_F^2\)</span> is smaller in expectation, reducing the variance shown in <a href="#eq-gaussian_variance" class="quarto-xref">Equation&nbsp;2</a>, <a href="#eq-hutch-variance" class="quarto-xref">Equation&nbsp;1</a>. The analysis writing and style is more thorough than the original Hutchinson and Avron and Toledo works.</p>
 <section id="theoretical-guarantees" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="theoretical-guarantees"><span class="header-section-number">5.1</span> Theoretical Guarantees</h2>
 <p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> prove the complexity bound of <span class="math inline">\(m=O(1/\epsilon)\)</span> for an <span class="math inline">\((\epsilon, \delta)\)</span>-approximation using Hutch++. The main theorem is reproduced below.</p>
@@ -724,9 +724,9 @@ Table&nbsp;3: Comparison of estimators, variances, sample complexity, and random
 <p>The details of matrix sketching lie outside of the scope of this work and the trace estimation paper, but applying Corollary 7 and Claim 1 from <span class="citation" data-cites="musco2020projectioncostpreservingsketchesproofstrategies">Musco and Musco (<a href="#ref-musco2020projectioncostpreservingsketchesproofstrategies" role="doc-biblioref">2020</a>)</span> shows that for <span class="math inline">\(\frac{m}{3}\geq(k+\log(1/\delta))\)</span> the residual will stay bounded with high probability <span class="math inline">\(\geq 1-\delta\)</span>: <span class="math display">\[
     \|\mA - \mA \mQ \mQ^\top\|_F^2 \leq 2 \| \mA - \mA_k\|_F^2.
 \]</span> This type of low-rank concentration bound is common in RLNA literature <span class="citation" data-cites="woodruff2014SketchingToolNumerical">(<a href="#ref-woodruff2014SketchingToolNumerical" role="doc-biblioref">Woodruff 2014</a>)</span>. The bound is for the residual being at most twice the optimal rank-<span class="math inline">\(k\)</span> approximation error, which is sufficient for replacing the bound in the residual equation by one that is twice as large, preserving the <span class="math inline">\(O(1/\epsilon)\)</span> complexity. Combining all of these results gives the final proof of <a href="#thm-hutchplusplus-main" class="quarto-xref">Theorem&nbsp;1</a>. The only PSD assumption made is in the residual Frobenius norm, providing an avenue for non-PSD extensions which are covered by the authors in their paper, but that are not the focus of this work.</p>
-<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> also go on to prove that <span class="math inline">\(O(1/\epsilon)\)</span> is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below in <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. The analysis and performance is similar, but with simpler variance bounds.</p>
-<div id="alg-hutchplusplus-gaussian" class="definition theorem algorithm">
-<p><span class="theorem-title"><strong>Algorithm 2 (Algorithm 2: Gaussian-Hutch++ (Gaussian Variant of Hutch++))</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
+<p><span class="citation" data-cites="meyer2021HutchOptimalStochastic">Meyer et al. (<a href="#ref-meyer2021HutchOptimalStochastic" role="doc-biblioref">2021</a>)</span> also go on to prove that <span class="math inline">\(O(1/\epsilon)\)</span> is the optimal rate up to a logarithmic factor using a sophisticated reduction to communication complexity for the Gap-Hamming problem. Thus information complexity theory shows that no algorithm using only MVPs can do much better than Hutch++ in the general case. Finally the authors provide a Gaussian sketching variant of Hutch++, shown below. The analysis and performance is similar, but with simpler variance bounds.</p>
+<div id="alg-hutchplusplus-gaussian" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 2 (Algorithm 2: Gaussian-Hutch++)</strong></span> <strong>Require:</strong> Matrix-vector multiplication oracle for matrix <span class="math inline">\(\mA \in \mathbb{R}^{n \times n}\)</span>. Number of queries, <span class="math inline">\(m\)</span>.<br>
 <strong>Ensure:</strong> Approximation to <span class="math inline">\(\tr(\mA)\)</span>.</p>
 <ol type="1">
 <li>Sample <span class="math inline">\(\mS \in \mathbb{R}^{n \times \frac{m+2}{4}}\)</span> with i.i.d.&nbsp;<span class="math inline">\(\mathcal{N}(0,1)\)</span> entries and <span class="math inline">\(\mG \in \mathbb{R}^{n \times \frac{m-2}{2}}\)</span> with i.i.d.&nbsp;Rademacher entries.</li>
@@ -772,7 +772,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
         &amp;= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
 \end{align}
 \]</span> which is computed by summing the elementwise product of <span class="math inline">\(\mV\)</span> and <span class="math inline">\(\mY = \mA \mV\)</span>.</p>
-<div id="fe231ec5" class="cell" data-execution_count="1">
+<div id="bd93fd55" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.fft <span class="im">import</span> dct, idct</span>
@@ -792,7 +792,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <p>The Hutch++ implementation follows the steps outlined in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a> and <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. In this case we optimize the computation step by noting that the projection <span class="math inline">\((\mI - \mQ \mQ^\top)\)</span> can be applied efficiently without explicitly forming the projection matrix. For the projection matrix <span class="math inline">\(P = \mI - \mQ \mQ^\top\)</span>, we have that <span class="math inline">\(P = P^\top\)</span> and <span class="math inline">\(P^2 = P\)</span>. Thus for any matrix <span class="math inline">\(\mG\)</span> the projected MVP can be computed as <span class="math inline">\(\tr(P \mA P) = \tr(\mA P)\)</span> and so using standard Hutchinson on the residual becomes <span class="math display">\[
     \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
 \]</span></p>
-<div id="f3effd02" class="cell" data-execution_count="2">
+<div id="af44537c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutch_plus_plus(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Hutch++ with support for Rademacher or Gaussian sketching.</span></span>
@@ -843,7 +843,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tr_low_rank <span class="op">+</span> tr_res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For experimentation, a generalized construction method for PSD with different spectral profiles is implemented by sampling eigenvalues from a <span class="math inline">\(1/n^k\)</span> decay function and applying the discrete cosine transform for mixing. The diagonal-heavy and spiked identity matrices are constructed directly.</p>
-<div id="ad5653ba" class="cell" data-execution_count="3">
+<div id="fc862130" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_dct_rotated_matrix(n, decay_power):</span>
@@ -935,70 +935,71 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Setup and Execution ---</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>N, trials <span class="op">=</span> <span class="dv">2000</span>, <span class="dv">30</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> np.unique(np.geomspace(<span class="dv">12</span>, <span class="dv">1200</span>, num<span class="op">=</span><span class="dv">12</span>, dtype<span class="op">=</span><span class="bu">int</span>))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate Matrices (Functions must be defined in a previous cell)</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> [</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Slow Decay ($1/k$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">1.0</span>)),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Fast Decay ($1/k^2$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">2.0</span>)),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Clustered Covariance"</span>, generate_clustered_covariance(N, n_clusters<span class="op">=</span><span class="dv">20</span>, cross_talk<span class="op">=</span><span class="fl">0.00</span>)),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Spiked Identity ($I + LR$)"</span>, generate_spiked_identity(N, rank<span class="op">=</span><span class="dv">50</span>, signal_strength<span class="op">=</span><span class="fl">100.0</span>)),        </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Rad)"</span>,   <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"rademacher"</span>),      <span class="st">"#1f77b4"</span>, <span class="st">"o-"</span>),</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Gauss)"</span>, <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"gaussian"</span>),        <span class="st">"#ff7f0e"</span>, <span class="st">"s--"</span>),</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Rad)"</span>,     <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"rademacher"</span>), <span class="st">"#2ca02c"</span>, <span class="st">"^-"</span>),</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Gauss)"</span>,   <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"gaussian"</span>),   <span class="st">"#9467bd"</span>, <span class="st">"d-."</span>),</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># GLOBAL STORAGE for the timing/efficiency plot</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>timing_results <span class="op">=</span> {label: np.zeros(<span class="bu">len</span>(query_counts)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods}</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>trial_errors_fast_decay <span class="op">=</span> {label: np.zeros((<span class="bu">len</span>(query_counts), trials)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods}</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, (A, true_tr)) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, func, color, fmt <span class="kw">in</span> methods:</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Array to store errors for all trials to calculate standard deviation</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        errors <span class="op">=</span> np.zeros((<span class="bu">len</span>(query_counts), trials))</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, q <span class="kw">in</span> <span class="bu">enumerate</span>(query_counts):</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(trials):</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                t0 <span class="op">=</span> time.perf_counter()</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                est <span class="op">=</span> func(A, q)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                timing_results[label][i] <span class="op">+=</span> (time.perf_counter() <span class="op">-</span> t0)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                errors[i, t] <span class="op">=</span> np.<span class="bu">abs</span>(est <span class="op">-</span> true_tr) <span class="op">/</span> true_tr</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Synchronized plotting logic</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>        mu <span class="op">=</span> np.mean(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>        sigma <span class="op">=</span> np.std(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        ax.loglog(query_counts, mu, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Consistent background shading: mu +/- 0.5*sigma</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        lower <span class="op">=</span> np.maximum(mu <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1e-10</span>)</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        upper <span class="op">=</span> np.minimum(mu <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1.0</span>)</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>        ax.fill_between(query_counts, lower, upper, color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Theoretical reference lines</span></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> np.sqrt(query_counts), <span class="st">"k:"</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/</span><span class="dv">\s</span><span class="vs">qrt{m}</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> query_counts, <span class="st">"k-."</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/m</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Matrix-Vector Queries (m)"</span>)</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, alpha<span class="op">=</span><span class="fl">0.15</span>)</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]:</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Setup and Execution ---</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>N, trials <span class="op">=</span> <span class="dv">5000</span>, <span class="dv">30</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> np.unique(np.geomspace(<span class="dv">10</span>, <span class="dv">500</span>, num<span class="op">=</span><span class="dv">10</span>, dtype<span class="op">=</span><span class="bu">int</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Define datasets (Functions assumed to be defined in a previous cell)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> [</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Slow Decay ($1/k$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">1.0</span>)),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Fast Decay ($1/k^2$)"</span>, generate_dct_rotated_matrix(N, <span class="fl">2.0</span>)),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Clustered Covariance"</span>, generate_clustered_covariance(N, n_clusters<span class="op">=</span><span class="dv">20</span>, cross_talk<span class="op">=</span><span class="fl">0.00</span>)),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Spiked Identity ($I + LR$)"</span>, generate_spiked_identity(N, rank<span class="op">=</span><span class="dv">50</span>, signal_strength<span class="op">=</span><span class="fl">100.0</span>)),         </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Rad)"</span>,   <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"rademacher"</span>),      <span class="st">"#1f77b4"</span>, <span class="st">"o-"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Hutch (Gauss)"</span>, <span class="kw">lambda</span> A, q: hutchinson(A, q, <span class="st">"gaussian"</span>),        <span class="st">"#ff7f0e"</span>, <span class="st">"s--"</span>),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Rad)"</span>,     <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"rademacher"</span>), <span class="st">"#2ca02c"</span>, <span class="st">"^-"</span>),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"H++ (Gauss)"</span>,   <span class="kw">lambda</span> A, q: hutch_plus_plus(A, q, <span class="st">"gaussian"</span>),   <span class="st">"#9467bd"</span>, <span class="st">"d-."</span>),</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># GLOBAL STORAGE for the timing/efficiency plot</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>timing_results <span class="op">=</span> {name: {label: np.zeros(<span class="bu">len</span>(query_counts)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods} <span class="cf">for</span> name, _ <span class="kw">in</span> datasets}</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>trial_errors <span class="op">=</span> {name: {label: np.zeros((<span class="bu">len</span>(query_counts), trials)) <span class="cf">for</span> label, _, _, _ <span class="kw">in</span> methods} <span class="cf">for</span> name, _ <span class="kw">in</span> datasets}</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, (A, true_tr)) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, func, color, fmt <span class="kw">in</span> methods:</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        errors <span class="op">=</span> np.zeros((<span class="bu">len</span>(query_counts), trials))</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, q <span class="kw">in</span> <span class="bu">enumerate</span>(query_counts):</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(trials):</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                est <span class="op">=</span> func(A, q)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                timing_results[name][label][i] <span class="op">+=</span> elapsed</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                errors[i, t] <span class="op">=</span> np.<span class="bu">abs</span>(est <span class="op">-</span> true_tr) <span class="op">/</span> true_tr</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        trial_errors[name][label] <span class="op">=</span> errors.copy()</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        mu <span class="op">=</span> np.mean(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        sigma <span class="op">=</span> np.std(errors, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        ax.loglog(query_counts, mu, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>        lower <span class="op">=</span> np.maximum(mu <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1e-10</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>        upper <span class="op">=</span> np.minimum(mu <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> sigma, <span class="fl">1.0</span>)</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>        ax.fill_between(query_counts, lower, upper, color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> np.sqrt(query_counts), <span class="st">"k:"</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/</span><span class="dv">\s</span><span class="vs">qrt{m}</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    ax.loglog(query_counts, <span class="fl">1.0</span> <span class="op">/</span> query_counts, <span class="st">"k-."</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">O</span><span class="kw">(</span><span class="vs">1/m</span><span class="kw">)</span><span class="dv">$</span><span class="vs">"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Matrix-Vector Queries (m)"</span>)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]:</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-trace-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -1007,7 +1008,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <img src="index_files/figure-html/fig-trace-performance-output-1.png" width="1141" height="947" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trace-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Comparison of Hutchinson and Hutch++ trace estimators on random generated SPSD matrices with decaying eigenvalues. Hutch++ achieves lower error for the same number of MVPs on concentrated spectra, confirming the theoretical analysis.
+Figure&nbsp;2: Relative error of trace estimators as a function of query budget <span class="math inline">\(m\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -1021,33 +1022,36 @@ Figure&nbsp;2: Comparison of Hutchinson and Hutch++ trace estimators on random g
 <div id="cell-fig-time-comparison" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>normalization <span class="op">=</span> <span class="bu">len</span>(datasets) <span class="op">*</span> trials</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, _, color, fmt <span class="kw">in</span> methods:</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    mu_error <span class="op">=</span> np.mean(trial_errors_fast_decay[label], axis<span class="op">=</span><span class="dv">1</span>) </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    avg_time <span class="op">=</span> timing_results[label] <span class="op">/</span> normalization</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    plt.loglog(avg_time, mu_error, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Trace Estimation Efficiency (Fast Decay Spectrum)"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Average Wall-Clock Time (seconds)"</span>)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Relative Error"</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>axes_flat <span class="op">=</span> axes.flatten()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, _) <span class="kw">in</span> <span class="bu">zip</span>(axes_flat, datasets):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label, _, color, fmt <span class="kw">in</span> methods:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        mu_error <span class="op">=</span> np.mean(trial_errors[name][label], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Average time across trials for THIS specific dataset</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        avg_time <span class="op">=</span> timing_results[name][label] <span class="op">/</span> trials</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot Time on X-axis and Error on Y-axis</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        ax.loglog(avg_time, mu_error, fmt, label<span class="op">=</span>label, color<span class="op">=</span>color, lw<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ax.set_title(name)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Average Wall-Clock Time (seconds)"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Relative Error"</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, ls<span class="op">=</span><span class="st">"-"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> name <span class="op">==</span> datasets[<span class="dv">0</span>][<span class="dv">0</span>]:</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        ax.legend(fontsize<span class="op">=</span><span class="st">"small"</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>/tmp/ipykernel_2601/2164723254.py:13: UserWarning: Data has no positive values, and therefore cannot be log-scaled.
-  plt.tight_layout()</code></pre>
-</div>
 <div class="cell-output cell-output-display">
 <div id="fig-time-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-time-comparison-output-2.png" width="949" height="564" class="figure-img">
+<img src="index_files/figure-html/fig-time-comparison-output-1.png" width="1141" height="947" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-time-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Wall clock time comparison of Hutchinson and Hutch++ estimators on fast decay SPSD matrix. While Hutch++ has overhead from factorization, it quickly outperforms Hutchinson in error for the same amount of time.
+Figure&nbsp;3: Efficiency Frontier: Relative Error vs.&nbsp;Average Wall-Clock Time across different spectra.
 </figcaption>
 </figure>
 </div>
