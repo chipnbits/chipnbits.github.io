@@ -18,7 +18,7 @@ draft: false
 
 execute:
   jupyter: python3
-  freeze: true
+  freeze: false
 
 format:
   html:
@@ -590,13 +590,14 @@ The results are presented below in @fig-trace-performance:
 #| label: fig-trace-performance
 #| fig-cap: "Relative error of trace estimators as a function of query budget $m$."
 #| code-fold: true
-#| out-width: "100%"
+#| out-width: "80%"
 
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
+import os
 
-# --- Setup and Execution ---
 np.random.seed(42)
 N, trials = 5000, 30
 query_counts = np.unique(np.geomspace(10, 500, num=10, dtype=int))
@@ -616,45 +617,95 @@ methods = [
     ("H++ (Gauss)",   lambda A, q: hutch_plus_plus(A, q, "gaussian"),   "#9467bd", "d-."),
 ]
 
-# GLOBAL STORAGE for the timing/efficiency plot
-timing_results = {name: {label: np.zeros(len(query_counts)) for label, _, _, _ in methods} for name, _ in datasets}
-trial_errors = {name: {label: np.zeros((len(query_counts), trials)) for label, _, _, _ in methods} for name, _ in datasets}
+cache_file = "trace_estimation_results.pkl"
+run_simulation = not os.path.exists(cache_file)
+
+if run_simulation:
+    print("No cache found. Running simulations (this may take a while)...")
+    # Data structures to store results
+    # We store the raw trial errors to allow for flexible re-plotting of variance/mean
+    trial_results = {} 
+    timing_stats = {}
+
+    for name, (A, true_tr) in datasets:
+        trial_results[name] = {}
+        timing_stats[name] = {}
+        
+        for label, func, _, _ in methods:
+            errors = np.zeros((len(query_counts), trials))
+            times = np.zeros(len(query_counts))
+            
+            for i, q in enumerate(query_counts):
+                t_start = time.perf_counter()
+                for t in range(trials):
+                    est = func(A, q)
+                    errors[i, t] = np.abs(est - true_tr) / true_tr
+                times[i] = (time.perf_counter() - t_start) / trials # Avg time per query
+            
+            trial_results[name][label] = errors
+            timing_stats[name][label] = times
+
+    # Bundle everything for pickle
+    payload = {
+        "trial_results": trial_results,
+        "timing_stats": timing_stats,
+        "query_counts": query_counts,
+        "N": N,
+        "trials": trials
+    }
+    
+    with open(cache_file, "wb") as f:
+        pickle.dump(payload, f)
+    print(f"Results saved to {cache_file}.")
+
+else:
+    with open(cache_file, "rb") as f:
+        data = pickle.load(f)
+    
+    trial_results = data["trial_results"]
+    timing_stats = data["timing_stats"]
+    query_counts = data["query_counts"]
+
+# Define style mapping here so you can change colors/markers without re-computing
+style_map = {
+    "Hutch (Rad)":   {"color": "#1f77b4", "fmt": "o-"},
+    "Hutch (Gauss)": {"color": "#ff7f0e", "fmt": "s--"},
+    "H++ (Rad)":     {"color": "#2ca02c", "fmt": "^-"},
+    "H++ (Gauss)":   {"color": "#9467bd", "fmt": "d-."},
+}
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 axes_flat = axes.flatten()
 
-for ax, (name, (A, true_tr)) in zip(axes_flat, datasets):
-    for label, func, color, fmt in methods:
-        errors = np.zeros((len(query_counts), trials))
+for ax, (name, labels_dict) in zip(axes_flat, trial_results.items()):
+    for label, errors in labels_dict.items():
+        # Retrieve style
+        color = style_map[label]["color"]
+        fmt = style_map[label]["fmt"]
         
-        for i, q in enumerate(query_counts):
-            for t in range(trials):
-                t0 = time.perf_counter()
-                est = func(A, q)
-                elapsed = time.perf_counter() - t0
-                
-                timing_results[name][label][i] += elapsed
-                errors[i, t] = np.abs(est - true_tr) / true_tr
-
-        trial_errors[name][label] = errors.copy()
+        # Calculate statistics from raw trial data
         mu = np.mean(errors, axis=1)
         sigma = np.std(errors, axis=1)
 
+        # Main Plot
         ax.loglog(query_counts, mu, fmt, label=label, color=color, lw=1.5, markersize=4)
         
+        # Confidence Interval (shaded area)
         lower = np.maximum(mu - 0.5 * sigma, 1e-10)
         upper = np.minimum(mu + 0.5 * sigma, 1.0)
         ax.fill_between(query_counts, lower, upper, color=color, alpha=0.1)
 
+    # Reference Complexity Lines
     ax.loglog(query_counts, 1.0 / np.sqrt(query_counts), "k:", label=r"$O(1/\sqrt{m})$", alpha=0.4)
     ax.loglog(query_counts, 1.0 / query_counts, "k-.", label=r"$O(1/m)$", alpha=0.4)
     
-    ax.set_title(name)
+    ax.set_title(name, fontweight='bold')
     ax.set_xlabel("Matrix-Vector Queries (m)")
     ax.set_ylabel("Relative Error")
-    ax.grid(True, which="both", ls="-", alpha=0.3)
-    if name == datasets[0][0]:
-        ax.legend(fontsize="small", loc="upper right")
+    ax.grid(True, which="both", ls="-", alpha=0.2)
+    
+    if ax == axes_flat[0]: # Legend only on first plot to reduce clutter
+        ax.legend(fontsize="small", loc="upper right", frameon=True)
 
 plt.tight_layout()
 plt.show()
@@ -683,23 +734,29 @@ The focus of this work has been on the bounds and theoretical convergence for tr
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 axes_flat = axes.flatten()
 
-for ax, (name, _) in zip(axes_flat, datasets):
-    for label, _, color, fmt in methods:
-        mu_error = np.mean(trial_errors[name][label], axis=1)
-        # Average time across trials for THIS specific dataset
-        avg_time = timing_results[name][label] / trials
+# Iterate through datasets using the keys in trial_results
+for ax, (name, labels_dict) in zip(axes_flat, trial_results.items()):
+    for label, errors_matrix in labels_dict.items():
+        color = style_map[label]["color"]
+        fmt = style_map[label]["fmt"]
         
-        # Plot Time on X-axis and Error on Y-axis
+        mu_error = np.mean(errors_matrix, axis=1)
+        avg_time = timing_stats[name][label]
+        
+        # Plot Time (X) vs. Error (Y)
         ax.loglog(avg_time, mu_error, fmt, label=label, color=color, lw=2, markersize=6)
 
-    ax.set_title(name)
+    ax.set_title(f"Efficiency: {name}", fontweight='bold')
     ax.set_xlabel("Average Wall-Clock Time (seconds)")
     ax.set_ylabel("Relative Error")
     ax.grid(True, which="both", ls="-", alpha=0.3)
-    if name == datasets[0][0]:
-        ax.legend(fontsize="small", loc="upper right")
+    
+    # Legend on the first subplot
+    if ax == axes_flat[0]:
+        ax.legend(fontsize="small", loc="upper right", frameon=True)
 
 plt.tight_layout()
+plt.suptitle("Efficiency Frontier: Accuracy vs. Computational Cost", fontsize=16, y=1.02)
 plt.show()
 ```
 
