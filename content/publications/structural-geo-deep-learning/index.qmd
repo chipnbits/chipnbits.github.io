@@ -9,7 +9,7 @@ authors:
   - name: "Eldad Haber"
 
 date: 2025-06-17
-venue: "arXiv preprint (under review at journal)"
+venue: "Journal of Geophysical Research: Machine Learning and Computation (preprint on arXiv)"
 description: "A 3d geological simulation engine that can produce fast computation samples is presented. The synthetic dataset is used to train a generative AI model that can be used as a prior for solving difficult inverse problems in geophysics."
 categories:
   - Structural Geology
