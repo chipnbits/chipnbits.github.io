@@ -772,7 +772,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
         &amp;= \frac{1}{m}\langle \mV, \mA \mV \rangle_F  = \frac{1}{m}\sum_{i=1}^n \sum_{j=1}^m V_{ij} Y_{ij} ,
 \end{align}
 \]</span> which is computed by summing the elementwise product of <span class="math inline">\(\mV\)</span> and <span class="math inline">\(\mY = \mA \mV\)</span>.</p>
-<div id="7f725f95" class="cell" data-execution_count="1">
+<div id="af19b0c0" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.fft <span class="im">import</span> dct, idct</span>
@@ -792,7 +792,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <p>The Hutch++ implementation follows the steps outlined in <a href="#alg-hutchplusplus" class="quarto-xref">alg.&nbsp;1</a> and <a href="#alg-hutchplusplus-gaussian" class="quarto-xref">alg.&nbsp;2</a>. In this case we optimize the computation step by noting that the projection <span class="math inline">\((\mI - \mQ \mQ^\top)\)</span> can be applied efficiently without explicitly forming the projection matrix. For the projection matrix <span class="math inline">\(P = \mI - \mQ \mQ^\top\)</span>, we have that <span class="math inline">\(P = P^\top\)</span> and <span class="math inline">\(P^2 = P\)</span>. Thus for any matrix <span class="math inline">\(\mG\)</span> the projected MVP can be computed as <span class="math inline">\(\tr(P \mA P) = \tr(\mA P)\)</span> and so using standard Hutchinson on the residual becomes <span class="math display">\[
     \tr(P \mA P) = \tr(PA) \approx \langle \mG, P\mA \mG \rangle_F
 \]</span></p>
-<div id="62062717" class="cell" data-execution_count="2">
+<div id="04a17866" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hutch_plus_plus(A, num_queries, dist<span class="op">=</span><span class="st">"rademacher"</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Hutch++ with support for Rademacher or Gaussian sketching.</span></span>
@@ -843,7 +843,7 @@ Figure&nbsp;1: Samples of random Spiked Identity and Diagonal-Heavy SPSD matrice
 <span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tr_low_rank <span class="op">+</span> tr_res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For experimentation, a generalized construction method for PSD with different spectral profiles is implemented by sampling eigenvalues from a <span class="math inline">\(1/n^k\)</span> decay function and applying the discrete cosine transform for mixing. The diagonal-heavy and spiked identity matrices are constructed directly.</p>
-<div id="4fcd6c0b" class="cell" data-execution_count="3">
+<div id="37d96c8a" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_dct_rotated_matrix(n, decay_power):</span>
