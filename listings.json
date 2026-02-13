@@ -1,5 +1,12 @@
 [
   {
+    "listing": "/content/publications/index.html",
+    "items": [
+      "/content/publications/structural-geo-deep-learning/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html"
+    ]
+  },
+  {
     "listing": "/blog/index.html",
     "items": [
       "/blog/posts/ODEs_guest_lecture/index.html",
@@ -25,13 +32,6 @@
       "/content/eosc555/lectures/lecture3/index.html",
       "/content/eosc555/lectures/lecture2/index.html",
       "/content/eosc555/lectures/lecture1-2/index.html"
-    ]
-  },
-  {
-    "listing": "/content/publications/index.html",
-    "items": [
-      "/content/publications/structural-geo-deep-learning/index.html",
-      "/content/publications/ssvm-magnetic-data-inversion/index.html"
     ]
   }
 ]

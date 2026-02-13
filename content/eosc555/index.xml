@@ -9,8 +9,8 @@
 <link>https://chipnbits.github.io/content/eosc555/</link>
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
-<generator>quarto-1.5.53</generator>
-<lastBuildDate>Mon, 25 Nov 2024 08:00:00 GMT</lastBuildDate>
+<generator>quarto-1.8.27</generator>
+<lastBuildDate>Mon, 25 Nov 2024 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Lecture 11</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -55,7 +55,7 @@
 <h4 class="anchored" data-anchor-id="visualization-of-score-matching-and-potentials">Visualization of Score Matching and Potentials</h4>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -562,9 +562,9 @@ background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">''</span>)</span>
-<span id="cb1-124">plt.show()</span></code></pre></div>
+<span id="cb1-124">plt.show()</span></code></pre></div></div>
 </details>
-<div id="25d8585b" class="cell quarto-layout-panel" data-layout-ncol="3" data-execution_count="2">
+<div id="25d8585b" class="cell quarto-layout-panel" data-execution_count="2" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-1.png" class="img-fluid" width="448"></p>
@@ -624,7 +624,7 @@ font-style: inherit;">''</span>)</span>
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-MAP Estimation
+<span class="screen-reader-only">Note</span>MAP Estimation
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -667,7 +667,7 @@ Hyvärinen, Aapo. 2005. <span>“Estimation of Non-Normalized Statistical Models
   <category>Neural Networks</category>
   <category>Score Matching</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture11/</guid>
-  <pubDate>Mon, 25 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Mon, 25 Nov 2024 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lecture 10</title>
@@ -690,7 +690,7 @@ Hyvärinen, Aapo. 2005. <span>“Estimation of Non-Normalized Statistical Models
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Definitions
+<span class="screen-reader-only">Note</span>Definitions
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -782,7 +782,7 @@ Definitions
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Minimization Objective
+<span class="screen-reader-only">Note</span>Minimization Objective
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -837,7 +837,7 @@ Minimization Objective
 <p>Below is a visualization of the probability density function (PDF), potential function, and score function of a 2D Gaussian distribution.</p>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -1188,7 +1188,7 @@ font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'tight'</span>)</span>
 <span id="cb1-61"></span>
-<span id="cb1-62">plt.show()</span></code></pre></div>
+<span id="cb1-62">plt.show()</span></code></pre></div></div>
 </details>
 <div id="fig-scores" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -1256,7 +1256,7 @@ Figure&nbsp;1: PDF, Potential Function, and Score Function of a 2D Gaussian Norm
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Minimization Objective
+<span class="screen-reader-only">Note</span>Minimization Objective
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1274,7 +1274,7 @@ Minimization Objective
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Score Matching Gradient
+<span class="screen-reader-only">Note</span>Score Matching Gradient
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1302,7 +1302,7 @@ Score Matching Gradient
 <div aria-describedby="fig-langevin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -1714,7 +1714,7 @@ font-style: inherit;">10</span>)</span>
 <span id="cb2-69"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Display the animation inline (if supported)</span></span>
-<span id="cb2-70">plt.close(fig)</span></code></pre></div>
+<span id="cb2-70">plt.close(fig)</span></code></pre></div></div>
 </details>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-langevin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1778,7 +1778,7 @@ Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Stati
   <category>Bayesian Inference</category>
   <category>Score</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture10/</guid>
-  <pubDate>Fri, 22 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Fri, 22 Nov 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -1816,7 +1816,7 @@ Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Stati
 <h2 class="anchored" data-anchor-id="coding-the-forward-model">Coding the Forward Model</h2>
 <p>The model is programmed into the <code>Magnetics</code> class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.</p>
 <div id="f9f08875" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
 <span id="cb1-2"><span class="im" style="color: #00769E;
@@ -2736,14 +2736,14 @@ font-style: inherit;">*</span> sin_I0)</span>
 <span id="cb1-205">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> psf, center, rf</span></code></pre></div>
+font-style: inherit;">return</span> psf, center, rf</span></code></pre></div></div>
 </div>
 <p>To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that <img src="https://latex.codecogs.com/png.latex?%20%5Clangle%20A(X),%20Q%20%5Crangle%20=%20%5Clangle%20X,%20A%5E*(Q)%20%5Crangle%20"></p>
 <p>where <img src="https://latex.codecogs.com/png.latex?A"> is the forward operator and <img src="https://latex.codecogs.com/png.latex?A%5E*"> is the adjoint operator. The code below performs the adjoint test for the forward model defined above.</p>
 <div id="4217d762" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pyvista <span class="im" style="color: #00769E;
 background-color: null;
@@ -2921,7 +2921,7 @@ background-color: null;
 font-style: inherit;">0</span>).unsqueeze(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>)</span>
-<span id="cb2-42">adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code></pre></div>
+<span id="cb2-42">adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Adjoint test: 4.638533115386963 4.638533592224121</code></pre>
@@ -2934,7 +2934,7 @@ font-style: inherit;">0</span>)</span>
 <div id="2ea5582e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> plot_model_2d(M, n_slices<span class="op" style="color: #5E5E5E;
@@ -3944,11 +3944,11 @@ font-style: inherit;"># Adjust the zoom to fit data in window</span></span>
 <span id="cb4-258">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> plotter</span></code></pre></div>
+font-style: inherit;">return</span> plotter</span></code></pre></div></div>
 </details>
 </div>
 <div id="c2d7bd9b" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">p <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">p <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> pv.Plotter()</span>
 <span id="cb5-2">D <span class="op" style="color: #5E5E5E;
@@ -3973,7 +3973,7 @@ background-color: null;
 font-style: inherit;">"imgs/magnetic_inversion_plot.png"</span></span>
 <span id="cb5-6">p.show(screenshot<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span>output_file)</span></code></pre></div>
+font-style: inherit;">=</span>output_file)</span></code></pre></div></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -4008,7 +4008,7 @@ font-style: inherit;">=</span>output_file)</span></code></pre></div>
 <p>and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: <img src="https://latex.codecogs.com/png.latex?%5C%7CW(M)%5C%7C%5E2%20=%20%5Csum_i%5EN%5Csum_j%5ES%5Csum_k%5EQ%20(M_%7Bi,j,k%7D%20-%20M_%7Bi+1,j,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j+1,k%7D)%5E2%20+%20(M_%7Bi,j,k%7D%20-%20M_%7Bi,j,k+1%7D)%5E2"> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
 <p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm. The regularization term to be defined is the operator before the squared norm is applied.</p>
 <div id="290f5297" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> regularization(x):</span>
@@ -4118,7 +4118,7 @@ font-style: inherit;">0</span>]</span>
 <span id="cb6-25">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> adjoint</span></code></pre></div>
+font-style: inherit;">return</span> adjoint</span></code></pre></div></div>
 </div>
 </section>
 <section id="data-set-for-fitting" class="level4">
@@ -4127,7 +4127,7 @@ font-style: inherit;">return</span> adjoint</span></code></pre></div>
 <div id="d6a4c6ff" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> gen_true_data(dim):</span>
@@ -4306,7 +4306,7 @@ background-color: null;
 font-style: inherit;">"imgs/magnetic_inversion_proj.png"</span></span>
 <span id="cb7-32">p.show(screenshot<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span>output_file)</span></code></pre></div>
+font-style: inherit;">=</span>output_file)</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -4322,7 +4322,7 @@ font-style: inherit;">=</span>output_file)</span></code></pre></div>
 <h4 class="anchored" data-anchor-id="conjugate-gradient-method">Conjugate Gradient Method</h4>
 <p>The equation to solve is <img src="https://latex.codecogs.com/png.latex?(A%5E*A%20+%20%5Calpha%20W%5E*W)%20M_%7Bsol%7D%20=%20A%5E*D"> which should be defined in the standard form for a conjugate gradient problem, <img src="https://latex.codecogs.com/png.latex?Cx%20=%20b">. To fit this form a new linear operator <img src="https://latex.codecogs.com/png.latex?C"> is defined as <img src="https://latex.codecogs.com/png.latex?C%20:=%20A%5E*A%20+%20%5Calpha%20W%5E*W"> and the right hand side <img src="https://latex.codecogs.com/png.latex?b%20=%20A%5E*D">. The conjugate gradient method is then applied to solve the system of equations.</p>
 <div id="78089c79" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
 background-color: null;
@@ -4781,7 +4781,7 @@ font-style: inherit;">{</span>tolerance<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">."</span>)</span></code></pre></div>
+font-style: inherit;">."</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>iter =   0    res = 1.47e-01
 iter =   1    res = 3.31e-02
@@ -4812,7 +4812,7 @@ Verification Failed: Gradient norm 4.35e-04 exceeds the tolerance 1.00e-04.</cod
 <div id="1ee5e04f" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Plot the results   </span></span>
 <span id="cb10-2">pred <span class="op" style="color: #5E5E5E;
@@ -4855,7 +4855,7 @@ background-color: null;
 font-style: inherit;">'Inverted model'</span>)</span>
 <span id="cb10-12">plt.colorbar()</span>
 <span id="cb10-13"></span>
-<span id="cb10-14">plt.show() </span></code></pre></div>
+<span id="cb10-14">plt.show() </span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -4874,7 +4874,7 @@ font-style: inherit;">'Inverted model'</span>)</span>
 <p>The inverted model can be plotted to see how well the inversion has performed.</p>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">p <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">p <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> pv.Plotter()</span>
 <span id="cb11-2">p <span class="op" style="color: #5E5E5E;
@@ -4919,7 +4919,7 @@ background-color: null;
 font-style: inherit;">.05</span>, plotter<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>p)</span>
-<span id="cb11-8">p.show()</span></code></pre></div>
+<span id="cb11-8">p.show()</span></code></pre></div></div>
 </details>
 <div id="fig-inverted-comparison" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -4958,7 +4958,7 @@ Figure&nbsp;1: A comparison of true and inverted models.
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Plot the true and inverted models</span></span>
 <span id="cb12-2">plot_model_2d(xtrue, figsize<span class="op" style="color: #5E5E5E;
@@ -4975,7 +4975,7 @@ font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>,<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">3</span>))</span></code></pre></div>
+font-style: inherit;">3</span>))</span></code></pre></div></div>
 </details>
 <div id="fig-inverted-comparison-2d" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -5028,7 +5028,7 @@ Crespo Marques, Elaine, Nilson Maciel, Lirida Naviner, Hao Cai, and Jun Yang. 20
   <category>Neural Networks</category>
   <category>Geophysics</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/project/</guid>
-  <pubDate>Fri, 15 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Fri, 15 Nov 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
@@ -5096,7 +5096,7 @@ Crespo Marques, Elaine, Nilson Maciel, Lirida Naviner, Hao Cai, and Jun Yang. 20
 <p>To illustrate the rank recovery property and the improvement for finding a unique solution to the least squares problem, we consider a simple example below.</p>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -5427,7 +5427,7 @@ background-color: null;
 font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span>
-<span id="cb1-78">plt.show()</span></code></pre></div>
+<span id="cb1-78">plt.show()</span></code></pre></div></div>
 </details>
 <div id="fig-nonlinear-rank-recovery" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -5573,7 +5573,7 @@ He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Resi
   <category>Machine Learning</category>
   <category>Neural Networks</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</guid>
-  <pubDate>Tue, 05 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Tue, 05 Nov 2024 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lecture 8</title>
@@ -5679,7 +5679,7 @@ Figure&nbsp;1: Continuous positive function <img src="https://latex.codecogs.com
 <p>A demonstration of the effects of the regularizer are given below for a case of denoising an image. Note that the operator <img src="https://latex.codecogs.com/png.latex?A"> is the identity matrix in this case which is a simplification of the problem.</p>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -6146,7 +6146,7 @@ font-style: inherit;"># Save recontructions</span></span>
 background-color: null;
 font-style: inherit;">"imgs/regularization_effects.png"</span>)</span>
 <span id="cb1-111"></span>
-<span id="cb1-112">plt.show()</span></code></pre></div>
+<span id="cb1-112">plt.show()</span></code></pre></div></div>
 </details>
 <div id="fig-regularization-effects" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -6199,7 +6199,7 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
   <category>Probability</category>
   <category>Bayesian Inference</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture8/</guid>
-  <pubDate>Sun, 03 Nov 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sun, 03 Nov 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture8/imgs/regularization_effects.png" medium="image" type="image/png" height="96" width="144"/>
 </item>
 <item>
@@ -6266,7 +6266,7 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
 <div id="cell-function-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -6394,7 +6394,11 @@ font-style: inherit;">"Non-Convex but $f'(x)&lt;0$ </span><span class="ch" style
 background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;"> $f(x) = -\mathcal</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;"> $f(x) = -</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">mathcal</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{N}</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -6410,7 +6414,11 @@ font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Non-Convex with $f'(x) \geq 0$ </span><span class="ch" style="color: #20794D;
+font-style: inherit;">"Non-Convex with $f'(x) </span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">geq 0$ </span><span class="ch" style="color: #20794D;
 background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -6433,7 +6441,7 @@ background-color: null;
 font-style: inherit;">abla^2 f(x)$"</span>)</span>
 <span id="cb1-24"></span>
 <span id="cb1-25">plt.tight_layout()</span>
-<span id="cb1-26">plt.show()</span></code></pre></div>
+<span id="cb1-26">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="function-plot" class="quarto-figure quarto-figure-center anchored">
@@ -6492,7 +6500,7 @@ A continuous deformation of a path. Source: <a href="https://commons.wikimedia.o
 <div id="gaussian-homotopy" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -7108,7 +7116,7 @@ font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">8</span>)</span>
 <span id="cb2-95"></span>
-<span id="cb2-96">plt.show()</span></code></pre></div>
+<span id="cb2-96">plt.show()</span></code></pre></div></div>
 </details>
 </div>
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" class="img-fluid"></p>
@@ -7146,7 +7154,7 @@ font-style: inherit;">8</span>)</span>
 <div id="cell-objective-function" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
 background-color: null;
@@ -7313,7 +7321,7 @@ font-style: inherit;">'x2'</span>)</span>
 <span id="cb3-27">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Objective function'</span>)</span>
-<span id="cb3-28">plt.show()</span></code></pre></div>
+<span id="cb3-28">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="objective-function" class="quarto-figure quarto-figure-center anchored">
@@ -7326,7 +7334,7 @@ font-style: inherit;">'Objective function'</span>)</span>
 </div>
 <p>The next step is to create a time parameterized function <img src="https://latex.codecogs.com/png.latex?h(x,%20t)"> that is the Gaussian homotopy of f(x). In practical terms, the starting <img src="https://latex.codecogs.com/png.latex?%5Csigma_%7B%5Ctext%7Bmax%7D%7D"> is being modified by a <img src="https://latex.codecogs.com/png.latex?t"> parameter when multiplied by the random noise. At <img src="https://latex.codecogs.com/png.latex?t=0"> the function is the original function, and at <img src="https://latex.codecogs.com/png.latex?t=1"> the function is being convolved numerically with a Gaussian kernel that is <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BN%7D(0,%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D)">. The time points in between are a homotopy between the two functions.</p>
 <div id="0b5be197" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> gaussian_homotopy(func, x, batch_size<span class="op" style="color: #5E5E5E;
@@ -7443,7 +7451,7 @@ font-style: inherit;">1</span>)</span>
 <span id="cb4-32">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> y</span></code></pre></div>
+font-style: inherit;">return</span> y</span></code></pre></div></div>
 </div>
 <p>This variation of the function can be seen as having extra parameters:</p>
 <p><img src="https://latex.codecogs.com/png.latex?h(x,t,%5Csigma_%7B%5Ctext%7Bmax%7D%7D,%20N)%20=%20%5Cfrac%7B1%7D%7BN%7D%20%5Csum_%7Bi=1%7D%5EN%20f(x-%5Cxi_i),%20%5Cquad%20%5Cxi_i%20%5Csim%20%5Cmathcal%7BN%7D(0,%20t%20%5Ccdot%20%5Csigma_%7B%5Ctext%7Bmax%7D%7D)."></p>
@@ -7451,7 +7459,7 @@ font-style: inherit;">return</span> y</span></code></pre></div>
 <div id="homotopy-animation" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Create grid points</span></span>
 <span id="cb5-2">t_values <span class="op" style="color: #5E5E5E;
@@ -7621,7 +7629,7 @@ font-style: inherit;">"imagemagick"</span>, fps<span class="op" style="color: #5
 background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">4</span>)</span></code></pre></div>
+font-style: inherit;">4</span>)</span></code></pre></div></div>
 </details>
 </div>
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/homotopy_2d.gif" class="img-fluid" style="width:100.0%"></p>
@@ -7653,7 +7661,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
   <category>Homotopy</category>
   <category>Fourier Transform</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture7/</guid>
-  <pubDate>Tue, 22 Oct 2024 07:00:00 GMT</pubDate>
+  <pubDate>Tue, 22 Oct 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -7685,7 +7693,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
 <p>The fundamental use of the <code>jvp</code> or the <code>vjp</code> is to compute the directional derivate or its transpose without computing the gradient with respect to <img src="https://latex.codecogs.com/png.latex?v">. This is because the jacobian matrix encodes the directional derivatives of the function at a point.</p>
 <p><img src="https://latex.codecogs.com/png.latex?d_k%20=%20J_k%5ET%20v"></p>
 <div id="jvp" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
 <span id="cb1-2"><span class="im" style="color: #00769E;
@@ -7887,7 +7895,7 @@ background-color: null;
 font-style: inherit;">"Jacobian matrix at p_k:"</span>)</span>
 <span id="cb1-47"><span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">print</span>(jacobian_matrix)</span></code></pre></div>
+font-style: inherit;">print</span>(jacobian_matrix)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Function output:
 tensor([2., 2.], grad_fn=&lt;StackBackward0&gt;)
@@ -7933,7 +7941,7 @@ tensor([[2., 1.],
 <div id="cell-lotka-volterra" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> torch</span>
 <span id="cb3-2"><span class="im" style="color: #00769E;
@@ -8289,7 +8297,7 @@ font-style: inherit;">"Time Steps"</span>)</span>
 background-color: null;
 font-style: inherit;">"Population"</span>)</span>
 <span id="cb3-68">plt.legend()</span>
-<span id="cb3-69">plt.show()</span></code></pre></div>
+<span id="cb3-69">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="lotka-volterra" class="quarto-figure quarto-figure-center anchored">
@@ -8304,7 +8312,7 @@ font-style: inherit;">"Population"</span>)</span>
 <div id="9a8ce1c5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -8701,7 +8709,7 @@ background-color: null;
 font-style: inherit;">"Predator Population"</span>)</span>
 <span id="cb4-84"></span>
 <span id="cb4-85">plt.tight_layout()</span>
-<span id="cb4-86">plt.show()</span></code></pre></div>
+<span id="cb4-86">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Computing realization 1/1</code></pre>
@@ -8724,7 +8732,7 @@ font-style: inherit;">"Predator Population"</span>)</span>
 <div id="jacobian-vector-product" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> torch.autograd.functional <span class="im" style="color: #00769E;
 background-color: null;
@@ -8808,7 +8816,7 @@ font-style: inherit;">*</span> w), torch.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">sum</span>(a <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span> v))</span></code></pre></div>
+font-style: inherit;">*</span> v))</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>tensor(80.2678) tensor(80.2678)</code></pre>
@@ -8821,7 +8829,7 @@ font-style: inherit;">*</span> v))</span></code></pre></div>
 <p>To implement this in code, we will also need to make a conjugate gradient solver for the problem <img src="https://latex.codecogs.com/png.latex?%20J_G(p_k)%5ET%20J_G(p_k)s_k%20=%20J_k%5ET%20r_k"></p>
 <p>keeping in mind that we want to avoid explicit computation of the entire jacobian when the goal is only to take a directional derivative. To do this the <img src="https://latex.codecogs.com/png.latex?J_G(p_k)%5ET%20J_G(p_k)"> operator can be coded as a single function <code>Hmv</code> that takes a vector and returns the product of the Hessian estimate with the vector. We then use this defined function in a standard implementation of the conjugate gradient method. The conjugate gradient method below has been setup to accept a callable funtion <img src="https://latex.codecogs.com/png.latex?A"> that acts like the matrix operator <img src="https://latex.codecogs.com/png.latex?A">, except we have bypassed the need to compute the full matrix, since we are only ever using it with a product.</p>
 <div id="conjugate-gradient" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> functools <span class="im" style="color: #00769E;
 background-color: null;
@@ -9059,7 +9067,7 @@ background-color: null;
 font-style: inherit;">1e-2</span>)</span>
 <span id="cb8-45"><span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">print</span>(x)</span></code></pre></div>
+font-style: inherit;">print</span>(x)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>iter =   0    res = 2.96e-01
 iter =   1    res = 1.63e-02
@@ -9072,14 +9080,14 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-size="1.2em" data-comment-delimiter="//" data-pseudocode-number="1" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 <p>Then combining all the previous stages of code we have:</p>
 <div id="gauss-newton" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># fix all parts of the problem except the parameters</span></span>
 <span id="cb10-2"><span class="kw" style="color: #003B4F;
@@ -9318,7 +9326,7 @@ font-style: inherit;">'</span>)</span>
 <span id="cb10-51">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> params, predictions</span></code></pre></div>
+font-style: inherit;">return</span> params, predictions</span></code></pre></div></div>
 </div>
 <section id="testing-the-gauss-newton-optimizer" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-gauss-newton-optimizer">Testing the Gauss-Newton Optimizer</h3>
@@ -9326,7 +9334,7 @@ font-style: inherit;">return</span> params, predictions</span></code></pre></div
 <div id="cell-gauss-newton-test" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">period <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">period <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -9469,7 +9477,7 @@ font-style: inherit;">"Population"</span>)</span>
 <span id="cb11-31">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"True vs Predicted Population"</span>)</span>
-<span id="cb11-32">plt.show()</span></code></pre></div>
+<span id="cb11-32">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Computing realization 1/1</code></pre>
@@ -9487,7 +9495,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 <div id="animation" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> matplotlib.animation <span class="im" style="color: #00769E;
 background-color: null;
@@ -9662,7 +9670,7 @@ font-style: inherit;">in</span> predictions],</span>
 <span id="cb13-42">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"imgs/fitting_animation.gif"</span>,</span>
-<span id="cb13-43">)</span></code></pre></div>
+<span id="cb13-43">)</span></code></pre></div></div>
 </details>
 </div>
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture6/imgs/fitting_animation.gif" class="img-fluid" width="600"></p>
@@ -9674,7 +9682,7 @@ font-style: inherit;">"imgs/fitting_animation.gif"</span>,</span>
 <p>The range of possible solutions and the dimensionality of the problem expands from <img src="https://latex.codecogs.com/png.latex?4"> parameters to <img src="https://latex.codecogs.com/png.latex?4%20%5Ctimes%20nt"> parameters which means more parameters than there are actual data points. This means that any set of data could be fit perfectly, but it might not be the correct fit. This issue is a hallmark of ill-posed inverse problems. The optimization algorithm will still converge to a solution, but it might not be the correct one.</p>
 <p>Since the ground truth of both predator and prey populations is known, the optimization algorithm can be run with time dependent parameters which will allow more overfitting. The parameters being fixed in time is a sort of regularization that can applied to the problem, and removing it will change the results of the optimization.</p>
 <div id="cell-time-varying-parameters" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Start with an initial guess for the parameters</span></span>
 <span id="cb14-2">p0 <span class="op" style="color: #5E5E5E;
@@ -9780,7 +9788,7 @@ font-style: inherit;">"Population"</span>)</span>
 <span id="cb14-22">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"True vs Predicted Population"</span>)</span>
-<span id="cb14-23">plt.show()</span></code></pre></div>
+<span id="cb14-23">plt.show()</span></code></pre></div></div>
 <div class="cell-output cell-output-display">
 <div id="time-varying-parameters" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -9806,7 +9814,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
   <category>Automatic Differentiation</category>
   <category>PyTorch</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture6/</guid>
-  <pubDate>Tue, 08 Oct 2024 07:00:00 GMT</pubDate>
+  <pubDate>Tue, 08 Oct 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture6/imgs/fitting_animation_time_varying.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -9835,7 +9843,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
 <div id="cell-pred-prey-forward" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -10346,7 +10354,7 @@ font-style: inherit;">'Population'</span>)</span>
 <span id="cb1-99">plt.savefig(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'imgs/lotka_volterra.png'</span>)</span>
-<span id="cb1-100">plt.show()</span></code></pre></div>
+<span id="cb1-100">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="pred-prey-forward" class="quarto-figure quarto-figure-center anchored">
@@ -10361,7 +10369,7 @@ font-style: inherit;">'imgs/lotka_volterra.png'</span>)</span>
 <div id="cell-pred-prey-phase-space" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Define the initial conditions</span></span>
 <span id="cb2-2">x0 <span class="op" style="color: #5E5E5E;
@@ -10465,7 +10473,7 @@ font-style: inherit;">'Lotka-Volterra Phase Space'</span>)</span>
 <span id="cb2-24">plt.savefig(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
-<span id="cb2-25">plt.show()</span></code></pre></div>
+<span id="cb2-25">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="pred-prey-phase-space" class="quarto-figure quarto-figure-center anchored">
@@ -10590,7 +10598,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="//" data-pseudocode-number="1" data-line-number="true" data-no-end="false" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -10673,7 +10681,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
   <category>Optimization</category>
   <category>Gauss-Newton</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture5/</guid>
-  <pubDate>Wed, 25 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Wed, 25 Sep 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
@@ -10748,7 +10756,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <div id="cell-comp-plot" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -11054,7 +11062,11 @@ font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f'$1/</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">sigma_</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -11134,7 +11146,11 @@ font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f'$1/</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">sigma_</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -11214,7 +11230,11 @@ font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'$1/\sigma_</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f'$1/</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">sigma_</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -11271,7 +11291,7 @@ font-style: inherit;">True</span>)</span>
 background-color: null;
 font-style: inherit;"># Adjust layout and add a legend</span></span>
 <span id="cb1-103">plt.tight_layout()</span>
-<span id="cb1-104">plt.show()</span></code></pre></div>
+<span id="cb1-104">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="comp-plot" class="quarto-figure quarto-figure-center anchored">
@@ -11344,7 +11364,7 @@ font-style: inherit;"># Adjust layout and add a legend</span></span>
   <category>Inverse Theory</category>
   <category>Python</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture4/</guid>
-  <pubDate>Fri, 20 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Fri, 20 Sep 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture4/imgs/tikhonov_regularization.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
@@ -11428,7 +11448,7 @@ font-style: inherit;"># Adjust layout and add a legend</span></span>
 <div id="57334044" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
 background-color: null;
@@ -11696,7 +11716,7 @@ font-style: inherit;">0.1</span>)</span>
 <span id="cb1-52">plt.savefig(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'imgs/pseudo_inverse_time_evolution.png'</span>)</span>
-<span id="cb1-53">plt.show()</span></code></pre></div>
+<span id="cb1-53">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -11714,7 +11734,7 @@ font-style: inherit;">'imgs/pseudo_inverse_time_evolution.png'</span>)</span>
 <div id="2e0edef4" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
 background-color: null;
@@ -12380,7 +12400,7 @@ background-color: null;
 font-style: inherit;">=</span> torch.svd(Amat.to(torch.float64))</span>
 <span id="cb2-111">b <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
+font-style: inherit;">=</span> Amv(x)</span></code></pre></div></div>
 </details>
 </div>
 <p>Now that we have the matrix form of the forward operator <code>Amat</code> defined, along with the forward result <code>b</code> and the the decomposition <code>U, S, V</code> we can run the pseudo-inverse gradient flow method as before. So in this case we will be computing:</p>
@@ -12390,7 +12410,7 @@ font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
 <div id="f8cdd23c" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1">plt.figure(figsize<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -12467,7 +12487,7 @@ font-style: inherit;">'Distorted Image'</span>)</span>
 <span id="cb3-11">plt.axis(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'off'</span>)</span>
-<span id="cb3-12">plt.tight_layout()</span></code></pre></div>
+<span id="cb3-12">plt.tight_layout()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -12481,7 +12501,7 @@ font-style: inherit;">'off'</span>)</span>
 <div id="7febabf8" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> matplotlib <span class="im" style="color: #00769E;
 background-color: null;
@@ -12808,7 +12828,7 @@ background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span>)</span>
-<span id="cb4-65">plt.close(fig)</span></code></pre></div>
+<span id="cb4-65">plt.close(fig)</span></code></pre></div></div>
 </details>
 </div>
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" class="img-fluid" width="600"></p>
@@ -12816,7 +12836,7 @@ font-style: inherit;">5</span>)</span>
 <div id="96468aea" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">best_img <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">best_img <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_xhat(tracking[<span class="st" style="color: #20794D;
 background-color: null;
@@ -12872,7 +12892,7 @@ font-style: inherit;">'</span>)</span>
 <span id="cb5-6">plt.axis(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'off'</span>)</span>
-<span id="cb5-7">plt.show()</span></code></pre></div>
+<span id="cb5-7">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -12902,7 +12922,7 @@ font-style: inherit;">'off'</span>)</span>
 <div id="ae7a7b8e" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> Amv_adjoint(v):</span>
@@ -12946,14 +12966,14 @@ font-style: inherit;">0</span>]</span>
 <span id="cb6-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> adjoint</span></code></pre></div>
+font-style: inherit;">return</span> adjoint</span></code></pre></div></div>
 </details>
 </div>
 <p>We can use this to recover <img src="https://latex.codecogs.com/png.latex?A%5E%5Ctop"> for the general case if we run the operator on the set of basis vectors in the image space. This will give us the adjoint operator in the form of a matrix. We can also use it to confirm that it recovers the matrix transpose of the forward operator if we are working with a simple matrix, reusing the <code>Amat</code> matrix from earlier to take its transpose and compare it to the adjoint operator.</p>
 <div id="4dbef633" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">Amat_adj <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">Amat_adj <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.zeros(n,n)</span>
 <span id="cb7-2"></span>
@@ -13024,7 +13044,7 @@ font-style: inherit;">{</span>diff<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:.2e}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'</span>)</span></code></pre></div>
+font-style: inherit;">'</span>)</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Norm of difference between adjoint and transpose: 4.43e-07</code></pre>
@@ -13039,7 +13059,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 <div id="4d7ed9ba" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> tqdm <span class="im" style="color: #00769E;
 background-color: null;
@@ -13361,7 +13381,7 @@ font-style: inherit;">'Recovered Image'</span>)</span>
 background-color: null;
 font-style: inherit;">'off'</span>)</span>
 <span id="cb9-67">plt.tight_layout()</span>
-<span id="cb9-68">plt.show()</span></code></pre></div>
+<span id="cb9-68">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -13383,7 +13403,7 @@ font-style: inherit;">'off'</span>)</span>
   <category>Torch</category>
   <category>Adjoint</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture3/</guid>
-  <pubDate>Tue, 17 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Tue, 17 Sep 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -13424,7 +13444,7 @@ font-style: inherit;">'off'</span>)</span>
 <div id="8a8dac11" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
 background-color: null;
@@ -13493,7 +13513,7 @@ background-color: null;
 font-style: inherit;">as</span> np</span>
 <span id="cb1-20"><span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">import</span> torch.fft</span></code></pre></div>
+font-style: inherit;">import</span> torch.fft</span></code></pre></div></div>
 </details>
 </div>
 <p>We start off by introducing a point spread function within the torch framework. In the case we work with a parameterized gaussian kernel.</p>
@@ -13504,7 +13524,7 @@ font-style: inherit;">import</span> torch.fft</span></code></pre></div>
 <div id="mv-plot" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> scipy.ndimage <span class="im" style="color: #00769E;
 background-color: null;
@@ -13918,7 +13938,7 @@ background-color: null;
 font-style: inherit;">'equal'</span>)</span>
 <span id="cb2-87"></span>
 <span id="cb2-88">plt.tight_layout()</span>
-<span id="cb2-89">plt.show()</span></code></pre></div>
+<span id="cb2-89">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="mv-plot-1" class="quarto-figure quarto-figure-center anchored">
@@ -13945,7 +13965,7 @@ font-style: inherit;">'equal'</span>)</span>
 <div id="9bb0f07a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">class</span> gaussianConv(nn.Module):</span>
@@ -14533,7 +14553,7 @@ font-style: inherit;"># Return the combined PSF and center shift</span></span>
 <span id="cb3-119">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">return</span> PSF_combined, center</span></code></pre></div>
+font-style: inherit;">return</span> PSF_combined, center</span></code></pre></div></div>
 </details>
 </div>
 </section>
@@ -14543,7 +14563,7 @@ font-style: inherit;">return</span> PSF_combined, center</span></code></pre></di
 <div id="cell-toy-dataset" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">x <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">x <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.zeros(<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -14594,7 +14614,7 @@ font-style: inherit;">3</span>))</span>
 background-color: null;
 font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span>,:,:])</span></code></pre></div>
+font-style: inherit;">0</span>,:,:])</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="toy-dataset" class="quarto-figure quarto-figure-center anchored">
@@ -14609,7 +14629,7 @@ font-style: inherit;">0</span>,:,:])</span></code></pre></div>
 <div id="cell-forward-model" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">C <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">C <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.tensor([[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -14671,7 +14691,7 @@ font-style: inherit;">0</span>,:,:])</span>
 <span id="cb5-10">plt.colorbar()</span>
 <span id="cb5-11"><span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">print</span>()</span></code></pre></div>
+font-style: inherit;">print</span>()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code></code></pre>
@@ -14695,7 +14715,7 @@ font-style: inherit;">print</span>()</span></code></pre></div>
 <div id="cell-convolution-matrix" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">dim <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">dim <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -14888,7 +14908,7 @@ font-style: inherit;">3</span>)</span>
 background-color: null;
 font-style: inherit;">'Convolution Matrix'</span>)<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
+font-style: inherit;">;</span></span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="convolution-matrix" class="quarto-figure quarto-figure-center anchored">
@@ -14908,7 +14928,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <div id="cell-convolution-matrix-2" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">A_conv_lin <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">A_conv_lin <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.zeros(n, n)</span>
 <span id="cb8-2"></span>
@@ -14990,7 +15010,7 @@ font-style: inherit;">-</span>A_conv_lin)</span>
 <span id="cb8-18">plt.title(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Difference from Direct'</span>)</span>
-<span id="cb8-19">plt.colorbar()</span></code></pre></div>
+<span id="cb8-19">plt.colorbar()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="convolution-matrix-2" class="quarto-figure quarto-figure-center anchored">
@@ -15005,7 +15025,7 @@ font-style: inherit;">'Difference from Direct'</span>)</span>
 <div id="5700fdc9" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">b_forward <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">b_forward <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Amv(x)</span>
 <span id="cb9-2"></span>
@@ -15055,7 +15075,7 @@ font-style: inherit;">3</span>) </span>
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span>:]))</span></code></pre></div>
+font-style: inherit;">2</span>:]))</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -15069,9 +15089,9 @@ font-style: inherit;">2</span>:]))</span></code></pre></div>
 <div id="final-conv-matrix" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">Amat <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1">Amat <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> A_conv_lin</span></code></pre></div>
+font-style: inherit;">=</span> A_conv_lin</span></code></pre></div></div>
 </details>
 </div>
 </section>
@@ -15084,19 +15104,19 @@ font-style: inherit;">=</span> A_conv_lin</span></code></pre></div>
 <div id="1783112b" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">U, S, V <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">U, S, V <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.svd(Amat.to(torch.float64))</span>
 <span id="cb11-2">b <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> Amv(x)</span></code></pre></div>
+font-style: inherit;">=</span> Amv(x)</span></code></pre></div></div>
 </details>
 </div>
 <p>Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the <img src="https://latex.codecogs.com/png.latex?10%5E%7B-6%7D"> mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.</p>
 <div id="cell-svd-decomposition" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">plt.semilogy(S)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">plt.semilogy(S)</span>
 <span id="cb12-2">plt.xlabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Singular Value Index'</span>)</span>
@@ -15121,7 +15141,7 @@ font-style: inherit;">{</span>loss<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"</span>)</span></code></pre></div>
+font-style: inherit;">"</span>)</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>The loss is 1.812403923995022e-34</code></pre>
@@ -15143,7 +15163,7 @@ font-style: inherit;">"</span>)</span></code></pre></div>
 <div id="cell-naive-pseudoinverse" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">xhat <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">xhat <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.linalg.solve(Amat,b.reshape(dim<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -15181,7 +15201,7 @@ font-style: inherit;">2</span>:]))</span>
 background-color: null;
 font-style: inherit;">'Original Image'</span>)<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
+font-style: inherit;">;</span></span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="naive-pseudoinverse" class="quarto-figure quarto-figure-center anchored">
@@ -15200,7 +15220,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <div id="d9ddde55" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">n<span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">n<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15238,7 +15258,7 @@ font-style: inherit;">{</span>i<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'</span>)</span></code></pre></div>
+font-style: inherit;">'</span>)</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -15252,7 +15272,7 @@ font-style: inherit;">'</span>)</span></code></pre></div>
 <div id="25228293" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">n<span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">n<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -15335,7 +15355,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb16-12">plt.show()</span></code></pre></div>
+<span id="cb16-12">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -15356,7 +15376,7 @@ font-style: inherit;">'</span>)</span>
 <div id="cell-pseudoinverse-filter" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">b_flat <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">b_flat <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> b.flatten().to(torch.float64)</span>
 <span id="cb17-2">x_flat <span class="op" style="color: #5E5E5E;
@@ -15509,7 +15529,7 @@ background-color: null;
 font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <span id="cb17-32"></span>
 <span id="cb17-33">plt.tight_layout()</span>
-<span id="cb17-34">plt.show()</span></code></pre></div>
+<span id="cb17-34">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter" class="quarto-figure quarto-figure-center anchored">
@@ -15528,7 +15548,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <div id="cell-pseudoinverse-filter-noised" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">b_flat <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">b_flat <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> b.flatten().to(torch.float64)</span>
 <span id="cb18-2">x_flat <span class="op" style="color: #5E5E5E;
@@ -15603,7 +15623,7 @@ font-style: inherit;">2</span>:]))</span>
 background-color: null;
 font-style: inherit;">'Reconstructed Image'</span>)<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">;</span></span></code></pre></div>
+font-style: inherit;">;</span></span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised" class="quarto-figure quarto-figure-center anchored">
@@ -15618,7 +15638,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 <div id="cell-pseudoinverse-filter-noised-recovery" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">Amat_noisy <span class="op" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">Amat_noisy <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Amat <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -15780,7 +15800,7 @@ background-color: null;
 font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
 <span id="cb19-33"></span>
 <span id="cb19-34">plt.tight_layout()</span>
-<span id="cb19-35">plt.show()</span></code></pre></div>
+<span id="cb19-35">plt.show()</span></code></pre></div></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="pseudoinverse-filter-noised-recovery" class="quarto-figure quarto-figure-center anchored">
@@ -15805,7 +15825,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <category>Torch</category>
   <category>SVD</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</guid>
-  <pubDate>Sun, 15 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sun, 15 Sep 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="115" width="144"/>
 </item>
 <item>
@@ -15914,7 +15934,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <category>Torch</category>
   <category>SVD</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</guid>
-  <pubDate>Sat, 14 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sat, 14 Sep 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" medium="image" type="image/svg+xml"/>
 </item>
 </channel>
