@@ -18,9 +18,8 @@ categories:
   - Geophysics
   - Dictionary Learning
   - Scale Space Methods
+image: imgs/thumbnail.png
 draft: false
-website:
-  open-graph: true
 ---
 **Note:** S. Ahamed and S. Ghyselincks—Equal contribution.
 

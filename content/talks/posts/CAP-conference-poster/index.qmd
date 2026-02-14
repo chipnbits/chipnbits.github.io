@@ -3,12 +3,12 @@ title: "Generative Modeling for Structural Geology"
 subtitle: "Materials from the CUPC 2024 Conference"
 date: 2024-10-21
 description: >-
-  A copy of the conference poster and presentation slides for the 2024 Canadian Association of Physicists Undegraduate Research Conference held at UBC
+  Top 3 Poster Award at CUPC 2024. Conference poster and presentation slides for the Canadian Undergraduate Physics Conference held at UBC.
 categories:
     - GeoGen
     - Stochastic Interpolation
 
-image: imgs\cover.png
+image: imgs/cover.png
 draft: false
 
 execute:

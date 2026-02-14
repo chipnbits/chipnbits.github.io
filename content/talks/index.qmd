@@ -1,0 +1,14 @@
+---
+title: "Talks & Teaching"
+sidebar: false
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  fields: [image, date, title, description, reading-time]
+  image-align: left
+  feed: true
+---
+
+A collection of conference presentations, guest lectures, and lightning talks.

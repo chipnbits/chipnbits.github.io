@@ -3,9 +3,10 @@ title: "Publications"
 listing:
   contents: .
   sort: "date desc"
-  type: table
+  type: default
   categories: true
-  fields: [title, date, venue, description]
+  fields: [image, title, date, venue, description]
+  image-align: left
   date-format: "YYYY"
   field-display-names:
     venue: "Venue"

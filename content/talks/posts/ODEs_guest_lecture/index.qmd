@@ -15,7 +15,7 @@ bibliography: references.bib
 biblatexoptions: "style=numeric,sorting=nyt"
 bibliostyle: numeric-comp
 
-image: imgs\Slide1.PNG
+image: imgs/Slide16.PNG
 
 draft: false
 

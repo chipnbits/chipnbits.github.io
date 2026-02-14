@@ -1,11 +1,16 @@
 ---
-title: "Simon's Personal Website"
+title: "Simon Ghyselincks"
+description: "PhD student at UBC Computer Science — research in scientific machine learning and generative AI"
 sidebar: false
 toc: false
-resources: 
+image: /www/images/profile-pictures/park-small.jpg
+resources:
   - "/www/images/profile-pictures/park-small.jpg"
+aliases:
+  - content/about/overview.html
 
-about: 
+about:
+    id: hero-heading
     template: trestles
     image-shape: round
     image: /www/images/profile-pictures/park-small.jpg
@@ -14,6 +19,32 @@ about:
         href: "https://github.com/chipnbits"
       - icon: linkedin
         href: "https://www.linkedin.com/in/simonghyselincks/"
+
+listing:
+  - id: recent-items
+    contents:
+      - blog/posts
+      - content/talks/posts
+      - content/publications/*/index.qmd
+    sort: "date desc"
+    type: default
+    max-items: 5
+    fields: [image, date, title, description]
+    image-align: left
+    categories: false
 ---
 
-{{< include /content/about/overview.qmd >}}
+:::{#hero-heading}
+
+Welcome to my personal site! I'm Simon Ghyselincks, a **PhD-track student** at the University of British Columbia (UBC) in the Department of Computer Science.
+
+I completed my BASc in Engineering Physics with a minor in Computer Science at UBC in 2025. I am currently working with Professor [Eldad Haber](https://scholar.google.ca/citations?user=NZmEIS8AAAAJ&hl=en) from UBC Earth and Ocean Sciences and Professor [Evan Shelhamer](https://scholar.google.ca/citations?user=-ltRSM0AAAAJ&hl=en) from UBC Computer Science on scientific machine learning and generative AI with broad applications to geophysics and geospatial data. You can find my recent publications [here](/content/publications/index.qmd).
+
+Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/simonghyselincks) or check out my [GitHub](https://github.com/chipnbits).
+
+:::
+
+## Recent
+
+:::{#recent-items}
+:::
