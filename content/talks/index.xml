@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Simon Ghyselincks</title>
+<link>https://chipnbits.github.io/content/talks/</link>
+<atom:link href="https://chipnbits.github.io/content/talks/index.xml" rel="self" type="application/rss+xml"/>
+<description>A personal page for Simon Ghyselincks</description>
+<generator>quarto-1.5.53</generator>
+<lastBuildDate>Thu, 12 Feb 2026 08:00:00 GMT</lastBuildDate>
+<item>
+  <title>Numerical Methods for Deep Learning</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="accompanying-notebooks" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Accompanying Notebooks</h1>
+<p>These lecture slides are designed to accompany two notebooks:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Section</th>
+<th style="text-align: left;">Topic</th>
+<th style="text-align: left;">Notebook Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Part 1</strong></td>
+<td style="text-align: left;">Machine Learning Background Primer</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/drive/1xbifVi22fIjH2u8Ip_uKRjx-fdk0IPSB?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Part 2</strong></td>
+<td style="text-align: left;">Neuro Differential Equations</td>
+<td style="text-align: left;">Future Work</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Part 3</strong></td>
+<td style="text-align: left;">Generative AI Exercise</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/drive/19ZAUiukAFUCfIM3FpsitM7XIGeJa9-hz?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="presentation-slides-and-notes" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Presentation Slides and Notes</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide1.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 1</figcaption>
+</figure>
+</div>
+<p>Hi, I am Simon Ghyselincks. I completed my undergraduate studies at UBC in Engineering Physics, and I am currently in the PhD track program in Computer Science, where I work on research at the intersection of applied mathematics and machine learning. A significant part of my research uses continuous dynamical systems to model deep machine learning tasks. My recent project on geophysical inversion for structural geology is a primary example of this process, and we will explore that application later in this talk.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide2.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 2</figcaption>
+</figure>
+</div>
+<!-- Notes for Slide 2 -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide3.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 3</figcaption>
+</figure>
+</div>
+<p>This workshop is structured into three main parts:</p>
+<p><strong>Part 1</strong> familiarizes us with the fundamentals of machine learning. We will see that it shares similarities with numerical methods, which will bring us up to speed on standard deep learning models.</p>
+<p><strong>Part 2</strong> looks at <em>Neuro Differential Equations</em>. With our foundational background established, we can explore how numerical analysis can inform the construction of deep networks. We will look at the celebrated ResNet architecture as well as two others that are inspired by the leapfrog integration scheme, as well as symplectic integration of hamiltonian systems.</p>
+<p><strong>Part 3</strong> covers Neural ODEs, where the deep learning model learns the continuous time dynamical system. It is a topic with many applications in the sciences, but we will look primarily at its application in generative AI. This type of network can also be used to solve complex inverse problems in geology.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide4.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 4</figcaption>
+</figure>
+</div>
+<p>Machine learning encompasses statistical algorithms that “learn” from data, generalize to unseen inputs, and make new predictions or perform tasks without explicit, hard-coded instructions. It is a broad field. While it includes advanced deep learning tools like self-driving car algorithms (computer vision, control policies) and Generative AI (image generation, LLMs), it also includes traditional methods like decision trees, curve fitting, and data mining. Fundamentally, machine learning is about interpolation and extrapolation on data, which makes it closely linked to interpolating polynomials and numerical methods.</p>
+<section id="part-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-1">Part 1</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide5.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 5</figcaption>
+</figure>
+</div>
+<!-- Notes for Slide 5 -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide6.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 6</figcaption>
+</figure>
+</div>
+<p>Machine learning tasks generally have the same ingredients:</p>
+<ul>
+<li>Some set of data we want to interpolate, might be paired input outputs</li>
+<li>A parameterized mathematical model (family of functions, what we expect)</li>
+<li>A measure of error we want to minimize (usually loss function)</li>
+<li>A method of solving for optimality (iterative methods, exact analytic solutions)</li>
+</ul>
+<p>Often machine learning is probabilistic in nature:</p>
+<ul>
+<li>Most likely next word (LLM)</li>
+<li>Most likely fit of a line (Linear Regression)</li>
+<li>Likely images of cats (GenAI)</li>
+</ul>
+<p>Shown are two examples of mathematical models. We constrain to a family of functions parameterized by theta and try to minimize an objective within that constraint. At the top is a linear model with just two parameters, the slope and intercept. Below is a gaussian model with mean and variance as parameters.</p>
+<p>The model may not perfectly fit the data, but this is a feature, not a bug. In the real world we are often working with noisy data, the quality of that noise determines what we optimize. Our mathematical model or hypothesis on the data distribution and problem informs much of our methods.</p>
+<p>The <em>learning</em> in machine learning is simply optimizing over the parameters using the data to get a better model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide7.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 7</figcaption>
+</figure>
+</div>
+<p>The choice of mathematical model directly influences the goodness of fit and the network’s ability to interpolate or extrapolate to new data. Similar to choosing a numerical solver, the stability and generalization to unseen data is of concern. We want to design architectures that are stable, robust to noise, and that do not over-fit to exisitng data. I start with the Runge function (<img src="https://latex.codecogs.com/png.latex?f(x)%20=%20%5Cfrac%7B1%7D%7B1+25x%5E2%7D">) because it provides a classic example of a mathematicl model that overfits to the available data points creating large error in the interpolated region. There are good choices and bad choices for a model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide8.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 8</figcaption>
+</figure>
+</div>
+<p>Let’s look at Least Squares as a warm-up. It is a simple model with just two parameters: slope <img src="https://latex.codecogs.com/png.latex?%5Ctheta_1"> and intercept <img src="https://latex.codecogs.com/png.latex?%5Ctheta_2">. We take data pairs, model them as a single line, and find the “best fit” by minimizing the L2 loss. This is equivalent to a first-order polynomial interpolation problem, but now the problem is overdefined with more than two points, so it is not possible to perfectly pass through all points.</p>
+<p>In machine learning, this has a probabilistic interpretation. We minimize the expectation in this deviation, treating each data sample with equal weighting. Because the model has only two parameters, we can form a Vandermonde matrix and solve it analytically as an <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7Dx%20%5Capprox%20%5Cmathbf%7Bb%7D"> linear algebra problem, yielding the normal equations <img src="https://latex.codecogs.com/png.latex?%5Ctheta%20=%20(%5Cmathbf%7BX%7D%5ET%20%5Cmathbf%7BX%7D)%5E%7B-1%7D%20%5Cmathbf%7BX%7D%5ET%20%5Cmathbf%7By%7D">. While this exact analytic solution works well here, it is problem-specific. With noisy, high-dimensional data where exact solutions are impossible, we must turn to iterative optimization frameworks.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide9.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 9</figcaption>
+</figure>
+</div>
+<p>Given complex samples <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BX%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BY%7D">, how do we tackle optimizing over complicated models. What is the minimizer for the model of a self-driving car? We now turn to iterative methods.</p>
+<p>In the case of gradient descent, the problem is formulated by computing the local gradient of a loss function and stepping in the direction that reduces the loss. This has a link to ODEs where our update scheme is <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7B%5Cdot%20%5Ctheta%7D%20=%20%5Cnabla_%5Ctheta%20%5Cmathcal%7BL%7D(%5Cmathcal%7BD%7D;%20%5Ctheta)"> with inital value <img src="https://latex.codecogs.com/png.latex?%5Ctheta_0">. The direction of travel is controlled by the loss landscape and the local minima are stationary points.</p>
+<p>In practice stochastic gradient descent provides an unbiased estimator for the gradient using only a batch or subset of <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BD%7D"> at each step. The smaller the batch size, the greater the variance of the estimator. To do this we make some assumptions on the data. We want to minimize the overall loss which is the expectation of loss over all individual samples. Invoking an “often incorrect” assumption of i.i.d. We treat the samples like drawing numbers from a hat.</p>
+<p>Since each number is equally likely in probability as empirical samples from the true underlying data distribution, then they each carry the same weighting. By making successive passes over the data in batches, this gives a stochastic algorithm that in practice helps escape local minima with its variance. Note that outside of deep learning, SGD is generally a poor optimization technique!</p>
+<p>To get the gradient of a model we use automatic differentiation in practice. Packages such as PyTorch construct a computational graph that uses succesive applicaitons of the chain rule to compute the gradient. To do so it saves intermediate values, as we will see ahead.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide10.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 10</figcaption>
+</figure>
+</div>
+<p>The Single Layer Perceptron (SLP) is a generalized approximation function. Inside, it applies a linear operation to the input <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D">, yielding <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BW%7D%5Cmathbf%7Bx%7D%20+%20%5Cmathbf%7Bb%7D">. Then, it passes that result through a non-linear activation function, <img src="https://latex.codecogs.com/png.latex?%5Csigma(%5Ccdot)">. A popular choice is ReLU, but generally, these functions are monotonically increasing with positive derivatives.</p>
+<p>The non-linearity is the key to the entire system. Without it, chaining multiple matrices together would simply collapse back into a single linear operation. The activation function increases the rank of the resulting operation, acting as an extension of polynomial basis functions for higher dimensions. By the Universal Approximation Theorem, a single hidden layer with enough units can approximate any continuous function on a compact set.However, this does not guarantee that an algorithm such as gradient descent will find the optimal parameters.</p>
+<p>In polynomial interpolation, we combine polynomial basis functions but In this case we are learning the basis functions. If we fix <img src="https://latex.codecogs.com/png.latex?W"> and <img src="https://latex.codecogs.com/png.latex?b">, for the 1D case of <img src="https://latex.codecogs.com/png.latex?x"> we open into N+1 copies of x, then setting each <img src="https://latex.codecogs.com/png.latex?%5Csigma"> to <img src="https://latex.codecogs.com/png.latex?z%5En"> we get polynomial interpolation again.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide11.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 11</figcaption>
+</figure>
+</div>
+<p>MLP We have reached deep learnin with more than one hidden layer. The output from the SLP is passed as the input to another SLP and so on We simply continue with more hidden layers. This forms a composition of many functions, basis functions of basis functions. Deep here refers to the depth of layers vs breadth of a single layer. This can solve advanced problems but is difficult to work with as the number of layers increases.</p>
+<p><strong>Problems:</strong></p>
+<ul>
+<li>Finding the right learning rate and parameters can be difficult</li>
+<li>Sensitive to initialization, we cant simply initialize all parameters with 0s</li>
+<li>Question? What is the chain rule for one layer, what about several?</li>
+<li>What happens if the singular values of Q are W small? The successive Jacobians shrink the norm of parameter gradients being passed through backprop, exponentially.</li>
+<li>Early layers do not learn in this case</li>
+<li>How deep of a network can we go? (~20 layers with special care)</li>
+</ul>
+</section>
+<section id="part-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-2">Part 2</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide12.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 12</figcaption>
+</figure>
+</div>
+<p>Now we will look into extensions of the initial structures we have seen. Are there tools from numerical methods and numerical analysis that we can relate to this? Specifically, how do we deal with network stability and vanishing gradients as models scale?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide13.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 13</figcaption>
+</figure>
+</div>
+<p>The Residual Network (ResNet), introduced by <span class="citation" data-cites="he2015resnet">He et al. (2015)</span>, was a groundbreaking paper. Why don’t I only model the difference across layers? Use the network itself to model the differences. This introduced the <em>skip connection</em>, which explicitly bypasses layers of the model.</p>
+<p>ResNet was ground-breaking: - Halved error of previous SOTA models - First to beat human-level on visual recognition - It beat benchmarks across many different tasks, taking over the leaderboards - Previous contenders: 19-22 layers compared to ResNet 152 layers, made deep learning DEEP - Still used as a backbone in many models - One of the most import papers to computer vision and machine learning for the last while - The layers between skip connections may vary (point to bottom image)</p>
+<p>Question: Where have we seen this relation before? This looks like an ODE if we add an h infront</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide14.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 14</figcaption>
+</figure>
+</div>
+<p>ResNet is fundamentally a series of additive changes. It can be viewed as an Initial Value Problem (IVP), mapping a dynamical system where the hidden state is gradually pushed along a path <span class="citation" data-cites="Haber_2017">(Haber and Ruthotto 2017)</span>. Because each layer has different weights, it is a time-variant field where each “time step” features different dynamics.</p>
+<p>The skip connection has solved many of the problems with vanishing gradients, allowing models to go deeper. Standard depths include 34, 50, 101, and 152 layer systems with skip connections every two layers. The depth and complexity of the model is determined by the overfitting question, how much data do we have?</p>
+<p>The architectural formulation from 2015 was trying to solve a vanishing gradient problem in optimization, but in the process it is structuring the model as learning difference steps. In 2017 work is published by Haber and Ruthotto providing the numerical methods analysis.</p>
+<p><strong>Question:</strong> if this is a dynamical system, what ODE integration method does this represent? (Forward Euler integration)</p>
+<ul>
+<li>What sort of stability concerns do we have?</li>
+<li>Can we impose more structure, can we use a different integrator</li>
+<li>Forward euler is one of the worst choices out of the gate, what about Runge-Kutta or symplectic?</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide15.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 15</figcaption>
+</figure>
+</div>
+<p>We derive the Jacobian the same way as for MLP, but this time there is a <img src="https://latex.codecogs.com/png.latex?z_i"> term which gives identity since <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bz%7D_i%20=%20I%20%5Cmathbf%7Bz%7D_i">. What sort of stability concerns do we have? The same as with forward Euler, but we look at the max eigenvalue now to constrain growth.</p>
+<p><strong>Question:</strong> what happens if this equation in Lemma 1 is not satisfied, what happens to the model?</p>
+<ul>
+<li>We cant say for certain because the Lemma is an “if” clause and not “iff”</li>
+</ul>
+<p>We have time varying dynamics with different parameters at each layer, not every layer is the same. In practice, in the original ResNet paper they have exceptional results without concerns of stability, up to 152 layers. The optimization is largely controlling the stability in practice. Yet, Haber and Ruthotto argue that regularization or other conditions on the network could improve results rather than leaving it to the optimizer to control the stability.</p>
+<p>Can we even use other network designs inspired by this skip connection?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 16</figcaption>
+</figure>
+</div>
+<p>Training In the general form, training is formulated as a regression problem between the output labels and the result of the integrated ODE. The inner layers act as the hidden state being processed. The yellow layer “opens” the input to <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bz%7D"> and the red layer is the MLP task head that uses the final hidden state as inputs. We sample from our data <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BX%7D">, push it through the ODE, compute the loss, and use automatic differentiation to get the gradient to update the parameters</p>
+<p>Analysis of cost:</p>
+<ul>
+<li>We can assume a fixed cost per layer if considering the same hidden dimension size to compute</li>
+<li>The memory cost during inference and training differs: inference is a single forward pass, we don’t store intermediate activations.</li>
+<li>Training requires automatic differentiation, storing the intermediate activations</li>
+<li>Typically much larger memory footprint, run into troubles with GPU for training</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide17.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 17</figcaption>
+</figure>
+</div>
+<p>Revisiting stability, we know from numerical analysis that Forward Euler is not always our best bet. If the learned parameters are unstable, it can lead to exploding growth. What about other ODEs or integration methods? In instances of image classification we move from high frequency data to dissipative lower order information of labels (smoothing). In some instances we may want to impose conservation, forward euler can go wildly poorly in this task (see diagram). The Euler solution is going to diverge because the eigenvalues of the system are imaginary and outside of the region of convergence (no hope!). The leapfrog or semi-implicit Euler method has a different region of convergence</p>
+<p><strong>Question:</strong> can we use a leapfrog architecture instead?</p>
+<ul>
+<li>Resnet motivated by skip connections, but this numerical analysis approach is a generalization, we don’t need to stick to ResNet</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide18.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 18</figcaption>
+</figure>
+</div>
+<p>We can propose physics-informed architectures as shown by <span class="citation" data-cites="ruthotto2018deepneuralnetworksmotivated">Ruthotto and Haber (2018)</span>.</p>
+<ul>
+<li><p><strong>Parabolic Networks</strong>: These can be integrated with Forward Euler safely. By enforcing symmetric negative definite weights, we ensure all eigenvalues are negative, aiding stability.</p></li>
+<li><p><strong>Hyperbolic Networks</strong>: This is a second-order, wave-like formulation.</p></li>
+<li><p><strong>Hamiltonian Networks</strong>: Another physics-inspired formulation designed for energy conservation.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide19.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 19</figcaption>
+</figure>
+</div>
+<p>If we take the central difference approximation, we can compute the new state using the previous two states, creating a double skip connection. This creates a Hyperbolic Network with reversible symmetry.</p>
+<p>Because the network is mathematically reversible, we can backtrack computationally to reconstruct the activations without storing them in memory. This drops the memory cost, with the tradeoff being extra compute time. In scenarios where training memory is severely constrained, such as fine-tuning large open-source LLMs on consumer GPUs, the memory bypass is incredibly valuable.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide20.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 20</figcaption>
+</figure>
+</div>
+<p>Going back to the Hamiltonian network, this is the inspiration for using symplectic integration. This is a semi-implicit method, as the updated value for <img src="https://latex.codecogs.com/png.latex?y_1%20=%20x_1"> is used in the middle of the two step process. Also has energy conservation properties, reversible, memory efficient– serves as an alternative to leapfrog Used in a lot of research including a recent paper from our group on LLMs, <span class="citation" data-cites="gal2025llms">(Gal et al. 2025)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide21.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 21</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide22.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 22</figcaption>
+</figure>
+</div>
+<p><strong>Question:</strong> we have looked at discretized ODEs inside of network architectures, what if we make the entire network an ODE?</p>
+<ul>
+<li>We can take the limit as as the step size goes to zero for an infinite depth ResNet</li>
+</ul>
+<p>This gives us the integral equation, we use a Neural ODE <span class="citation" data-cites="chen2019neuralODEs">(Chen et al. 2019)</span> to learn the velocity field directly. Some variants are not time dependent such as Deep Equilibrium models (DEQs) <span class="citation" data-cites="bai2019deepequilibriummodels">(Bai, Kolter, and Koltun 2019)</span>. Some have a “time-embedding” that conveys the continuous time throughout the learning model. For inference we simply integrate the learned function using a numerical solver. This offers many approaches for handling the computation, choice of ODE integrator. What sort of integrators can we use for an arbitrary function?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide23.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 23</figcaption>
+</figure>
+</div>
+<p>Now we look at a new problem setting. We are looking at generative AI (image video generation). We suppose that we have a bunch of samples (red) from a complex probability distribution (images of fashion items). We want to infer the distribution and draw new samples from it (statistical problem) but how do we do this?</p>
+<p>Directly learning a probability function is intractable due to the requirement that the integral sums to 1. Integrating over all <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BR%7D"> for a model is simply impractical.</p>
+<p>Solution: instead what we do is “push” samples from a known distribution (Gaussian) to our target distribution through a velocity field <span class="citation" data-cites="lipman2024flowmatchingguidecode">(Lipman et al. 2024)</span>. This avoids the partition function.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide24.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 24</figcaption>
+</figure>
+</div>
+<ul>
+<li>I give a brief overview of the algorithm, this part is not important to understand, it is the training regime.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide25.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 25</figcaption>
+</figure>
+</div>
+<ul>
+<li>We have learned a push velocity field so now we deploy numerical integration on IVP samples from source distribution!</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide26.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 26</figcaption>
+</figure>
+</div>
+<p>This is a good point to refer to the notebook to experiment with ODE integration on a generative task</p>
+</section>
+<section id="part-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-3">Part 3</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide27.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 27</figcaption>
+</figure>
+</div>
+<p>Now I present some of my recent work that uses a neural ODE to perform geological inverison <span class="citation" data-cites="ghyselincks2026syntheticgeologystructuralgeology">(Ghyselincks et al. 2026)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide28.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 28</figcaption>
+</figure>
+</div>
+<ul>
+<li>Structural geology examines the distribution of rocks and strata within the Earth’s crust.</li>
+<li>Subsurface models of the earth are hindered by the scarcity of ground truth field data and uncertainty.</li>
+<li>Generating 3D geological models is costly and often does not capture the full range of potential geological structures</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide29.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 29</figcaption>
+</figure>
+</div>
+<ul>
+<li>Geology is highly varied. a large number of models are needed to represent the diversity of geological formations and time scales.</li>
+<li>A generative model implicitly learns the prior <img src="https://latex.codecogs.com/png.latex?%5CPr(m)"> through empirical sampling</li>
+<li>Our goal is to sample multiple solution to the same data, in contrast to maximum likelihood estimate</li>
+<li>To do this we need to generate many samples from a simulator and learn a conditional generative model that allows us to sample from the conditional distribution <img src="https://latex.codecogs.com/png.latex?%5CPr(m%20%7C%20d)"> empirically using ODE integration</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide30.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 30</figcaption>
+</figure>
+</div>
+<ul>
+<li>The synthetic dataset is designed to rapidly sample geology using a Markov sequence of parameterized geological operations such as folds, dikes, faults sequenced in different orders with varying parameters.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide31.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 31</figcaption>
+</figure>
+</div>
+<ul>
+<li>The model architecture that is used comes from medical imaging and has multiscale processing with skip connections transporting information from the down sampling to upsampling stages</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide32.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 32</figcaption>
+</figure>
+</div>
+<ul>
+<li>The full pipeline for training is shown here, with simulation as an input in orange and the loss function shown on the right. More details can be found in the paper Synthetic Geology: Structural Geology Meets Deep Learning</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide33.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 33</figcaption>
+</figure>
+</div>
+<ul>
+<li>Using a trained model on the conditional flow matchin objective, we can draw new samples from surface and borehole data.</li>
+</ul>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-bai2019deepequilibriummodels" class="csl-entry">
+Bai, Shaojie, J. Zico Kolter, and Vladlen Koltun. 2019. <span>“Deep Equilibrium Models.”</span> <a href="https://arxiv.org/abs/1909.01377">https://arxiv.org/abs/1909.01377</a>.
+</div>
+<div id="ref-chen2019neuralODEs" class="csl-entry">
+Chen, Ricky T. Q., Yulia Rubanova, Jesse Bettencourt, and David Duvenaud. 2019. <span>“Neural Ordinary Differential Equations.”</span> <a href="https://arxiv.org/abs/1806.07366">https://arxiv.org/abs/1806.07366</a>.
+</div>
+<div id="ref-gal2025llms" class="csl-entry">
+Gal, Eshed, Moshe Eliasof, Javier Turek, Uri Ascher, Eran Treister, and Eldad Haber. 2025. <span>“Reversing Large Language Models for Efficient Training and Fine-Tuning.”</span> <a href="https://arxiv.org/abs/2512.02056">https://arxiv.org/abs/2512.02056</a>.
+</div>
+<div id="ref-ghyselincks2026syntheticgeologystructuralgeology" class="csl-entry">
+Ghyselincks, Simon, Valeriia Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2026. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <a href="https://arxiv.org/abs/2506.11164">https://arxiv.org/abs/2506.11164</a>.
+</div>
+<div id="ref-Haber_2017" class="csl-entry">
+Haber, Eldad, and Lars Ruthotto. 2017. <span>“Stable Architectures for Deep Neural Networks.”</span> <em>Inverse Problems</em> 34 (1): 014004. <a href="https://doi.org/10.1088/1361-6420/aa9a90">https://doi.org/10.1088/1361-6420/aa9a90</a>.
+</div>
+<div id="ref-he2015resnet" class="csl-entry">
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Residual Learning for Image Recognition.”</span> <a href="https://arxiv.org/abs/1512.03385">https://arxiv.org/abs/1512.03385</a>.
+</div>
+<div id="ref-lipman2024flowmatchingguidecode" class="csl-entry">
+Lipman, Yaron, Marton Havasi, Peter Holderrieth, Neta Shaul, Matt Le, Brian Karrer, Ricky T. Q. Chen, David Lopez-Paz, Heli Ben-Hamu, and Itai Gat. 2024. <span>“Flow Matching Guide and Code.”</span> <a href="https://arxiv.org/abs/2412.06264">https://arxiv.org/abs/2412.06264</a>.
+</div>
+<div id="ref-ruthotto2018deepneuralnetworksmotivated" class="csl-entry">
+Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated by Partial Differential Equations.”</span> <a href="https://arxiv.org/abs/1804.04272">https://arxiv.org/abs/1804.04272</a>.
+</div>
+</div></section></div> ]]></description>
+  <category>Deep Learning</category>
+  <category>Numerical Methods</category>
+  <category>Ordinary Differential Equations</category>
+  <category>Generative AI</category>
+  <guid>https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/</guid>
+  <pubDate>Thu, 12 Feb 2026 08:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG" medium="image"/>
+</item>
+<item>
+  <title>Synthetic Geology: Structural Geology Meets Deep Learning</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="workshop" class="level2">
+<h2 class="anchored" data-anchor-id="workshop">Workshop</h2>
+<p><strong>Optimization, AI, and Inverse Problems Workshop</strong> Hosted by Dr.&nbsp;Ahmet Alacaoglu at UBC.</p>
+<p>This workshop brought together researchers and practitioners interested in optimization and its applications in AI and inverse problems, exploring the fundamentals of optimization algorithms and their applications in training AI models, as well as solving problems in key scientific applications such as geophysics, medical imaging, and physics.</p>
+<p>Key themes included:</p>
+<ul>
+<li>Adaptive optimization algorithms</li>
+<li>Structured optimization</li>
+<li>Applications of optimization algorithms in scientific applications</li>
+<li>High-dimensional problems, large datasets, limited computational resources, and application-specific constraints</li>
+</ul>
+</section>
+<section id="slides" class="level2">
+<h2 class="anchored" data-anchor-id="slides">Slides</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide1.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 1</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide2.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 2</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide3.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 3</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide4.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 4</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide5.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 5</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide6.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 6</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide7.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 7</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide8.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 8</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide9.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 9</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide10.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 10</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide11.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 11</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide12.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 12</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide13.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 13</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide14.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 14</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide15.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 15</figcaption>
+</figure>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Talk</category>
+  <category>Structural Geology</category>
+  <category>Generative AI</category>
+  <guid>https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/</guid>
+  <pubDate>Wed, 11 Feb 2026 08:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide1.PNG" medium="image"/>
+</item>
+<item>
+  <title>Generative Modeling for Structural Geology</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="cupc-conference-poster" class="level1">
+
+<iframe src="https://1drv.ms/p/c/922d945e0df41473/IQQjxbU9NQZxQ4xxRmZEynh_AWfMFPnqxf4LUHktDV2t_Yw?em=2&amp;wdAr=1.3333333333333333" width="800px" height="600px" frameborder="0">
+This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.
+</iframe>
+</section>
+<section id="conference-presentationthis-is-an-embedded-microsoft-office-presentation-powered-by-office." class="level1">
+<h1>Conference Presentation<iframe src="https://1drv.ms/p/c/922d945e0df41473/IQSXVx6KHVM7Q62w1WFVm5SjAQ1J3nJKYMPKSdEUgPa-AxY?em=2&amp;wdAr=1.7777777777777777" width="476px" height="288px" frameborder="0">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe></h1>
+
+
+</section>
+
+ ]]></description>
+  <category>GeoGen</category>
+  <category>Stochastic Interpolation</category>
+  <guid>https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/</guid>
+  <pubDate>Mon, 21 Oct 2024 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/imgs/cover.png" medium="image" type="image/png" height="108" width="144"/>
+</item>
+</channel>
+</rss>

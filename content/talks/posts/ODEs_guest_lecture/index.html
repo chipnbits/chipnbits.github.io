@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.53">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Simon Ghyselincks">
+<meta name="dcterms.date" content="2026-02-12">
+<meta name="description" content="A guest lecture and workshop exploring the intersection of deep learning and numerical analysis. Neuro differential equations with architectures such as ResNet and RevNet. Neural ODEs where a continuous time dynamical system is modeled by a neural network, with an application to generative AI and inverse problems.">
+
+<title>Numerical Methods for Deep Learning – Simon Ghyselincks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+<meta property="og:title" content="Numerical Methods for Deep Learning – Simon Ghyselincks">
+<meta property="og:description" content="A guest lecture and workshop exploring the intersection of deep learning and numerical analysis. Neuro differential equations with architectures such as ResNet and RevNet. Neural ODEs where a continuous time dynamical system is modeled by a neural network, with an application to generative AI and inverse problems.">
+<meta property="og:image" content="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG">
+<meta property="og:site_name" content="Simon Ghyselincks">
+<meta name="twitter:title" content="Numerical Methods for Deep Learning – Simon Ghyselincks">
+<meta name="twitter:description" content="A guest lecture and workshop exploring the intersection of deep learning and numerical analysis. Neuro differential equations with architectures such as ResNet and RevNet. Neural ODEs where a continuous time dynamical system is modeled by a neural network, with an application to generative AI and inverse problems.">
+<meta name="twitter:image" content="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Simon Ghyselincks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../content/about/biography.html"> 
+<span class="menu-text">Bio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../content/publications/index.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../content/talks/index.html"> 
+<span class="menu-text">Talks &amp; Teaching</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projects" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projects</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
+        <li>
+    <a class="dropdown-item" href="../../../../content/eosc555/index.html">
+ <span class="dropdown-text">EOSC 555</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../content/projects/RLUnicycle/introduction.html">
+ <span class="dropdown-text">Learning to Balance</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#accompanying-notebooks" id="toc-accompanying-notebooks" class="nav-link active" data-scroll-target="#accompanying-notebooks"><span class="header-section-number">1</span> Accompanying Notebooks</a></li>
+  <li><a href="#presentation-slides-and-notes" id="toc-presentation-slides-and-notes" class="nav-link" data-scroll-target="#presentation-slides-and-notes"><span class="header-section-number">2</span> Presentation Slides and Notes</a>
+  <ul class="collapse">
+  <li><a href="#part-1" id="toc-part-1" class="nav-link" data-scroll-target="#part-1">Part 1</a></li>
+  <li><a href="#part-2" id="toc-part-2" class="nav-link" data-scroll-target="#part-2">Part 2</a></li>
+  <li><a href="#part-3" id="toc-part-3" class="nav-link" data-scroll-target="#part-3">Part 3</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Numerical Methods for Deep Learning</h1>
+<p class="subtitle lead">Ordinary Differential Equations</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Deep Learning</div>
+    <div class="quarto-category">Numerical Methods</div>
+    <div class="quarto-category">Ordinary Differential Equations</div>
+    <div class="quarto-category">Generative AI</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A guest lecture and workshop exploring the intersection of deep learning and numerical analysis. Neuro differential equations with architectures such as ResNet and RevNet. Neural ODEs where a continuous time dynamical system is modeled by a neural network, with an application to generative AI and inverse problems.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Simon Ghyselincks </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 12, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="accompanying-notebooks" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Accompanying Notebooks</h1>
+<p>These lecture slides are designed to accompany two notebooks:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Section</th>
+<th style="text-align: left;">Topic</th>
+<th style="text-align: left;">Notebook Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Part 1</strong></td>
+<td style="text-align: left;">Machine Learning Background Primer</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/drive/1xbifVi22fIjH2u8Ip_uKRjx-fdk0IPSB?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Part 2</strong></td>
+<td style="text-align: left;">Neuro Differential Equations</td>
+<td style="text-align: left;">Future Work</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Part 3</strong></td>
+<td style="text-align: left;">Generative AI Exercise</td>
+<td style="text-align: left;"><a href="https://colab.research.google.com/drive/19ZAUiukAFUCfIM3FpsitM7XIGeJa9-hz?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid" alt="Open In Colab"></a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="presentation-slides-and-notes" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Presentation Slides and Notes</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide1.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 1</figcaption>
+</figure>
+</div>
+<p>Hi, I am Simon Ghyselincks. I completed my undergraduate studies at UBC in Engineering Physics, and I am currently in the PhD track program in Computer Science, where I work on research at the intersection of applied mathematics and machine learning. A significant part of my research uses continuous dynamical systems to model deep machine learning tasks. My recent project on geophysical inversion for structural geology is a primary example of this process, and we will explore that application later in this talk.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide2.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 2</figcaption>
+</figure>
+</div>
+<!-- Notes for Slide 2 -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide3.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 3</figcaption>
+</figure>
+</div>
+<p>This workshop is structured into three main parts:</p>
+<p><strong>Part 1</strong> familiarizes us with the fundamentals of machine learning. We will see that it shares similarities with numerical methods, which will bring us up to speed on standard deep learning models.</p>
+<p><strong>Part 2</strong> looks at <em>Neuro Differential Equations</em>. With our foundational background established, we can explore how numerical analysis can inform the construction of deep networks. We will look at the celebrated ResNet architecture as well as two others that are inspired by the leapfrog integration scheme, as well as symplectic integration of hamiltonian systems.</p>
+<p><strong>Part 3</strong> covers Neural ODEs, where the deep learning model learns the continuous time dynamical system. It is a topic with many applications in the sciences, but we will look primarily at its application in generative AI. This type of network can also be used to solve complex inverse problems in geology.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide4.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 4</figcaption>
+</figure>
+</div>
+<p>Machine learning encompasses statistical algorithms that “learn” from data, generalize to unseen inputs, and make new predictions or perform tasks without explicit, hard-coded instructions. It is a broad field. While it includes advanced deep learning tools like self-driving car algorithms (computer vision, control policies) and Generative AI (image generation, LLMs), it also includes traditional methods like decision trees, curve fitting, and data mining. Fundamentally, machine learning is about interpolation and extrapolation on data, which makes it closely linked to interpolating polynomials and numerical methods.</p>
+<section id="part-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-1">Part 1</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide5.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 5</figcaption>
+</figure>
+</div>
+<!-- Notes for Slide 5 -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide6.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 6</figcaption>
+</figure>
+</div>
+<p>Machine learning tasks generally have the same ingredients:</p>
+<ul>
+<li>Some set of data we want to interpolate, might be paired input outputs</li>
+<li>A parameterized mathematical model (family of functions, what we expect)</li>
+<li>A measure of error we want to minimize (usually loss function)</li>
+<li>A method of solving for optimality (iterative methods, exact analytic solutions)</li>
+</ul>
+<p>Often machine learning is probabilistic in nature:</p>
+<ul>
+<li>Most likely next word (LLM)</li>
+<li>Most likely fit of a line (Linear Regression)</li>
+<li>Likely images of cats (GenAI)</li>
+</ul>
+<p>Shown are two examples of mathematical models. We constrain to a family of functions parameterized by theta and try to minimize an objective within that constraint. At the top is a linear model with just two parameters, the slope and intercept. Below is a gaussian model with mean and variance as parameters.</p>
+<p>The model may not perfectly fit the data, but this is a feature, not a bug. In the real world we are often working with noisy data, the quality of that noise determines what we optimize. Our mathematical model or hypothesis on the data distribution and problem informs much of our methods.</p>
+<p>The <em>learning</em> in machine learning is simply optimizing over the parameters using the data to get a better model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide7.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 7</figcaption>
+</figure>
+</div>
+<p>The choice of mathematical model directly influences the goodness of fit and the network’s ability to interpolate or extrapolate to new data. Similar to choosing a numerical solver, the stability and generalization to unseen data is of concern. We want to design architectures that are stable, robust to noise, and that do not over-fit to exisitng data. I start with the Runge function (<span class="math inline">\(f(x) = \frac{1}{1+25x^2}\)</span>) because it provides a classic example of a mathematicl model that overfits to the available data points creating large error in the interpolated region. There are good choices and bad choices for a model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide8.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 8</figcaption>
+</figure>
+</div>
+<p>Let’s look at Least Squares as a warm-up. It is a simple model with just two parameters: slope <span class="math inline">\(\theta_1\)</span> and intercept <span class="math inline">\(\theta_2\)</span>. We take data pairs, model them as a single line, and find the “best fit” by minimizing the L2 loss. This is equivalent to a first-order polynomial interpolation problem, but now the problem is overdefined with more than two points, so it is not possible to perfectly pass through all points.</p>
+<p>In machine learning, this has a probabilistic interpretation. We minimize the expectation in this deviation, treating each data sample with equal weighting. Because the model has only two parameters, we can form a Vandermonde matrix and solve it analytically as an <span class="math inline">\(\mathbf{A}x \approx \mathbf{b}\)</span> linear algebra problem, yielding the normal equations <span class="math inline">\(\theta = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}\)</span>. While this exact analytic solution works well here, it is problem-specific. With noisy, high-dimensional data where exact solutions are impossible, we must turn to iterative optimization frameworks.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide9.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 9</figcaption>
+</figure>
+</div>
+<p>Given complex samples <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{Y}\)</span>, how do we tackle optimizing over complicated models. What is the minimizer for the model of a self-driving car? We now turn to iterative methods.</p>
+<p>In the case of gradient descent, the problem is formulated by computing the local gradient of a loss function and stepping in the direction that reduces the loss. This has a link to ODEs where our update scheme is <span class="math inline">\(\mathbf{\dot \theta} = \nabla_\theta \mathcal{L}(\mathcal{D}; \theta)\)</span> with inital value <span class="math inline">\(\theta_0\)</span>. The direction of travel is controlled by the loss landscape and the local minima are stationary points.</p>
+<p>In practice stochastic gradient descent provides an unbiased estimator for the gradient using only a batch or subset of <span class="math inline">\(\mathcal{D}\)</span> at each step. The smaller the batch size, the greater the variance of the estimator. To do this we make some assumptions on the data. We want to minimize the overall loss which is the expectation of loss over all individual samples. Invoking an “often incorrect” assumption of i.i.d. We treat the samples like drawing numbers from a hat.</p>
+<p>Since each number is equally likely in probability as empirical samples from the true underlying data distribution, then they each carry the same weighting. By making successive passes over the data in batches, this gives a stochastic algorithm that in practice helps escape local minima with its variance. Note that outside of deep learning, SGD is generally a poor optimization technique!</p>
+<p>To get the gradient of a model we use automatic differentiation in practice. Packages such as PyTorch construct a computational graph that uses succesive applicaitons of the chain rule to compute the gradient. To do so it saves intermediate values, as we will see ahead.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide10.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 10</figcaption>
+</figure>
+</div>
+<p>The Single Layer Perceptron (SLP) is a generalized approximation function. Inside, it applies a linear operation to the input <span class="math inline">\(\mathbf{x}\)</span>, yielding <span class="math inline">\(\mathbf{W}\mathbf{x} + \mathbf{b}\)</span>. Then, it passes that result through a non-linear activation function, <span class="math inline">\(\sigma(\cdot)\)</span>. A popular choice is ReLU, but generally, these functions are monotonically increasing with positive derivatives.</p>
+<p>The non-linearity is the key to the entire system. Without it, chaining multiple matrices together would simply collapse back into a single linear operation. The activation function increases the rank of the resulting operation, acting as an extension of polynomial basis functions for higher dimensions. By the Universal Approximation Theorem, a single hidden layer with enough units can approximate any continuous function on a compact set.However, this does not guarantee that an algorithm such as gradient descent will find the optimal parameters.</p>
+<p>In polynomial interpolation, we combine polynomial basis functions but In this case we are learning the basis functions. If we fix <span class="math inline">\(W\)</span> and <span class="math inline">\(b\)</span>, for the 1D case of <span class="math inline">\(x\)</span> we open into N+1 copies of x, then setting each <span class="math inline">\(\sigma\)</span> to <span class="math inline">\(z^n\)</span> we get polynomial interpolation again.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide11.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 11</figcaption>
+</figure>
+</div>
+<p>MLP We have reached deep learnin with more than one hidden layer. The output from the SLP is passed as the input to another SLP and so on We simply continue with more hidden layers. This forms a composition of many functions, basis functions of basis functions. Deep here refers to the depth of layers vs breadth of a single layer. This can solve advanced problems but is difficult to work with as the number of layers increases.</p>
+<p><strong>Problems:</strong></p>
+<ul>
+<li>Finding the right learning rate and parameters can be difficult</li>
+<li>Sensitive to initialization, we cant simply initialize all parameters with 0s</li>
+<li>Question? What is the chain rule for one layer, what about several?</li>
+<li>What happens if the singular values of Q are W small? The successive Jacobians shrink the norm of parameter gradients being passed through backprop, exponentially.</li>
+<li>Early layers do not learn in this case</li>
+<li>How deep of a network can we go? (~20 layers with special care)</li>
+</ul>
+</section>
+<section id="part-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-2">Part 2</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide12.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 12</figcaption>
+</figure>
+</div>
+<p>Now we will look into extensions of the initial structures we have seen. Are there tools from numerical methods and numerical analysis that we can relate to this? Specifically, how do we deal with network stability and vanishing gradients as models scale?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide13.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 13</figcaption>
+</figure>
+</div>
+<p>The Residual Network (ResNet), introduced by <span class="citation" data-cites="he2015resnet">He et al. (<a href="#ref-he2015resnet" role="doc-biblioref">2015</a>)</span>, was a groundbreaking paper. Why don’t I only model the difference across layers? Use the network itself to model the differences. This introduced the <em>skip connection</em>, which explicitly bypasses layers of the model.</p>
+<p>ResNet was ground-breaking: - Halved error of previous SOTA models - First to beat human-level on visual recognition - It beat benchmarks across many different tasks, taking over the leaderboards - Previous contenders: 19-22 layers compared to ResNet 152 layers, made deep learning DEEP - Still used as a backbone in many models - One of the most import papers to computer vision and machine learning for the last while - The layers between skip connections may vary (point to bottom image)</p>
+<p>Question: Where have we seen this relation before? This looks like an ODE if we add an h infront</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide14.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 14</figcaption>
+</figure>
+</div>
+<p>ResNet is fundamentally a series of additive changes. It can be viewed as an Initial Value Problem (IVP), mapping a dynamical system where the hidden state is gradually pushed along a path <span class="citation" data-cites="Haber_2017">(<a href="#ref-Haber_2017" role="doc-biblioref">Haber and Ruthotto 2017</a>)</span>. Because each layer has different weights, it is a time-variant field where each “time step” features different dynamics.</p>
+<p>The skip connection has solved many of the problems with vanishing gradients, allowing models to go deeper. Standard depths include 34, 50, 101, and 152 layer systems with skip connections every two layers. The depth and complexity of the model is determined by the overfitting question, how much data do we have?</p>
+<p>The architectural formulation from 2015 was trying to solve a vanishing gradient problem in optimization, but in the process it is structuring the model as learning difference steps. In 2017 work is published by Haber and Ruthotto providing the numerical methods analysis.</p>
+<p><strong>Question:</strong> if this is a dynamical system, what ODE integration method does this represent? (Forward Euler integration)</p>
+<ul>
+<li>What sort of stability concerns do we have?</li>
+<li>Can we impose more structure, can we use a different integrator</li>
+<li>Forward euler is one of the worst choices out of the gate, what about Runge-Kutta or symplectic?</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide15.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 15</figcaption>
+</figure>
+</div>
+<p>We derive the Jacobian the same way as for MLP, but this time there is a <span class="math inline">\(z_i\)</span> term which gives identity since <span class="math inline">\(\mathbf{z}_i = I \mathbf{z}_i\)</span>. What sort of stability concerns do we have? The same as with forward Euler, but we look at the max eigenvalue now to constrain growth.</p>
+<p><strong>Question:</strong> what happens if this equation in Lemma 1 is not satisfied, what happens to the model?</p>
+<ul>
+<li>We cant say for certain because the Lemma is an “if” clause and not “iff”</li>
+</ul>
+<p>We have time varying dynamics with different parameters at each layer, not every layer is the same. In practice, in the original ResNet paper they have exceptional results without concerns of stability, up to 152 layers. The optimization is largely controlling the stability in practice. Yet, Haber and Ruthotto argue that regularization or other conditions on the network could improve results rather than leaving it to the optimizer to control the stability.</p>
+<p>Can we even use other network designs inspired by this skip connection?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide16.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 16</figcaption>
+</figure>
+</div>
+<p>Training In the general form, training is formulated as a regression problem between the output labels and the result of the integrated ODE. The inner layers act as the hidden state being processed. The yellow layer “opens” the input to <span class="math inline">\(\mathbf{z}\)</span> and the red layer is the MLP task head that uses the final hidden state as inputs. We sample from our data <span class="math inline">\(\mathbf{X}\)</span>, push it through the ODE, compute the loss, and use automatic differentiation to get the gradient to update the parameters</p>
+<p>Analysis of cost:</p>
+<ul>
+<li>We can assume a fixed cost per layer if considering the same hidden dimension size to compute</li>
+<li>The memory cost during inference and training differs: inference is a single forward pass, we don’t store intermediate activations.</li>
+<li>Training requires automatic differentiation, storing the intermediate activations</li>
+<li>Typically much larger memory footprint, run into troubles with GPU for training</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide17.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 17</figcaption>
+</figure>
+</div>
+<p>Revisiting stability, we know from numerical analysis that Forward Euler is not always our best bet. If the learned parameters are unstable, it can lead to exploding growth. What about other ODEs or integration methods? In instances of image classification we move from high frequency data to dissipative lower order information of labels (smoothing). In some instances we may want to impose conservation, forward euler can go wildly poorly in this task (see diagram). The Euler solution is going to diverge because the eigenvalues of the system are imaginary and outside of the region of convergence (no hope!). The leapfrog or semi-implicit Euler method has a different region of convergence</p>
+<p><strong>Question:</strong> can we use a leapfrog architecture instead?</p>
+<ul>
+<li>Resnet motivated by skip connections, but this numerical analysis approach is a generalization, we don’t need to stick to ResNet</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide18.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 18</figcaption>
+</figure>
+</div>
+<p>We can propose physics-informed architectures as shown by <span class="citation" data-cites="ruthotto2018deepneuralnetworksmotivated">Ruthotto and Haber (<a href="#ref-ruthotto2018deepneuralnetworksmotivated" role="doc-biblioref">2018</a>)</span>.</p>
+<ul>
+<li><p><strong>Parabolic Networks</strong>: These can be integrated with Forward Euler safely. By enforcing symmetric negative definite weights, we ensure all eigenvalues are negative, aiding stability.</p></li>
+<li><p><strong>Hyperbolic Networks</strong>: This is a second-order, wave-like formulation.</p></li>
+<li><p><strong>Hamiltonian Networks</strong>: Another physics-inspired formulation designed for energy conservation.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide19.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 19</figcaption>
+</figure>
+</div>
+<p>If we take the central difference approximation, we can compute the new state using the previous two states, creating a double skip connection. This creates a Hyperbolic Network with reversible symmetry.</p>
+<p>Because the network is mathematically reversible, we can backtrack computationally to reconstruct the activations without storing them in memory. This drops the memory cost, with the tradeoff being extra compute time. In scenarios where training memory is severely constrained, such as fine-tuning large open-source LLMs on consumer GPUs, the memory bypass is incredibly valuable.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide20.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 20</figcaption>
+</figure>
+</div>
+<p>Going back to the Hamiltonian network, this is the inspiration for using symplectic integration. This is a semi-implicit method, as the updated value for <span class="math inline">\(y_1 = x_1\)</span> is used in the middle of the two step process. Also has energy conservation properties, reversible, memory efficient– serves as an alternative to leapfrog Used in a lot of research including a recent paper from our group on LLMs, <span class="citation" data-cites="gal2025llms">(<a href="#ref-gal2025llms" role="doc-biblioref">Gal et al. 2025</a>)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide21.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 21</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide22.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 22</figcaption>
+</figure>
+</div>
+<p><strong>Question:</strong> we have looked at discretized ODEs inside of network architectures, what if we make the entire network an ODE?</p>
+<ul>
+<li>We can take the limit as as the step size goes to zero for an infinite depth ResNet</li>
+</ul>
+<p>This gives us the integral equation, we use a Neural ODE <span class="citation" data-cites="chen2019neuralODEs">(<a href="#ref-chen2019neuralODEs" role="doc-biblioref">Chen et al. 2019</a>)</span> to learn the velocity field directly. Some variants are not time dependent such as Deep Equilibrium models (DEQs) <span class="citation" data-cites="bai2019deepequilibriummodels">(<a href="#ref-bai2019deepequilibriummodels" role="doc-biblioref">Bai, Kolter, and Koltun 2019</a>)</span>. Some have a “time-embedding” that conveys the continuous time throughout the learning model. For inference we simply integrate the learned function using a numerical solver. This offers many approaches for handling the computation, choice of ODE integrator. What sort of integrators can we use for an arbitrary function?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide23.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 23</figcaption>
+</figure>
+</div>
+<p>Now we look at a new problem setting. We are looking at generative AI (image video generation). We suppose that we have a bunch of samples (red) from a complex probability distribution (images of fashion items). We want to infer the distribution and draw new samples from it (statistical problem) but how do we do this?</p>
+<p>Directly learning a probability function is intractable due to the requirement that the integral sums to 1. Integrating over all <span class="math inline">\(\mathcal{R}\)</span> for a model is simply impractical.</p>
+<p>Solution: instead what we do is “push” samples from a known distribution (Gaussian) to our target distribution through a velocity field <span class="citation" data-cites="lipman2024flowmatchingguidecode">(<a href="#ref-lipman2024flowmatchingguidecode" role="doc-biblioref">Lipman et al. 2024</a>)</span>. This avoids the partition function.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide24.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 24</figcaption>
+</figure>
+</div>
+<ul>
+<li>I give a brief overview of the algorithm, this part is not important to understand, it is the training regime.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide25.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 25</figcaption>
+</figure>
+</div>
+<ul>
+<li>We have learned a push velocity field so now we deploy numerical integration on IVP samples from source distribution!</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide26.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 26</figcaption>
+</figure>
+</div>
+<p>This is a good point to refer to the notebook to experiment with ODE integration on a generative task</p>
+</section>
+<section id="part-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-3">Part 3</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide27.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 27</figcaption>
+</figure>
+</div>
+<p>Now I present some of my recent work that uses a neural ODE to perform geological inverison <span class="citation" data-cites="ghyselincks2026syntheticgeologystructuralgeology">(<a href="#ref-ghyselincks2026syntheticgeologystructuralgeology" role="doc-biblioref">Ghyselincks et al. 2026</a>)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide28.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 28</figcaption>
+</figure>
+</div>
+<ul>
+<li>Structural geology examines the distribution of rocks and strata within the Earth’s crust.</li>
+<li>Subsurface models of the earth are hindered by the scarcity of ground truth field data and uncertainty.</li>
+<li>Generating 3D geological models is costly and often does not capture the full range of potential geological structures</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide29.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 29</figcaption>
+</figure>
+</div>
+<ul>
+<li>Geology is highly varied. a large number of models are needed to represent the diversity of geological formations and time scales.</li>
+<li>A generative model implicitly learns the prior <span class="math inline">\(\Pr(m)\)</span> through empirical sampling</li>
+<li>Our goal is to sample multiple solution to the same data, in contrast to maximum likelihood estimate</li>
+<li>To do this we need to generate many samples from a simulator and learn a conditional generative model that allows us to sample from the conditional distribution <span class="math inline">\(\Pr(m | d)\)</span> empirically using ODE integration</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide30.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 30</figcaption>
+</figure>
+</div>
+<ul>
+<li>The synthetic dataset is designed to rapidly sample geology using a Markov sequence of parameterized geological operations such as folds, dikes, faults sequenced in different orders with varying parameters.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide31.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 31</figcaption>
+</figure>
+</div>
+<ul>
+<li>The model architecture that is used comes from medical imaging and has multiscale processing with skip connections transporting information from the down sampling to upsampling stages</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide32.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 32</figcaption>
+</figure>
+</div>
+<ul>
+<li>The full pipeline for training is shown here, with simulation as an input in orange and the loss function shown on the right. More details can be found in the paper Synthetic Geology: Structural Geology Meets Deep Learning</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imgs/Slide33.PNG" class="img-fluid figure-img"></p>
+<figcaption>Slide 33</figcaption>
+</figure>
+</div>
+<ul>
+<li>Using a trained model on the conditional flow matchin objective, we can draw new samples from surface and borehole data.</li>
+</ul>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-bai2019deepequilibriummodels" class="csl-entry" role="listitem">
+Bai, Shaojie, J. Zico Kolter, and Vladlen Koltun. 2019. <span>“Deep Equilibrium Models.”</span> <a href="https://arxiv.org/abs/1909.01377">https://arxiv.org/abs/1909.01377</a>.
+</div>
+<div id="ref-chen2019neuralODEs" class="csl-entry" role="listitem">
+Chen, Ricky T. Q., Yulia Rubanova, Jesse Bettencourt, and David Duvenaud. 2019. <span>“Neural Ordinary Differential Equations.”</span> <a href="https://arxiv.org/abs/1806.07366">https://arxiv.org/abs/1806.07366</a>.
+</div>
+<div id="ref-gal2025llms" class="csl-entry" role="listitem">
+Gal, Eshed, Moshe Eliasof, Javier Turek, Uri Ascher, Eran Treister, and Eldad Haber. 2025. <span>“Reversing Large Language Models for Efficient Training and Fine-Tuning.”</span> <a href="https://arxiv.org/abs/2512.02056">https://arxiv.org/abs/2512.02056</a>.
+</div>
+<div id="ref-ghyselincks2026syntheticgeologystructuralgeology" class="csl-entry" role="listitem">
+Ghyselincks, Simon, Valeriia Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2026. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <a href="https://arxiv.org/abs/2506.11164">https://arxiv.org/abs/2506.11164</a>.
+</div>
+<div id="ref-Haber_2017" class="csl-entry" role="listitem">
+Haber, Eldad, and Lars Ruthotto. 2017. <span>“Stable Architectures for Deep Neural Networks.”</span> <em>Inverse Problems</em> 34 (1): 014004. <a href="https://doi.org/10.1088/1361-6420/aa9a90">https://doi.org/10.1088/1361-6420/aa9a90</a>.
+</div>
+<div id="ref-he2015resnet" class="csl-entry" role="listitem">
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Residual Learning for Image Recognition.”</span> <a href="https://arxiv.org/abs/1512.03385">https://arxiv.org/abs/1512.03385</a>.
+</div>
+<div id="ref-lipman2024flowmatchingguidecode" class="csl-entry" role="listitem">
+Lipman, Yaron, Marton Havasi, Peter Holderrieth, Neta Shaul, Matt Le, Brian Karrer, Ricky T. Q. Chen, David Lopez-Paz, Heli Ben-Hamu, and Itai Gat. 2024. <span>“Flow Matching Guide and Code.”</span> <a href="https://arxiv.org/abs/2412.06264">https://arxiv.org/abs/2412.06264</a>.
+</div>
+<div id="ref-ruthotto2018deepneuralnetworksmotivated" class="csl-entry" role="listitem">
+Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated by Partial Differential Equations.”</span> <a href="https://arxiv.org/abs/1804.04272">https://arxiv.org/abs/1804.04272</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/chipnbits\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026, Simon Ghyselincks</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://chipnbits.github.io/">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/chipnbits">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

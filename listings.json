@@ -1,18 +1,31 @@
 [
   {
-    "listing": "/content/publications/index.html",
+    "listing": "/index.html",
     "items": [
       "/content/publications/structural-geo-deep-learning/index.html",
-      "/content/publications/ssvm-magnetic-data-inversion/index.html"
+      "/content/talks/posts/ODEs_guest_lecture/index.html",
+      "/content/talks/posts/caida-si-lightning-talk/index.html",
+      "/blog/posts/trace-estimation-hutchinson/index.html",
+      "/blog/posts/Johnson-Lindenstrauss/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html",
+      "/content/talks/posts/CAP-conference-poster/index.html",
+      "/blog/posts/scorematching/index.html",
+      "/blog/posts/welcome/index.html"
+    ]
+  },
+  {
+    "listing": "/content/talks/index.html",
+    "items": [
+      "/content/talks/posts/ODEs_guest_lecture/index.html",
+      "/content/talks/posts/caida-si-lightning-talk/index.html",
+      "/content/talks/posts/CAP-conference-poster/index.html"
     ]
   },
   {
     "listing": "/blog/index.html",
     "items": [
-      "/blog/posts/ODEs_guest_lecture/index.html",
       "/blog/posts/trace-estimation-hutchinson/index.html",
       "/blog/posts/Johnson-Lindenstrauss/index.html",
-      "/blog/posts/CAP-conference-poster/index.html",
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
     ]
@@ -32,6 +45,13 @@
       "/content/eosc555/lectures/lecture3/index.html",
       "/content/eosc555/lectures/lecture2/index.html",
       "/content/eosc555/lectures/lecture1-2/index.html"
+    ]
+  },
+  {
+    "listing": "/content/publications/index.html",
+    "items": [
+      "/content/publications/structural-geo-deep-learning/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html"
     ]
   }
 ]
