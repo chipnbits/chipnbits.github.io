@@ -9,8 +9,8 @@
 <link>https://chipnbits.github.io/content/talks/</link>
 <atom:link href="https://chipnbits.github.io/content/talks/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
-<generator>quarto-1.5.53</generator>
-<lastBuildDate>Mon, 09 Mar 2026 07:00:00 GMT</lastBuildDate>
+<generator>quarto-1.8.27</generator>
+<lastBuildDate>Mon, 09 Mar 2026 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Synthetic Geology</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -168,7 +168,7 @@ Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<spa
   <category>Flow Matching</category>
   <category>Inverse Problems</category>
   <guid>https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/</guid>
-  <pubDate>Mon, 09 Mar 2026 07:00:00 GMT</pubDate>
+  <pubDate>Mon, 09 Mar 2026 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/vision.png" medium="image" type="image/png" height="43" width="144"/>
 </item>
 <item>
@@ -581,7 +581,7 @@ Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated b
   <category>Ordinary Differential Equations</category>
   <category>Generative AI</category>
   <guid>https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/</guid>
-  <pubDate>Thu, 12 Feb 2026 08:00:00 GMT</pubDate>
+  <pubDate>Thu, 12 Feb 2026 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG" medium="image"/>
 </item>
 <item>
@@ -609,7 +609,7 @@ This is an embedded <a target="_blank" href="https://office.com">Microsoft Offic
   <category>GeoGen</category>
   <category>Stochastic Interpolation</category>
   <guid>https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/</guid>
-  <pubDate>Mon, 21 Oct 2024 07:00:00 GMT</pubDate>
+  <pubDate>Mon, 21 Oct 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/imgs/cover.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 </channel>
