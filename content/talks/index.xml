@@ -10,7 +10,167 @@
 <atom:link href="https://chipnbits.github.io/content/talks/index.xml" rel="self" type="application/rss+xml"/>
 <description>A personal page for Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Thu, 12 Feb 2026 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 09 Mar 2026 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Synthetic Geology</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <link>https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><strong>Links:</strong> - <a href="https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2025JH000986">Paper (JGR)</a> - <a href="https://arxiv.org/abs/2506.11164">Preprint (arXiv)</a> - <a href="https://github.com/eldadHaber/StructuralGeo/releases/tag/v1.0">Geological Simulation Engine (GitHub)</a> - <a href="https://github.com/chipnbits/flowtrain_stochastic_interpolation/releases/tag/v1.0.1">Generative Model (GitHub)</a></p>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide1.PNG" class="img-fluid"></p>
+<p>I’m Simon Ghyselincks, a PhD-track graduate student at UBC, co-advised by Eldad Haber (Earth, Ocean and Atmospheric Sciences) and Evan Shelhamer (Computer Science). My research is interdisciplinary, sitting at the intersection of mathematics, computer science, and earth science. This talk presents work from a recently published paper, “Synthetic Geology: Structural Geology Meets Deep Learning” <span class="citation" data-cites="ghyselincks2026syntheticgeologystructuralgeology">(Ghyselincks et al. 2025)</span>, done in collaboration with coauthors at KAUST and supported by NSERC.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide2.PNG" class="img-fluid"></p>
+<p>The talk is organized into three parts: an <strong>Introduction</strong> motivating the problem of geological inversion and why deep learning is a promising tool; <strong>Simulation Methods</strong> covering how we generate diverse 3D models using the GeoGen framework; and <strong>Generative Modeling</strong> introducing probabilistic machine learning with conditional and unconditional flow matching for ensemble sampling.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide3.PNG" class="img-fluid"></p>
+<!-- Section divider: Introduction -->
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide4.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide5.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide6.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide7.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide8.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide9.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide10.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide11.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide12.PNG" class="img-fluid"></p>
+</section>
+<section id="geogen-synthetic-dataset" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> GeoGen Synthetic Dataset</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide13.PNG" class="img-fluid"></p>
+<!-- Section divider: GeoGen Synthetic Dataset -->
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide14.PNG" class="img-fluid"></p>
+<p>Structural geology examines the distribution of rocks and strata within the Earth’s crust. Generating full-scale 3D geological models can be costly. Existing tools include GemPy <span class="citation" data-cites="delavarga2019gempy">(Varga, Schaaf, and Wellmann 2019)</span> (shown with a forward model for simulated temperature based on conductivity) and the Noddy modeling kit with the Noddyverse set of randomized models <span class="citation" data-cites="jessell2022noddyverse">(Jessell et al. 2022)</span>.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide15.PNG" class="img-fluid"></p>
+<p>Our dataset is built as a geological computer and instruction set, with a layer of automated randomization on top. The pipeline starts with a <strong>modeling framework</strong>, uses <strong>random variables to sample geological events</strong>, applies <strong>randomized event sequencing</strong> for variety, and parallelizes through the PyTorch framework.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide16.PNG" class="img-fluid"></p>
+<p>The stages of model computation:</p>
+<ol type="1">
+<li>Form an empty rectangular meshgrid</li>
+<li>Reverse the mesh through geological time</li>
+<li>Apply initial strata</li>
+<li>Forward the mesh back to the present</li>
+</ol>
+<p>Complexity is built through a chain of multiple transformations and depositions, a computational history. The point cloud of sample points is typically most deformed at the beginning of the history sequence and unfolds back to a regular tensor shape as deposits, unconformities, and intrusions are added. This ensures we always end up with a uniform mesh in the present-day sample.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide17.PNG" class="img-fluid"></p>
+<p>The framework removes the need to specify spatial coordinates to the machine learning model, which learns spatial distributions based on voxel positions in the final mesh.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide18.PNG" class="img-fluid"></p>
+<p><strong>Geowords</strong> are high-level generator classes that bridge the gap between raw probability and geological meaning. They describe events such as a dike cluster or a complex fold in terms of correlated random variables for their parameters. For example, Fold, Fault, and Shear events have distributions over amplitude, direction, and rake. The amplitude is correlated to the period, so parameters are assembled in a structured way to sample plausible geological events.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide19.PNG" class="img-fluid"></p>
+<p>We generate diverse instruction sets for randomized geology by varying the order of operations and the number of events in a history.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide20.PNG" class="img-fluid"></p>
+<p>Event sequencing uses <strong>Markov sampling</strong>: the <img src="https://latex.codecogs.com/png.latex?n">th event type is drawn based on event <img src="https://latex.codecogs.com/png.latex?(n-1)"> using transition probabilities. An early termination token creates variable-length geologies where the number of operations represents geological history. Young oceanic crust undergoes limited transforms, while aged continental crust is much more highly deformed.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide21.PNG" class="img-fluid"></p>
+<p>The full pipeline offers:</p>
+<ul>
+<li><strong>Unlimited samples</strong>: generate on-the-fly</li>
+<li><strong>Zero disk storage</strong>: no pre-computed dataset needed</li>
+<li><strong>Customizable</strong>: adjust parameters and geological event distributions</li>
+</ul>
+<p>Models generate quickly (~5-10 seconds on a laptop). Samples generate on the CPU while batches process on the GPU.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide22.PNG" class="img-fluid"></p>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li><strong>Model fidelity</strong>: the fidelity of synthetic data to true geology needs further work. Greater expertise from geologists, more features and realism will improve downstream applications.</li>
+<li><strong>Matching forward observations</strong>: the observable parts of the model (e.g., surface) should match real-world surface data. Automated tuning of simulation parameters is a topic of recent research from the KAUST collaboration.</li>
+</ul>
+</section>
+<section id="generative-modeling-flow-matching" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Generative Modeling: Flow Matching</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide23.PNG" class="img-fluid"></p>
+<!-- Section divider: Generative Modeling -->
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide24.PNG" class="img-fluid"></p>
+<p>Now that we have a simulated synthetic dataset, we look at training a generative AI model for categorical data.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide25.PNG" class="img-fluid"></p>
+<p>Starting with the classical inverse problem: given a model <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bm%7D"> with forward data <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bd%7D"> and Gaussian measurement noise <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BAm%7D%20+%20%5Cepsilon%20=%20%5Cmathbf%7Bd%7D"></p>
+<p>Applying Bayes’ rule and maximizing the posterior <img src="https://latex.codecogs.com/png.latex?P(%5Cmathbf%7Bm%7D%7C%5Cmathbf%7Bd%7D)"> yields the MAP estimate. Taking the negative log maps this into a minimization:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cphi(%5Cmathbf%7Bm%7D)%20=%20%5Cfrac%7B1%7D%7B2%7D%5C%7C%5Cmathbf%7BAm%7D%20-%20%5Cmathbf%7Bd%7D%5C%7C%5E2%20+%20%5Calpha%20R(%5Cmathbf%7Bm%7D)"></p>
+<p>with a <strong>misfit</strong> term from the noise and a <strong>prior</strong> (regularization) from our belief about geology. Generative AI targets this probability directly, allowing exploration of the probability space of likely models rather than a single MAP estimate, a probabilistic exploration of the null space of the inverse problem.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide26.PNG" class="img-fluid"></p>
+<p><strong>Solution:</strong> Learn a velocity field that creates a probability flow from a simple (Gaussian) distribution to the target. Taking derivatives avoids the intractable integral <span class="citation" data-cites="lipman2024flowmatchingguidecode">(Lipman et al. 2024)</span>.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide27.PNG" class="img-fluid"></p>
+<p>A velocity field <img src="https://latex.codecogs.com/png.latex?u_t"> (in blue) <em>generates</em> a probability path <img src="https://latex.codecogs.com/png.latex?p_t"> if the flow defined by <img src="https://latex.codecogs.com/png.latex?u_t"> reshapes <img src="https://latex.codecogs.com/png.latex?p"> (source) to <img src="https://latex.codecogs.com/png.latex?p_t"> at all times <img src="https://latex.codecogs.com/png.latex?t%20%5Cin%20%5B0,%201)"> (Lipman et al., 2024). The model does not need normalization because it only learns a flow field, not the actual distribution.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide28.PNG" class="img-fluid"></p>
+<p><strong>General Framework:</strong> We minimize the difference between the true velocity and our estimator model <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bv%7D"> across all pairings and time:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmin_%7B%5Ctheta%7D%20%5Cfrac%7B1%7D%7B2%7D%20%5Cmathbb%7BE%7D_%7Bt,%5Cmathbf%7Bz%7D,%5Cmathbf%7Bm%7D%7D%20%5C%7C%5Cmathbf%7Bv%7D(%5Cmathbf%7Bm%7D_t,%20t;%20%5Cboldsymbol%7B%5Ctheta%7D)%20-%20%5Cmathbf%7Bv%7D_t%5C%7C_2%5E2"></p>
+<p>The network randomly samples pairings from both distributions and times, receiving current position and time. Conditional information can also be passed, so called <strong>conditional flow matching</strong>.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide29.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide30.PNG" class="img-fluid"></p>
+<p>For categorical lithology, we need to embed discrete categories into a continuous space to define categorical velocity. The details are in the paper.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide31.PNG" class="img-fluid"></p>
+<p>At inference time, we generate new samples by sampling the learned the flow of probability from <img src="https://latex.codecogs.com/png.latex?x_0%20%5Csim%20%5Crho_0"> to <img src="https://latex.codecogs.com/png.latex?x_1%20%5Csim%20%5Crho_1"> using an ODE integrator.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide32.PNG" class="img-fluid"></p>
+<p>Beyond the unconditional prior, we learn the conditional posterior <img src="https://latex.codecogs.com/png.latex?P(%5Cmathbf%7Bm%7D%7C%5Cmathbf%7Bd%7D)">. Both models and forward data are generated from the simulator. The conditional loss adds a data-fidelity term:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D_%7B%5Ctext%7Bcond%7D%7D%20=%20%5C%7C%5Chat%7B%5Cmathbf%7Bv%7D%7D(%5Cmathbf%7Bm%7D_t,%20%5Cmathbf%7Bd%7D,%20t;%20%5Cboldsymbol%7B%5Cxi%7D)%20-%20%5Cmathbf%7Bv%7D_t%5C%7C_2%5E2%20+%20%5Clambda%20%5Ccdot%20t%20%5Ccdot%20%5C%7C%5Chat%7B%5Cmathbf%7Bd%7D%7D%20-%20%5Cmathbf%7Bd%7D%5C%7C_2%5E2"></p>
+<p>Note that the data-fidelity term is weighted by time, so the model learns to reconstruct the data at all times, but with more emphasis on later times when the model is closer to the target distribution. This gives freedom and flexibility in the early stages of generation with a tighter requirement to match the forward data as the model approaches the target distribution.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide33.PNG" class="img-fluid"></p>
+<p>The machine learning model is a <strong>3D U-Net</strong> with convolutional layers, attention blocks, multiple scales, and time + data embeddings.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide34.PNG" class="img-fluid"></p>
+<p>The full training architecture incorporates time embedding, conditional data embedding through skip connections, self-attention, and gradient backpropagation through the conditional loss.</p>
+</section>
+<section id="results" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Results</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide35.PNG" class="img-fluid"></p>
+<!-- Section divider: Results -->
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide36.PNG" class="img-fluid"></p>
+<p><strong>Unconditional Generative Model:</strong></p>
+<p>The model learns to generate diverse geological structures across 14 rock-type categories from pure noise.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide37.PNG" class="img-fluid"></p>
+<p><strong>Conditional Generative Model:</strong> Given surface and borehole data, the model produces multiple plausible 3D reconstructions.</p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide38.PNG" class="img-fluid"></p>
+<p>By creating an ensemble of conditional samples from <img src="https://latex.codecogs.com/png.latex?P(%5Cmathbf%7Bm%7D%7C%5Cmathbf%7Bd%7D)">, we can estimate feature extent using votes from each voxel. This provides uncertainty quantification on geological features such as dike geometry and extent.</p>
+</section>
+<section id="conclusions-and-future-work" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Conclusions and Future Work</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide39.PNG" class="img-fluid"></p>
+<!-- Section divider: Conclusions -->
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide40.PNG" class="img-fluid"></p>
+<ul>
+<li><strong>Interpretability</strong>: Using attention weighting and sensitivity analysis to explain <em>why</em> the model reconstructed a specific feature based on conditional data. Sensitivity analysis and UQ to understand the robustness of solutions.</li>
+<li><strong>Multimodal Integration</strong>: Using the backbone network to ingest new data types through latent input fine-tuning.</li>
+<li><strong>Probability Scoring</strong>: Finding ways to score samples from a generative AI to quantify which models are more likely.</li>
+</ul>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide41.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide42.PNG" class="img-fluid"></p>
+<!-- Thank You -->
+</section>
+<section id="references" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> References</h1>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide43.PNG" class="img-fluid"></p>
+<p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide44.PNG" class="img-fluid"></p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-ghyselincks2026syntheticgeologystructuralgeology" class="csl-entry">
+Ghyselincks, Simon, Vitalii Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2025. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <em>Journal of Geophysical Research: Machine Learning and Computation</em>. <a href="https://doi.org/10.1029/2025JH000986">https://doi.org/10.1029/2025JH000986</a>.
+</div>
+<div id="ref-jessell2022noddyverse" class="csl-entry">
+Jessell, Mark, Jiateng Guo, Yixian Li, Mark Lindsay, Richard Scalzo, Jérémie Giraud, Guillaume Pirot, Edward Cripps, and Vitaliy Ogarko. 2022. <span>“Into the <span>N</span>oddyverse: A Massive Data Store of <span>3D</span> Geological Models for Machine Learning and Inversion Applications.”</span> <em>Earth System Science Data</em> 14 (1): 381–92.
+</div>
+<div id="ref-lipman2024flowmatchingguidecode" class="csl-entry">
+Lipman, Yaron, Marton Havasi, Peter Holderrieth, Neta Shaul, Matt Le, Brian Karrer, Ricky T. Q. Chen, David Lopez-Paz, Heli Ben-Hamu, and Itai Gat. 2024. <span>“Flow Matching Guide and Code.”</span> <em>arXiv Preprint arXiv:2412.06264</em>.
+</div>
+<div id="ref-delavarga2019gempy" class="csl-entry">
+Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<span>GemPy</span> 1.0: Open-Source Stochastic Geological Modeling and Inversion.”</span> <em>Geoscientific Model Development</em> 12: 1–32.
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Deep Learning</category>
+  <category>Structural Geology</category>
+  <category>Generative AI</category>
+  <category>Flow Matching</category>
+  <category>Inverse Problems</category>
+  <guid>https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/</guid>
+  <pubDate>Mon, 09 Mar 2026 07:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/vision.png" medium="image" type="image/png" height="43" width="144"/>
+</item>
 <item>
   <title>Numerical Methods for Deep Learning</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -423,131 +583,6 @@ Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated b
   <guid>https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/</guid>
   <pubDate>Thu, 12 Feb 2026 08:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG" medium="image"/>
-</item>
-<item>
-  <title>Synthetic Geology: Structural Geology Meets Deep Learning</title>
-  <dc:creator>Simon Ghyselincks</dc:creator>
-  <link>https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/</link>
-  <description><![CDATA[ 
-
-
-
-
-<section id="workshop" class="level2">
-<h2 class="anchored" data-anchor-id="workshop">Workshop</h2>
-<p><strong>Optimization, AI, and Inverse Problems Workshop</strong> Hosted by Dr.&nbsp;Ahmet Alacaoglu at UBC.</p>
-<p>This workshop brought together researchers and practitioners interested in optimization and its applications in AI and inverse problems, exploring the fundamentals of optimization algorithms and their applications in training AI models, as well as solving problems in key scientific applications such as geophysics, medical imaging, and physics.</p>
-<p>Key themes included:</p>
-<ul>
-<li>Adaptive optimization algorithms</li>
-<li>Structured optimization</li>
-<li>Applications of optimization algorithms in scientific applications</li>
-<li>High-dimensional problems, large datasets, limited computational resources, and application-specific constraints</li>
-</ul>
-</section>
-<section id="slides" class="level2">
-<h2 class="anchored" data-anchor-id="slides">Slides</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide1.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 1</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide2.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 2</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide3.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 3</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide4.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 4</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide5.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 5</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide6.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 6</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide7.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 7</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide8.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 8</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide9.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 9</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide10.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 10</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide11.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 11</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide12.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 12</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide13.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 13</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide14.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 14</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide15.PNG" class="img-fluid figure-img"></p>
-<figcaption>Slide 15</figcaption>
-</figure>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>Talk</category>
-  <category>Structural Geology</category>
-  <category>Generative AI</category>
-  <guid>https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/</guid>
-  <pubDate>Wed, 11 Feb 2026 08:00:00 GMT</pubDate>
-  <media:content url="https://chipnbits.github.io/content/talks/posts/caida-si-lightning-talk/imgs/Slide1.PNG" medium="image"/>
 </item>
 <item>
   <title>Generative Modeling for Structural Geology</title>
