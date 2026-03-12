@@ -133,10 +133,14 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../styles.css">
 <link rel="alternate" type="application/rss+xml" title="Simon Ghyselincks" href="index.xml" data-external="1"><meta property="og:title" content="Posts – Simon Ghyselincks">
-<meta property="og:image" content="https://chipnbits.github.io/blog/posts/scorematching/imgs/parzen_density_animation_with_gradients.gif">
+<meta property="og:image" content="https://chipnbits.github.io/blog/posts/isotropic-remeshing/imgs/teaser.png">
 <meta property="og:site_name" content="Simon Ghyselincks">
+<meta property="og:image:height" content="1206">
+<meta property="og:image:width" content="3599">
 <meta name="twitter:title" content="Posts – Simon Ghyselincks">
-<meta name="twitter:image" content="https://chipnbits.github.io/blog/posts/scorematching/imgs/parzen_density_animation_with_gradients.gif">
+<meta name="twitter:image" content="https://chipnbits.github.io/blog/posts/isotropic-remeshing/imgs/teaser.png">
+<meta name="twitter:image-height" content="1206">
+<meta name="twitter:image-width" content="3599">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -205,7 +209,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="SnVsaWE=">Julia <span class="quarto-category-count">(2)</span></div><div class="category" data-category="TGluZWFyJTIwQWxnZWJyYQ==">Linear Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWFjaGluZSUyMExlYXJuaW5n">Machine Learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="T3B0aW1pemF0aW9u">Optimization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UXVhcnRv">Quarto <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UmFuZG9taXplZCUyMEFsZ29yaXRobXM=">Randomized Algorithms <span class="quarto-category-count">(2)</span></div><div class="category" data-category="U2NvcmUlMjBNYXRjaGluZw==">Score Matching <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="QyUyQiUyQg==">C++ <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q29tcHV0ZXIlMjBHcmFwaGljcw==">Computer Graphics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SnVsaWE=">Julia <span class="quarto-category-count">(2)</span></div><div class="category" data-category="TGluZWFyJTIwQWxnZWJyYQ==">Linear Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWFjaGluZSUyMExlYXJuaW5n">Machine Learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWVzaCUyMFByb2Nlc3Npbmc=">Mesh Processing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="T3B0aW1pemF0aW9u">Optimization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UXVhcnRv">Quarto <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UmFuZG9taXplZCUyMEFsZ29yaXRobXM=">Randomized Algorithms <span class="quarto-category-count">(2)</span></div><div class="category" data-category="U2NvcmUlMjBNYXRjaGluZw==">Score Matching <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -234,7 +238,30 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-left" data-index="0" data-categories="UmFuZG9taXplZCUyMEFsZ29yaXRobXMlMkNMaW5lYXIlMjBBbGdlYnJhJTJDTWFjaGluZSUyMExlYXJuaW5n" data-listing-date-sort="1768694400000" data-listing-file-modified-sort="1773205157823" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="43" data-listing-word-count-sort="8522">
+<div class="quarto-post image-left" data-index="0" data-categories="Q29tcHV0ZXIlMjBHcmFwaGljcyUyQ01lc2glMjBQcm9jZXNzaW5nJTJDQyUyQiUyQg==" data-listing-date-sort="1773187200000" data-listing-file-modified-sort="1773290445701" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="95">
+<div class="thumbnail"><a href="../blog/posts/isotropic-remeshing/index.html" class="no-external">
+
+<img loading="lazy" src="../blog/posts/isotropic-remeshing/imgs/teaser.png" class="thumbnail-image">
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../blog/posts/isotropic-remeshing/index.html" class="no-external">Isotropic Remeshing with Boundary and Feature Preservation</a>
+</h3>
+<div class="delink listing-description"><a href="../blog/posts/isotropic-remeshing/index.html" class="no-external">
+<p>Implementation of uniform explicit isotropic remeshing following Botsch and Kobbelt (2004), with feature and boundary preservation. Developed for UBC CPSC 524 using C++ and Eigen.</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../blog/posts/isotropic-remeshing/index.html" class="no-external">
+<div class="listing-date">
+Mar 11, 2026
+</div>
+<div class="listing-reading-time">1 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-left" data-index="1" data-categories="UmFuZG9taXplZCUyMEFsZ29yaXRobXMlMkNMaW5lYXIlMjBBbGdlYnJhJTJDTWFjaGluZSUyMExlYXJuaW5n" data-listing-date-sort="1768694400000" data-listing-file-modified-sort="1773290445808" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="43" data-listing-word-count-sort="8522">
 <div class="thumbnail"><a href="../blog/posts/trace-estimation-hutchinson/index.html" class="no-external">
 
 <p class="card-img-top"><img src="posts/trace-estimation-hutchinson/figs/test_matrices_small.png"  class="thumbnail-image card-img"/></p>
@@ -257,7 +284,7 @@ Jan 18, 2026
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="1" data-categories="UmFuZG9taXplZCUyMEFsZ29yaXRobXM=" data-listing-date-sort="1761177600000" data-listing-file-modified-sort="1773205157723" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1484">
+<div class="quarto-post image-left" data-index="2" data-categories="UmFuZG9taXplZCUyMEFsZ29yaXRobXM=" data-listing-date-sort="1761177600000" data-listing-file-modified-sort="1773290445692" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1484">
 <div class="thumbnail"><a href="../blog/posts/Johnson-Lindenstrauss/index.html" class="no-external">
 
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
@@ -280,7 +307,7 @@ Oct 23, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="2" data-categories="T3B0aW1pemF0aW9uJTJDU2NvcmUlMjBNYXRjaGluZyUyQ0p1bGlh" data-listing-date-sort="1719014400000" data-listing-file-modified-sort="1773205157806" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3384">
+<div class="quarto-post image-left" data-index="3" data-categories="T3B0aW1pemF0aW9uJTJDU2NvcmUlMjBNYXRjaGluZyUyQ0p1bGlh" data-listing-date-sort="1719014400000" data-listing-file-modified-sort="1773290445791" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3384">
 <div class="thumbnail"><a href="../blog/posts/scorematching/index.html" class="no-external">
 
 <img loading="lazy" src="../blog/posts/scorematching/imgs/parzen_density_animation_with_gradients.gif" class="thumbnail-image">
@@ -303,7 +330,7 @@ Jun 22, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-left" data-index="3" data-categories="UXVhcnRvJTJDSnVsaWE=" data-listing-date-sort="1713744000000" data-listing-file-modified-sort="1773205157847" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="605">
+<div class="quarto-post image-left" data-index="4" data-categories="UXVhcnRvJTJDSnVsaWE=" data-listing-date-sort="1713744000000" data-listing-file-modified-sort="1773290445830" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="605">
 <div class="thumbnail"><a href="../blog/posts/welcome/index.html" class="no-external">
 
 <img loading="lazy" src="../blog/posts/welcome/imgs/heart.gif" class="thumbnail-image">
