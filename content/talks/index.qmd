@@ -1,5 +1,7 @@
 ---
 title: "Talks & Teaching"
+pagetitle: "Talks & Teaching — Simon Ghyselincks"
+description: "Conference presentations, guest lectures, and teaching materials by Simon Ghyselincks"
 sidebar: false
 listing:
   contents: posts

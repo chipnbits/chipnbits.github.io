@@ -1,6 +1,7 @@
 ---
 title: "Simon Ghyselincks"
-description: "PhD student at UBC Computer Science — research in scientific machine learning and generative AI"
+pagetitle: "Simon Ghyselincks — PhD-Track Student, UBC Computer Science"
+description: "PhD-track student at UBC Computer Science — research in scientific machine learning and generative AI"
 sidebar: false
 toc: false
 image: /www/images/profile-pictures/park-small.jpg

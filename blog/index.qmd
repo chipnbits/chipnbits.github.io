@@ -1,5 +1,7 @@
 ---
-title: "Posts"
+title: "Blog"
+pagetitle: "Blog — Simon Ghyselincks"
+description: "Technical blog posts on machine learning, computational science, and mathematical methods by Simon Ghyselincks"
 sidebar: false
 listing:
   contents: posts

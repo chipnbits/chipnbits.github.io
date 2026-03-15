@@ -1,5 +1,7 @@
 ---
 title: "Bio"
+pagetitle: "Biography — Simon Ghyselincks"
+description: "Background and journey of Simon Ghyselincks — from forestry and the Amazon to engineering physics and computer science at UBC"
 lightbox: true
 ---
 I came back to study at UBC in 2020 to revisit my interest in science and technology, after an injury required me to change lifestyles. In 2025 I graduated with a BASc in Engineering Physics and have continued my education further with a PhD program in Computer Science. It has been a challenging but rewarding journey, and I am excited to see where it takes me next. 

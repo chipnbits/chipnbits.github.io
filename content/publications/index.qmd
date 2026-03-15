@@ -1,5 +1,7 @@
 ---
 title: "Publications"
+pagetitle: "Publications — Simon Ghyselincks"
+description: "Research publications by Simon Ghyselincks in scientific machine learning, generative AI, and geophysics"
 listing:
   contents: .
   sort: "date desc"

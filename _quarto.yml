@@ -7,7 +7,7 @@ execute:
 
 website:
   title: "Simon Ghyselincks"
-  description: "A personal page for Simon Ghyselincks"
+  description: "Simon Ghyselincks — PhD-track student at UBC Computer Science researching scientific machine learning and generative AI"
   site-url: "https://chipnbits.github.io"
   site-path: "/"
   page-navigation: true
@@ -46,6 +46,8 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
-    include-in-header: google-site-verification.html
+    include-in-header:
+      - google-site-verification.html
+      - seo-head.html
     filters: 
       - shinylive
