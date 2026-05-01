@@ -9,8 +9,8 @@
 <link>https://chipnbits.github.io/content/talks/</link>
 <atom:link href="https://chipnbits.github.io/content/talks/index.xml" rel="self" type="application/rss+xml"/>
 <description>Conference presentations, guest lectures, and teaching materials by Simon Ghyselincks</description>
-<generator>quarto-1.5.53</generator>
-<lastBuildDate>Sun, 08 Mar 2026 21:00:00 GMT</lastBuildDate>
+<generator>quarto-1.9.37</generator>
+<lastBuildDate>Mon, 09 Mar 2026 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Synthetic Geology</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -44,7 +44,7 @@
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide13.PNG" class="img-fluid"></p>
 <!-- Section divider: GeoGen Synthetic Dataset -->
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide14.PNG" class="img-fluid"></p>
-<p>Structural geology examines the distribution of rocks and strata within the Earth’s crust. Generating full-scale 3D geological models can be costly. Existing tools include GemPy <span class="citation" data-cites="delavarga2019gempy">(Varga, Schaaf, and Wellmann 2019)</span> (shown with a forward model for simulated temperature based on conductivity) and the Noddy modeling kit with the Noddyverse set of randomized models <span class="citation" data-cites="jessell2022noddyverse">(Jessell et al. 2022)</span>.</p>
+<p>Structural geology examines the distribution of rocks and strata within the Earth’s crust. Generating full-scale 3D geological models can be costly. Existing tools include GemPy <span class="citation" data-cites="delavarga2019gempy">(Varga et al. 2019)</span> (shown with a forward model for simulated temperature based on conductivity) and the Noddy modeling kit with the Noddyverse set of randomized models <span class="citation" data-cites="jessell2022noddyverse">(Jessell et al. 2022)</span>.</p>
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide15.PNG" class="img-fluid"></p>
 <p>Our dataset is built as a geological computer and instruction set, with a layer of automated randomization on top. The pipeline starts with a <strong>modeling framework</strong>, uses <strong>random variables to sample geological events</strong>, applies <strong>randomized event sequencing</strong> for variety, and parallelizes through the PyTorch framework.</p>
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide16.PNG" class="img-fluid"></p>
@@ -143,15 +143,15 @@
 <h1 data-number="6"><span class="header-section-number">6</span> References</h1>
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide43.PNG" class="img-fluid"></p>
 <p><img src="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/Slide44.PNG" class="img-fluid"></p>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-ghyselincks2026syntheticgeologystructuralgeology" class="csl-entry">
-Ghyselincks, Simon, Vitalii Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2025. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <em>Journal of Geophysical Research: Machine Learning and Computation</em>. <a href="https://doi.org/10.1029/2025JH000986">https://doi.org/10.1029/2025JH000986</a>.
+Ghyselincks, Simon, Vitalii Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2025. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <em>Journal of Geophysical Research: Machine Learning and Computation</em>, ahead of print. <a href="https://doi.org/10.1029/2025JH000986">https://doi.org/10.1029/2025JH000986</a>.
 </div>
 <div id="ref-jessell2022noddyverse" class="csl-entry">
-Jessell, Mark, Jiateng Guo, Yixian Li, Mark Lindsay, Richard Scalzo, Jérémie Giraud, Guillaume Pirot, Edward Cripps, and Vitaliy Ogarko. 2022. <span>“Into the <span>N</span>oddyverse: A Massive Data Store of <span>3D</span> Geological Models for Machine Learning and Inversion Applications.”</span> <em>Earth System Science Data</em> 14 (1): 381–92.
+Jessell, Mark, Jiateng Guo, Yixian Li, et al. 2022. <span>“Into the <span>N</span>oddyverse: A Massive Data Store of <span>3D</span> Geological Models for Machine Learning and Inversion Applications.”</span> <em>Earth System Science Data</em> 14 (1): 381–92.
 </div>
 <div id="ref-lipman2024flowmatchingguidecode" class="csl-entry">
-Lipman, Yaron, Marton Havasi, Peter Holderrieth, Neta Shaul, Matt Le, Brian Karrer, Ricky T. Q. Chen, David Lopez-Paz, Heli Ben-Hamu, and Itai Gat. 2024. <span>“Flow Matching Guide and Code.”</span> <em>arXiv Preprint arXiv:2412.06264</em>.
+Lipman, Yaron, Marton Havasi, Peter Holderrieth, et al. 2024. <span>“Flow Matching Guide and Code.”</span> <em>arXiv Preprint arXiv:2412.06264</em>.
 </div>
 <div id="ref-delavarga2019gempy" class="csl-entry">
 Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<span>GemPy</span> 1.0: Open-Source Stochastic Geological Modeling and Inversion.”</span> <em>Geoscientific Model Development</em> 12: 1–32.
@@ -168,7 +168,7 @@ Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<spa
   <category>Flow Matching</category>
   <category>Inverse Problems</category>
   <guid>https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/</guid>
-  <pubDate>Sun, 08 Mar 2026 21:00:00 GMT</pubDate>
+  <pubDate>Mon, 09 Mar 2026 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/GTK_Finland_talk/imgs/vision.png" medium="image" type="image/png" height="43" width="144"/>
 </item>
 <item>
@@ -440,7 +440,7 @@ Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<spa
 <ul>
 <li>We can take the limit as as the step size goes to zero for an infinite depth ResNet</li>
 </ul>
-<p>This gives us the integral equation, we use a Neural ODE <span class="citation" data-cites="chen2019neuralODEs">(Chen et al. 2019)</span> to learn the velocity field directly. Some variants are not time dependent such as Deep Equilibrium models (DEQs) <span class="citation" data-cites="bai2019deepequilibriummodels">(Bai, Kolter, and Koltun 2019)</span>. Some have a “time-embedding” that conveys the continuous time throughout the learning model. For inference we simply integrate the learned function using a numerical solver. This offers many approaches for handling the computation, choice of ODE integrator. What sort of integrators can we use for an arbitrary function?</p>
+<p>This gives us the integral equation, we use a Neural ODE <span class="citation" data-cites="chen2019neuralODEs">(Chen et al. 2019)</span> to learn the velocity field directly. Some variants are not time dependent such as Deep Equilibrium models (DEQs) <span class="citation" data-cites="bai2019deepequilibriummodels">(Bai et al. 2019)</span>. Some have a “time-embedding” that conveys the continuous time throughout the learning model. For inference we simply integrate the learned function using a numerical solver. This offers many approaches for handling the computation, choice of ODE integrator. What sort of integrators can we use for an arbitrary function?</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide23.PNG" class="img-fluid figure-img"></p>
@@ -550,30 +550,30 @@ Varga, Miguel de la, Alexander Schaaf, and Florian Wellmann. 2019. <span>“<spa
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-bai2019deepequilibriummodels" class="csl-entry">
-Bai, Shaojie, J. Zico Kolter, and Vladlen Koltun. 2019. <span>“Deep Equilibrium Models.”</span> <a href="https://arxiv.org/abs/1909.01377">https://arxiv.org/abs/1909.01377</a>.
+Bai, Shaojie, J. Zico Kolter, and Vladlen Koltun. 2019. <em>Deep Equilibrium Models</em>. <a href="https://arxiv.org/abs/1909.01377">https://arxiv.org/abs/1909.01377</a>.
 </div>
 <div id="ref-chen2019neuralODEs" class="csl-entry">
-Chen, Ricky T. Q., Yulia Rubanova, Jesse Bettencourt, and David Duvenaud. 2019. <span>“Neural Ordinary Differential Equations.”</span> <a href="https://arxiv.org/abs/1806.07366">https://arxiv.org/abs/1806.07366</a>.
+Chen, Ricky T. Q., Yulia Rubanova, Jesse Bettencourt, and David Duvenaud. 2019. <em>Neural Ordinary Differential Equations</em>. <a href="https://arxiv.org/abs/1806.07366">https://arxiv.org/abs/1806.07366</a>.
 </div>
 <div id="ref-gal2025llms" class="csl-entry">
-Gal, Eshed, Moshe Eliasof, Javier Turek, Uri Ascher, Eran Treister, and Eldad Haber. 2025. <span>“Reversing Large Language Models for Efficient Training and Fine-Tuning.”</span> <a href="https://arxiv.org/abs/2512.02056">https://arxiv.org/abs/2512.02056</a>.
+Gal, Eshed, Moshe Eliasof, Javier Turek, Uri Ascher, Eran Treister, and Eldad Haber. 2025. <em>Reversing Large Language Models for Efficient Training and Fine-Tuning</em>. <a href="https://arxiv.org/abs/2512.02056">https://arxiv.org/abs/2512.02056</a>.
 </div>
 <div id="ref-ghyselincks2026syntheticgeologystructuralgeology" class="csl-entry">
-Ghyselincks, Simon, Valeriia Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2026. <span>“Synthetic Geology: Structural Geology Meets Deep Learning.”</span> <a href="https://arxiv.org/abs/2506.11164">https://arxiv.org/abs/2506.11164</a>.
+Ghyselincks, Simon, Valeriia Okhmak, Stefano Zampini, George Turkiyyah, David Keyes, and Eldad Haber. 2026. <em>Synthetic Geology: Structural Geology Meets Deep Learning</em>. <a href="https://arxiv.org/abs/2506.11164">https://arxiv.org/abs/2506.11164</a>.
 </div>
 <div id="ref-Haber_2017" class="csl-entry">
 Haber, Eldad, and Lars Ruthotto. 2017. <span>“Stable Architectures for Deep Neural Networks.”</span> <em>Inverse Problems</em> 34 (1): 014004. <a href="https://doi.org/10.1088/1361-6420/aa9a90">https://doi.org/10.1088/1361-6420/aa9a90</a>.
 </div>
 <div id="ref-he2015resnet" class="csl-entry">
-He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Residual Learning for Image Recognition.”</span> <a href="https://arxiv.org/abs/1512.03385">https://arxiv.org/abs/1512.03385</a>.
+He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <em>Deep Residual Learning for Image Recognition</em>. <a href="https://arxiv.org/abs/1512.03385">https://arxiv.org/abs/1512.03385</a>.
 </div>
 <div id="ref-lipman2024flowmatchingguidecode" class="csl-entry">
-Lipman, Yaron, Marton Havasi, Peter Holderrieth, Neta Shaul, Matt Le, Brian Karrer, Ricky T. Q. Chen, David Lopez-Paz, Heli Ben-Hamu, and Itai Gat. 2024. <span>“Flow Matching Guide and Code.”</span> <a href="https://arxiv.org/abs/2412.06264">https://arxiv.org/abs/2412.06264</a>.
+Lipman, Yaron, Marton Havasi, Peter Holderrieth, et al. 2024. <em>Flow Matching Guide and Code</em>. <a href="https://arxiv.org/abs/2412.06264">https://arxiv.org/abs/2412.06264</a>.
 </div>
 <div id="ref-ruthotto2018deepneuralnetworksmotivated" class="csl-entry">
-Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated by Partial Differential Equations.”</span> <a href="https://arxiv.org/abs/1804.04272">https://arxiv.org/abs/1804.04272</a>.
+Ruthotto, Lars, and Eldad Haber. 2018. <em>Deep Neural Networks Motivated by Partial Differential Equations</em>. <a href="https://arxiv.org/abs/1804.04272">https://arxiv.org/abs/1804.04272</a>.
 </div>
 </div></section></div> ]]></description>
   <category>Deep Learning</category>
@@ -581,7 +581,7 @@ Ruthotto, Lars, and Eldad Haber. 2018. <span>“Deep Neural Networks Motivated b
   <category>Ordinary Differential Equations</category>
   <category>Generative AI</category>
   <guid>https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/</guid>
-  <pubDate>Wed, 11 Feb 2026 21:00:00 GMT</pubDate>
+  <pubDate>Thu, 12 Feb 2026 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/ODEs_guest_lecture/imgs/Slide16.PNG" medium="image"/>
 </item>
 <item>
@@ -609,7 +609,7 @@ This is an embedded <a target="_blank" href="https://office.com">Microsoft Offic
   <category>GeoGen</category>
   <category>Stochastic Interpolation</category>
   <guid>https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/</guid>
-  <pubDate>Sun, 20 Oct 2024 21:00:00 GMT</pubDate>
+  <pubDate>Mon, 21 Oct 2024 00:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/talks/posts/CAP-conference-poster/imgs/cover.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 </channel>
