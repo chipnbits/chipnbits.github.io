@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/blog/posts/model-souping/index.html",
       "/blog/posts/isotropic-remeshing/index.html",
       "/content/talks/posts/GTK_Finland_talk/index.html",
       "/content/publications/structural-geo-deep-learning/index.html",
@@ -25,6 +26,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/posts/model-souping/index.html",
       "/blog/posts/isotropic-remeshing/index.html",
       "/blog/posts/trace-estimation-hutchinson/index.html",
       "/blog/posts/Johnson-Lindenstrauss/index.html",

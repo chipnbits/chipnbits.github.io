@@ -10,7 +10,7 @@
 <atom:link href="https://chipnbits.github.io/content/eosc555/index.xml" rel="self" type="application/rss+xml"/>
 <description>Simon Ghyselincks — PhD-track student at UBC Computer Science researching scientific machine learning and generative AI</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Mon, 25 Nov 2024 08:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 24 Nov 2024 21:00:00 GMT</lastBuildDate>
 <item>
   <title>Lecture 11</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -564,7 +564,7 @@ background-color: null;
 font-style: inherit;">''</span>)</span>
 <span id="cb1-124">plt.show()</span></code></pre></div>
 </details>
-<div id="25d8585b" class="cell quarto-layout-panel" data-execution_count="2" data-layout-ncol="3">
+<div id="25d8585b" class="cell quarto-layout-panel" data-layout-ncol="3" data-execution_count="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <p><img src="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-1.png" class="img-fluid" width="448"></p>
@@ -667,7 +667,7 @@ Hyvärinen, Aapo. 2005. <span>“Estimation of Non-Normalized Statistical Models
   <category>Neural Networks</category>
   <category>Score Matching</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture11/</guid>
-  <pubDate>Mon, 25 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Sun, 24 Nov 2024 21:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lecture 10</title>
@@ -1778,7 +1778,7 @@ Schervish, Mark J. 1995. <em>Theory of Statistics</em>. Springer Series in Stati
   <category>Bayesian Inference</category>
   <category>Score</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture10/</guid>
-  <pubDate>Fri, 22 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Thu, 21 Nov 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture10/imgs/langevin_dynamics.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -5028,7 +5028,7 @@ Crespo Marques, Elaine, Nilson Maciel, Lirida Naviner, Hao Cai, and Jun Yang. 20
   <category>Neural Networks</category>
   <category>Geophysics</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/project/</guid>
-  <pubDate>Fri, 15 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Thu, 14 Nov 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
@@ -5573,7 +5573,7 @@ He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2015. <span>“Deep Resi
   <category>Machine Learning</category>
   <category>Neural Networks</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture9/</guid>
-  <pubDate>Tue, 05 Nov 2024 08:00:00 GMT</pubDate>
+  <pubDate>Mon, 04 Nov 2024 21:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Lecture 8</title>
@@ -6199,7 +6199,7 @@ Figure&nbsp;2: A comparison of different regularization effects on a noisy image
   <category>Probability</category>
   <category>Bayesian Inference</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture8/</guid>
-  <pubDate>Sun, 03 Nov 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sat, 02 Nov 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture8/imgs/regularization_effects.png" medium="image" type="image/png" height="96" width="144"/>
 </item>
 <item>
@@ -7653,7 +7653,7 @@ Wikipedia. 2024. <span>“Pattern Search (Optimization).”</span> <a href="http
   <category>Homotopy</category>
   <category>Fourier Transform</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture7/</guid>
-  <pubDate>Tue, 22 Oct 2024 07:00:00 GMT</pubDate>
+  <pubDate>Mon, 21 Oct 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture7/imgs/gaussian_homotopy.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -9072,7 +9072,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-comment-delimiter="//" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number-punc=":" data-caption-prefix="Algorithm">
+<div class="pseudocode-container quarto-float" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="//" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -9806,7 +9806,7 @@ font-style: inherit;">"True vs Predicted Population"</span>)</span>
   <category>Automatic Differentiation</category>
   <category>PyTorch</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture6/</guid>
-  <pubDate>Tue, 08 Oct 2024 07:00:00 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture6/imgs/fitting_animation_time_varying.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -10590,7 +10590,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
 <section id="algorithm-for-gauss-newton" class="level3">
 <h3 class="anchored" data-anchor-id="algorithm-for-gauss-newton">Algorithm for Gauss-Newton</h3>
 <p>We have derived the algorithm for the Gauss-Newton method for solving the non-linear least squares problem. The algorithm is as follows:</p>
-<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-line-number-punc=":" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
@@ -10673,7 +10673,7 @@ font-style: inherit;">'imgs/lotka_volterra_phase_space.png'</span>)</span>
   <category>Optimization</category>
   <category>Gauss-Newton</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture5/</guid>
-  <pubDate>Wed, 25 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Tue, 24 Sep 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture5/imgs/lotka_volterra_phase_space.png" medium="image" type="image/png" height="108" width="144"/>
 </item>
 <item>
@@ -11344,7 +11344,7 @@ font-style: inherit;"># Adjust layout and add a legend</span></span>
   <category>Inverse Theory</category>
   <category>Python</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture4/</guid>
-  <pubDate>Fri, 20 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Thu, 19 Sep 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture4/imgs/tikhonov_regularization.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
@@ -13383,7 +13383,7 @@ font-style: inherit;">'off'</span>)</span>
   <category>Torch</category>
   <category>Adjoint</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture3/</guid>
-  <pubDate>Tue, 17 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Mon, 16 Sep 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture3/imgs/gradient_flow.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -15805,7 +15805,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <category>Torch</category>
   <category>SVD</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture2/</guid>
-  <pubDate>Sun, 15 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sat, 14 Sep 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture2/imgs/gaussian_plot.png" medium="image" type="image/png" height="115" width="144"/>
 </item>
 <item>
@@ -15914,7 +15914,7 @@ font-style: inherit;"># Optionally turn off axis ticks and labels</span></span>
   <category>Torch</category>
   <category>SVD</category>
   <guid>https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/</guid>
-  <pubDate>Sat, 14 Sep 2024 07:00:00 GMT</pubDate>
+  <pubDate>Fri, 13 Sep 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/content/eosc555/lectures/lecture1-2/imgs/ls-sol.svg" medium="image" type="image/svg+xml"/>
 </item>
 </channel>

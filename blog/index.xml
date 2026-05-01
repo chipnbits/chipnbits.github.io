@@ -10,7 +10,50 @@
 <atom:link href="https://chipnbits.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Technical blog posts on machine learning, computational science, and mathematical methods by Simon Ghyselincks</description>
 <generator>quarto-1.5.53</generator>
-<lastBuildDate>Wed, 11 Mar 2026 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 26 Apr 2026 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>When is Model Souping Tasty?</title>
+  <dc:creator>Simon Ghyselincks</dc:creator>
+  <dc:creator>Pierre Mackenzie</dc:creator>
+  <dc:creator>Evan Shelhamer</dc:creator>
+  <link>https://chipnbits.github.io/blog/posts/model-souping/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><em>Authors: Simon Ghyselincks*, Pierre Mackenzie*, Evan Shelhamer. *Equal contribution. University of British Columbia and Vector Institute.</em></p>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://openreview.net/forum?id=59weCTbw1Q">OpenReview (ICLR 2026 TTU Workshop)</a></li>
+<li><a href="poster.pdf">Poster (PDF)</a></li>
+<li><a href="https://github.com/chipnbits/too-salty">Code (GitHub)</a></li>
+</ul>
+<p>Accepted to the <a href="https://ttu-iclr2026.github.io/">ICLR 2026 Test-Time Updates (TTU) Workshop</a> and presented as a poster on April 27, 2026 in Brazil.</p>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<p>Model souping is a post-training technique where the parameters of models are averaged, often leading to improved performance over constituent models without increasing inference cost. However, the specific conditions required for success are not well understood, particularly regarding the trade-off between model diversity and stability. We analyse over 5,000 two-model ResNet-50 soups trained on CIFAR-100, with diversity controlled by branching ingredients from a shared training trajectory at varying epochs. We find that effective souping requires a balance: models must be similar enough to avoid model collapse, but diverse enough to yield improvements. We show that we can predict soupability relatively well with standard similarity metrics. Furthermore, we provide empirical evidence for the hypothesis that souping works by averaging within a low-loss basin by showing that souping is moderately transitive. We also observe that soup gains on corrupted data are strongly correlated with those on in-distribution data. Our findings yield practical advice for machine learning practitioners: if you want a tasty soup, use the right cooking time!</p>
+</section>
+<section id="poster" class="level2">
+<h2 class="anchored" data-anchor-id="poster">Poster</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://chipnbits.github.io/blog/posts/model-souping/poster.png" class="img-fluid figure-img"></p>
+<figcaption>Workshop poster, presented at ICLR 2026 TTU.</figcaption>
+</figure>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>Machine Learning</category>
+  <category>Deep Learning</category>
+  <category>Model Averaging</category>
+  <guid>https://chipnbits.github.io/blog/posts/model-souping/</guid>
+  <pubDate>Sun, 26 Apr 2026 21:00:00 GMT</pubDate>
+  <media:content url="https://chipnbits.github.io/blog/posts/model-souping/imgs/teaser.png" medium="image" type="image/png" height="216" width="144"/>
+</item>
 <item>
   <title>Isotropic Remeshing with Boundary and Feature Preservation</title>
   <dc:creator>Simon Ghyselincks</dc:creator>
@@ -38,7 +81,7 @@
   <category>Mesh Processing</category>
   <category>C++</category>
   <guid>https://chipnbits.github.io/blog/posts/isotropic-remeshing/</guid>
-  <pubDate>Wed, 11 Mar 2026 07:00:00 GMT</pubDate>
+  <pubDate>Tue, 10 Mar 2026 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/blog/posts/isotropic-remeshing/imgs/teaser.png" medium="image" type="image/png" height="48" width="144"/>
 </item>
 <item>
@@ -1963,7 +2006,7 @@ Woodruff, David P., Fred Zhang, and Qiuyi (Richard) Zhang. 2022. <span>“Optima
   <category>Linear Algebra</category>
   <category>Machine Learning</category>
   <guid>https://chipnbits.github.io/blog/posts/trace-estimation-hutchinson/</guid>
-  <pubDate>Sun, 18 Jan 2026 08:00:00 GMT</pubDate>
+  <pubDate>Sat, 17 Jan 2026 21:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Dimensionality Reduction with the Johnson-Lindenstrauss Lemma</title>
@@ -2109,7 +2152,7 @@ Wikipedia contributors. 2025. <span>“<span class="nocase">Chi-squared distribu
 </div></section></div> ]]></description>
   <category>Randomized Algorithms</category>
   <guid>https://chipnbits.github.io/blog/posts/Johnson-Lindenstrauss/</guid>
-  <pubDate>Thu, 23 Oct 2025 07:00:00 GMT</pubDate>
+  <pubDate>Wed, 22 Oct 2025 21:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Score Matching for Density Estimation</title>
@@ -19223,7 +19266,7 @@ Krizhevsky, Alex. 2009. <span>“Learning Multiple Layers of Features from Tiny 
   <category>Score Matching</category>
   <category>Julia</category>
   <guid>https://chipnbits.github.io/blog/posts/scorematching/</guid>
-  <pubDate>Sat, 22 Jun 2024 07:00:00 GMT</pubDate>
+  <pubDate>Fri, 21 Jun 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/blog/posts/scorematching/imgs/parzen_density_animation_with_gradients.gif" medium="image" type="image/gif"/>
 </item>
 <item>
@@ -21862,7 +21905,7 @@ Figure&nbsp;2: Heart Animation Example
   <category>Quarto</category>
   <category>Julia</category>
   <guid>https://chipnbits.github.io/blog/posts/welcome/</guid>
-  <pubDate>Mon, 22 Apr 2024 07:00:00 GMT</pubDate>
+  <pubDate>Sun, 21 Apr 2024 21:00:00 GMT</pubDate>
   <media:content url="https://chipnbits.github.io/blog/posts/welcome/imgs/heart.gif" medium="image" type="image/gif"/>
 </item>
 </channel>
