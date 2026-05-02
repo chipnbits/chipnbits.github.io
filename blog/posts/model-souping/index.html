@@ -6,9 +6,13 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Research publications by Simon Ghyselincks in scientific machine learning, generative AI, and geophysics">
+<meta name="author" content="Simon Ghyselincks">
+<meta name="author" content="Pierre Mackenzie">
+<meta name="author" content="Evan Shelhamer">
+<meta name="dcterms.date" content="2026-04-27">
+<meta name="description" content="An empirical study of when model souping (parameter averaging of independently fine-tuned models) successfully improves performance. Over 5,000 ResNet-50 soups on CIFAR-100 reveal a tradeoff between model similarity and diversity, evidence that souping is moderately transitive, and a strong correlation between in-distribution and out-of-distribution gains. Accepted to the ICLR 2026 Test-Time Updates (TTU) Workshop.">
 
-<title>Publications — Simon Ghyselincks – Simon Ghyselincks</title>
+<title>When is Model Souping Tasty? – Simon Ghyselincks</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,25 +31,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,35 +75,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-title','listing-date','listing-venue','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
 <script type="application/ld+json">
 {
@@ -135,48 +108,19 @@ ul.task-list li input[type="checkbox"] {
 }
 </script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Publications — Simon Ghyselincks">
-<meta property="og:description" content="Research publications by Simon Ghyselincks in scientific machine learning, generative AI, and geophysics">
-<meta property="og:image" content="https://chipnbits.github.io/content/publications/structural-geo-deep-learning/imgs/thumbnail.png">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="When is Model Souping Tasty? – Simon Ghyselincks">
+<meta property="og:description" content="An empirical study of when model souping (parameter averaging of independently fine-tuned models) successfully improves performance. Over 5,000 ResNet-50 soups on CIFAR-100 reveal a tradeoff between model similarity and diversity, evidence that souping is moderately transitive, and a strong correlation between in-distribution and out-of-distribution gains. Accepted to the ICLR 2026 Test-Time Updates (TTU) Workshop.">
+<meta property="og:image" content="https://chipnbits.github.io/blog/posts/model-souping/imgs/teaser.png">
 <meta property="og:site_name" content="Simon Ghyselincks">
-<meta property="og:image:height" content="942">
-<meta property="og:image:width" content="826">
-<meta name="twitter:title" content="Publications — Simon Ghyselincks">
-<meta name="twitter:description" content="Research publications by Simon Ghyselincks in scientific machine learning, generative AI, and geophysics">
-<meta name="twitter:image" content="https://chipnbits.github.io/content/publications/structural-geo-deep-learning/imgs/thumbnail.png">
-<meta name="twitter:image-height" content="942">
-<meta name="twitter:image-width" content="826">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:width" content="800">
+<meta name="twitter:title" content="When is Model Souping Tasty? – Simon Ghyselincks">
+<meta name="twitter:description" content="An empirical study of when model souping (parameter averaging of independently fine-tuned models) successfully improves performance. Over 5,000 ResNet-50 soups on CIFAR-100 reveal a tradeoff between model similarity and diversity, evidence that souping is moderately transitive, and a strong correlation between in-distribution and out-of-distribution gains. Accepted to the ICLR 2026 Test-Time Updates (TTU) Workshop.">
+<meta name="twitter:image" content="https://chipnbits.github.io/blog/posts/model-souping/imgs/teaser.png">
+<meta name="twitter:image-height" content="1200">
+<meta name="twitter:image-width" content="800">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -187,7 +131,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Simon Ghyselincks</span>
     </a>
   </div>
@@ -198,19 +142,19 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../content/about/biography.html"> 
+    <a class="nav-link" href="../../../content/about/biography.html"> 
 <span class="menu-text">Bio</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../content/publications/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../content/publications/index.html"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../content/talks/index.html"> 
+    <a class="nav-link" href="../../../content/talks/index.html"> 
 <span class="menu-text">Talks &amp; Teaching</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -219,17 +163,17 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
         <li>
-    <a class="dropdown-item" href="../../content/eosc555/index.html">
+    <a class="dropdown-item" href="../../../content/eosc555/index.html">
  <span class="dropdown-text">EOSC 555</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../content/projects/RLUnicycle/introduction.html">
+    <a class="dropdown-item" href="../../../content/projects/RLUnicycle/introduction.html">
  <span class="dropdown-text">Learning to Balance</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="../../blog/index.html"> 
+    <a class="nav-link" href="../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -244,26 +188,53 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="RGljdGlvbmFyeSUyMExlYXJuaW5n">Dictionary Learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R2VuZXJhdGl2ZSUyMEFJ">Generative AI <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R2VvcGh5c2ljcw==">Geophysics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWFjaGluZSUyMExlYXJuaW5n">Machine Learning <span class="quarto-category-count">(2)</span></div><div class="category" data-category="U2NhbGUlMjBTcGFjZSUyME1ldGhvZHM=">Scale Space Methods <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U3RydWN0dXJhbCUyMEdlb2xvZ3k=">Structural Geology <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#poster" id="toc-poster" class="nav-link" data-scroll-target="#poster">Poster</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Publications</h1>
-</div>
+<h1 class="title">When is Model Souping Tasty?</h1>
+<p class="subtitle lead">Similarity, Transitivity, and Robustness</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">Deep Learning</div>
+    <div class="quarto-category">Model Averaging</div>
+  </div>
+  </div>
 
 <div>
   <div class="description">
-    Research publications by Simon Ghyselincks in scientific machine learning, generative AI, and geophysics
+    An empirical study of when model souping (parameter averaging of independently fine-tuned models) successfully improves performance. Over 5,000 ResNet-50 soups on CIFAR-100 reveal a tradeoff between model similarity and diversity, evidence that souping is moderately transitive, and a strong correlation between in-distribution and out-of-distribution gains. Accepted to the ICLR 2026 Test-Time Updates (TTU) Workshop.
   </div>
 </div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Simon Ghyselincks </p>
+             <p>Pierre Mackenzie </p>
+             <p>Evan Shelhamer </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 27, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -273,66 +244,31 @@ window.Quarto = {
 </header>
 
 
-<p>Below is a list of my recent publications. For a complete list please visit my <a href="https://scholar.google.ca/citations?user=BJEuhwcAAAAJ&amp;hl=en">Google Scholar</a> profile.</p>
+<p><em>Authors: Simon Ghyselincks*, Pierre Mackenzie*, Evan Shelhamer. *Equal contribution. University of British Columbia and Vector Institute.</em></p>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://openreview.net/forum?id=59weCTbw1Q">OpenReview (ICLR 2026 TTU Workshop)</a></li>
+<li><a href="poster.pdf">Poster (PDF)</a></li>
+<li><a href="https://github.com/chipnbits/too-salty">Code (GitHub)</a></li>
+</ul>
+<p>Accepted to the <a href="https://ttu-iclr2026.github.io/">ICLR 2026 Test-Time Updates (TTU) Workshop</a> and presented as a poster on April 27, 2026 in Brazil.</p>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<p>Model souping is a post-training technique where the parameters of models are averaged, often leading to improved performance over constituent models without increasing inference cost. However, the specific conditions required for success are not well understood, particularly regarding the trade-off between model diversity and stability. We analyse over 5,000 two-model ResNet-50 soups trained on CIFAR-100, with diversity controlled by branching ingredients from a shared training trajectory at varying epochs. We find that effective souping requires a balance: models must be similar enough to avoid model collapse, but diverse enough to yield improvements. We show that we can predict soupability relatively well with standard similarity metrics. Furthermore, we provide empirical evidence for the hypothesis that souping works by averaging within a low-loss basin by showing that souping is moderately transitive. We also observe that soup gains on corrupted data are strongly correlated with those on in-distribution data. Our findings yield practical advice for machine learning practitioners: if you want a tasty soup, use the right cooking time!</p>
+</section>
+<section id="poster" class="level2">
+<h2 class="anchored" data-anchor-id="poster">Poster</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="poster.png" class="img-fluid figure-img"></p>
+<figcaption>Workshop poster, presented at ICLR 2026 TTU.</figcaption>
+</figure>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-left" data-index="0" data-categories="U3RydWN0dXJhbCUyMEdlb2xvZ3klMkNNYWNoaW5lJTIwTGVhcm5pbmclMkNHZW5lcmF0aXZlJTIwQUk=" data-listing-date-sort="1772323200000" data-listing-file-modified-sort="1777756570564" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="10">
-<div class="thumbnail"><a href="../../content/publications/structural-geo-deep-learning/index.html" class="no-external">
-
-<img loading="lazy" src="../../content/publications/structural-geo-deep-learning/imgs/thumbnail.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../content/publications/structural-geo-deep-learning/index.html" class="no-external">Structural Geology Meets Deep Learning</a>
-</h3>
-<div class="delink listing-description"><a href="../../content/publications/structural-geo-deep-learning/index.html" class="no-external">
-<p>A 3d geological simulation engine that can produce fast computation samples is presented. The synthetic dataset is used to train a generative AI model that can be used as a prior for solving difficult inverse problems in geophysics.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../content/publications/structural-geo-deep-learning/index.html" class="no-external">
-<div class="listing-date">
-2026
-</div>
-<div class="metadata-value listing-venue">
-Journal of Geophysical Research: Machine Learning and Computation (preprint on arXiv)
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-left" data-index="1" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDR2VvcGh5c2ljcyUyQ0RpY3Rpb25hcnklMjBMZWFybmluZyUyQ1NjYWxlJTIwU3BhY2UlMjBNZXRob2Rz" data-listing-date-sort="1747440000000" data-listing-file-modified-sort="1777756570564" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="13">
-<div class="thumbnail"><a href="../../content/publications/ssvm-magnetic-data-inversion/index.html" class="no-external">
-
-<img loading="lazy" src="../../content/publications/ssvm-magnetic-data-inversion/imgs/thumbnail.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../content/publications/ssvm-magnetic-data-inversion/index.html" class="no-external">Inversion of Magnetic Data Using Learned Dictionaries and Scale Space</a>
-</h3>
-<div class="delink listing-description"><a href="../../content/publications/ssvm-magnetic-data-inversion/index.html" class="no-external">
-<p>Integrates dictionary learning and scale-space methods for adaptive magnetic data inversion, improving reconstruction accuracy and robustness in geophysical applications.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../content/publications/ssvm-magnetic-data-inversion/index.html" class="no-external">
-<div class="listing-date">
-2025
-</div>
-<div class="metadata-value listing-venue">
-International Conference on Scale Space and Variational Methods in Computer Vision (SSVM)
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
