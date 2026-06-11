@@ -1,25 +1,13 @@
 [
   {
-    "listing": "/index.html",
+    "listing": "/blog/index.html",
     "items": [
       "/blog/posts/model-souping/index.html",
       "/blog/posts/isotropic-remeshing/index.html",
-      "/content/talks/posts/GTK_Finland_talk/index.html",
-      "/content/publications/structural-geo-deep-learning/index.html",
-      "/content/talks/posts/ODEs_guest_lecture/index.html",
       "/blog/posts/trace-estimation-hutchinson/index.html",
       "/blog/posts/Johnson-Lindenstrauss/index.html",
-      "/content/publications/ssvm-magnetic-data-inversion/index.html",
-      "/content/talks/posts/CAP-conference-poster/index.html",
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
-    ]
-  },
-  {
-    "listing": "/content/publications/index.html",
-    "items": [
-      "/content/publications/structural-geo-deep-learning/index.html",
-      "/content/publications/ssvm-magnetic-data-inversion/index.html"
     ]
   },
   {
@@ -28,6 +16,13 @@
       "/content/talks/posts/GTK_Finland_talk/index.html",
       "/content/talks/posts/ODEs_guest_lecture/index.html",
       "/content/talks/posts/CAP-conference-poster/index.html"
+    ]
+  },
+  {
+    "listing": "/content/publications/index.html",
+    "items": [
+      "/content/publications/structural-geo-deep-learning/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html"
     ]
   },
   {
@@ -48,12 +43,17 @@
     ]
   },
   {
-    "listing": "/blog/index.html",
+    "listing": "/index.html",
     "items": [
       "/blog/posts/model-souping/index.html",
       "/blog/posts/isotropic-remeshing/index.html",
+      "/content/talks/posts/GTK_Finland_talk/index.html",
+      "/content/publications/structural-geo-deep-learning/index.html",
+      "/content/talks/posts/ODEs_guest_lecture/index.html",
       "/blog/posts/trace-estimation-hutchinson/index.html",
       "/blog/posts/Johnson-Lindenstrauss/index.html",
+      "/content/publications/ssvm-magnetic-data-inversion/index.html",
+      "/content/talks/posts/CAP-conference-poster/index.html",
       "/blog/posts/scorematching/index.html",
       "/blog/posts/welcome/index.html"
     ]

@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Ghyselincks">
 <meta name="dcterms.date" content="2024-11-15">
-<meta name="description" content="Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.">
+<meta name="description" content="Geomagnetic inversion is a common problem in geophysics where the goal is to recover a 3D distribution of physical properties of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover a model that matches the true distribution. In this project, a series of advanced techniques are applied to attempt to recover the true distribution.">
 
 <title>Project Work 1 – Simon Ghyselincks</title>
 <style>
@@ -96,10 +96,10 @@ div.csl-indent {
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -194,13 +194,13 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="Project Work 1 – Simon Ghyselincks">
-<meta property="og:description" content="Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.">
+<meta property="og:description" content="Geomagnetic inversion is a common problem in geophysics where the goal is to recover a 3D distribution of physical properties of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover a model that matches the true distribution. In this project, a series of advanced techniques are applied to attempt to recover the true distribution.">
 <meta property="og:image" content="https://chipnbits.github.io/content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png">
 <meta property="og:site_name" content="Simon Ghyselincks">
 <meta property="og:image:height" content="768">
 <meta property="og:image:width" content="1024">
 <meta name="twitter:title" content="Project Work 1 – Simon Ghyselincks">
-<meta name="twitter:description" content="Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.">
+<meta name="twitter:description" content="Geomagnetic inversion is a common problem in geophysics where the goal is to recover a 3D distribution of physical properties of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover a model that matches the true distribution. In this project, a series of advanced techniques are applied to attempt to recover the true distribution.">
 <meta name="twitter:image" content="https://chipnbits.github.io/content/eosc555/lectures/project/imgs/magnetic_inversion_plot.png">
 <meta name="twitter:image-height" content="768">
 <meta name="twitter:image-width" content="1024">
@@ -302,7 +302,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Geomagnetic inversions are a common problem in geophysics where the goal is to recover a 3D distribution of the conductivity of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover data that matches the true distribution. In this project, a series of advanced techniques are used to try and recover true distributions.
+    Geomagnetic inversion is a common problem in geophysics where the goal is to recover a 3D distribution of physical properties of a section of Earth using magnetic field measurements taken over a 2D surface above ground. The problem is ill-posed and requires advanced techniques to recover a model that matches the true distribution. In this project, a series of advanced techniques are applied to attempt to recover the true distribution.
   </div>
 </div>
 
@@ -337,18 +337,19 @@ window.Quarto = {
 </div>
 <section id="motivation" class="level2">
 <h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
-<p>Geomagnetic inversion from recovered magnetic readings above ground is a classic problem in geophysics. Much of the data that we have about subsurface geology must be collected via indirect methods such as magnetic and seismic surveys, or sparse sampling via boreholes. The data can be expensive to collect, where the objective is to detect underground structures such as ore bodies, oil and gas deposits, or aquifers. The goal is to recover a 3D distribution of some of the physical properties of the Earth from the incomplete data, a non-linear and ill-posed problem.</p>
-<p>This project explores the use of machine learning and optimization techniques to attempt an inversion of the data, using electromagnetic equations to model the propogation of the Earth’s magnetic field through the subsurface on a known data set. The goal is to develop a model that can take the forward problem data and invert it to recover the true starting distribution.</p>
+<p>Geomagnetic inversion from magnetic readings recovered above ground is a classic problem in geophysics. Much of the data that we have about subsurface geology must be collected via indirect methods such as magnetic and seismic surveys, or by sparse sampling via boreholes. The data can be expensive to collect, and the objective is typically to detect underground structures such as ore bodies, oil and gas deposits, or aquifers. The goal is to recover a 3D distribution of some physical property of the Earth from the incomplete data — a non-linear and ill-posed problem.</p>
+<p>This project explores the use of machine learning and optimization techniques to attempt an inversion of the data, using electromagnetic equations to model the response of the subsurface to the Earth’s magnetic field on a known dataset. The goal is to develop a method that can take the forward problem data and invert it to recover the true starting distribution.</p>
 <section id="background" class="level3">
 <h3 class="anchored" data-anchor-id="background">Background</h3>
 <p>A background on the magnetic principles that underpin the problem can be found at <a href="https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html">Geophysics for Practicing Geophysicists</a>.</p>
-<p>The subsurface of the Earth is composed of materials with differences in magnetic susceptibility <span class="math inline">\(\chi\)</span> and conductivity <span class="math inline">\(\sigma\)</span>. The magnetic susceptibility relates a material’s magnetization <span class="math inline">\(M\)</span> to the magnetic field <span class="math inline">\(H\)</span> via the equation <span class="math inline">\(M = \chi H\)</span>. When the magnetic field of the Earth passes through this material it creates a magnetization response, causing small magnetic anomolies that can be measured above ground. The magnetic field passing through the subsurface is assumed to be uniform and known over the survey area.</p>
-<p>The magnetization effect can be calculated by integrating the magnetic effect over each infinetesimally small volume of the subsurface, since the total effect will be the sum of the parts, similar to analysing electric fields from charge distributions. It is easier to first calculate the magnetic potential and then take the curl to get the field:</p>
-<p><span class="math display">\[\mathbf{B}(r) = \nabla \times \mathbf{A}(r) \]</span> <span class="math display">\[\mathbf{A}(r) = \frac{\mu_0}{4\pi} \int_V \mathbf{M}(r') \frac{1}{|\mathbf{r} - \mathbf{r'}|} dV'\]</span></p>
-<p>where <span class="math inline">\(\mathbf{B}\)</span> is the magnetic field, <span class="math inline">\(\mathbf{A}\)</span> is the magnetic potential, <span class="math inline">\(\mathbf{M}\)</span> is the magnetization, and <span class="math inline">\(\mu_0\)</span> is the magnetic permeability of free space. The equations above are for the case where there are no free currents, which is a good assumption to make for the Earth’s subsurface.</p>
-<p>The integral is of the form of a convolution with the kernel <span class="math inline">\(\frac{1}{|\mathbf{r} - \mathbf{r'}|}\)</span>, which can be computed using the Fast Fourier Transform (FFT) to speed up the computation. The operation <span class="math inline">\(\mathbf{B}(r) = \nabla \times \mathbf{A}(r)\)</span> can also be carried through into the integral since it is a linear operator.</p>
-<p>Using all of the above information yields the integral equation that is dependent on the magnetic susceptibility <span class="math inline">\(\chi\)</span> and the magnetic field <span class="math inline">\(\mathbf{H}_0\)</span>:</p>
-<p><span class="math display">\[ \mathbf{B}_A(\mathbf{r}) = \frac{\mu_0}{4\pi} \int_V \chi(\mathbf{r'}) \mathbf{H}_0 \cdot \nabla^2 \left( \frac{1}{|\mathbf{r} - \mathbf{r'}|} \right) dV' \]</span></p>
+<p>The subsurface of the Earth is composed of materials with differences in magnetic susceptibility <span class="math inline">\(\chi\)</span> and conductivity <span class="math inline">\(\sigma\)</span>. The magnetic susceptibility relates a material’s magnetization <span class="math inline">\(M\)</span> to the magnetic field <span class="math inline">\(H\)</span> via the equation <span class="math inline">\(M = \chi H\)</span>. When the magnetic field of the Earth passes through this material, it creates a magnetization response, causing small magnetic anomalies that can be measured above ground. The magnetic field passing through the subsurface is assumed to be uniform and known over the survey area.</p>
+<p>The magnetization effect can be calculated by integrating the magnetic contribution over each infinitesimally small volume of the subsurface, since the total effect is the sum of the parts — similar to analyzing electric fields from charge distributions. It is easier to first calculate the magnetic vector potential and then take the curl to get the field:</p>
+<p><span class="math display">\[\mathbf{B}(r) = \nabla \times \mathbf{A}(r) \]</span> <span class="math display">\[\mathbf{A}(r) = \frac{\mu_0}{4\pi} \int_V \mathbf{M}(\mathbf{r'}) \times \frac{\mathbf{r} - \mathbf{r'}}{|\mathbf{r} - \mathbf{r'}|^3} \, dV'\]</span></p>
+<p>where <span class="math inline">\(\mathbf{B}\)</span> is the magnetic field, <span class="math inline">\(\mathbf{A}\)</span> is the magnetic vector potential, <span class="math inline">\(\mathbf{M}\)</span> is the magnetization, and <span class="math inline">\(\mu_0\)</span> is the magnetic permeability of free space. The equations above are for the case where there are no free currents, which is a good assumption for the Earth’s subsurface.</p>
+<p>The integral has the form of a convolution with a kernel derived from <span class="math inline">\(\frac{1}{|\mathbf{r} - \mathbf{r'}|}\)</span>, which can be computed using the Fast Fourier Transform (FFT) to speed up the computation. The operation <span class="math inline">\(\mathbf{B}(r) = \nabla \times \mathbf{A}(r)\)</span> can also be carried through into the integral, since it is a linear operator.</p>
+<p>Using all of the above information yields an integral equation that depends on the magnetic susceptibility <span class="math inline">\(\chi\)</span> and the inducing field <span class="math inline">\(\mathbf{H}_0\)</span>:</p>
+<p><span class="math display">\[ \mathbf{B}_A(\mathbf{r}) = \frac{\mu_0}{4\pi} \int_V \chi(\mathbf{r'}) \, \nabla \nabla \left( \frac{1}{|\mathbf{r} - \mathbf{r'}|} \right) \mathbf{H}_0 \, dV' \]</span></p>
+<p>where <span class="math inline">\(\nabla \nabla\)</span> denotes the second-derivative (Hessian) tensor of the kernel, not the Laplacian.</p>
 <p>The resulting magnetic field anomaly <span class="math inline">\(\mathbf{B}_A\)</span> is projected onto the direction of the magnetic field <span class="math inline">\(\mathbf{H}_0\)</span> to get the observed anomaly in magnetic field strength at any point above the Earth’s surface in the forward model. For survey work, the probed field is usually measured over a planar surface above the ground, forming a 2D image.</p>
 <p>See <a href="https://gpg.geosci.xyz/content/magnetics/magnetics_basic_principles.html">Geophysics for Practicing Geophysicists</a> for more images and interactive examples.</p>
 </section>
@@ -356,7 +357,7 @@ window.Quarto = {
 <section id="coding-the-forward-model" class="level2">
 <h2 class="anchored" data-anchor-id="coding-the-forward-model">Coding the Forward Model</h2>
 <p>The model is programmed into the <code>Magnetics</code> class below. Note that the FFT is used to speed up the computation of the convolution integral. An explicit adjoint operation is defined to speed up the process of inverting data when using techniques that make use of it.</p>
-<div id="f9f08875" class="cell" data-execution_count="1">
+<div id="3a19a519" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -565,7 +566,7 @@ window.Quarto = {
 </div>
 <p>To test the forward and adjoint operations we can apply a standard adjoint test. This is always a good policy when implementing new operators to determine if there are any issues with the code. We expect that <span class="math display">\[ \langle A(X), Q \rangle = \langle X, A^*(Q) \rangle \]</span></p>
 <p>where <span class="math inline">\(A\)</span> is the forward operator and <span class="math inline">\(A^*\)</span> is the adjoint operator. The code below performs the adjoint test for the forward model defined above.</p>
-<div id="4217d762" class="cell" data-execution_count="2">
+<div id="3e30385e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyvista <span class="im">as</span> pv</span>
@@ -612,14 +613,14 @@ window.Quarto = {
 <span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>adjoint_test(forMod.forward, forMod.adjoint, M)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Adjoint test: 4.638533115386963 4.638533592224121</code></pre>
+<pre><code>Adjoint test: 4.473371505737305 4.473371505737305</code></pre>
 </div>
 </div>
 </section>
 <section id="plotting-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-the-model">Plotting the Model</h2>
-<p>A simple toy dataset was used to test the adjoint opearation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of commands that make use of <a href="https://docs.pyvista.org/">Pyvista</a> are provided below.</p>
-<div id="2ea5582e" class="cell" data-execution_count="3">
+<p>A simple toy dataset was used to test the adjoint operation. It is very helpful to have a set of visualization tools to verify the input and output data against expected values. A library of plotting functions that make use of <a href="https://docs.pyvista.org/">PyVista</a> is provided below.</p>
+<div id="c2a01b80" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_model_2d(M, n_slices<span class="op">=</span><span class="va">None</span>, cmap<span class="op">=</span><span class="st">"rainbow"</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>)):</span>
@@ -882,7 +883,7 @@ window.Quarto = {
 <span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> plotter</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="c2d7bd9b" class="cell" data-execution_count="4">
+<div id="3fb02179" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> pv.Plotter()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> forMod(M)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> D.squeeze()</span>
@@ -901,28 +902,28 @@ window.Quarto = {
 </section>
 <section id="inverting-the-magnetic-readings" class="level2">
 <h2 class="anchored" data-anchor-id="inverting-the-magnetic-readings">Inverting the Magnetic Readings</h2>
-<p>The magnetic anomaly readings above ground are but a 2D slice from the 3D data that is being recovered. This is like trying to reconstruct a 3D object from the shadow that it casts, a very ill conditioned problem. To get a gauge of the problem difficulty we attempt a simple inversion using the conjugate gradient method developed in earlier lectures.</p>
-<p>The inversion problem is to recover the magnetization model <span class="math inline">\(M\)</span> from the observed magnetic data <span class="math inline">\(D\)</span> using the forward model <span class="math inline">\(A\)</span>, its adjoint <span class="math inline">\(A^*\)</span>, and the conjugate gradient method. The null space of the forward operator is quite large, meaning there are infinite possible solutions, so a regularization term is added to the objective function to constrain the solution. The model is</p>
+<p>The magnetic anomaly readings above ground are but a 2D slice of the 3D data that is being recovered. This is like trying to reconstruct a 3D object from the shadow that it casts — a very ill-conditioned problem. To gauge the difficulty of the problem, we attempt a simple inversion using the conjugate gradient method developed in earlier lectures.</p>
+<p>The inversion problem is to recover the magnetization model <span class="math inline">\(M\)</span> from the observed magnetic data <span class="math inline">\(D\)</span> using the forward model <span class="math inline">\(A\)</span>, its adjoint <span class="math inline">\(A^*\)</span>, and the conjugate gradient method. The null space of the forward operator is quite large, meaning there are infinitely many possible solutions, so a regularization term is added to the objective function to constrain the solution. The model is</p>
 <p><span class="math display">\[D = A(M) + \epsilon\]</span></p>
 <p>where <span class="math inline">\(\epsilon\)</span> is the noise in the data.</p>
 <section id="objective-function" class="level4">
 <h4 class="anchored" data-anchor-id="objective-function">Objective Function</h4>
 <p>The objective function to minimize is</p>
 <p><span class="math display">\[ J(M) = \frac{1}{2} \| A(M) - D \|_2^2 + \alpha R(M) \]</span></p>
-<p>where <span class="math inline">\(R(M)\)</span> is the regularization term and <span class="math inline">\(\alpha\)</span> is the regularization parameter. In this example a weight matrix <span class="math inline">\(W\)</span> is used on the flattened magnetic data.</p>
+<p>where <span class="math inline">\(R(M)\)</span> is the regularization term and <span class="math inline">\(\alpha\)</span> is the regularization parameter. In this example, a weight matrix <span class="math inline">\(W\)</span> is applied to the flattened model.</p>
 <p><span class="math display">\[ R(M) = \frac{1}{2} \| W(M) \|_2^2\]</span></p>
-<p>The solution to this problem is given in <a href="../../../../content/eosc555/lectures/lecture4/index.html">Lecture 4</a> using the normal equations.</p>
+<p>The solution to this problem is given in <a href="../../../../content/eosc555/lectures/lecture4/index.html">Lecture 4</a> using the normal equations:</p>
 <p><span class="math display">\[ (A^*A + \alpha W^*W) M_{sol} = A^*D\]</span></p>
-<p>The conjugate gradient method is used to solve the system of equations. The adjoint of the regularization term is also defined to speed up the process of inverting data when using techniques that make use of it.</p>
+<p>The conjugate gradient method is used to solve the system of equations. The adjoint of the regularization operator is also defined, to speed up the inversion when using techniques that make use of it.</p>
 </section>
 <section id="regularization-implementation" class="level4">
 <h4 class="anchored" data-anchor-id="regularization-implementation">Regularization Implementation</h4>
-<p>The penalty or prior that this is to incur is the finite difference between neighboring cells in the model. This is an approximation of the gradient at each point in the magnetic data, functioning as a slope penalty regularization as discussed previously in <a href="../../../../content/eosc555/lectures/lecture8/index.html#choice-of-regularizer">Lecture 8</a>.</p>
+<p>The penalty, or prior, imposed here is the finite difference between neighboring cells in the model. This approximates the gradient at each point of the model, functioning as a slope penalty regularization as discussed previously in <a href="../../../../content/eosc555/lectures/lecture8/index.html#choice-of-regularizer">Lecture 8</a>.</p>
 <p>The finite difference matrix in 1D is</p>
 <p><span class="math display">\[W = \begin{bmatrix} 1 &amp; -1 &amp; 0 &amp; \cdots &amp; 0 \\0 &amp; 1 &amp; -1 &amp; \cdots &amp; 0 \\\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\0 &amp; 0 &amp; 0 &amp; \cdots &amp; -1 \end{bmatrix}\]</span></p>
-<p>and it can be extended to 2D and 3D by applying the finite difference in each dimension over the flattened data, thus it is a linear operator. It is simpler to compute the value as a summation in practice, applied to the flattened data: <span class="math display">\[\|W(M)\|^2 = \sum_i^N\sum_j^S\sum_k^Q (M_{i,j,k} - M_{i+1,j,k})^2 + (M_{i,j,k} - M_{i,j+1,k})^2 + (M_{i,j,k} - M_{i,j,k+1})^2\]</span> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
+<p>and it can be extended to 2D and 3D by applying the finite difference along each dimension of the flattened data; it is therefore a linear operator. In practice, it is simpler to compute the value as a summation over the model cells: <span class="math display">\[\|W(M)\|^2 = \sum_{i}\sum_{j}\sum_{k} (M_{i,j,k} - M_{i+1,j,k})^2 + (M_{i,j,k} - M_{i,j+1,k})^2 + (M_{i,j,k} - M_{i,j,k+1})^2\]</span> We take the mean over each dimension to normalize across any small variations in the data size due to the loss of boundary cells when applying the finite difference.</p>
 <p>A generalized linear adjoint computation in PyTorch is also defined in code, so that the regularization term has a defined adjoint operation for the optimization algorithm. The regularization term to be defined is the operator before the squared norm is applied.</p>
-<div id="290f5297" class="cell" data-execution_count="5">
+<div id="64fce85f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularization(x):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    gx <span class="op">=</span> x[:,:,<span class="dv">1</span>:,:,:] <span class="op">-</span> x[:,:,:<span class="op">-</span><span class="dv">1</span>,:,:]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    gy <span class="op">=</span> x[:,:,:,<span class="dv">1</span>:,:] <span class="op">-</span> x[:,:,:,:<span class="op">-</span><span class="dv">1</span>,:]</span>
@@ -953,7 +954,7 @@ window.Quarto = {
 <section id="data-set-for-fitting" class="level4">
 <h4 class="anchored" data-anchor-id="data-set-for-fitting">Data Set for Fitting</h4>
 <p>A new data set with three blocks is created for a more interesting test case.</p>
-<div id="d6a4c6ff" class="cell" data-execution_count="6">
+<div id="094d3ff0" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gen_true_data(dim):</span>
@@ -1002,14 +1003,14 @@ window.Quarto = {
 <section id="conjugate-gradient-method" class="level4">
 <h4 class="anchored" data-anchor-id="conjugate-gradient-method">Conjugate Gradient Method</h4>
 <p>The equation to solve is <span class="math inline">\((A^*A + \alpha W^*W) M_{sol} = A^*D\)</span> which should be defined in the standard form for a conjugate gradient problem, <span class="math inline">\(Cx = b\)</span>. To fit this form a new linear operator <span class="math inline">\(C\)</span> is defined as <span class="math inline">\(C := A^*A + \alpha W^*W\)</span> and the right hand side <span class="math inline">\(b = A^*D\)</span>. The conjugate gradient method is then applied to solve the system of equations.</p>
-<div id="78089c79" class="cell" data-execution_count="7">
+<div id="b1507dc1" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conj_gradient(A, b, x0<span class="op">=</span><span class="va">None</span>, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Solve Ax=b using the conjugate gradient method.</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Paramters:</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">        A (callable): A function that computes the operator Ax.</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">        b (torch.Tensor): The right-hand side vector.</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">        x0 (torch.Tensor, optional): The initial guess. Defaults to None.</span></span>
@@ -1091,31 +1092,31 @@ window.Quarto = {
 <div class="cell-output cell-output-stdout">
 <pre><code>iter =   0    res = 1.47e-01
 iter =   1    res = 3.31e-02
-iter =   2    res = 6.97e-03
-iter =   3    res = 1.34e-03
-iter =   4    res = 2.93e-04
+iter =   2    res = 6.96e-03
+iter =   3    res = 1.33e-03
+iter =   4    res = 2.92e-04
 iter =   5    res = 1.38e-04
-iter =   6    res = 2.79e-04
-iter =   7    res = 1.43e-03
-iter =   8    res = 4.25e-03
-iter =   9    res = 1.72e-03
-iter =  10    res = 3.04e-04
-iter =  11    res = 7.72e-05
-iter =  12    res = 8.64e-05
-iter =  13    res = 3.84e-04
+iter =   6    res = 2.81e-04
+iter =   7    res = 1.42e-03
+iter =   8    res = 4.24e-03
+iter =   9    res = 1.71e-03
+iter =  10    res = 3.05e-04
+iter =  11    res = 7.71e-05
+iter =  12    res = 8.66e-05
+iter =  13    res = 3.86e-04
 iter =  14    res = 1.96e-03
-iter =  15    res = 1.21e-03
-iter =  16    res = 1.94e-04
-iter =  17    res = 6.02e-05
-iter =  18    res = 9.90e-05
-iter =  19    res = 4.94e-04
-Gradient norm at xinv: 4.354817e-04
-Misfit: 7.700652e-08, Regularization: 1.644024e-05
-Verification Failed: Gradient norm 4.35e-04 exceeds the tolerance 1.00e-04.</code></pre>
+iter =  15    res = 1.20e-03
+iter =  16    res = 1.95e-04
+iter =  17    res = 6.03e-05
+iter =  18    res = 9.86e-05
+iter =  19    res = 4.95e-04
+Gradient norm at xinv: 4.360359e-04
+Misfit: 7.714917e-08, Regularization: 1.640481e-05
+Verification Failed: Gradient norm 4.36e-04 exceeds the tolerance 1.00e-04.</code></pre>
 </div>
 </div>
 <p>Now that the inversion is performed, the results can be checked against the true forward model to see if they match correctly.</p>
-<div id="1ee5e04f" class="cell" data-execution_count="8">
+<div id="e7dc4fc7" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results   </span></span>
@@ -1136,7 +1137,7 @@ Verification Failed: Gradient norm 4.35e-04 exceeds the tolerance 1.00e-04.</cod
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-9-output-1.png" width="623" height="389" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
 <figcaption>Forward model comparison.</figcaption>
 </figure>
 </div>
@@ -1209,7 +1210,7 @@ Figure&nbsp;1: A comparison of true and inverted models.
 <div id="fig-inverted-comparison-2d-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-inverted-comparison-2d-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-inverted-comparison-2d-output-1.png" data-ref-parent="fig-inverted-comparison-2d" width="275" height="278" class="figure-img">
+<img src="index_files/figure-html/fig-inverted-comparison-2d-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-inverted-comparison-2d">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-2d-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) True Model
@@ -1221,7 +1222,7 @@ Figure&nbsp;1: A comparison of true and inverted models.
 <div id="fig-inverted-comparison-2d-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-inverted-comparison-2d-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-inverted-comparison-2d-output-2.png" data-ref-parent="fig-inverted-comparison-2d" width="277" height="278" class="figure-img">
+<img src="index_files/figure-html/fig-inverted-comparison-2d-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-inverted-comparison-2d">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-inverted-comparison-2d-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Inverted Model
@@ -1236,8 +1237,8 @@ Figure&nbsp;2: A comparison of true and inverted models in 2D.
 </figcaption>
 </figure>
 </div>
-<p>The inversion is clearly a failure. The magnetic distrbution for a material with a lower susceptibility that is close to the surface will produce an identical 2D magnetic field to the true data which is material buried much deeper. The model has a preference for shallow material, as material that is far away is more susceptible to noise and closer to the null space of the forward operator.</p>
-<p>To try and recover the true magnetic model, a more sophisticated inversion method is required. One such method is decribed in a review paper by Crespo et. al <span class="citation" data-cites="CrespoMarques2019">(<a href="#ref-CrespoMarques2019" role="doc-biblioref">Crespo Marques et al. 2019</a>)</span> and is a topic of exploration in the next project section, where a sparse recovery technique will be used to recover the true model.</p>
+<p>The inversion is clearly a failure. A shallow distribution of material with lower susceptibility can produce a 2D magnetic field essentially identical to that of the true model, in which the material is buried much deeper. The inversion has a preference for shallow material, as material that is far away contributes more weakly to the data — making it more susceptible to noise and closer to the null space of the forward operator.</p>
+<p>To recover the true magnetic model, a more sophisticated inversion method is required. One such method is described in a review paper by Crespo Marques et al. <span class="citation" data-cites="CrespoMarques2019">(<a href="#ref-CrespoMarques2019" role="doc-biblioref">Crespo Marques et al. 2019</a>)</span> and is a topic of exploration in the next project section, where a sparse recovery technique will be used to recover the true model.</p>
 
 
 

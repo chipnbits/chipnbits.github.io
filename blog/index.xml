@@ -9,7 +9,7 @@
 <link>https://chipnbits.github.io/blog/</link>
 <atom:link href="https://chipnbits.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Technical blog posts on machine learning, computational science, and mathematical methods by Simon Ghyselincks</description>
-<generator>quarto-1.9.37</generator>
+<generator>quarto-1.9.38</generator>
 <lastBuildDate>Mon, 27 Apr 2026 00:00:00 GMT</lastBuildDate>
 <item>
   <title>When is Model Souping Tasty?</title>

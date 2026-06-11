@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -77,10 +77,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -323,20 +323,20 @@ window.Quarto = {
 </div>
 <section id="automatic-differentiation" class="level1">
 <h1>Automatic Differentiation</h1>
-<p>Returning to the Lotka-Volterra model, we can now use automatic differentiation to compute the Jacobian matrix of the forward model. In fact, it can be shown that we can perform Gauss-Newton optimization more efficiently by using the Jacobian-vector product (JVP) and the vector-Jacobian product (VJP) instead of the full Jacobian matrix, since in the algorithm what we are truly interested in is the product of the Jacobian with a vector or its transpose. This equates to a directional derivative.</p>
+<p>Returning to the Lotka-Volterra model, we can now use automatic differentiation to compute the Jacobian matrix of the forward model. In fact, it can be shown that we can perform Gauss-Newton optimization more efficiently by using the Jacobian-vector product (JVP) and the vector-Jacobian product (VJP) instead of the full Jacobian matrix, since what the algorithm truly requires is the product of the Jacobian (or its transpose) with a vector. This equates to a directional derivative.</p>
 <section id="application-to-the-lotka-volterra-model" class="level3">
 <h3 class="anchored" data-anchor-id="application-to-the-lotka-volterra-model">Application to the Lotka-Volterra Model</h3>
 <p>Take a forward model <span class="math inline">\(F(p)\)</span> for which we want a linear approximation at <span class="math inline">\(p_k\)</span>. We can write the Taylor expansion of the forward model as:</p>
 <p><span class="math display">\[ F(p_k + \epsilon v) = F(p_k) + J_k \epsilon v + \mathcal{O}(\epsilon^2)\]</span></p>
 <p>where <span class="math inline">\(J_k\)</span> is the Jacobian of <span class="math inline">\(F(p_k)\)</span>. If we take the derivative of both sides in this expansion with respect to <span class="math inline">\(\epsilon\)</span> we get:</p>
 <p><span class="math display">\[ \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k v + \mathcal{O}(\epsilon)\]</span></p>
-<p>If we make <span class="math inline">\(\epsilon\)</span> very small then the Jacobian of the forward problem can be numerically approximated and bounded by a small <span class="math inline">\(\mathcal{O}(\epsilon)\)</span>. The next step to fully recover the Jacobian is to take the gradient with respect to <span class="math inline">\(v\)</span> of the left-hand side of the equation.</p>
+<p>If we make <span class="math inline">\(\epsilon\)</span> very small, then the Jacobian-vector product of the forward problem can be numerically approximated with an error bounded by a small <span class="math inline">\(\mathcal{O}(\epsilon)\)</span> term. The next step to fully recover the Jacobian is to take the derivative with respect to <span class="math inline">\(v\)</span> of the left-hand side of the equation:</p>
 <p><span class="math display">\[ \nabla_v \frac{d}{d \epsilon} F(p_k + \epsilon v) = J_k\]</span></p>
-<p>The gradient with respect to <span class="math inline">\(v\)</span> can be traced through with automatic differentiation. So we apply a chain of operations, the <code>pytorch</code> Jacobian vector product, followed by backpropagation on a surrogate <span class="math inline">\(v\)</span> that was passed to the function to get the Jacobian of the forward model. The same principles can be used to recover <span class="math inline">\(J_k^T\)</span>.</p>
-<p>There is also the direct method that is avaible for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have a <code>requires_grad=True</code> flag set to allow for the gradients to be computed, it indicates that the tensor is part of the computational graph for backpropagation and tracing by how much each element of <span class="math inline">\(v\)</span> contributed to the <code>jvp</code> result.</p>
-<p>The fundamental use of the <code>jvp</code> or the <code>vjp</code> is to compute the directional derivate or its transpose without computing the gradient with respect to <span class="math inline">\(v\)</span>. This is because the jacobian matrix encodes the directional derivatives of the function at a point.</p>
+<p>The derivative with respect to <span class="math inline">\(v\)</span> can be traced through with automatic differentiation. So we apply a chain of operations — the PyTorch Jacobian-vector product, followed by backpropagation onto the surrogate <span class="math inline">\(v\)</span> that was passed to the function — to get the Jacobian of the forward model. The same principles can be used to recover <span class="math inline">\(J_k^T\)</span>.</p>
+<p>There is also a direct method available for computing the Jacobian matrix using the torch library. Both cases are shown below. Note that the tensors have the <code>requires_grad=True</code> flag set to allow gradients to be computed; it indicates that the tensor is part of the computational graph for backpropagation, tracing how much each element of <span class="math inline">\(v\)</span> contributed to the <code>jvp</code> result.</p>
+<p>The fundamental use of <code>jvp</code> and <code>vjp</code> is to compute the action of the Jacobian or its transpose on a vector without forming the full matrix — that is, the directional derivative <span class="math inline">\(J_k v\)</span> or the transposed product</p>
 <p><span class="math display">\[d_k = J_k^T v\]</span></p>
-<div id="jvp" class="cell" data-execution_count="2">
+<div id="jvp" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jvp</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jacobian</span>
@@ -401,7 +401,7 @@ tensor([[2., 1.],
 </section>
 <section id="fitting-the-lotka-volterra-model-in-pytorch" class="level1">
 <h1>Fitting the Lotka-Volterra Model in PyTorch</h1>
-<p>Now, all the previous theory can be combined to form a PyTorch training loop that will solve the non-linear least squares problem using the Gauss-Newton method, utilizing the conjugate gradient method to solve the normal equations involved. The data will be fit exclusively to the prey population of the Lotka-Volterra model. This is a simulation of a scenario where the predatory population is not observed and may be difficult to measure, but more reliable measurements are availble from the prey population.</p>
+<p>Now, all the previous theory can be combined to form a PyTorch training loop that solves the non-linear least squares problem using the Gauss-Newton method, utilizing the conjugate gradient method to solve the normal equations involved. The model will be fit exclusively to the prey population of the Lotka-Volterra system. This simulates a scenario where the predator population is not observed and may be difficult to measure, but more reliable measurements are available for the prey population.</p>
 <p>To make the solution components easier to understand, they are separated into different class objects that contain the necessary components for each part of the solution. The main ingredients that will be required are:</p>
 <ol type="1">
 <li><strong>ODE Integrator</strong>
@@ -426,7 +426,7 @@ tensor([[2., 1.],
 <h3 class="anchored" data-anchor-id="rk4-and-lotka-volterra-model">RK4 and Lotka-Volterra Model</h3>
 <p>The Runge-Kutta 4th order method is a numerical solver for ODEs that is of higher order than the Euler method, reducing the error in the solution to <span class="math inline">\(O(h^4)\)</span>. A more detailed description of the method can be found in the <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Wikipedia article</a>.</p>
 <p>The Lotka-Volterra model is implemented this time in PyTorch, but to run the custom optimization algorithm, it is better to avoid the object-oriented approach and use a functional form of the model. The model is defined as a function that takes the parameters and returns the population at the next time step. The model is also made time variant by adding a perturbation term to the parameters.</p>
-<div id="cell-lotka-volterra" class="cell" data-execution_count="3">
+<div id="cell-lotka-volterra" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -502,14 +502,14 @@ tensor([[2., 1.],
 <div class="cell-output cell-output-display">
 <div id="lotka-volterra" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/lotka-volterra-output-1.png" width="626" height="429" class="figure-img"></p>
+<p><img src="index_files/figure-html/lotka-volterra-output-1.png" class="img-fluid figure-img"></p>
 <figcaption>The Lotka-Volterra model implemented in PyTorch.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>To take the model a step further, it can be used to generate a toy dataset that will be used to fit the model parameters using the Gauss-Newton optimization method. To make a dataset that will not have a perfect fit, the time variant parameters and the pertubation variables are used to produce and interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations. Then select the first realization to plot the time series and phase space of the model.</p>
-<div id="9a8ce1c5" class="cell" data-execution_count="4">
+<p>To take the model a step further, it can be used to generate a toy dataset for fitting the model parameters with the Gauss-Newton optimization method. To make a dataset that cannot be fit perfectly, time-varying parameters with perturbation terms are used to produce an interesting dataset. We define a function that can generate multiple realizations of the Lotka-Volterra model with perturbations, then select the first realization to plot the time series and phase space of the model.</p>
+<div id="65699f17" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -605,19 +605,19 @@ tensor([[2., 1.],
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-4-output-2.png" width="710" height="422" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
 <figcaption>Time variant Lotka-Volterra model with perturbations.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>As can be seen by the data, the pertubations over time make the dynamics of the system only roughly periodic. This will make the optimization problem more interesting to solve.</p>
+<p>As can be seen from the data, the perturbations over time make the dynamics of the system only roughly periodic. This will make the optimization problem more interesting to solve.</p>
 </section>
 <section id="jacobian-vector-product-and-directional-derivatives" class="level3">
 <h3 class="anchored" data-anchor-id="jacobian-vector-product-and-directional-derivatives">Jacobian Vector Product and Directional Derivatives</h3>
-<p>Now is a good time to code and check a working system to take the jacobian vector products that are required for the Gauss-Newton method using the functions defined earlier. We will assume that we have the prey data and we are trying to recover. To check the correctness of the coding, we can compare the results of the <code>jvp</code> and the <code>vjp</code> functions by checking using the adjoint. The value <span class="math inline">\(\langle w, J_k v \rangle\)</span> is scalar and so it should equal its transpose: <span class="math display">\[ \langle w, J_k v \rangle = \langle v, J_k^T w  \rangle\]</span></p>
-<p>One other thing to note is that both the <code>jvp</code> and the <code>vjp</code> functions will output the value of the function evaluated at the point that is passed to it, about which the jacobian is computed. So we get both <span class="math inline">\(F(p)\)</span> and <span class="math inline">\(J_k v\)</span> from the <code>jvp</code> function, and a similar result for the <code>vjp</code> function.</p>
-<div id="jacobian-vector-product" class="cell" data-execution_count="5">
+<p>Now is a good time to code and check a working system for taking the Jacobian-vector products required by the Gauss-Newton method, using the functions defined earlier. We will assume that we have the prey data and that we are trying to recover the model parameters. To check the correctness of the code, we can compare the results of the <code>jvp</code> and <code>vjp</code> functions using the adjoint identity. The value <span class="math inline">\(\langle w, J_k v \rangle\)</span> is a scalar, so it should equal its transpose: <span class="math display">\[ \langle w, J_k v \rangle = \langle v, J_k^T w  \rangle\]</span></p>
+<p>One other thing to note is that both the <code>jvp</code> and <code>vjp</code> functions also output the value of the function evaluated at the point that is passed to them, about which the Jacobian is computed. So we get both <span class="math inline">\(F(p)\)</span> and <span class="math inline">\(J_k v\)</span> from the <code>jvp</code> function, and a similar pair from the <code>vjp</code> function.</p>
+<div id="jacobian-vector-product" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd.functional <span class="im">import</span> jvp, vjp</span>
@@ -641,16 +641,16 @@ tensor([[2., 1.],
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(torch.<span class="bu">sum</span>(q <span class="op">*</span> w), torch.<span class="bu">sum</span>(a <span class="op">*</span> v))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>tensor(80.2678) tensor(80.2678)</code></pre>
+<pre><code>tensor(4.8396) tensor(4.8396)</code></pre>
 </div>
 </div>
 </section>
 <section id="conjugate-gradient-descent-and-gauss-newton-optimizer" class="level3">
 <h3 class="anchored" data-anchor-id="conjugate-gradient-descent-and-gauss-newton-optimizer">Conjugate Gradient Descent and Gauss-Newton Optimizer</h3>
 <p>The Gauss-Newton method will need to make use of some important subfunctions to operate efficiently. One will be the computation of its components using the <code>jvp</code> and <code>vjp</code> functions, and the other will be the conjugate gradient descent method to solve the normal equations.</p>
-<p>To implement this in code, we will also need to make a conjugate gradient solver for the problem <span class="math display">\[ J_G(p_k)^T J_G(p_k)s_k = J_k^T r_k\]</span></p>
-<p>keeping in mind that we want to avoid explicit computation of the entire jacobian when the goal is only to take a directional derivative. To do this the <span class="math inline">\(J_G(p_k)^T J_G(p_k)\)</span> operator can be coded as a single function <code>Hmv</code> that takes a vector and returns the product of the Hessian estimate with the vector. We then use this defined function in a standard implementation of the conjugate gradient method. The conjugate gradient method below has been setup to accept a callable funtion <span class="math inline">\(A\)</span> that acts like the matrix operator <span class="math inline">\(A\)</span>, except we have bypassed the need to compute the full matrix, since we are only ever using it with a product.</p>
-<div id="conjugate-gradient" class="cell" data-execution_count="6">
+<p>To implement this in code, we will also need a conjugate gradient solver for the problem <span class="math display">\[ J_G(p_k)^T J_G(p_k)s_k = J_G(p_k)^T r_k\]</span></p>
+<p>keeping in mind that we want to avoid explicit computation of the entire Jacobian when the goal is only to apply it to a vector. To do this, the <span class="math inline">\(J_G(p_k)^T J_G(p_k)\)</span> operator can be coded as a single function <code>Hmv</code> that takes a vector and returns the product of the Hessian approximation with that vector. We then use this function in a standard implementation of the conjugate gradient method. The conjugate gradient method below has been set up to accept a callable function <span class="math inline">\(A\)</span> that acts like the matrix operator <span class="math inline">\(A\)</span>, bypassing the need to form the full matrix, since we only ever use it through products.</p>
+<div id="conjugate-gradient" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Hmv(forProb, p, sk):</span>
@@ -662,7 +662,7 @@ tensor([[2., 1.],
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Solve Ax = b using the conjugate gradient method.</span></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Paramters:</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">        A (callable): A function that computes the matrix-vector product Ax.</span></span>
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">        b (torch.Tensor): The right-hand side vector.</span></span>
 <span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">        x0 (torch.Tensor, optional): The initial guess. Defaults to None.</span></span>
@@ -697,24 +697,23 @@ tensor([[2., 1.],
 <span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> conj_gradient(A, b, niter<span class="op">=</span><span class="dv">20</span>, tol<span class="op">=</span><span class="fl">1e-2</span>, alpha<span class="op">=</span><span class="fl">1e-2</span>)</span>
 <span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>iter =   0    res = 2.96e-01
-iter =   1    res = 1.63e-02
-iter =   2    res = 1.50e-02
-iter =   3    res = 8.92e-03
-tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
+<pre><code>iter =   0    res = 1.06e+00
+iter =   1    res = 1.53e-02
+iter =   2    res = 1.64e-03
+tensor([-0.0709, -0.0462,  0.2884, -0.4526])</code></pre>
 </div>
 </div>
 </section>
 <section id="building-the-gauss-newton-optimizer" class="level2">
 <h2 class="anchored" data-anchor-id="building-the-gauss-newton-optimizer">Building the Gauss-Newton Optimizer</h2>
 <p>Recall the algorithm for the Gauss-Newton method:</p>
-<div class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="//" data-pseudocode-number="1">
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-comment-delimiter="//" data-no-end="false" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
-\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k =G(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Gauss-Newton Algorithm for Non-linear Least Squares}\begin{algorithmic} \State \textbf{Input:} Initial guess $p_0$, maximum iterations $K$, tolerance $\epsilon$ \State \textbf{Initialize} $p_0$ \For{$k = 0, 1, 2, \ldots$} \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$ \State Compute the transpose $J_G^T$ of the Jacobian \State Compute the residual $r_k = -G(p_k) = d - QF(p_k)$ (forward model) \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$ \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$ \If{$\|s_k\| &lt; \epsilon$} \State \textbf{Stop} \EndIf \EndFor \State \textbf{Output:} $p_{k+1}$ as the optimal solution \end{algorithmic} \end{algorithm}
 </div>
 </div>
 <p>Then combining all the previous stages of code we have:</p>
-<div id="gauss-newton" class="cell" data-execution_count="7">
+<div id="gauss-newton" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fix all parts of the problem except the parameters</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward_model(params):</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> lotka_volterra(params, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
@@ -769,8 +768,8 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 </div>
 <section id="testing-the-gauss-newton-optimizer" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-gauss-newton-optimizer">Testing the Gauss-Newton Optimizer</h3>
-<p>A run of the Gauss-Newton optimization method can be performed on the Lotka-Volterra model to fit the prey population data. The optimization method will be run for a maximum of <span class="math inline">\(40\)</span> iterations with a tolerance that will exit early if the step size becomes small enough indicating a local minimum. The results of the optimization can be plotted against the true data, both prey and predator, to see how well the optimization method has performed to recover the missing predator population.</p>
-<div id="cell-gauss-newton-test" class="cell" data-execution_count="8">
+<p>A run of the Gauss-Newton optimization method can be performed on the Lotka-Volterra model to fit the prey population data. The optimization method will be run for a maximum of <span class="math inline">\(45\)</span> iterations, with a tolerance that exits early if the step size becomes small enough, indicating a local minimum. The results of the optimization can be plotted against the true data, both prey and predator, to see how well the optimization method has recovered the unobserved predator population.</p>
+<div id="cell-gauss-newton-test" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="fl">40.0</span>  <span class="co"># Time horizon as a single float</span></span>
@@ -792,7 +791,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    forward_model, p0, d_true, max_iter<span class="op">=</span><span class="dv">45</span>, tol<span class="op">=</span><span class="fl">1e-4</span>, mu<span class="op">=</span><span class="fl">1e-1</span>, verbose<span class="op">=</span><span class="va">False</span></span>
 <span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of the both pred prey true data and the predicted data</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of both the true predator-prey data and the predicted data</span></span>
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>X_hat <span class="op">=</span> lotka_volterra(p_opt, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
@@ -812,14 +811,14 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <div class="cell-output cell-output-display">
 <div id="gauss-newton-test" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/gauss-newton-test-output-2.png" width="626" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/gauss-newton-test-output-2.png" class="img-fluid figure-img"></p>
 <figcaption>Testing the Gauss-Newton optimization method.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The plot outputs the successive iterations of the method and the data of the forward model as it is fitting in the predicitons tensor. The optimization process can be animated from the successive predictions to get a visual understanding of the optimization method.</p>
-<div id="animation" class="cell" data-execution_count="9">
+<p>The solver also stores the forward model output from each successive iteration in the predictions list. The optimization process can be animated from these successive predictions to get a visual understanding of the optimization method.</p>
+<div id="animation" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.animation <span class="im">import</span> FuncAnimation</span>
@@ -873,9 +872,9 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <section id="extension-to-time-varying-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="extension-to-time-varying-parameters">Extension to Time Varying Parameters</h2>
 <p>Although the previous examples have been for a fixed set of parameters, it is entirely possible in natural systems that the parameters of the model are time dependent. The formulation of the Lotka-Volterra model has incorporated this design from the start by expanding the initial four parameters across the time dimension. However we can pass a full tensor of time varying parameters that is size <span class="math inline">\([nt, 4]\)</span> to the model and the optimization algorithm. The rest of the code does not change at all since the PyTorch library can perform the required gradient computations on a 2D tensor as well.</p>
-<p>The range of possible solutions and the dimensionality of the problem expands from <span class="math inline">\(4\)</span> parameters to <span class="math inline">\(4 \times nt\)</span> parameters which means more parameters than there are actual data points. This means that any set of data could be fit perfectly, but it might not be the correct fit. This issue is a hallmark of ill-posed inverse problems. The optimization algorithm will still converge to a solution, but it might not be the correct one.</p>
-<p>Since the ground truth of both predator and prey populations is known, the optimization algorithm can be run with time dependent parameters which will allow more overfitting. The parameters being fixed in time is a sort of regularization that can applied to the problem, and removing it will change the results of the optimization.</p>
-<div id="cell-time-varying-parameters" class="cell" data-execution_count="10">
+<p>The range of possible solutions and the dimensionality of the problem expand from <span class="math inline">\(4\)</span> parameters to <span class="math inline">\(4 \times nt\)</span> parameters, which means there are more parameters than actual data points. As a result, any dataset could be fit perfectly — but the fit might not be the correct one. This issue is a hallmark of ill-posed inverse problems: the optimization algorithm will still converge to a solution, but it may not be the true one.</p>
+<p>Since the ground truth of both predator and prey populations is known, the optimization algorithm can be run with time-dependent parameters, which allows for more overfitting. Holding the parameters fixed in time is a form of regularization applied to the problem, and removing it will change the results of the optimization.</p>
+<div id="cell-time-varying-parameters" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start with an initial guess for the parameters</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> torch.tensor([<span class="fl">1.7</span>, <span class="fl">1.7</span>, <span class="fl">0.7</span>, <span class="fl">0.7</span>], requires_grad<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Extend p0 to repeat over the time steps with individual gradients</span></span>
@@ -886,7 +885,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    forward_model, p0, d_true, max_iter<span class="op">=</span><span class="dv">45</span>, tol<span class="op">=</span><span class="fl">1e-4</span>, mu<span class="op">=</span><span class="fl">1e-1</span>, verbose<span class="op">=</span><span class="va">False</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of the both pred prey true data and the predicted data</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a final plot of both the true predator-prey data and the predicted data</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>X_hat <span class="op">=</span> lotka_volterra(p_opt, initial_pop, T<span class="op">=</span>period, nt<span class="op">=</span>n_time_steps)</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
@@ -902,7 +901,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 <div class="cell-output cell-output-display">
 <div id="time-varying-parameters" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="index_files/figure-html/time-varying-parameters-output-1.png" width="626" height="449" class="figure-img"></p>
+<p><img src="index_files/figure-html/time-varying-parameters-output-1.png" class="img-fluid figure-img"></p>
 <figcaption>Fitting the Lotka-Volterra model with time-varying parameters.</figcaption>
 </figure>
 </div>
@@ -912,7 +911,7 @@ tensor([-0.0077, -0.4938,  0.1109, -0.3297])</code></pre>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>The Gauss-Newton optimization method is a powerful tool for solving non-linear least squares problems in a fast and efficient manner. It can be extended to any problem that is formulated as a vector of residuals or generally <span class="math inline">\(\| G(p) \|^2\)</span> that is to be optimized over <span class="math inline">\(p\)</span>. Improved efficiency in the normal equations is done by using the Jacobian-vector product to bypass the costly need to compute a full Jacobian when all that is required is the directional derivative. The normal equtions also present a sub-problem in the optimization routine that can be solved using the conjugate gradient method to find the optimal step size <span class="math inline">\(s_k\)</span>. This step direction is then used to perform the gradient descent step in the outer optimization algorithm. Increasing the complexity of the problem by allowing time varying parameters can lead to overfitting and ill-posedness, but the optimization algorithm will still converge to a solution.</p>
+<p>The Gauss-Newton optimization method is a powerful tool for solving non-linear least squares problems in a fast and efficient manner. It can be extended to any problem formulated as a vector of residuals — generally, any <span class="math inline">\(\| G(p) \|^2\)</span> to be optimized over <span class="math inline">\(p\)</span>. Efficiency is improved by using the Jacobian-vector product to bypass the costly computation of a full Jacobian when all that is required is a directional derivative. The normal equations also present a sub-problem within the optimization routine, which can be solved with the conjugate gradient method to find the step <span class="math inline">\(s_k\)</span>. This step direction is then used to perform the parameter update in the outer optimization algorithm. Increasing the complexity of the problem by allowing time-varying parameters can lead to overfitting and ill-posedness, but the optimization algorithm will still converge to a solution.</p>
 
 
 </section>

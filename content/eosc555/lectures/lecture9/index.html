@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -96,10 +96,10 @@ div.csl-indent {
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -197,13 +197,13 @@ window.Quarto = {
 <meta property="og:description" content="Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.">
 <meta property="og:image" content="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png">
 <meta property="og:site_name" content="Simon Ghyselincks">
-<meta property="og:image:height" content="822">
-<meta property="og:image:width" content="880">
+<meta property="og:image:height" content="411">
+<meta property="og:image:width" content="440">
 <meta name="twitter:title" content="Lecture 9 – Simon Ghyselincks">
 <meta name="twitter:description" content="Neural networks have revolutionized the field of machine learning, but how exactly do they work? In this lecture, we will explore the basic structure of these models from a mathematical perspective. We will also discuss the role of regularization and priors in solving inverse problems.">
 <meta name="twitter:image" content="https://chipnbits.github.io/content/eosc555/lectures/lecture9/index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png">
-<meta name="twitter:image-height" content="822">
-<meta name="twitter:image-width" content="880">
+<meta name="twitter:image-height" content="411">
+<meta name="twitter:image-width" content="440">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -339,7 +339,7 @@ window.Quarto = {
 </div>
 <section id="motivation" class="level2">
 <h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
-<p>In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:</p>
+<p>In the previous lecture, we examined different priors and regularizers and how they can be used to help solve inverse problems. Regularized least squares in the most general sense is given as:</p>
 <p><span class="math display">\[ \min_{u} \left\{ \frac{1}{2} \left\| Au(x) - b \right\|_2^2 + \lambda R(u) \right\} \]</span></p>
 <p>where <span class="math inline">\(u(x)\)</span> is a distribution of the unknowns over the domain <span class="math inline">\(x\)</span>, <span class="math inline">\(A\)</span> is the forward operator, <span class="math inline">\(b\)</span> is the data, and <span class="math inline">\(R(u)\)</span> is the regularizer. A neural network can be used as a universal approximator for the function <span class="math inline">\(R: \mathbb{R}^n \rightarrow \mathbb{R}\)</span>, where <span class="math inline">\(n\)</span> is the number of unknowns, or values of <span class="math inline">\(u\)</span>.</p>
 </section>
@@ -361,22 +361,22 @@ window.Quarto = {
 </ul></li>
 <li><p><strong><span class="math inline">\(\sigma\)</span></strong>: Non-linear activation function applied element-wise to the affine transformation <span class="math inline">\(Wu + a\)</span>.</p></li>
 </ul>
-<p>So a single layer neural network can be seen as the affine transformation of the vector <span class="math inline">\(u\)</span> followed by a non-linear activation function and a weighting metric for the resultant vector.</p>
+<p>So a single-layer neural network can be seen as an affine transformation of the vector <span class="math inline">\(u\)</span>, followed by a non-linear activation function, followed by a weighted sum of the resulting vector.</p>
 <p>This can be used as an approximator for the true regularizer <span class="math inline">\(R(u) \approx R_T(u)\)</span> in the inverse problem.</p>
 <p>Suppose that we have a known set of mappings <span class="math inline">\(u_i \rightarrow y_i\)</span>, where <span class="math inline">\(i = 1, \ldots, N\)</span>. For example we might have some information about the regularizer <span class="math inline">\(R(u)\)</span> for a set of <span class="math inline">\(u\)</span> values. One possible technique is to train an SLP to approximate the true regularizer <span class="math inline">\(R_T(u)\)</span>.</p>
-<p>The function <span class="math inline">\(y = R(u; \theta)\)</span> returns a scalar, taking its transpose will not change the output:</p>
-<p><span class="math display">\[y = w^T \sigma(Wu+a) = \sigma(u^TW + a)w\]</span></p>
-<p>Then using the squared loss function, we can define the loss function as:</p>
-<p><span class="math display">\[\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u^TW + a)w - y_i \right \|^2\]</span></p>
-<p>The summation is reorganized to get rid of the summation term where <span class="math inline">\(U\)</span> is a matrix with the <span class="math inline">\(u_i^T\)</span> as the columns, A is a matrix with <span class="math inline">\(a\)</span> as the columns, and <span class="math inline">\(y\)</span> is the vector of <span class="math inline">\(y_i\)</span> values.</p>
-<p><span class="math display">\[\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW + A)w - y \right \|^2\]</span></p>
-<p>For simplicity of this analysis, we can assume without loss of generality for the problem at hand that <span class="math inline">\(A = 0\)</span> and <span class="math inline">\(\sigma\)</span> is the identity operator. Then:</p>
+<p>The function <span class="math inline">\(y = R(u; \theta)\)</span> returns a scalar, so taking its transpose will not change the output:</p>
+<p><span class="math display">\[y = w^T \sigma(Wu+a) = \sigma(u^TW^T + a^T)w\]</span></p>
+<p>Then, using the squared loss, we can define the loss function as:</p>
+<p><span class="math display">\[\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u_i^TW^T + a^T)w - y_i \right \|^2\]</span></p>
+<p>The summation can be reorganized to eliminate the summation term, where <span class="math inline">\(U\)</span> is a matrix with the <span class="math inline">\(u_i\)</span> as its columns, <span class="math inline">\(A\)</span> is a matrix with copies of <span class="math inline">\(a^T\)</span> as its rows, and <span class="math inline">\(y\)</span> is the vector of <span class="math inline">\(y_i\)</span> values:</p>
+<p><span class="math display">\[\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW^T + A)w - y \right \|^2\]</span></p>
+<p>For simplicity of this analysis, we can assume, without loss of generality for the problem at hand, that <span class="math inline">\(A = 0\)</span> and <span class="math inline">\(\sigma\)</span> is the identity operator. Then:</p>
 <p><span class="math display">\[\hat\theta = \min_{\theta} \mathcal{L}(\theta) = \min_{\hat w} \frac{1}{2} \left \| U^T\hat w - y \right \|^2.\]</span></p>
-<p>where <span class="math inline">\(\hat w = Ww\)</span>.</p>
+<p>where <span class="math inline">\(\hat w = W^T w\)</span>.</p>
 </section>
 <section id="non-linearity-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="non-linearity-analysis">Non-linearity Analysis</h3>
-<p>This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). <span class="math inline">\(N&gt;d\)</span> means that there are more equations than there are unknowns, because <span class="math inline">\(\hat w\)</span> is of dimension <span class="math inline">\(d\)</span>, so there could be infinite solutions.</p>
+<p>This least squares problem generally cannot be solved exactly when the non-linear activation function is absent (the case with identity activation). <span class="math inline">\(N &gt; d\)</span> means that there are more equations than unknowns, because <span class="math inline">\(\hat w\)</span> is of dimension <span class="math inline">\(d\)</span>, so in general the data cannot be fit exactly — the effective model is too limited.</p>
 <p><span class="math display">\[\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
 \underbrace{
 \begin{bmatrix}
@@ -389,17 +389,18 @@ window.Quarto = {
 \underbrace{
 \begin{bmatrix}
 \ &amp; \ &amp; \ \\
-\ &amp; W &amp; \ \\
+\ &amp; W^T &amp; \ \\
 \ &amp; \ &amp; \ \\
 \end{bmatrix}
-}_{N \times k}
+}_{d \times k}
+w
 - y \right\|^2
 \]</span></p>
 <p><strong>Idea 1:</strong></p>
-<p>If we can increase the rank of the <span class="math inline">\(Z = U^TW\)</span> matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix <span class="math inline">\(W\)</span> that is <span class="math inline">\(N \times m\)</span> where <span class="math inline">\(m &gt; d\)</span>. In the resulting <span class="math inline">\(z = U^TW\)</span> matrix, the rank will still be <span class="math inline">\(\text{rank}(Z) \le d\)</span>.</p>
+<p>If we can increase the rank of the <span class="math inline">\(Z = U^TW^T\)</span> matrix, then perhaps it is possible to solve the problem better. We select a larger weights matrix so that <span class="math inline">\(W^T\)</span> is <span class="math inline">\(d \times m\)</span> where <span class="math inline">\(m &gt; d\)</span>. However, in the resulting <span class="math inline">\(Z = U^TW^T\)</span> matrix, the rank will still be <span class="math inline">\(\text{rank}(Z) \le d\)</span>.</p>
 <p><strong>Idea 2:</strong></p>
-<p>Use a non-linear activation function <span class="math inline">\(\sigma\)</span> that operates element-wise on the matrix <span class="math inline">\(Z = U^TW\)</span> to increase the rank of the matrix so that <span class="math inline">\(\text{rank}(\sigma(Z)) = \min (N,m)\)</span>.</p>
-<p>In practice the exact activation function is not important. It may be the case that <span class="math inline">\(\text{rank}(\sigma(Z)) = 3\)</span> for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix <span class="math inline">\(W\)</span>. This can give a unique solution the least squares problem.</p>
+<p>Use a non-linear activation function <span class="math inline">\(\sigma\)</span> that operates element-wise on the matrix <span class="math inline">\(Z = U^TW^T\)</span> to increase the rank of the matrix, so that <span class="math inline">\(\text{rank}(\sigma(Z)) = \min (N,m)\)</span>.</p>
+<p>In practice the exact choice of activation function is not important. It may be the case that <span class="math inline">\(\text{rank}(Z) = 3\)</span>, for example, but applying the activation function will increase the rank to the minimum dimension of the matrix. This can give a unique solution to the least squares problem.</p>
 <p><span class="math display">\[
 \hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
 \sigma \left( \underbrace{
@@ -413,10 +414,10 @@ window.Quarto = {
 \underbrace{
 \begin{bmatrix}
 \ &amp; \ &amp; \ &amp; \ &amp; \cdots &amp; \ \\
-\ &amp; W &amp; \ &amp; \ &amp; \ &amp; \ \\
+\ &amp; W^T &amp; \ &amp; \ &amp; \ &amp; \ \\
 \ &amp; \ &amp; \ &amp; \ &amp; \ &amp; \ \\
 \end{bmatrix}
-}_{N \times m}
+}_{d \times m}
 \right ) w
 -
 y \right\|^2
@@ -513,7 +514,7 @@ y \right\|^2
 <div id="fig-nonlinear-rank-recovery-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png" data-ref-parent="fig-nonlinear-rank-recovery" width="440" height="411" class="figure-img">
+<img src="index_files/figure-html/fig-nonlinear-rank-recovery-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-nonlinear-rank-recovery">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Reconstruction Error Comparison
@@ -525,7 +526,7 @@ y \right\|^2
 <div id="fig-nonlinear-rank-recovery-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-nonlinear-rank-recovery-output-2.png" data-ref-parent="fig-nonlinear-rank-recovery" width="436" height="411" class="figure-img">
+<img src="index_files/figure-html/fig-nonlinear-rank-recovery-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-nonlinear-rank-recovery">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-nonlinear-rank-recovery-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Matrix Rank Comparison
@@ -543,12 +544,12 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 </section>
 <section id="notes-on-scaling" class="level4">
 <h4 class="anchored" data-anchor-id="notes-on-scaling">Notes on Scaling</h4>
-<p>The <span class="math inline">\(W\)</span> matrix will scale up in <span class="math inline">\(O(N^2)\)</span> so that with more data samples it can become too large to handle well. The problem however can be solved with a random <span class="math inline">\(w\)</span> and with <span class="math inline">\(W\)</span> alone under these conditions. A lower rank <span class="math inline">\(W\)</span> could help under conditions where the size of <span class="math inline">\(N\)</span> is large.</p>
+<p>The <span class="math inline">\(W\)</span> matrix scales up in <span class="math inline">\(O(N^2)\)</span>, so with more data samples it can become too large to handle well. A lower-rank <span class="math inline">\(W\)</span> can help when the size of <span class="math inline">\(N\)</span> is large:</p>
 <p><span class="math display">\[ W = Q Z^T \]</span></p>
-<p>where <span class="math inline">\(Q\)</span> is a matrix of orthonormal columns and <span class="math inline">\(Z\)</span> is a matrix of size <span class="math inline">\(d \times N\)</span>. In this case the product <span class="math inline">\(U^TW\)</span> for any particular sample <span class="math inline">\(u_i\)</span> will be giben by <span class="math inline">\(\sigma((u_i^TQ)Z^T)\)</span>. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix <span class="math inline">\(W\)</span>.</p>
-<p>This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).</p>
-<p><span class="math display">\[y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)})) + a^{(L-1)}) + a^{(L)}\]</span></p>
-<p>where <span class="math inline">\(L\)</span> is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where <span class="math inline">\(N\)</span> is large.</p>
+<p>where <span class="math inline">\(Q\)</span> is a matrix of orthonormal columns and <span class="math inline">\(Z\)</span> is a matrix of size <span class="math inline">\(d \times N\)</span>. In this case the product for any particular sample <span class="math inline">\(u_i\)</span> will be given by <span class="math inline">\(\sigma((u_i^TQ)Z^T)\)</span>. This lower-rank structure leads to the topic of convolutional neural networks (CNNs), which make extensive use of reduced-rank, structured matrices. The benefit is improved computational speed, achieved by exploiting a sparse structure in the matrix <span class="math inline">\(W\)</span>.</p>
+<p>This becomes more important when the layers of an SLP are stacked into a deep neural network (DNN):</p>
+<p><span class="math display">\[y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) \cdots + a^{(L-1)}) + a^{(L)})\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions, and it can be expensive to compute when <span class="math inline">\(N\)</span> is large.</p>
 </section>
 </section>
 </section>
@@ -563,7 +564,7 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <p><span class="math display">\[ (f \ast g)[n,m] = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} f[i,j]g[n-i,m-j] \]</span></p>
 <p>It is also an operation defined in the continuous domain as:</p>
 <p><span class="math display">\[ (f \ast g)(x) = \int_{-\infty}^{\infty} f(y)g(x-y)dy \]</span></p>
-<p>The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green’s function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI).</p>
+<p>The operation is fundamental to mathematics and shows up in many different applications, including signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations — where the kernel is known as the Green’s function — and the solution of integral equations. Another home it has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI).</p>
 <p><strong>Properties of Convolution</strong></p>
 <ol type="1">
 <li>Linearity: <span class="math inline">\(f \ast (\alpha g + \beta h) = \alpha f \ast g + \beta f \ast h\)</span></li>
@@ -571,28 +572,27 @@ Figure&nbsp;1: A comparison least squares with non-linear activation function
 <li>Associativity: <span class="math inline">\(f \ast (g \ast h) = (f \ast g) \ast h\)</span></li>
 </ol>
 <p>Rather than explain convolution at length here, the interested reader is encouraged to look at the <a href="https://en.wikipedia.org/wiki/Convolution">Convolution Wikipedia page</a> for some excellent properties and visual examples to build intuition.</p>
-<p>In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.</p>
-<p>Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:</p>
+<p>In the context of image and data processing, the convolution is closely related to a correlation filter: the two differ only by a <span class="math inline">\(180°\)</span> rotation of the convolutional kernel (the function being convolved with the input). This is an important consideration when working with learned convolutional kernels, since they can equally be interpreted as correlation filters.</p>
+<p>Another important property to know is that the convolution operation has a close relationship with the Fourier transform. Convolution in the spatial domain is equivalent to pointwise multiplication in the frequency domain. This is known as the convolution theorem:</p>
 <p><span class="math display">\[ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) \]</span></p>
-<p>When it comes to computing large convolutions for two function <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.</p>
+<p>When it comes to computing large convolutions of two functions <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than computing it directly in the spatial domain.</p>
 <p><span class="math display">\[ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) \]</span></p>
 <p>For more details with visual explanations, another good resource is the UBC CPSC 425 course on <a href="https://www.cs.ubc.ca/~lsigal/teaching.html">Computer Vision</a> with slides from <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture3b.pdf">Lecture 3b</a> and <a href="https://www.cs.ubc.ca/~lsigal/425_2024W1/101/Lecture4.pdf">Lecture 4</a>.</p>
 </section>
 <section id="convolution-in-cnns" class="level3">
 <h3 class="anchored" data-anchor-id="convolution-in-cnns">Convolution in CNNs</h3>
-<p>A convolutinal neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix <span class="math inline">\(W\)</span>. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.</p>
+<p>A convolutional neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix <span class="math inline">\(W\)</span>. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.</p>
 <p><strong>Single Layer Perceptron (SLP) vs Convolutional Neural Network (CNN)</strong></p>
-<p>The single layer of a perceptron given earlier is of the form <span class="math inline">\(y = w^T \sigma(Wu + a)\)</span>, where <span class="math inline">\(W\)</span> is the weights matrix, <span class="math inline">\(w\)</span> is the weights vector, <span class="math inline">\(u\)</span> is the input, and <span class="math inline">\(a\)</span> is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix. Replacing <span class="math inline">\(W\)</span> with a sparse convolutional matrix <span class="math inline">\(C\)</span>.</p>
+<p>The single-layer perceptron given earlier is of the form <span class="math inline">\(y = w^T \sigma(Wu + a)\)</span>, where <span class="math inline">\(W\)</span> is the weights matrix, <span class="math inline">\(w\)</span> is the weights vector, <span class="math inline">\(u\)</span> is the input, and <span class="math inline">\(a\)</span> is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix, replacing <span class="math inline">\(W\)</span> with a sparse convolutional matrix <span class="math inline">\(C\)</span>.</p>
 <hr>
 <p><strong>Definition: Convolutional Operation</strong></p>
 <p>Let <span class="math inline">\(\vec{u}\)</span> be the flattened input image <span class="math inline">\(\mathcal{I}\)</span>, and let <span class="math inline">\(\mathcal{K}\)</span> be the convolutional kernel. The convolutional operation is defined as:</p>
 <p><span class="math display">\[ Y[s,t] = \mathcal{K} \ast \mathcal{I} = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} \mathcal{K}[i,j] \mathcal{I}[s-i,t-j]\]</span></p>
 <ul>
 <li><span class="math inline">\(Y[s,t]\)</span> is the output at position <span class="math inline">\((s,t)\)</span></li>
-<li><span class="math inline">\(N\)</span> and <span class="math inline">\(M\)</span> are the dimensions of the kernel <span class="math inline">\(\mathcal{K}\)</span></li>
 <li><span class="math inline">\(\mathcal{K}[i,j]\)</span> is the element in the <span class="math inline">\(i\)</span>-th row and <span class="math inline">\(j\)</span>-th column of the kernel</li>
 </ul>
-<p>The kernel slides across the input image, producing a weighted sum at each valid position to give output <span class="math inline">\(Y\)</span>. The indices are clipped from infinity to the correct size depending on the padding, size of kernel, and the stride.</p>
+<p>The kernel slides across the input image, producing a weighted sum at each valid position to give the output <span class="math inline">\(Y\)</span>. In practice, the infinite summation indices are clipped to a finite range depending on the padding, the size of the kernel, and the stride.</p>
 <p>It is a linear operation so that every element of <span class="math inline">\(Y\)</span> is a linear combination of the input and weights elements, indicating that it can be expressed as a matrix multiplication with the flattened image <span class="math inline">\(\vec{u}\)</span> and the flattened kernel <span class="math inline">\(\vec{k}\)</span>.</p>
 <section id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image" class="level4">
 <h4 class="anchored" data-anchor-id="example-convolution-of-a-2times-2-kernel-with-a-4times-4-image">Example: Convolution of a <span class="math inline">\(2\times 2\)</span> Kernel with a <span class="math inline">\(4\times 4\)</span> Image</h4>
@@ -621,7 +621,7 @@ y_{2,1} &amp; y_{2,2} &amp; y_{2,3} \\
 y_{3,1} &amp; y_{3,2} &amp; y_{3,3} \\
 \end{bmatrix}
 \]</span></p>
-<p>Note that the output indexing loses the first and last row and column because there is no padding. In cases with zero padding, then all undefined indices of the input are set to zero when using the convolution formula and reaching undefined indices.</p>
+<p>Note that the output loses a row and a column relative to the input because there is no padding. In cases with zero padding, all undefined indices of the input are treated as zero when the convolution formula reaches them.</p>
 <p>Each element <span class="math inline">\(y_{s,t}\)</span> of the output is given by: <span class="math display">\[
 y_{s,t} = \sum_{i=1}^{2} \sum_{j=1}^{2} \mathcal{K}[i,j] \cdot \mathcal{I}[(s+2)-i, (t+2)-j]
 \]</span></p>
@@ -658,8 +658,8 @@ k_{2,2} &amp; k_{2,1} &amp; 0      &amp; 0      &amp; k_{1,2} &amp; k_{1,1} &amp
 \vdots &amp; \vdots  &amp; \vdots  &amp; \vdots &amp; \vdots &amp; \vdots  &amp; \vdots  &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
 \end{bmatrix}
 \]</span></p>
-<p>Then using this matrix and the flattened input image, a flattened output vector can be computed as $<span class="math inline">\(\text{flatten}\left(Y \right) = C \vec{u}\)</span>.</p>
-<p>So the convolution operation gives a matrix that only has <span class="math inline">\(4\)</span> parameters out of the <span class="math inline">\(9 \times 16 = 144\)</span> total elements, with most of the entries being zero. This can be highly efficient for compuations in a neural network for spatially invariant features in the input data. The sparse structure of the matrix can also be exploited for efficient computation.</p>
+<p>Then, using this matrix and the flattened input image, a flattened output vector can be computed as <span class="math inline">\(\text{flatten}\left(Y \right) = \mathbf{C} \vec{u}\)</span>.</p>
+<p>So the convolution operation gives a matrix that has only <span class="math inline">\(4\)</span> distinct parameters among its <span class="math inline">\(9 \times 16 = 144\)</span> total elements, with most of the entries being zero. This makes computations in a neural network highly efficient for spatially invariant features in the input data, and the sparse structure of the matrix can also be exploited for efficient computation.</p>
 </section>
 <section id="channels-in-convolutional-neural-networks" class="level4">
 <h4 class="anchored" data-anchor-id="channels-in-convolutional-neural-networks">Channels in Convolutional Neural Networks</h4>
@@ -679,7 +679,7 @@ u_{c=k} \\
 \end{bmatrix}
 \]</span></p>
 <p>The <span class="math inline">\(W\)</span> are the individual convolutional kernel maps for each input to output channel. The input is a flattened tensor of size <span class="math inline">\(k \times H \times W\)</span>, and the output is a flattened tensor of size <span class="math inline">\(l \times H \times W\)</span>.</p>
-<p>To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattned input data, where each column is a flattened input image. For a batch size of <span class="math inline">\(N\)</span>, the input data is of size <span class="math inline">\(N \times k \times H \times W \times N\)</span> and the output data is of size <span class="math inline">\(N \times l \times H \times W\)</span>.</p>
+<p>To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattened input data, where each column is a flattened input image. For a batch size of <span class="math inline">\(N\)</span>, the input matrix is of size <span class="math inline">\((k \cdot H \cdot W) \times N\)</span> and the output matrix is of size <span class="math inline">\((l \cdot H \cdot W) \times N\)</span>.</p>
 <p><span class="math display">\[ Y_{\text{batch}} = \begin{bmatrix}
 W_{1,1} &amp; W_{1,2} &amp; \cdots &amp; W_{1,k} \\
 W_{2,1} &amp; W_{2,2} &amp; \cdots &amp; W_{2,k} \\
@@ -696,11 +696,11 @@ u_{1,c=k} &amp; u_{2,c=k} &amp; \cdots &amp; u_{N,c=k} \\
 </section>
 <section id="deep-cnns" class="level4">
 <h4 class="anchored" data-anchor-id="deep-cnns">Deep CNNs</h4>
-<p>A deep CNN wil chain multiple convolutional layers together, including a non-linear activation function and bias after each later:</p>
-<p><span class="math display">\[ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) + a^{(L-1)}) + a^{(L)} \]</span></p>
-<p>A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture <span class="citation" data-cites="Kaiming2015">(<a href="#ref-Kaiming2015" role="doc-biblioref">He et al. 2015</a>)</span>. The ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypassed one or more layers. Each sequential layer in the architecture is to train a change in the residual rather than the entire output to the next layer.</p>
+<p>A deep CNN chains multiple convolutional layers together, including a non-linear activation function and bias for each layer:</p>
+<p><span class="math display">\[ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) \cdots + a^{(L-1)}) + a^{(L)}) \]</span></p>
+<p>A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture <span class="citation" data-cites="Kaiming2015">(<a href="#ref-Kaiming2015" role="doc-biblioref">He et al. 2015</a>)</span>. ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypass one or more layers. Each sequential layer in the architecture learns a residual update rather than the entire mapping to the next layer:</p>
 <p><span class="math display">\[ u_{n+1} = u_n + h \sigma(W_n u_n + a_n) \]</span></p>
-<p>When <span class="math inline">\(h\)</span> becomes small, this resembles the Euler method for solving ordinary differential equations where <span class="math inline">\(\frac{du}{dt} = \sigma(W_t u + a_t)\)</span>. Where the parameters are also time dependent.</p>
+<p>When <span class="math inline">\(h\)</span> becomes small, this resembles the Euler method for solving the ordinary differential equation <span class="math inline">\(\frac{du}{dt} = \sigma(W_t u + a_t)\)</span>, where the parameters are also time-dependent.</p>
 
 
 

@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Simon Ghyselincks">
 <meta name="dcterms.date" content="2024-11-25">
-<meta name="description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.">
+<meta name="description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from empirical samples. This lecture introduces the concept of score matching and its connection to diffusion models and generative AI.">
 
 <title>Lecture 11 – Simon Ghyselincks</title>
 <style>
@@ -96,10 +96,10 @@ div.csl-indent {
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -194,16 +194,16 @@ window.Quarto = {
 
 <link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="Lecture 11 – Simon Ghyselincks">
-<meta property="og:description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.">
+<meta property="og:description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from empirical samples. This lecture introduces the concept of score matching and its connection to diffusion models and generative AI.">
 <meta property="og:image" content="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-1.png">
 <meta property="og:site_name" content="Simon Ghyselincks">
-<meta property="og:image:height" content="610">
-<meta property="og:image:width" content="896">
+<meta property="og:image:height" content="305">
+<meta property="og:image:width" content="448">
 <meta name="twitter:title" content="Lecture 11 – Simon Ghyselincks">
-<meta name="twitter:description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.">
+<meta name="twitter:description" content="Score matching has been used in machine learning to estimate the parameters of a probability distribution from empirical samples. This lecture introduces the concept of score matching and its connection to diffusion models and generative AI.">
 <meta name="twitter:image" content="https://chipnbits.github.io/content/eosc555/lectures/lecture11/index_files/figure-html/cell-2-output-1.png">
-<meta name="twitter:image-height" content="610">
-<meta name="twitter:image-width" content="896">
+<meta name="twitter:image-height" content="305">
+<meta name="twitter:image-width" content="448">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -308,7 +308,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.
+    Score matching has been used in machine learning to estimate the parameters of a probability distribution from empirical samples. This lecture introduces the concept of score matching and its connection to diffusion models and generative AI.
   </div>
 </div>
 
@@ -343,7 +343,7 @@ window.Quarto = {
 </div>
 <section id="score-matching" class="level2">
 <h2 class="anchored" data-anchor-id="score-matching">Score Matching</h2>
-<p>Previously in <a href="../../../../content/eosc555/lectures/lecture8/index.html#score-function">Lecture 10</a>, the concept of score as the gradient of the log-likelihood was introduced.</p>
+<p>Previously, in <a href="../../../../content/eosc555/lectures/lecture10/index.html#score-function">Lecture 10</a>, the concept of the score as the gradient of the log-likelihood was introduced.</p>
 <p>For a probability distribution <span class="math inline">\(\pi(x, \theta)\)</span> parameterized by <span class="math inline">\(\theta\)</span>, the distribution can be thought of as a potential function <span class="math inline">\(\phi(x, \theta)\)</span> which is normalized by the partition function <span class="math inline">\(Z(\theta)\)</span>:</p>
 <p><span class="math display">\[ \pi(x; \theta) = \underbrace{\frac{1}{Z(\theta)}}_{\text{Partition}} \exp(-\underbrace{\phi(x; \theta)}_{\text{Potential}}) \]</span></p>
 <p>The score is defined as:</p>
@@ -352,9 +352,9 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="the-big-idea">The Big Idea</h3>
 <p>Score matching was first proposed by Hyvärinen in 2005 <span class="citation" data-cites="hyvarinen2005scorematching">(<a href="#ref-hyvarinen2005scorematching" role="doc-biblioref">Hyvärinen 2005</a>)</span> as a method to estimate model parameters without computing the partition function <span class="math inline">\(\frac{1}{Z(\theta)}\)</span>, which is often computationally expensive or intractable.</p>
 <p>Hyvärinen suggested directly matching the score of the model to the score of the data by minimizing the expected squared difference between them:</p>
-<p><span class="math display">\[ \min_\theta \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}(x)} \right\|^2 \right] \]</span></p>
-<section id="inuitive-explanation" class="level4">
-<h4 class="anchored" data-anchor-id="inuitive-explanation">Inuitive Explanation</h4>
+<p><span class="math display">\[ \min_\theta \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right] \]</span></p>
+<section id="intuitive-explanation" class="level4">
+<h4 class="anchored" data-anchor-id="intuitive-explanation">Intuitive Explanation</h4>
 <ol type="1">
 <li>If the gradients of two potential functions are equal, the functions themselves differ by at most a constant:</li>
 </ol>
@@ -364,7 +364,7 @@ window.Quarto = {
 \phi(x; \theta) &amp;= \phi_\text{true}(x) + C
 \end{align*}
 \]</span></p>
-<p>Where <span class="math inline">\(C\)</span> is a constant independent of <span class="math inline">\(x\)</span>. This follows from the fundamental theorem of calculus and is analogous to the principle in physics where two potentials producing the same field differ by a constant.</p>
+<p>where <span class="math inline">\(C\)</span> is a constant independent of <span class="math inline">\(x\)</span>. This follows from the fundamental theorem of calculus and is analogous to the principle in physics that two potentials producing the same field differ by a constant.</p>
 <ol start="2" type="1">
 <li>Normalization by the partition function <span class="math inline">\(Z(\theta)\)</span> does not affect the relation between the potentials:</li>
 </ol>
@@ -377,7 +377,7 @@ window.Quarto = {
 &amp;= \frac{1}{Z_{\text{true}}} \exp(-\phi_\text{true}(x)) \\
 \end{align*}
 \]</span></p>
-<p>The relation between the two functions is preserved by the partition function, which differs by constant <span class="math inline">\(e^{-C}\)</span> for a difference in potential of <span class="math inline">\(C\)</span>. The probability distributions must be equal, as shown above.</p>
+<p>The relation between the two functions is preserved by the partition function, which absorbs the constant factor <span class="math inline">\(e^{-C}\)</span> arising from a potential difference of <span class="math inline">\(C\)</span>. The probability distributions must therefore be equal, as shown above.</p>
 <p>If we can match the score, then we indirectly match the probability distributions without needing to first compute the partition function. This is the idea behind score matching.</p>
 </section>
 <section id="visualization-of-score-matching-and-potentials" class="level4">
@@ -509,16 +509,16 @@ window.Quarto = {
 <span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">''</span>)</span>
 <span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="25d8585b" class="cell quarto-layout-panel" data-layout-ncol="3" data-execution_count="2">
+<div id="7ee847c4" class="cell quarto-layout-panel" data-execution_count="1" data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><img src="index_files/figure-html/cell-2-output-1.png" class="img-fluid" width="448"></p>
+<p><img src="index_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><img src="index_files/figure-html/cell-2-output-2.png" class="img-fluid" width="461"></p>
+<p><img src="index_files/figure-html/cell-2-output-2.png" class="img-fluid"></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
-<p><img src="index_files/figure-html/cell-2-output-3.png" class="img-fluid" width="467"></p>
+<p><img src="index_files/figure-html/cell-2-output-3.png" class="img-fluid"></p>
 </div>
 </div>
 </div>
@@ -529,93 +529,93 @@ window.Quarto = {
 <p>The score for the data <span class="math inline">\(s_{\text{true}}\)</span> is unknown, but it can be eliminated using calculus tricks, as shown in <span class="citation" data-cites="hyvarinen2005scorematching">(<a href="#ref-hyvarinen2005scorematching" role="doc-biblioref">Hyvärinen 2005</a>)</span>. The expected squared difference can be rewritten as:</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp; \ \min_\theta \mathbb{E} \frac{1}{2} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}}(x) \right\|^2 \right] \\
-&amp;= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) - s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
-&amp;= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx + \frac{1}{2} \int_\Omega \left\| s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
+&amp; \ \min_\theta \frac{1}{2} \mathbb{E} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right] \\
+&amp;= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
+&amp;= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx + \frac{1}{2} \int_\Omega \left\| s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
 \end{align*}
 \]</span></p>
-<p>But <span class="math inline">\(\|s_{\text{true}}\|\)</span> is a constant since it is not a variable that can be changed, it can be discarded from the minimization problem:</p>
+<p>But the last term does not depend on <span class="math inline">\(\theta\)</span> — it cannot be changed by the optimization — so it can be discarded from the minimization problem:</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp;= \min_\theta \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx \\
+&amp;= \min_\theta \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx \\
 \end{align*}
 \]</span></p>
-<p>To eliminate <span class="math inline">\(s_{\text{true}}\)</span>, the definition of score can be used to rewrite the term:</p>
+<p>To eliminate <span class="math inline">\(s_{\text{true}}\)</span>, the definition of the score can be used to rewrite the term:</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp; \ -\int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx\\
-&amp;= -\int_\Omega  \pi(x) \left(\nabla_x \log(\pi(x))\right)^\intercal  s_\theta(x; \theta) \, dx \\
-&amp; = -\int_\Omega  \frac{\pi(x)}{\pi(x)}\left(\nabla_x \pi(x)\right)^\intercal  s_\theta(x; \theta) \, dx \\
-&amp; = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x; \theta) \, dx \\
+&amp; \ -\int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx\\
+&amp;= -\int_\Omega  \pi(x) \left(\nabla_x \log(\pi(x))\right)^\intercal  s_\theta(x) \, dx \\
+&amp; = -\int_\Omega  \frac{\pi(x)}{\pi(x)}\left(\nabla_x \pi(x)\right)^\intercal  s_\theta(x) \, dx \\
+&amp; = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x) \, dx \\
 \end{align*}
 \]</span></p>
-<p>Integration by parts allows for the gradient term to be swapped to the score term. If we assume that the probability of the true distribution goes to zero <span class="math inline">\(\pi(x) \rightarrow 0\)</span> at the boundaries <span class="math inline">\(\partial \Omega\)</span>, then the flux integral boundary term from integration by parts vanishes. When working with integration by parts in multivarible calculus, the gradient <span class="math inline">\(\nabla\)</span> and negative divergence <span class="math inline">\(-\nabla \cdot\)</span> opeartors are adjoints of each other, <span class="math inline">\(\nabla = (-\nabla \cdot)^\intercal\)</span>. This allows for the gradient to be swapped to the score term:</p>
+<p>Integration by parts allows the derivative to be moved from <span class="math inline">\(\pi\)</span> onto the score term. If we assume that the probability of the true distribution goes to zero, <span class="math inline">\(\pi(x) \rightarrow 0\)</span>, at the boundaries <span class="math inline">\(\partial \Omega\)</span>, then the flux boundary term from integration by parts vanishes. When working with integration by parts in multivariable calculus, the gradient <span class="math inline">\(\nabla\)</span> and negative divergence <span class="math inline">\(-\nabla \cdot\)</span> operators are adjoints of each other, <span class="math inline">\(\nabla = (-\nabla \cdot)^\intercal\)</span>. This allows the derivative to be moved onto the score term:</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp; = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x; \theta) \, dx \\
-&amp;= -\int_{\partial \Omega} \pi(x) s_\theta(x; \theta) \cdot dx + \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x; \theta) \, dx \\
-&amp;= \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x; \theta) \, dx \\
-\int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx &amp;= \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
+&amp; = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x) \, dx \\
+&amp;= -\int_{\partial \Omega} \pi(x) s_\theta(x) \cdot dx + \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x) \, dx \\
+&amp;= \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x) \, dx \\
+&amp;= -\int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
 \end{align*}
 \]</span></p>
-<p>Back to the minimization problem, this term can be substituted back in:</p>
+<p>where the last equality uses <span class="math inline">\(s_\theta = -\nabla_x \phi\)</span>, so <span class="math inline">\(\nabla_x \cdot s_\theta = -\nabla_x^2 \phi\)</span>. Back in the minimization problem, this term can be substituted in:</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp; \ \min_\theta \mathbb{E}_{x \sim \pi(x)} \frac{1}{2} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}(x)} \right\|^2 \right]\\
-&amp;= \min \frac{1}{2}  \int_\Omega \left\| \nabla_x \phi(x;\theta) \right\|^2 \pi(x) \, dx + \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
-&amp;= \min_{theta} \mathbb{E}_{x \sim \pi(x)} \left[ \left\| \nabla_x \phi(x;\theta) \right\|^2 + \nabla_x^2 \phi(x;\theta) \right] \\
+&amp; \ \min_\theta \frac{1}{2} \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right]\\
+&amp;= \min_\theta \frac{1}{2}  \int_\Omega \left\| \nabla_x \phi(x;\theta) \right\|^2 \pi(x) \, dx - \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
+&amp;= \min_{\theta} \mathbb{E}_{x \sim \pi(x)} \left[ \frac{1}{2} \left\| \nabla_x \phi(x;\theta) \right\|^2 - \nabla_x^2 \phi(x;\theta) \right] \\
 \end{align*}
 \]</span></p>
 </section>
 </section>
 <section id="evaluation-of-the-objective" class="level2">
 <h2 class="anchored" data-anchor-id="evaluation-of-the-objective">Evaluation of the Objective</h2>
-<p>The minimization objective does not require using the true score which has been eliminated. The <span class="math inline">\(\nabla_x^2 \phi(x;\theta)\)</span> term can be evaluated as the trace of the Hessian matrix of the potential function <span class="math inline">\(\phi(x;\theta)\)</span>:</p>
+<p>The minimization objective no longer requires the true score, which has been eliminated. The <span class="math inline">\(\nabla_x^2 \phi(x;\theta)\)</span> term denotes the Laplacian of the potential, which can be evaluated as the trace of the Hessian matrix of the potential function <span class="math inline">\(\phi(x;\theta)\)</span>:</p>
 <p><span class="math display">\[
-\nabla_x^2 \phi(x;\theta) = \text{Tr} \left( \nabla_x^2 \phi(x;\theta) \right) = \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
+\nabla_x^2 \phi(x;\theta) = \text{Tr} \left( H_\phi(x;\theta) \right) = \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
 \]</span></p>
-<p>This component places a penalty on positive curvature in the potential function, preferring highly negative curvature in regions of high probability density, similar to a Gaussian or peaked distribution. It can be though of as a regularization term that prefers peaked distributions.</p>
-<p>The <span class="math inline">\(\left\| \nabla_x \phi(x;\theta) \right\|^2\)</span> term is the squared norm of the gradient, which penalizes large gradients. With this term alone, the optimal distribution would be as flat as possible to make the gradient as small as possible. It is the opposition of the minimization objective of the two terms that leads to a balanced and matched distribution.</p>
-<p>In practice, we can estimate the true expectation over all <span class="math inline">\(x\)</span> by sampling from the model distribution. Once such way is to use the empiral samples <span class="math inline">\(\{x_1, x_2, \ldots, x_N\}\)</span> to estimate the expectation. If they are assumed to be i.i.d. samples from the model distribution, the expectation can be approximated as:</p>
+<p>The <span class="math inline">\(-\nabla_x^2 \phi(x;\theta)\)</span> component rewards positive curvature of the potential at the sample locations: minimizing it encourages the potential to curve upward, like a bowl, around regions of high data density, which corresponds to sharp peaks in the probability distribution. It can be thought of as a term that prefers peaked distributions.</p>
+<p>The <span class="math inline">\(\frac{1}{2}\left\| \nabla_x \phi(x;\theta) \right\|^2\)</span> term is the squared norm of the gradient, which penalizes large gradients. With this term alone, the optimal potential would be as flat as possible to make the gradient as small as possible. It is the opposition between these two terms in the minimization objective that leads to a balanced, matched distribution.</p>
+<p>In practice, we can estimate the true expectation over all <span class="math inline">\(x\)</span> by sampling from the data distribution. One such way is to use the empirical samples <span class="math inline">\(\{x_1, x_2, \ldots, x_N\}\)</span> to estimate the expectation. If they are assumed to be i.i.d. samples from the data distribution, the expectation can be approximated as:</p>
 <p><span class="math display">\[
 \begin{align*}
-\mathbb{E}_{x \sim \pi(x)} \left[ \left\| \nabla_x \phi(x;\theta) \right\|^2 + \nabla_x^2 \phi(x;\theta) \right] &amp;\approx \frac{1}{N} \sum_{i=1}^N \left\| \nabla_x \phi(x_i;\theta) \right\|^2 + \nabla_x^2 \phi(x_i;\theta) \\
+\mathbb{E}_{x \sim \pi(x)} \left[ \frac{1}{2} \left\| \nabla_x \phi(x;\theta) \right\|^2 - \nabla_x^2 \phi(x;\theta) \right] &amp;\approx \frac{1}{N} \sum_{i=1}^N \left( \frac{1}{2} \left\| \nabla_x \phi(x_i;\theta) \right\|^2 - \nabla_x^2 \phi(x_i;\theta) \right) \\
 \end{align*}
 \]</span></p>
-<p>This can be applied to all samples, or batches of samples to get a gradient estimate for the minimization objective in <span class="math inline">\(\theta\)</span>:</p>
+<p>This can be applied to all samples, or to batches of samples, to get a gradient estimate for the minimization objective in <span class="math inline">\(\theta\)</span>:</p>
 <p><span class="math display">\[
 \begin{align*}
-g &amp;\approx \nabla_\theta \left[ \frac{1}{N} \sum_{i=1}^N \left\| \nabla_x \phi(x_i;\theta) \right\|^2 + \nabla_x^2 \phi(x_i;\theta) \right] \\
+g &amp;\approx \nabla_\theta \left[ \frac{1}{N} \sum_{i=1}^N \left( \frac{1}{2} \left\| \nabla_x \phi(x_i;\theta) \right\|^2 - \nabla_x^2 \phi(x_i;\theta) \right) \right] \\
 \end{align*}
 \]</span></p>
 <section id="computing-the-laplacian" class="level3">
 <h3 class="anchored" data-anchor-id="computing-the-laplacian">Computing the Laplacian</h3>
-<p>The Laplacian of the potential function <span class="math inline">\(\phi(x;\theta)\)</span> can be computed as the trace of the Hessian matrix of the potential function:</p>
+<p>The Laplacian of the potential function <span class="math inline">\(\phi(x;\theta)\)</span> can be computed as the trace of its Hessian matrix:</p>
 <p><span class="math display">\[
 \begin{align*}
-\nabla_x^2 \phi(x;\theta) &amp;= \text{tr} \left( \nabla_x^2 \phi(x;\theta) \right) \\
+\nabla_x^2 \phi(x;\theta) &amp;= \text{tr} \left( H_\phi(x;\theta) \right) \\
 &amp;= \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
 \end{align*}
 \]</span></p>
-<p>The trace of a matrix such as a Hessian which is a linear operator can be estimated without having to know the explicit matrix. For example the Hessian may be an operator that is too large to store in memory. Or the Hessian may not be explicitly known, but the operation <span class="math inline">\(Hx\)</span> can be computed for example.</p>
-<p>A process first proposed by Hutchinson <span class="citation" data-cites="Hutchinson1990">(<a href="#ref-Hutchinson1990" role="doc-biblioref">Hutchinson 1990</a>)</span>, known as randomized linear algebra allows for computing the trace when only the <span class="math inline">\(H(x)\)</span> operation is known. A random varible is used to sample as follows:</p>
+<p>The trace of a matrix such as the Hessian, which is a linear operator, can be estimated without knowing the explicit matrix. For example, the Hessian may be an operator that is too large to store in memory, or it may not be explicitly known even though the matrix-vector product <span class="math inline">\(Hv\)</span> can be computed.</p>
+<p>A process first proposed by Hutchinson <span class="citation" data-cites="Hutchinson1990">(<a href="#ref-Hutchinson1990" role="doc-biblioref">Hutchinson 1990</a>)</span>, an example of randomized linear algebra, allows for computing the trace when only the matrix-vector product is available. A random variable is used to sample as follows:</p>
 <p><span class="math display">\[
 \begin{align*}
 \text{tr} \left(A\right) &amp;= \text{tr} \left(AI\right) \\
-&amp;= \text{tr} \left( A \mathbb{E}_{x\sim\mathcal{N}(0,I)} x x^\intercal \right)\\
-&amp;= \mathbb{E}_{x\sim\mathcal{N}(0,I)} \text{tr} \left( A x x^\intercal \right)\\
-&amp;= \mathbb{E} \text{tr} \left(x^\intercal A x  \right)\\
+&amp;= \text{tr} \left( A \, \mathbb{E}_{x\sim\mathcal{N}(0,I)} \left[ x x^\intercal \right] \right)\\
+&amp;= \mathbb{E}_{x\sim\mathcal{N}(0,I)} \left[ \text{tr} \left( A x x^\intercal \right) \right]\\
+&amp;= \mathbb{E} \left[ x^\intercal A x \right]\\
 &amp;\approxeq \frac{1}{N} \sum_{i=1}^N x_i^\intercal A x_i
 \end{align*}
 \]</span></p>
-<p>The normal distribution by definition has a covariance matrix that is identity <span class="math inline">\(I\)</span> so the expectation of the outer product of the random variable <span class="math inline">\(x\)</span> is the identity matrix. Other random variables can be used as well, further details on the process can be found in Bai, Fahey, and Golub <span class="citation" data-cites="Bai1996">(<a href="#ref-Bai1996" role="doc-biblioref">Bai et al. 1996</a>)</span>.</p>
+<p>The standard normal distribution by definition has identity covariance <span class="math inline">\(I\)</span>, so the expectation of the outer product of the random variable <span class="math inline">\(x\)</span> is the identity matrix. Other random variables can be used as well; further details on the process can be found in Bai, Fahey, and Golub <span class="citation" data-cites="Bai1996">(<a href="#ref-Bai1996" role="doc-biblioref">Bai et al. 1996</a>)</span>.</p>
 </section>
 </section>
 <section id="applications-of-learned-score" class="level2">
 <h2 class="anchored" data-anchor-id="applications-of-learned-score">Applications of Learned Score</h2>
 <section id="map-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="map-estimation">MAP Estimation</h3>
-<p>Now that we have a method to learn the score of a distribution, it can be used as the regularization term of the gradient in MAP estimation. In <a href="../../../../content/eosc555/lectures/lecture10/index.html">Lecture10</a>, the score was used as part of the MAP minimization gradient.</p>
+<p>Now that we have a method to learn the score of a distribution, it can be used as the regularization term of the gradient in MAP estimation. In <a href="../../../../content/eosc555/lectures/lecture10/index.html">Lecture 10</a>, the score was used as part of the MAP minimization gradient.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -626,31 +626,31 @@ g &amp;\approx \nabla_\theta \left[ \frac{1}{N} \sum_{i=1}^N \left\| \nabla_x \p
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Objective:</strong> <span class="math display">\[\min_x \left( \frac{1}{2\sigma^2}\|F(x)-b\|^2 + \phi(x, \theta) \right)\]</span> <strong>Gradient:</strong> <span class="math display">\[ g = \frac{1}{\sigma^2} J^T(x) (F(x) - b) + s(x, \theta)\]</span> <strong>Gradient Descent:</strong> <span class="math display">\[ x_{k+1} = x_k - \mu J^T(x) (F(x) - b) - s(x, \theta)\]</span></p>
+<p><strong>Objective:</strong> <span class="math display">\[\min_x \left( \frac{1}{2\sigma^2}\|F(x)-b\|^2 + \phi(x, \theta) \right)\]</span> <strong>Gradient:</strong> <span class="math display">\[ g = \frac{1}{\sigma^2} J^T(x) (F(x) - b) - s(x, \theta)\]</span> <strong>Gradient Descent:</strong> <span class="math display">\[ x_{k+1} = x_k - \mu \left( \frac{1}{\sigma^2} J^T(x_k) (F(x_k) - b) - s(x_k, \theta) \right)\]</span></p>
 </div>
 </div>
-<p>So using many empirically drawn samples <span class="math inline">\(x_i\)</span>, the <span class="math inline">\(\pi(x)\)</span> distribution can be indirectly estimated using score matching, learning the score <span class="math inline">\(s(x, \theta)\)</span>. The learned score can then be used for the gradient of the MAP estimation problem, where it is representative of the regularization term, informed by the prior distribution <span class="math inline">\(\pi(x)\)</span>. In the case of a matrix operator for the forward problem <span class="math inline">\(F(x) = Ax\)</span>, its Jacobian <span class="math inline">\(J(x)\)</span> is the same as the matrix operator <span class="math inline">\(J(x) = A\)</span>.</p>
+<p>So, using many empirically drawn samples <span class="math inline">\(x_i\)</span>, the <span class="math inline">\(\pi(x)\)</span> distribution can be indirectly estimated using score matching, learning the score <span class="math inline">\(s(x, \theta)\)</span>. The learned score can then be used in the gradient of the MAP estimation problem, where it represents the regularization term, informed by the prior distribution <span class="math inline">\(\pi(x)\)</span>. In the case of a matrix operator for the forward problem, <span class="math inline">\(F(x) = Ax\)</span>, the Jacobian is simply the matrix operator itself: <span class="math inline">\(J(x) = A\)</span>.</p>
 </section>
 <section id="diffusion-models-and-homotopy" class="level3">
 <h3 class="anchored" data-anchor-id="diffusion-models-and-homotopy">Diffusion Models and Homotopy</h3>
-<p>In <a href="../../../../content/eosc555/lectures/lecture7/index.html">Lecture 7</a>, the concept of a homotopy beteween two functions was introduced. A homotopy provides a continuous path between an smoothing function <span class="math inline">\(g(x)\)</span> and a target function <span class="math inline">\(f(x)\)</span>, parameterized by a scalar <span class="math inline">\(t\)</span>. In the case of a gaussian smoothing function <span class="math inline">\(g(x)\)</span>, <span class="math inline">\(t\)</span> acts as a variance parameter: <span class="math display">\[
+<p>In <a href="../../../../content/eosc555/lectures/lecture7/index.html">Lecture 7</a>, the concept of a homotopy between two functions was introduced. A homotopy provides a continuous path between a smoothing function <span class="math inline">\(g(x)\)</span> and a target function <span class="math inline">\(f(x)\)</span>, parameterized by a scalar <span class="math inline">\(t\)</span> (note that the orientation of <span class="math inline">\(t\)</span> here is reversed relative to Lecture 7, with <span class="math inline">\(t = 1\)</span> now corresponding to the target): <span class="math display">\[
 h(x, t) = t f(x) + (1-t) g(x)
 \]</span></p>
 <section id="proposition-convolution-of-random-variables" class="level4">
 <h4 class="anchored" data-anchor-id="proposition-convolution-of-random-variables">Proposition: Convolution of Random Variables</h4>
-<p>The sum of two independent random variables is a convolution of their probability distributions. If <span class="math inline">\(X \sim \pi_x(x)\)</span> and <span class="math inline">\(Y \sim \pi_y(y)\)</span>, then the sum <span class="math inline">\(W = X + Y\)</span> has a probability distribution <span class="math inline">\(\pi_w(w)\)</span> that is the convolution of the two distributions:</p>
+<p>The probability distribution of the sum of two independent random variables is the convolution of their probability distributions. If <span class="math inline">\(X \sim \pi_x(x)\)</span> and <span class="math inline">\(Y \sim \pi_y(y)\)</span>, then the sum <span class="math inline">\(W = X + Y\)</span> has a probability distribution <span class="math inline">\(\pi_w(w)\)</span> that is the convolution of the two distributions:</p>
 <p><span class="math display">\[
 \begin{align*}
-\pi_w(w) &amp;= \int \pi_x(x) \pi_y(z-x) \, dx \\
+\pi_w(w) &amp;= \int \pi_x(x) \pi_y(w-x) \, dx \\
 \end{align*}
 \]</span></p>
 <hr>
-<p>For a dataset <span class="math inline">\(x\sim \pi(x)\)</span> and a latent variable <span class="math inline">\(z\sim \mathcal{N}(0, I)\)</span>, then define a new random variable <span class="math inline">\(x_t\)</span> that is the sum of the two variables:</p>
+<p>For a dataset <span class="math inline">\(x\sim \pi(x)\)</span> and a latent variable <span class="math inline">\(z\sim \mathcal{N}(0, I)\)</span>, define a new random variable <span class="math inline">\(x_t\)</span> that is a weighted sum of the two variables:</p>
 <p><span class="math display">\[
-x_t = \sqrt{t}x + \sqrt{1-t} z
+x_t = \sqrt{t}\,x + \sqrt{1-t}\, z
 \]</span></p>
-<p>The homotopy proceeds slightlt differently with the time scheduling but it still begins and ends with the starting and target distributions. This new random variable <span class="math inline">\(x_t\)</span> will be the convolution of the two distributions, such that <span class="math inline">\(\pi_{x_t}(x_t)\)</span> is the convolution of <span class="math inline">\(t \pi(x)\)</span> and <span class="math inline">\(\mathcal{N}(0, (1-t)I)\)</span>:</p>
-<p><span class="math display">\[ \pi(x_t) = \int \pi(x-\frac{\xi}{t}) \exp\left(-\frac{\|\xi\|^2}{2(1-t)}\right) \, d\xi \]</span></p>
+<p>The homotopy proceeds slightly differently with this time scheduling, but it still begins and ends with the starting and target distributions. The density of this new random variable <span class="math inline">\(x_t\)</span> is the convolution of the two component densities — the density of <span class="math inline">\(\sqrt{t}\,x\)</span> convolved with <span class="math inline">\(\mathcal{N}(0, (1-t)I)\)</span>:</p>
+<p><span class="math display">\[ \pi(x_t) \propto \int \pi\left(\frac{x_t-\xi}{\sqrt{t}}\right) \exp\left(-\frac{\|\xi\|^2}{2(1-t)}\right) \, d\xi \]</span></p>
 
 
 

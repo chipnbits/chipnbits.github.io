@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -96,10 +96,10 @@ div.csl-indent {
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-4897d45d2f75ed4f519693be625836c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-94b323657c735dfe3b1bf6ebb2c33a55.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
@@ -417,19 +417,19 @@ window.Quarto = {
 <p><span class="math display">\[b = F(x) + \epsilon\]</span></p>
 <p>where <span class="math inline">\(F(x)\)</span> is the forward operator, <span class="math inline">\(b\)</span> is the observed data, and <span class="math inline">\(\epsilon\)</span> represents the noise in the measurement or process. We often assume that <span class="math inline">\(\epsilon\)</span> is Gaussian with zero mean and covariance matrix <span class="math inline">\(\Sigma\)</span>.</p>
 <p><span class="math display">\[ \epsilon \sim \mathcal{N}(0, \Sigma) \]</span></p>
-<p>The probability of deviation of the observed data from the forward model in this case is given by: <span class="math display">\[
+<p>The probability density of the deviation of the observed data from the forward model in this case is given by: <span class="math display">\[
 \pi(\epsilon) = \frac{1}{(2\pi)^{m/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}\epsilon^\intercal \Sigma^{-1} \epsilon\right)
 \]</span></p>
-<p>Without any prior information about the error, it is difficult to estimate the covariance matrix <span class="math inline">\(\Sigma\)</span>. For the purpose of this analysis we can assume that it is a normal distriution with zero mean and a diagonal <span class="math inline">\(\sigma^2 I\)</span> covariance matrix. The likelihood function simplifies to:</p>
+<p>Without any prior information about the error, it is difficult to estimate the covariance matrix <span class="math inline">\(\Sigma\)</span>. For the purpose of this analysis we can assume that it is a normal distribution with zero mean and a diagonal <span class="math inline">\(\sigma^2 I\)</span> covariance matrix. The likelihood function then simplifies to:</p>
 <p><span class="math display">\[ \pi(\epsilon) = \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right) \]</span></p>
 <p>To model the probability distribution of the inverse problem parameters <span class="math inline">\(x\)</span>, we introduce a prior distribution <span class="math inline">\(\pi(x)\)</span>. To ensure positivity of <span class="math inline">\(\pi(x)\)</span> over the entire domain and proper normalization, we define it using a <strong>potential function</strong> <span class="math inline">\(\phi(x, \theta)\)</span>: <span class="math display">\[\pi(x; \theta) = \frac{e^{-\phi(x, \theta)}}{Z(\theta)}\]</span></p>
-<p>Where the <strong>partion function</strong> <span class="math inline">\(Z(\theta)\)</span> is given by:</p>
+<p>where the <strong>partition function</strong> <span class="math inline">\(Z(\theta)\)</span> is given by:</p>
 <p><span class="math display">\[Z(\theta) = \int_\Omega e^{-\phi(x, \theta)} dx\]</span></p>
-<p>Note the partition function is required to make the probability distribution integrate to <span class="math inline">\(1\)</span>. The exponential operator on the potential ensures that all <span class="math inline">\(\pi(x)\)</span> values are positve since <span class="math inline">\(e^\phi &gt; 0\)</span> for all <span class="math inline">\(z \in \mathbb{R}\)</span>. In practice, it is often intractable to directly compute the partition function when updating the model parameters <span class="math inline">\(\theta\)</span> for distributions that are more complex than a Gaussian.</p>
-<p><span class="math inline">\(\phi(x, \theta): \mathbb{R}^n \rightarrow \mathbb{R}\)</span> maps <span class="math inline">\(x\)</span> to a scalar value, and <span class="math inline">\(\theta\)</span> are the parameters of the model. For example if we are modeling a Gaussian, the parameters might include the covariance matrix <span class="math inline">\(\Sigma\)</span>. It has a physical interpretation as an energy of a system, where <span class="math inline">\(\phi\)</span> values correspond to low probability density regions. For this reason it is often called the <strong>energy function</strong> in physics-inspired models.</p>
+<p>Note that the partition function is required to make the probability distribution integrate to <span class="math inline">\(1\)</span>. The exponential operator on the potential ensures that all <span class="math inline">\(\pi(x)\)</span> values are positive, since <span class="math inline">\(e^{-\phi} &gt; 0\)</span> for all <span class="math inline">\(\phi \in \mathbb{R}\)</span>. In practice, it is often intractable to directly compute the partition function when updating the model parameters <span class="math inline">\(\theta\)</span> for distributions more complex than a Gaussian.</p>
+<p><span class="math inline">\(\phi(x, \theta): \mathbb{R}^n \rightarrow \mathbb{R}\)</span> maps <span class="math inline">\(x\)</span> to a scalar value, and <span class="math inline">\(\theta\)</span> are the parameters of the model. For example, if we are modeling a Gaussian, the parameters might include the covariance matrix <span class="math inline">\(\Sigma\)</span>. The potential has a physical interpretation as the energy of a system, where high <span class="math inline">\(\phi\)</span> values correspond to low probability density regions. For this reason it is often called the <strong>energy function</strong> in physics-inspired models.</p>
 <section id="maximum-a-posteriori-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-a-posteriori-estimation">Maximum A Posteriori Estimation</h3>
-<p>The goal of <strong>maximum a posteriori (MAP)</strong> estimation is to find the most likely <span class="math inline">\(x\)</span> given the observed data <span class="math inline">\(b\)</span> and model parameters <span class="math inline">\(\theta\)</span>, maximize the posterior probability <span class="math inline">\(\pi(x|b; \theta)\)</span>:</p>
+<p>The goal of <strong>maximum a posteriori (MAP)</strong> estimation is to find the most likely <span class="math inline">\(x\)</span> given the observed data <span class="math inline">\(b\)</span> and model parameters <span class="math inline">\(\theta\)</span>, by maximizing the posterior probability <span class="math inline">\(\pi(x|b; \theta)\)</span>:</p>
 <p><span class="math display">\[
 \begin{align*}
 \max_x \pi(x|b; \theta) &amp;= \max_x \frac{\pi(b|x; \theta) \pi(x; \theta)}{\pi(b)}\\
@@ -442,7 +442,7 @@ window.Quarto = {
 &amp; = \max_x \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right) \frac{1}{Z(\theta)} e^{-\phi(x, \theta)}
 \end{align*}
 \]</span></p>
-<p>The logarithm is a monotonic function, we can maximize the log-likelihood instead of the likelihood with no loss of generality. <span class="math inline">\(\max_x \pi(x) = \max_x \log(\pi(x))\)</span>. Intuitively, since the logarithim is always increasing in output, <span class="math inline">\(\log(z) &gt; \log(y)\)</span> implies <span class="math inline">\(z &gt; y\)</span>. In addition the product of two exponentials is the same as the sum of the exponents, and the maximum of a function is the same as the minimum of the negative of the function. This allows us to rewrite the log-likelihood as:</p>
+<p>The logarithm is a monotonic function, so we can maximize the log of the posterior instead of the posterior itself with no loss of generality: <span class="math inline">\(\arg\max_x \pi(x) = \arg\max_x \log(\pi(x))\)</span>. Intuitively, since the logarithm is always increasing, <span class="math inline">\(\log(z) &gt; \log(y)\)</span> implies <span class="math inline">\(z &gt; y\)</span>. In addition, the log of a product of exponentials is the sum of the exponents, and the maximum of a function is the minimum of its negative. This allows us to rewrite the objective as:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -456,24 +456,24 @@ window.Quarto = {
 <p><span class="math display">\[\max_x \log \pi(x|b; \theta) = \min_x \left( \frac{1}{2\sigma^2}\|b-F(x)\|^2 + \phi(x, \theta) \right)\]</span></p>
 </div>
 </div>
-<p>We have looked at methods previously of how to differentiate the forward operator <span class="math inline">\(F\)</span> and perform gradient descent. We take the gradient with respect to <span class="math inline">\(x\)</span> to find the minimum of the function.</p>
+<p>We have previously looked at methods for differentiating the forward operator <span class="math inline">\(F\)</span> and performing gradient descent. We take the gradient with respect to <span class="math inline">\(x\)</span> to find the minimum of the function:</p>
 <p><span class="math display">\[
 \begin{align*}
-g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)\\
-&amp;= \frac{1}{\sigma^2} \frac{\partial F}{\partial x} (F(x) - b) - \nabla_x \phi(x, \theta)\\
-&amp;= \frac{1}{\sigma^2} J^T(x) (F(x) - b) + s(x, \theta)
+g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 + \phi(x, \theta)\right)\\
+&amp;= \frac{1}{\sigma^2} J^T(x) (F(x) - b) + \nabla_x \phi(x, \theta)\\
+&amp;= \frac{1}{\sigma^2} J^T(x) (F(x) - b) - s(x, \theta)
 \end{align*}
 \]</span></p>
-<p>Using gradient descent, we can update the model parameters <span class="math inline">\(\theta\)</span> by taking steps in away from the direction of the gradient <span class="math inline">\(g\)</span>:</p>
+<p>Using gradient descent, we can update the estimate of <span class="math inline">\(x\)</span> by taking steps away from the direction of the gradient <span class="math inline">\(g\)</span>:</p>
 <p><span class="math display">\[x_{k+1} = x_k - \alpha g\]</span></p>
 </section>
 </section>
 <section id="score-function" class="level2">
 <h2 class="anchored" data-anchor-id="score-function">Score Function</h2>
-<p><span class="math inline">\(s(x;\theta)\)</span> is known as the <strong>score function</strong> of <span class="math inline">\(\pi(x; theta)\)</span>. <span class="math display">\[s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta) + C\]</span></p>
-<p>It is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> with respect to <span class="math inline">\(x\)</span>. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish’s “Theory of Statistics” <span class="citation" data-cites="Schervish2012-sk">(<a href="#ref-Schervish2012-sk" role="doc-biblioref">Schervish 1995</a>)</span>.</p>
-<p>Score has a physical intution connected to energy potentials and fields. In physics, the electric field <span class="math inline">\(\mathbf{E}\)</span> is the negative gradient of the electric potential <span class="math inline">\(V\)</span>: <span class="math display">\[ \mathbf{E} = -\nabla_x V(x)\]</span></p>
-<p>Simalarly, the score function is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> in the case where <span class="math inline">\(\pi(x) = e^{-\phi(x, \theta)}\)</span>. The score function is the direction in which the probability distribution is most likely to change.</p>
+<p><span class="math inline">\(s(x;\theta)\)</span> is known as the <strong>score function</strong> of <span class="math inline">\(\pi(x; \theta)\)</span>: <span class="math display">\[s(x, \theta):= \nabla_x \log (\pi(x; \theta)) = - \nabla_x \phi(x, \theta)\]</span></p>
+<p>where the <span class="math inline">\(\log Z(\theta)\)</span> term vanishes because it does not depend on <span class="math inline">\(x\)</span>. The score is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> with respect to <span class="math inline">\(x\)</span>. The score function generalizes the gradient of the log-likelihood function, and is described in more detail in Schervish’s “Theory of Statistics” <span class="citation" data-cites="Schervish2012-sk">(<a href="#ref-Schervish2012-sk" role="doc-biblioref">Schervish 1995</a>)</span>.</p>
+<p>Score has a physical intuition connected to energy potentials and fields. In physics, the electric field <span class="math inline">\(\mathbf{E}\)</span> is the negative gradient of the electric potential <span class="math inline">\(V\)</span>: <span class="math display">\[ \mathbf{E} = -\nabla_x V(x)\]</span></p>
+<p>Similarly, the score function is the negative gradient of the potential function <span class="math inline">\(\phi(x, \theta)\)</span> in the case where <span class="math inline">\(\pi(x) \propto e^{-\phi(x, \theta)}\)</span>. The score function points in the direction of steepest increase of the log probability density.</p>
 <section id="example-2d-gaussian-distribution" class="level4">
 <h4 class="anchored" data-anchor-id="example-2d-gaussian-distribution">Example: 2D Gaussian Distribution</h4>
 <p>Consider a 2D Gaussian distribution with zero mean and covariance <span class="math inline">\(\sigma^2 I\)</span>:</p>
@@ -495,15 +495,15 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 </tr>
 <tr class="even">
 <td><strong>Potential Function</strong></td>
-<td><span class="math inline">\(\phi(x, \theta) =  - \frac{1}{2\sigma^2} \| x \|^2 - \log(2\pi \sigma^2)\)</span></td>
+<td><span class="math inline">\(\phi(x, \theta) =  \frac{1}{2\sigma^2} \| x \|^2 + \log(2\pi \sigma^2)\)</span></td>
 </tr>
 <tr class="odd">
 <td><strong>Score Function</strong></td>
-<td><span class="math inline">\(-\nabla_x \phi(x, \theta) = -\left( -\frac{x}{\sigma^2} x \right) = \frac{x}{\sigma^2}\)</span></td>
+<td><span class="math inline">\(s(x, \theta) = -\nabla_x \phi(x, \theta) = -\frac{x}{\sigma^2}\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>In regions of high probability density, the potential function is low becuase the relation <span class="math inline">\(\pi(x) = e^{-\phi(x, \theta)}\)</span> is monotonic in <span class="math inline">\(\phi(x, \theta)\)</span>. The score funtion is always pointing in the local direction of the largest directional derivative of the probability distribution <span class="math inline">\(\pi\)</span>.</p>
+<p>In regions of high probability density, the potential function is low, because the relation <span class="math inline">\(\pi(x) = e^{-\phi(x, \theta)}\)</span> is monotonically decreasing in <span class="math inline">\(\phi(x, \theta)\)</span>. The score function always points in the local direction of steepest increase of the log probability density — here, towards the center of the Gaussian.</p>
 </section>
 <section id="visualization" class="level4">
 <h4 class="anchored" data-anchor-id="visualization">Visualization</h4>
@@ -522,7 +522,7 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the potential function</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> potential_function(x, y, sigma<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span><span class="op">*</span>(x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>sigma<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>sigma<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span><span class="op">*</span>(x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>sigma<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>sigma<span class="op">**</span><span class="dv">2</span>)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the score function</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> score_function(x, y, sigma<span class="op">=</span><span class="dv">1</span>):</span>
@@ -581,7 +581,7 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 <div id="fig-scores-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-scores-output-1.png" data-ref-parent="fig-scores" width="322" height="241" class="figure-img">
+<img src="index_files/figure-html/fig-scores-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-scores">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Probability Distribution
@@ -593,7 +593,7 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 <div id="fig-scores-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-scores-output-2.png" data-ref-parent="fig-scores" width="301" height="241" class="figure-img">
+<img src="index_files/figure-html/fig-scores-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-scores">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Potential Function
@@ -605,7 +605,7 @@ g &amp;= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)
 <div id="fig-scores-3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-scores-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-scores-output-3.png" data-ref-parent="fig-scores" width="241" height="241" class="figure-img">
+<img src="index_files/figure-html/fig-scores-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-scores">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-scores-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Score Function
@@ -624,7 +624,7 @@ Figure&nbsp;1: PDF, Potential Function, and Score Function of a 2D Gaussian Norm
 </section>
 <section id="maximum-likelihood-estimate-from-samples" class="level2">
 <h2 class="anchored" data-anchor-id="maximum-likelihood-estimate-from-samples">Maximum Likelihood Estimate from Samples</h2>
-<p>A common problem is estimating a probability distribution <span class="math inline">\(\pi(x)\)</span> based on a set of empirical samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>. Often in statistical analysis, we are working with an unknown <span class="math inline">\(\pi\)</span> and attempting to make our best estimate from sampled data. If we assume that the drawn samples are independent and identically distributed (i.i.d.), then the <strong>likelihood</strong> of the samples is the product of the likelihood of each sample. Recalling that <span class="math inline">\(Z(\theta) = \int_\Omega \pi(x) dx\)</span>, the likelihood of the samples is:</p>
+<p>A common problem is estimating a probability distribution <span class="math inline">\(\pi(x)\)</span> based on a set of empirical samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>. Often in statistical analysis, we are working with an unknown <span class="math inline">\(\pi\)</span> and attempting to make our best estimate from sampled data. If we assume that the drawn samples are independent and identically distributed (i.i.d.), then the <strong>likelihood</strong> of the samples is the product of the likelihoods of each sample. Recalling that <span class="math inline">\(Z(\theta) = \int_\Omega e^{-\phi(x, \theta)} dx\)</span>, the likelihood of the samples is:</p>
 <p><span class="math display">\[
 \begin{align*}
 \pi(x_1, x_2, ..., x_N) &amp;= \prod_{i=1}^N \pi(x_i) = \pi(x_1) \pi(x_2) ... \pi(x_N) \\
@@ -632,7 +632,7 @@ Figure&nbsp;1: PDF, Potential Function, and Score Function of a 2D Gaussian Norm
 &amp;= \frac{1}{\left[Z(\theta)\right]^N} \exp\left(-\sum_{i=1}^N \phi(x_i, \theta)\right)
 \end{align*}
 \]</span></p>
-<p>Since some <span class="math inline">\(x\)</span> are observed, the challenge is to find the potential function <span class="math inline">\(\phi(x, \theta)\)</span> that maximizes the likelihood of the samples, given the model parameters <span class="math inline">\(\theta\)</span> and a fixed family of <span class="math inline">\(\phi(,;\theta)\)</span> functions.</p>
+<p>Since some <span class="math inline">\(x\)</span> are observed, the challenge is to find the potential function <span class="math inline">\(\phi(x, \theta)\)</span> that maximizes the likelihood of the samples, by varying the model parameters <span class="math inline">\(\theta\)</span> within a fixed family of <span class="math inline">\(\phi(\cdot\,; \theta)\)</span> functions.</p>
 <p>The <strong>Maximum Likelihood Estimation (MLE)</strong> is the process of finding the parameters <span class="math inline">\(\theta\)</span> that maximize the likelihood of having observed the samples. Unlike the MAP estimate, there is no posterior and prior distribution. So in this case <span class="math inline">\(\pi(x|\theta)\)</span> is being directly maximized. This is equivalent to minimizing the negative log-likelihood as before:</p>
 <p><span class="math display">\[
 \begin{align*}
@@ -641,7 +641,7 @@ Figure&nbsp;1: PDF, Potential Function, and Score Function of a 2D Gaussian Norm
 &amp;= \operatorname*{argmin}_\theta \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_i, \theta)
 \end{align*}
 \]</span></p>
-<p>However we again run into the problem of the partition function <span class="math inline">\(Z(\theta)\)</span> which for most distributions in higher dimensions is intractable to compute. For example we may be trying to solve an integral in <span class="math inline">\(100\)</span> dimensions with no analytical solution.</p>
+<p>However, we again run into the problem of the partition function <span class="math inline">\(Z(\theta)\)</span>, which for most distributions in higher dimensions is intractable to compute. For example, we may be trying to solve an integral in <span class="math inline">\(100\)</span> dimensions with no analytical solution:</p>
 <p><span class="math display">\[ \int_{x_1} \int_{x_2} ... \int_{x_{100}} e^{-\phi(x, \theta)} dx_1 dx_2 ... dx_{100} \]</span></p>
 <section id="minimizing-with-gradient-descent" class="level4">
 <h4 class="anchored" data-anchor-id="minimizing-with-gradient-descent">Minimizing with Gradient Descent</h4>
@@ -665,7 +665,7 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 &amp;= \nabla_\theta \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \nabla_\theta \phi(x_i, \theta)
 \end{align*}
 \]</span></p>
-<p>The left side term can be further reduced by using the definition of the partion function <span class="math inline">\(Z(\theta) =  \int_\Omega e^{-\phi(x, \theta)} dx\)</span>, the probability distribution <span class="math inline">\(\pi_\theta(x) = e^{-\phi(x, \theta)}\)</span>:</p>
+<p>The left-hand term can be further reduced by using the definition of the partition function <span class="math inline">\(Z(\theta) =  \int_\Omega e^{-\phi(x, \theta)} dx\)</span> and the probability distribution <span class="math inline">\(\pi_\theta(x) = e^{-\phi(x, \theta)}/Z(\theta)\)</span>:</p>
 <p><span class="math display">\[
 \begin{align*}
 \nabla_\theta \log(Z(\theta)) &amp;= \frac{1}{Z(\theta)}\nabla_\theta \int_\Omega e^{-\phi(x, \theta)} dx\\
@@ -676,7 +676,7 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 &amp; \approxeq \frac{1}{M} \sum_{i=1}^M -\nabla_\theta \phi(x_i, \theta)
 \end{align*}
 \]</span></p>
-<p>We estimate the value of <span class="math inline">\(\nabla_\theta \log(Z(\theta))\)</span> by taking the expectation value of the score function over the samples. This is a Monte Carlo approximation of the true integral using the available i.i.d. samples <span class="math inline">\(\{ x_1, x_2, ..., x_N \}\)</span>. The gradient of the MLE objective is then:</p>
+<p>We estimate the value of <span class="math inline">\(\nabla_\theta \log(Z(\theta))\)</span> by taking the expectation of <span class="math inline">\(-\nabla_\theta \phi\)</span> over the model distribution. This is a Monte Carlo approximation of the true integral, using <span class="math inline">\(M\)</span> samples <span class="math inline">\(\{ \tilde x_1, \tilde x_2, ..., \tilde x_M \}\)</span> drawn from the current model distribution <span class="math inline">\(\pi_\theta\)</span>. The gradient of the MLE objective is then:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -690,7 +690,7 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 <p><span class="math display">\[ g = \underbrace{-\frac{1}{M} \sum_{i=1}^M \nabla_\theta \phi(\tilde x_i, \theta)}_{\text{Synthesis}} + \underbrace{\frac{1}{N} \sum_{i=1}^N \nabla_\theta \phi(x_i, \theta)}_{\text{Analysis}}\]</span></p>
 </div>
 </div>
-<p>An optimal point is reached by first order optimality conditions, where the gradient is zero. The MLE objective is minimized when the <strong>synthesis</strong> and <strong>analysis</strong> terms are equal. This is known as <strong>score matching</strong> and is a method for estimating the parameters of a probability distribution from samples. The synthesis <span class="math inline">\(\tilde x_i\)</span> terms are drawn randomly from the proposed score <span class="math inline">\(\phi(\tilde x_i, \theta)\)</span> , while the analysis <span class="math inline">\(x_i\)</span> terms are taken over the samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>.</p>
+<p>An optimal point is reached by first-order optimality conditions, where the gradient is zero. The MLE objective is minimized when the <strong>synthesis</strong> and <strong>analysis</strong> terms are equal. This is known as <strong>score matching</strong>, a method for estimating the parameters of a probability distribution from samples. The synthesis points <span class="math inline">\(\tilde x_i\)</span> are drawn randomly from the proposed model distribution <span class="math inline">\(\pi_\theta\)</span>, while the analysis points <span class="math inline">\(x_i\)</span> are taken from the observed samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>.</p>
 <p>As before gradient descent can be used to update the model parameters <span class="math inline">\(\theta\)</span>:</p>
 <p><span class="math display">\[\theta_{k+1} = \theta_k - \alpha g\]</span></p>
 </section>
@@ -701,12 +701,12 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 <p><span class="math display">\[dx = -\nabla_x \phi(x, \theta) dt + \sqrt{2} dW\]</span></p>
 <p>The score function pushes samples towards regions of high probability density, since it is a vector that points in the direction of maximum increase of the probability distribution. The noise term <span class="math inline">\(dW\)</span> is a Wiener process, which is a continuous-time stochastic process that is normally distributed with mean zero and variance <span class="math inline">\(dt\)</span>. The Langevin Dynamics algorithm is a discretized version of the SDE:</p>
 <p><span class="math display">\[x_{k+1} = x_k - \underbrace{\Delta t \nabla_x \phi(x_k, \theta)}_\text{Score Term} + \underbrace{\sqrt{2 \Delta t} z_k}_\text{Stochastic Term}\]</span></p>
-<p>Where <span class="math inline">\(z_k \sim \mathcal{N}(0,1)\)</span> is a random sample from a normal distribution with zero mean and unit variance.</p>
-<p>The score points in the same direciton as the gradient of the probability distribution, so at each time step, the score term moves the sample to a higher probability region. The stochastic term adds noise to the sample, providing randomness to the process.</p>
+<p>where <span class="math inline">\(z_k \sim \mathcal{N}(0,1)\)</span> is a random sample from a normal distribution with zero mean and unit variance.</p>
+<p>The score points in the same direction as the gradient of the log probability density, so at each time step the score term moves the sample towards a higher-probability region. The stochastic term adds noise to the sample, providing randomness to the process.</p>
 <section id="code-example" class="level3">
 <h3 class="anchored" data-anchor-id="code-example">Code Example</h3>
-<p>Below is an example of Langevin Dynamics applied to a 2D Gaussian distribution. The score function is used to push the samples towards the center of the distribution, while the stochastic element adds noise and randomization to the process. The animation show an intial uniform sampling grid of points converging to the shape of the Gaussian distribution.</p>
-<div id="fig-langevin" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
+<p>Below is an example of Langevin Dynamics applied to a 2D Gaussian distribution. The score function is used to push the samples towards the center of the distribution, while the stochastic element adds noise and randomization to the process. The animation shows an initial uniform sampling grid of points converging to the shape of the Gaussian distribution.</p>
+<div id="fig-langevin" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-langevin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <details class="code-fold">
@@ -725,7 +725,7 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the potential function</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> potential_function(x, y, sigma<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span><span class="op">*</span>(x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>sigma<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>sigma<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span><span class="op">*</span>(x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span>sigma<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>sigma<span class="op">**</span><span class="dv">2</span>)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the score function</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> score_function(x, y, sigma<span class="op">=</span><span class="dv">1</span>):</span>
@@ -747,7 +747,7 @@ g &amp;= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>sigma <span class="op">=</span> <span class="fl">.5</span></span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> gaussian_pdf(X, Y, sigma)</span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize samples on a 5x5 grid</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize samples on a 10x10 grid</span></span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>grid_size <span class="op">=</span> <span class="dv">10</span></span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>grid_range <span class="op">=</span> np.linspace(<span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, grid_size)</span>
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>initial_samples <span class="op">=</span> np.array([[x, y] <span class="cf">for</span> x <span class="kw">in</span> grid_range <span class="cf">for</span> y <span class="kw">in</span> grid_range])</span>
@@ -798,7 +798,7 @@ Figure&nbsp;2
 </section>
 <section id="map-estimation-with-general-gaussian" class="level2">
 <h2 class="anchored" data-anchor-id="map-estimation-with-general-gaussian">MAP Estimation with General Gaussian</h2>
-<p>Revisitng the MAP estimation problem, we can consider a more general prior <span class="math inline">\(\pi(x)\)</span> with mean <span class="math inline">\(\mu = 0\)</span> and covariance <span class="math inline">\(\Sigma\)</span>:</p>
+<p>Revisiting the MAP estimation problem, we can consider a more general prior <span class="math inline">\(\pi(x)\)</span> with mean <span class="math inline">\(\mu = 0\)</span> and covariance <span class="math inline">\(\Sigma\)</span>:</p>
 <p><span class="math display">\[
 \begin{align*}
 \pi(b|x) &amp;= \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right)\\
@@ -806,23 +806,22 @@ Figure&nbsp;2
 \text{MAP} &amp;= \min_x \left( \frac{1}{2\sigma^2}\|b-F(x)\|^2 + \frac{1}{2}x^\intercal \Sigma^{-1} x \right)
 \end{align*}
 \]</span></p>
-<p>We now make a choice of which <span class="math inline">\(pi_\theta(x)\)</span> to use, as before this is a MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameters be <span class="math inline">\(\theta = \Sigma^{-1}\)</span>, since the true <span class="math inline">\(\Sigma\)</span> is positive definite, it can be found by inverting this result. The partition function <span class="math inline">\(Z(\theta)\)</span> is known for the case of a Gaussian distribution, and so the MLE objective is:</p>
+<p>We now make a choice of which <span class="math inline">\(\pi_\theta(x)\)</span> to use; as before, this is an MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameter be <span class="math inline">\(\theta = \Sigma^{-1}\)</span>; since the true <span class="math inline">\(\Sigma\)</span> is positive definite, it can be recovered by inverting the result. The partition function <span class="math inline">\(Z(\theta)\)</span> is known for the case of a Gaussian distribution, so the MLE objective is:</p>
 <p><span class="math display">\[
 \begin{align*}
-\pi(x) &amp;= \max_\theta \Pi_{i=1}^N \pi_\theta(x_i)\\
-&amp;= \max_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
-&amp;= \min_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
-&amp;= \min_\theta -\log((2\pi)^{n/2}|\Sigma|^{1/2}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
-&amp;= \min_\theta -\frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
+\hat\theta &amp;= \argmax_\theta \prod_{i=1}^N \pi_\theta(x_i)\\
+&amp;= \argmax_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
+&amp;= \operatorname*{argmin}_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&amp;= \operatorname*{argmin}_\theta \log\left((2\pi)^{n/2}|\Sigma|^{1/2}\right) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&amp;= \operatorname*{argmin}_\theta \frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
 \end{align*}
 \]</span></p>
+<p>where the constant <span class="math inline">\(\frac{n}{2}\log(2\pi)\)</span> has been dropped, as it does not affect the minimizer.</p>
 <section id="finding-the-gradient" class="level4">
 <h4 class="anchored" data-anchor-id="finding-the-gradient">Finding the Gradient</h4>
-<p><strong>Left Term:</strong> To find the min using gradient descent we take the gradient of each term with respect to <span class="math inline">\(\Sigma^{-1}\)</span>. The gradient of a log determinant can be found in the matrix cookbook <span class="citation" data-cites="Petersen2012">(<a href="#ref-Petersen2012" role="doc-biblioref">Petersen and Pedersen 2012</a>)</span> formula (57): <span class="math display">\[ \nabla_{A} \log(|A|) = (A^{-1})^\intercal \]</span></p>
-<p>This can be rewritten as:</p>
-<p><span class="math display">\[ \nabla_A \log(|A^{-1}|) = A^\intercal\]</span></p>
-<p>Applying this to the left term we get:</p>
-<p><span class="math display">\[ \nabla_{\Sigma^{-1}} \left( -\frac{1}{2}\log(|\Sigma|) \right) = -\frac{1}{2} \Sigma\]</span></p>
+<p><strong>Left Term:</strong> To find the minimum, we take the gradient of each term with respect to <span class="math inline">\(\Sigma^{-1}\)</span>. The gradient of a log determinant can be found in the Matrix Cookbook <span class="citation" data-cites="Petersen2012">(<a href="#ref-Petersen2012" role="doc-biblioref">Petersen and Pedersen 2012</a>)</span>, formula (57): <span class="math display">\[ \nabla_{A} \log(|A|) = (A^{-1})^\intercal \]</span></p>
+<p>Writing the left term in terms of <span class="math inline">\(A = \Sigma^{-1}\)</span>, using <span class="math inline">\(\log(|\Sigma|) = -\log(|A|)\)</span>:</p>
+<p><span class="math display">\[ \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|) \right) = \nabla_A \left( -\frac{1}{2}\log(|A|) \right) = -\frac{1}{2} (A^{-1})^\intercal = -\frac{1}{2} \Sigma^\intercal\]</span></p>
 <p><strong>Right Term:</strong> The gradient of the second term is found by reformulating it as a trace of a new matrix <span class="math inline">\(X = \sum x_i x_i^\intercal\)</span>:</p>
 <p><span class="math display">\[
 \begin{align*}
@@ -836,16 +835,16 @@ Figure&nbsp;2
 <p>Applying this we get:</p>
 <p><span class="math display">\[ \nabla_{\Sigma^{-1}} \left( \frac{1}{2N} \sum x_i^\intercal \Sigma^{-1} x_i \right) = \frac{1}{2N} X^\intercal = \frac{1}{2N} \sum x_i x_i^\intercal\]</span></p>
 <p><strong>Combined Result:</strong></p>
-<p>Combining the two terms we get the gradient of the MLE objective with respect to <span class="math inline">\(\Sigma^{-1}\)</span>: <span class="math display">\[
+<p>Combining the two terms, we get the gradient of the MLE objective with respect to <span class="math inline">\(\Sigma^{-1}\)</span>: <span class="math display">\[
 \begin{align*}
-g &amp;= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|^{-1}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
-&amp;= \frac{1}{2} \Sigma^\intercal - \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
+g &amp;= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
+&amp;= -\frac{1}{2} \Sigma^\intercal + \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
 \end{align*}
 \]</span></p>
-<p>Solving for where the gradient is zero, we find the optimal value of <span class="math inline">\(\Sigma\)</span>, since <span class="math inline">\(\Sigma = \Sigma^\intercal\)</span>:</p>
+<p>Solving for where the gradient is zero, and using the symmetry <span class="math inline">\(\Sigma = \Sigma^\intercal\)</span>, we find the optimal value of <span class="math inline">\(\Sigma\)</span>:</p>
 <p><span class="math display">\[ \Sigma = \frac{1}{N} \sum_{i=1}^N x_i x_i^\intercal\]</span></p>
-<p>This is the maximum likelihood estimate of the covariance matrix <span class="math inline">\(\Sigma\)</span> given the samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>, which can be interpreted as the expectation value of the outer product of the samples. The estimated covariance matrix is the actual true covariance matrix of the sampled data. This is a common result in statistics, where the sample mean is the MLE of the true mean of the distribution.</p>
-<p>Unfortunately, estimating parameters can be very difficult to do for non-Gaussian <span class="math inline">\(\pi_\theta\)</span> due to the partition function <span class="math inline">\(Z(\theta)\)</span> being intractable.</p>
+<p>This is the maximum likelihood estimate of the covariance matrix <span class="math inline">\(\Sigma\)</span> given the samples <span class="math inline">\(\{x_1, x_2, ..., x_N\}\)</span>, which can be interpreted as the empirical expectation of the outer product of the samples — that is, the sample covariance of the data. This is a common pattern in statistics, analogous to the sample mean being the MLE of the true mean of a distribution.</p>
+<p>Unfortunately, estimating parameters can be very difficult for non-Gaussian <span class="math inline">\(\pi_\theta\)</span> due to the partition function <span class="math inline">\(Z(\theta)\)</span> being intractable.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
