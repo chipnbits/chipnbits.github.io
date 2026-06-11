@@ -39,13 +39,13 @@ $$
 
 where $x$ and $y$ are the populations of the prey and predator respectively. The parameters $\alpha, \beta, \gamma, \delta$ are positive constants. The goal is to find the values of these parameters that best fit the data.
 
-There is no closed form analytic solution that is known to this remarkably simple system of equations, which is why we must resort to numerical solutions to compute the model.
+No closed-form analytic solution is known for this remarkably simple system of equations, which is why we must resort to numerical methods to compute the model.
 
-More information about the model can be found at the [Wikipedia](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations) page.
+More information about the model can be found on the [Wikipedia](https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations) page.
 
 ### The Forward Problem
 
-We start with an initial time $t_0$ and initial conditions $x_0, y_0$, with parameters $\alpha, \beta, \gamma, \delta$ to run a forward version of the problem using a variant of the forward Euler method, the RK4.
+We start with an initial time $t_0$ and initial conditions $x_0, y_0$, along with parameters $\alpha, \beta, \gamma, \delta$, and run the forward problem using the classical fourth-order Runge-Kutta method (RK4), a higher-order relative of the forward Euler method.
 
 ```{python}
 #| label: pred-prey-forward
@@ -106,7 +106,7 @@ class RK4Solver:
 
     def solve(self, x0, y0, time_steps):
         """
-        Solve the system over a serie of time steps.
+        Solve the system over a series of time steps.
         Parameters:
             x0: Initial value of prey population
             y0: Initial value of predator population
@@ -188,34 +188,32 @@ plt.show()
 
 ## The Inverse Problem
 
-The inverse problem in this case is to find the parameters $\alpha, \beta, \gamma, \delta$ that best fit the data. We suppose that we have a model with parameters that takes in the initial conditions and time steps and returns the trajectory of the system. For simplicity we vectorize the previous $\begin{bmatrix} x \\ y \end{bmatrix}$ into a single vector $\vec{x}$. The forward model is then a function $F(\vec{x}; \vec{p})$ where $\vec{p}$ are the parameters and is an approximator of the true system, where
+The inverse problem in this case is to find the parameters $\alpha, \beta, \gamma, \delta$ that best fit the data. We suppose that we have a parameterized model that takes in the initial conditions and time steps and returns the trajectory of the system. For simplicity we vectorize the previous $\begin{bmatrix} x \\ y \end{bmatrix}$ into a single state vector $\vec{x}$. The system dynamics are then described by a function $f(\vec{x}; \vec{p})$, where $\vec{x}$ is the state of the system and $\vec{p}$ are the parameters:
 
 $$f(\vec{x}; \vec{p}) \approx \frac{d \vec{x}}{dt} = \begin{bmatrix} \alpha x - \beta xy \\ \delta xy - \gamma y \end{bmatrix}, \quad \vec{x}_0 = \vec{x}(0).$$
 
-where $\vec{x}$ is the state of the system and $\vec{p}$ are the parameters. 
+The goal is to form an estimate of $\vec{p}$, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness of the data using a *sampling operator* $Q$, which is applied to the true underlying data to give $Qx$. If $x$ is fully observed, then $Q = I$.
 
-The goal is to form an estimate of $\vec{p}$, while the data that we have collected may be sparse, noisy, or incomplete. We represent the incompleteness in the data using the $Q$ *sampling operator* which is applied to the true underlying data to give $Qx$. If $x$ is fully given then $Q=I$.
+A finite difference approximation can be used to estimate the time derivative of the data,
 
-A finite difference approximation of the derivative of the data can be used to approximate the derivative of the data,
+$$f(\vec{x}; \vec{p}) \cong \frac{\vec{x}_{n+1} - \vec{x}_n}{\Delta t}.$$
 
-$$f(\vec{x}; \vec{p}) \cong \frac{\vec{x}_{n+1} - \vec{x}_n}{\Delta t}.$$ 
+The forward process applies the system dynamics to the initial condition $\vec{x}_0$ using an approximate ODE solver such as Euler's method or RK4. The output of the forward process is then given as $F$, where
+ $$F(\vec{p}, x_0) = \hat {\vec{x}}(t, \vec{p})$$
 
-So in this case the forward model is a time derivative, and the observed data is computed from an intial condition $\vec{x}_0$ and an ODE approximate solution such as Euler's method or RK4. The output of the forward process is then given as $F$, where
- $$F(\vec{p}, x_0) = \hat {\vec{x}}(t, \vec{p}),$$ 
- 
- is the application of the system dynamics to the initial conditions and the parameter to create an estimated trajectory $\hat{\vec{x}}(t, \vec{p})$.
+is the estimated trajectory produced by applying the system dynamics to the initial conditions and parameters.
 
-The observed data is $d = Q\vec{x}(t)$. We also make an assumption here that $F$ does not depend on the particular solver that we are using for the forward ODE and that all of the $\vec{p}$ are physical parameters, we assume that the parameters are faithful enough.
+The observed data is $d = Q\vec{x}(t)$. We also assume that $F$ does not depend on the particular solver used for the forward ODE, and that all of the $\vec{p}$ are physical parameters — that is, the parameterization is faithful enough to the true system.
 
-For the rest of the mathematical notation ahead, the explicit marking of vectors is ommitted to simplify the equations.
+For the rest of the mathematical notation ahead, the explicit marking of vectors is omitted to simplify the equations.
 
 #### Goodness of Fit
 
-The goodness of fit is measured by using the L2 norm of the difference between the observed data and the model output, thus forming the non-linear least squares problem:
+The goodness of fit is measured using the L2 norm of the difference between the observed data and the model output, thus forming the non-linear least squares problem:
 
-$$ \min_{p} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p}\|G(p)\|^2.$$
+$$ \min_{p} \frac{1}{2}\|QF(p)-d\|^2 = \min_{p} \frac{1}{2}\|G(p)\|^2.$$
 
-To find the best fit, the objective is to minimize the mean squared error (MSE) of a function of the parameters $p$ and the data $d$. The data is fixed for a given problem, so it is only by varying $p$ that an optimal solution can be found. The entire MSE function is denoted as $G(p)$.
+To find the best fit, the objective is to minimize this squared misfit between the model output and the data $d$. The data is fixed for a given problem, so it is only by varying $p$ that an optimal solution can be found. The residual function is denoted $G(p) = QF(p) - d$.
 
 ## Minimization of the Objective Function
 
@@ -225,17 +223,18 @@ where $d_i$ are the observed data points. This is the same as
 
 $$ \min_{p \in \mathbb{R}^m} \|G(\mathbf{p})\|^2$$
 
-where $G(\mathbf{p}) = QF(\mathbf{p}) - d$ and $d \in \mathbb{R}^n$. We are minimizing the norm of a non-linear function of the parameters. Supposing that we want to find the minimizer, one approach would be by gradient descent. 
+where $G(\mathbf{p}) = QF(\mathbf{p}) - d$ and $d \in \mathbb{R}^n$. We are minimizing the norm of a non-linear function of the parameters. Supposing that we want to find the minimizer, one approach would be gradient descent.
 
 #### The Jacobian: A quick review
+
 ---
 
-The Jacobian is a multivariate extension of the derivative that extends to functions $f : \mathbb{R}^m \to \mathbb{R}^n$. Because there are $n$ function outputs and $m$ input variables, the Jacobian is an $n \times m$ matrix that contains the information of how each of the $n$ functions changes with respect to each of the $m$ variables. In an abuse of Leibniz's notation, it can be seen as:
+The Jacobian is a multivariate extension of the derivative that applies to functions $f : \mathbb{R}^m \to \mathbb{R}^n$. Because there are $n$ function outputs and $m$ input variables, the Jacobian is an $n \times m$ matrix that captures how each of the $n$ outputs changes with respect to each of the $m$ variables. In an abuse of Leibniz's notation, it can be seen as:
 
 $$
 \frac{\partial \vec{f}}{\partial \vec{x}} = \mathbf{J_f} =
 \left[
-    \frac{\partial f}{\partial x_1} \cdots \frac{\partial f}{\partial x_n}
+    \frac{\partial f}{\partial x_1} \cdots \frac{\partial f}{\partial x_m}
 \right]
 =
 \begin{bmatrix}
@@ -243,23 +242,24 @@ $$
     \\
     \vdots
     \\
-    \nabla^\top f_m
+    \nabla^\top f_n
 \end{bmatrix}
 =
 \left[
     \begin{array}{ccc}
-    \frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_n} \\
+    \frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_m} \\
     \vdots & \ddots & \vdots \\
-    \frac{\partial f_m}{\partial x_1} & \cdots & \frac{\partial f_m}{\partial x_n}
+    \frac{\partial f_n}{\partial x_1} & \cdots & \frac{\partial f_n}{\partial x_m}
     \end{array}
 \right]
 $$
 
-Note that like the derivative, the Jacobian is a function of the input variables $\vec{x}$. The Jacobian is a linear approximation of the function $f$ at a point $x_0$ and can be used to approximate the function at a point $x_0 + \Delta x$.
+Note that, like the derivative, the Jacobian is a function of the input variables $\vec{x}$. The Jacobian gives a linear approximation of the function $f$ at a point $x_0$, which can be used to approximate the function at a nearby point $x_0 + \Delta x$:
 
 $$ f(x_0 + \Delta x) \approx f(x_0) + J_f(x_0) \Delta x$$
 
-Noting that we are applying matrix multiplication using $J_f$ evaluated at $x_0$ and the vector $\Delta x = \vec{x} - \vec{x_0}$. The quantity $J_f(x_0) \Delta x$ is the directional derivative of the function $f$ at $x_0$ in the direction of $\Delta x$.
+Note that we are applying matrix multiplication, using $J_f$ evaluated at $x_0$ and the vector $\Delta x = \vec{x} - \vec{x_0}$. The quantity $J_f(x_0) \Delta x$ is the directional derivative of the function $f$ at $x_0$ in the direction of $\Delta x$.
+
 ---
 
 The gradient of $\|G(\mathbf{p})\|^2$ can be computed as follows:
@@ -279,7 +279,7 @@ $$
 \nabla^2 \|G(p)\|^2 = 2 J_G(p)^T J_G(p) + 2 \sum_{i=1}^n G_i(p) \nabla^2 G_i(p)
 $$
 
-So we'd have to compute the Hessian $\nabla^2 G_i(p)$ of each of the $G_i(p)$ functions, of which there are $n$, not good in practice. If we did have this Hessian, the steps with Newton's method would be:
+So we would have to compute the Hessian $\nabla^2 G_i(p)$ of each of the $G_i(p)$ functions, of which there are $n$ — impractical for problems of any real size. If we did have this Hessian, the steps with Newton's method would be:
 
 $$ p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla (\|G(p_k)\|^2)$$
 
@@ -302,7 +302,7 @@ A^T A p =& A^T r_k
 \end{align}
 $$
 
-where $A = QJ_k$ and $r_k = d + QJ_k p_k - QF(p_k)$. This is the normal equations for the linear least squares problem. This gives us 
+where $A = QJ_k$ and $r_k = d + QJ_k p_k - QF(p_k)$. These are the normal equations for the linear least squares problem. This gives us
 
 $$ 
 \begin{align}
@@ -313,33 +313,27 @@ p_{k+1} &= p_k - (J_k^T Q^T Q J_k)^{-1} J_k^T Q^T (QF(p_k) - d)\\
 \end{align}
 $$
 
-This could be written in a more tidy and general way, reacalling that $G(p) = QF(p) - d$ and let $J_G(p) = QJ(p)$, then we have:
+This can be written in a tidier and more general way: recalling that $G(p) = QF(p) - d$ and letting $J_G(p) = QJ(p)$, we have:
 
-$$ p_{k+1} = p_k - (J_G(p_k)^TJ_G(p_k))^{-1} J_G(p_k) G(p_k)$$
+$$ p_{k+1} = p_k - (J_G(p_k)^TJ_G(p_k))^{-1} J_G(p_k)^T G(p_k)$$
 
 #### Comparison with Newton's Method
 
-So this resembles a scaled gradient descent. In Newton's method we have the Hessian, in Gauss-Newton we have the Jacobian of the function. As a comparison:
+So this resembles a scaled gradient descent. In Newton's method the scaling is the full Hessian; in Gauss-Newton it is built from the Jacobian of the residual function. As a comparison:
 
-| **Method**            | **Description**                                           |
-|-----------------------|-----------------------------------------------------------|
-| **Newton’s Method**    | **Step Update**                                           |
-|                       | $p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla \|G(p_k)\|^2$ |
-|                       | **Scaling Matrix**                                        |
-|                       | $\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J_G(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)$ |
-| **Gauss-Newton Method**| **Step Update**                                           |
-|                       | $p_{k+1} = p_k - (J_G(p_k)^T J_G(p_k))^{-1} J_G(p_k)^T G(p_k)$ |
-|                       | **Scaling Matrix**                                        |
-|                       | $J_G(p_k)^T J_G(p_k)$                                 |
+| **Method**            | **Step Update**                                           | **Scaling Matrix** |
+|-----------------------|-----------------------------------------------------------|--------------------|
+| **Newton's Method**   | $p_{k+1} = p_k - (\nabla^2 \|G(p_k)\|^2)^{-1} \nabla \|G(p_k)\|^2$ | $\nabla^2 \|G(p_k)\|^2 = 2 J_G(p_k)^T J_G(p_k) + 2 \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)$ |
+| **Gauss-Newton Method** | $p_{k+1} = p_k - (J_G(p_k)^T J_G(p_k))^{-1} J_G(p_k)^T G(p_k)$ | $J_G(p_k)^T J_G(p_k)$ |
 
-The direction of change between iterations in Newton's method can be rewritten as $$d_k = \left(J_G(p_k)^T J(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
+The direction of change between iterations in Newton's method can be rewritten as $$d_k = \left(J_G(p_k)^T J_G(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
 
-While the direction in the case of Gauss-Newton is 
+while the direction in the case of Gauss-Newton is
 $$d_k = \left(J_G(p_k)^T J_G(p_k)\right)^{-1} J_G(p_k)^T G(p_k)$$
 
-The difference between the two is the omission of the computationally expensive $\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)$ terms. The Gauss-Newton method is approximating the second-order approach of Newton's method by only considering the first-order terms inside of the norm.
+The difference between the two is the omission of the computationally expensive $\sum_{i=1}^n G_i(p) \nabla^2 G_i(p)$ terms. The Gauss-Newton method approximates the second-order approach of Newton's method by considering only the first-order terms inside of the norm:
 
-$$J_G(p_k)^T J(p_k) \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k) \approx J_G(p_k)^T J(p_k)$$
+$$J_G(p_k)^T J_G(p_k) + \sum_{i=1}^n G_i(p_k) \nabla^2 G_i(p_k) \approx J_G(p_k)^T J_G(p_k)$$
 
 Recall that $G(p) = QF(p) - d$ which is the difference between the observed data and the model. If the difference is small then $G_i$ is also small and the approximation is good.
 
@@ -364,7 +358,7 @@ We have derived the algorithm for the Gauss-Newton method for solving the non-li
 \For{$k = 0, 1, 2, \ldots$}
     \State Compute the Jacobian $J_G$ of $G(p)$ at $p_k$
     \State Compute the transpose $J_G^T$ of the Jacobian
-    \State Compute the residual $r_k =G(p_k)$ (forward model)
+    \State Compute the residual $r_k = -G(p_k) = d - QF(p_k)$ (forward model)
     \State Compute the step $s_k = (J_G(p_k)^T J_G(p_k) )^{-1} J_G(p_k)^T r_k$
     \State Update the parameters $p_{k+1} = p_k + \mu_k s_k$
     \If{$\|s_k\| < \epsilon$}
@@ -376,9 +370,11 @@ We have derived the algorithm for the Gauss-Newton method for solving the non-li
 \end{algorithm}
 ```
 
+Here $\mu_k \in (0, 1]$ is an optional step length (damping) parameter, which can be chosen by a line search; $\mu_k = 1$ recovers the pure Gauss-Newton step.
+
 ### Matrix Inversions
 
-In practice it may be computationally expensive to invert the matrix $J_k^T Q^T Q J_k$. We can use a conjugate gradient method to solve the normal equations instead. 
+In practice it may be computationally expensive to invert the matrix $J_k^T Q^T Q J_k$. We can use a conjugate gradient method to solve the normal equations instead:
 $$J_k^T Q^T Q J_k s_k = J_k^T Q^T r_k$$
 
 We developed a conjugate gradient method in the last lecture, so we can use that along with the computed values for $J_k^T, J_k, r_k$ to solve the normal equations and get the step $s_k$.
@@ -389,7 +385,7 @@ We developed a conjugate gradient method in the last lecture, so we can use that
 |----------------------|-----------------------------------|-----------------------------|
 | $d$              | Observed data                     | $\mathbb{R}^{n}$         |
 | $p_k$            | Parameters                        | $\mathbb{R}^{m}$         |
-| $Q$              | Weight matrix                     | $\mathbb{R}^{n \times n}$|
+| $Q$              | Sampling/weighting operator       | $\mathbb{R}^{n \times n}$|
 | $J_k$            | Jacobian of $F(p_k)$          | $\mathbb{R}^{n \times m}$|
 | $r_k$            | Residual $d - QF(p_k)$        | $\mathbb{R}^{n}$         |
 | $F(p_k)$         | Forward model output              | $\mathbb{R}^{n}$         |

@@ -4,7 +4,7 @@ subtitle: "Homotopy Optimization"
 date: 2024-10-22
 author: "Simon Ghyselincks"
 description: >-
-    Gaussian homotopy is a technique that can be used to effectively broadcast the gradient of a non-convex function outward to help scape local minima.
+    Gaussian homotopy is a technique that effectively spreads the gradient information of a non-convex function outward, helping the optimizer escape local minima.
 categories:
   - Optimization
   - PyTorch
@@ -39,7 +39,7 @@ So far we have examined optimization techniques using gradient descent and the G
 To recap the steps used so far in optimization, we have an objective 
 $$\argmin f(x),$$
 
-where $x \in \mathbb{R}^n$ is an unconstrained optimization variable. The objective can be searched out by stepping in a direction itertively, in general:
+where $x \in \mathbb{R}^n$ is an unconstrained optimization variable. The minimizer can be sought by stepping iteratively in a descent direction — in general:
 $$x_{k+1} = x_k - \alpha_k H \nabla f(x_k),$$
 
 where $\alpha_k$ is the step size. The gradient $\nabla f(x_k)$ can be computed explicitly or using automatic differentiation. The matrix $H$ is a modifier that depends on the method being used:
@@ -50,14 +50,14 @@ $$H =
 \end{cases}
 $$
 
-However, optimization is often performed on non-convex functions, in which case the path to a global minimum can be obstructed by local minima. Three categories of increasingly non-convex functions are shown below.
+However, optimization is often performed on non-convex functions, in which case the path to a global minimum can be obstructed by local minima. Several categories of increasingly difficult functions are shown below.
 
 ::: {#fig:function-classes .figure}
 ![Three Categories of Increasingly Non-Convex Functions](./path1.svg){width=50% style="border: 2px solid #000; padding: 20px; display: block; margin-left: auto; margin-right: auto;"}
 **Figure:** Three categories of increasingly non-convex functions illustrating potential local minima that can obstruct the path to a global minimum.
 :::
 
-Some examples for each of the three catergories are given in the following table:
+Some examples for each of the categories are given in the following table:
 
 | Category | Function | Local Minima |
 |----------|----------|--------------|
@@ -89,11 +89,11 @@ fig, ax = plt.subplots(2, 2)
 ax[0, 0].plot(x, y1)
 ax[0, 0].set_title("Convex: $f(x) = x^2$")
 ax[0, 1].plot(x, y2)
-ax[0, 1].set_title("Non-Convex but $f'(x)<0$ \n $f(x) = -\mathcal{N}(x; 0, 1)$")
+ax[0, 1].set_title("Non-Convex but $f'(x)<0$ \n $f(x) = -\\mathcal{N}(x; 0, 1)$")
 ax[1, 0].plot(x, y3)
-ax[1, 0].set_title("Non-Convex with $f'(x) \geq 0$ \n $f(x) = sin(x)+.5 x$")
+ax[1, 0].set_title("Non-Convex with $f'(x) \\geq 0$ \n $f(x) = \\sin(x)+.5 x$")
 ax[1, 1].plot(x, y4)
-ax[1, 1].set_title("Non-Convex and Poorly Conditioned $\nabla^2 f(x)$")
+ax[1, 1].set_title("Non-Convex and Poorly Conditioned $\\nabla^2 f(x)$")
 
 plt.tight_layout()
 plt.show()
@@ -105,11 +105,11 @@ A direct search [@wikipedia_directsearch] can be performed to try to find the gl
 
 $$ x_{k+1} = x_k + \alpha_k d_k, \quad d_k \in \mathbb{R}^n.$$
 
-In this case the direction does not follow the gradient descent rule, there could be a stochastic element. The general algorithms that implement this will have the property that the step size decreases over time such that 
+In this case the direction does not follow the gradient descent rule, and there may be a stochastic element. The general algorithms that implement this have the property that the step size decreases over time, such that
 
 $$ \| \alpha_k d_k \| \to 0, \ k \to \infty$$
 
-The implementation ignores seeking information about the gradient or the Hessian of the function. Instead some points in the surrounding region are computed and the most optimal decrease for the next step is selected. 
+The implementation does not seek information about the gradient or the Hessian of the function. Instead, points in the surrounding region are evaluated, and the step giving the best decrease is selected.
 
 The method has been known since the 1950s but it fell out of favour due to the slow rate of convergence. However, with parallel computing advances it has become more feasible to use again. For a large set of direct search methods, it is possible to rigorously prove that they will converge to a local minimum [@Kolda2003].
 
@@ -119,7 +119,7 @@ In mathematics, homotopy refers to the continuous transformation of one function
 
 The core idea behind homotopy optimization is to relax a difficult optimization problem into a series of smoother problems that gradually resemble the original objective function. This relaxation process spreads the gradient and Hessian information outward, making the function landscape easier to navigate and minimizing the risk of getting stuck in local minima.
 
-This can be accomplished using a convolution with a simple function as a kernel. The kernel that is used can have variable width and parameterization, there are varying degrees of relaxation which can be parameterized using a $t$ time variable. As $t \to 0$ the function becomes more like the original function, and as $t \to 1$ the function becomes more like the smoothing function. The homotopy between the two is parameterized by $t \in [0, 1]$.
+This can be accomplished using a convolution with a simple function as a kernel. The kernel can have variable width, giving varying degrees of relaxation, which we parameterize using a time variable $t$. As $t \to 0$ the function approaches the original function, and as $t \to 1$ it approaches the fully smoothed function. The homotopy between the two is parameterized by $t \in [0, 1]$.
 
 <div style="text-align: center; margin: 20px 0;">
   <a title="Jim.belk, CC0, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:HomotopySmall.gif">
@@ -132,10 +132,10 @@ This can be accomplished using a convolution with a simple function as a kernel.
 
 ### Homotopy Optimization
 
-In the case of optimization, the technique is know as homotopy optimization or continuation optimization. The optimization process starts with the smoothed function and then gradually moves back to the original function using the optimization steps from the relaxed prbolem. This is known as a continuation method, and the scheduling of the homotopy parameter $t$ is the continutation schedule. A summary description with more details and advanced techniques can be found in work by Lin et. al [@Lin2023].
+In the case of optimization, the technique is known as homotopy optimization or continuation optimization. The optimization process starts with the smoothed function and then gradually moves back to the original function, using the solution of each relaxed problem as the starting point for the next. This is known as a continuation method, and the scheduling of the homotopy parameter $t$ is the continuation schedule. A summary description with more details and advanced techniques can be found in the work by Lin et al. [@Lin2023].
 
 #### Example
-Let $f(x)$ be the original function and $g(x)$ be the smoothing function. The homotopy function $h(x, t)$ can be defined as and interpolation between the two functions:
+Let $f(x)$ be the original function and $g(x)$ be the smoothing function. The homotopy function $h(x, t)$ can be defined as an interpolation between the two functions:
 
 $$h(x, t) = (1-t) f(x) + t g(x).$$
 
@@ -151,19 +151,19 @@ In the case where the values of $x$ may be constrained, this becomes similar to 
 
 ## Gaussian Homotopy
 
-A common case of homotopy is the Gaussian homotopy, where the smoothing function is a Gaussian function. The Gaussian function is a widely used in signal processing and image processing due to its properties as a low-pass filter. For example, a Gaussian blur is applied to images to aid in downsampling since it preserves the lower resolution details while removing high-frequency noise that may cause aliasing.
+A common case of homotopy is the Gaussian homotopy, where the smoothing function is a Gaussian. The Gaussian function is widely used in signal processing and image processing due to its properties as a low-pass filter. For example, a Gaussian blur is applied to images to aid in downsampling, since it preserves the lower-resolution details while removing high-frequency content that may cause aliasing.
 
 To illustrate the low-pass filtering property, consider a Gaussian function $g(x)$ and its Fourier transform $\hat{g}(k)$:
 
 $$g(x) = \frac{1}{\sqrt{2\pi \sigma^2}} e^{-\frac{x^2}{2\sigma^2}}, \quad \hat{g}(k) = e^{-\frac{k^2 \sigma^2}{2}}.$$
 
-The Fourier transform of the Gaussian is another Gaussian, it is an eigenfunction of the Fourier transform operator. The convolution theorem states that the convolution of two functions in the spatial domain is equivalent to the multiplication of their Fourier transforms in the frequency domain:
+The Fourier transform of a Gaussian is another Gaussian — indeed, the Gaussian is an eigenfunction of the Fourier transform operator. The convolution theorem states that the convolution of two functions in the spatial domain is equivalent to the multiplication of their Fourier transforms in the frequency domain:
 
 $$f(x) \ast g(x) = \mathcal{F}^{-1} \left[ \hat{f}(k) \hat{g}(k) \right].$$
 
 The convolution of a function $f(x)$ with a Gaussian $g(x)$ can be used to remove the high-frequency components of the function while allowing the low-frequency, widely spread components to remain. 
 
-A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through the highest frequencies. At the limit as the Gaussian becomes infinitely narrow, it becomes a delta function $g(x) = \delta(x)$ in the time domain, a constant function $\hat{g}(k) = 1$ in the frequency domain. The convolution of a delta function with a function $f$ is the function itself, so the delta function does not change the function. The multiplication of the function $\hat f(k)$ with the constant function $1$ is the function itself, so the constant function does not change the function in the frequency domain.
+A wide Gaussian in the time domain corresponds to a narrow Gaussian in the frequency domain, and vice versa. So a wide Gaussian only lets through the lowest frequencies, while a narrow Gaussian lets through a wide band of frequencies. In the limit as the Gaussian becomes infinitely narrow, it becomes a delta function $g(x) = \delta(x)$ in the time domain — a constant function $\hat{g}(k) = 1$ in the frequency domain. The convolution of a function $f$ with a delta function returns $f$ itself; equivalently, multiplying $\hat f(k)$ by the constant function $1$ leaves it unchanged in the frequency domain.
 
 ```{python}
 #| label: gaussian-homotopy
@@ -280,13 +280,13 @@ The Gaussian kernel should be divided by its partition function $z(t) = \int \ex
 
 ### Stochastic Optimization
 
-Since the objective is to minimize over the integral given by $h(x, t)$, a stochastic method can be used to estimate the minimizer in expectation using Monte Carlo methods. The integral can be approximated by sampling $N$ points from the Gaussian kernel and averaging the function values at those points:
+Since the objective involves minimizing the integral defining $h(x, t)$, a stochastic method can be used to estimate the minimizer in expectation using Monte Carlo methods. The integral can be approximated (up to normalization) by sampling $N$ points from the Gaussian kernel and averaging the function values at those points:
 
 $$
 \begin{align*}
 h(x, t) &= \int_{-\infty}^{\infty} f(x-\xi) \exp(-\frac{\xi^2}{\sigma(t)^2}) d\xi\\
-& = \mathbb{E}_{\xi \sim \mathcal{N}(0, \sigma(t)^2)} f(x-\xi) \\
-& \approx \frac{1}{N} \sum_{i=1}^N f(x-\xi_i), \quad \xi_i \sim \mathcal{N}(0, \sigma(t)^2). 
+& \propto \mathbb{E}_{\xi \sim \mathcal{N}(0, \sigma(t)^2)} f(x-\xi) \\
+& \approx \frac{1}{N} \sum_{i=1}^N f(x-\xi_i), \quad \xi_i \sim \mathcal{N}(0, \sigma(t)^2).
 \end{align*}
 $$
 
@@ -296,13 +296,13 @@ For a given $t$ and point $x$ where we want to estimate the function $h(x, t)$, 
 
 There are two ways to approach this problem when using numerical methods.
 
-1. **Discretize then Optimize:**  The integral is first discretized by choosing a set of points $\{xi_1, \xi_2, \ldots, \xi_N\}$ and then the function is evaluated using that same discrete kernel across all points:
+1. **Discretize then Optimize:**  The integral is first discretized by choosing a set of points $\{\xi_1, \xi_2, \ldots, \xi_N\}$, and then the objective is evaluated using that same discrete kernel throughout the optimization:
 
 $$ \min_{\mathcal{X}} \frac{1}{N} \sum_{i=1}^N f(x-\xi_i).$$
 
-This sum can end up being large if there are many points that are selected.
+This sum can end up being large if many points are selected.
 
-2. **Optimize then Discretize:** In this case we start with gradient descent and the continuous function $h(x, t)$ and then sample the function at the points $\{xi_1, \xi_2, \ldots, \xi_N\}$ to estimate a gradient. 
+2. **Optimize then Discretize:** In this case we start with gradient descent on the continuous function $h(x, t)$, and then sample the function at points $\{\xi_1, \xi_2, \ldots, \xi_N\}$ to estimate the gradient at each step:
 
 $$
 \begin{align*}
@@ -311,7 +311,7 @@ $$
 \end{align*}
 $$
 
-This formulation can technically converge even with $| i | = 1$ but with very slow convergence.
+This formulation can technically converge even with $N = 1$, although convergence will be very slow.
 
 ---
 
@@ -319,11 +319,11 @@ Now that the Gaussian homotopy has been introduced, we can move on to the implem
 
 # Code Implementation
 
-As usual for studying a problem we come up with a suitable toy dataset. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.
+As usual when studying a problem, we come up with a suitable toy example. In this case it should be a function that has multiple minima, is non-convex, and has a poorly conditioned Hessian.
 
 $$ f(x) = -\exp\left(-\frac{(x_1 - 2)^2 + (x_2 - 2)^2}{0.1}\right) - 2\exp\left(-\frac{(x_1 + 2)^2 + (x_2 + 2)^2}{0.1}\right).$$
 
-The function is two superimposed Gaussian functions that impose a local minimum at $(2, 2)$ and $(-2, -2)$ but with very little gradient information far away from the minima.
+The function is a superposition of two negative Gaussian wells, with a local minimum at $(2, 2)$ and the deeper global minimum at $(-2, -2)$, but with very little gradient information far away from the minima.
 
 ```{python}
 #| label: objective-function
@@ -358,7 +358,7 @@ plt.title('Objective function')
 plt.show()
 ```
 
-The next step is to create a time parameterized function $h(x, t)$ that is the Gaussian homotopy of f(x). In practical terms, the starting $\sigma_{\text{max}}$ is being modified by a $t$ parameter when multiplied by the random noise. At $t=0$ the function is the original function, and at $t=1$ the function is being convolved numerically with a Gaussian kernel that is $\mathcal{N}(0, \sigma_{\text{max}})$. The time points in between are a homotopy between the two functions.
+The next step is to create a time-parameterized function $h(x, t)$ that is the Gaussian homotopy of $f(x)$. In practical terms, the starting $\sigma_{\text{max}}$ is modulated by the $t$ parameter when multiplied with the random noise. At $t=0$ the function is the original function, and at $t=1$ the function is numerically convolved with a $\mathcal{N}(0, \sigma_{\text{max}}^2)$ Gaussian kernel. The time points in between trace a homotopy between the two functions.
 
 ```{python}
 #| fig-cap: "Gaussian Homotopy."
@@ -399,9 +399,9 @@ def gaussian_homotopy(func, x, batch_size=1000, sigma=1.0, t=0.5):
 
 This variation of the function can be seen as having extra parameters:
 
-$$h(x,t,\sigma_{\text{max}}, N) = \frac{1}{N} \sum_{i=1}^N f(x-\xi_i), \quad \xi_i \sim \mathcal{N}(0, t \cdot \sigma_{\text{max}}).$$
+$$h(x,t,\sigma_{\text{max}}, N) = \frac{1}{N} \sum_{i=1}^N f(x-\xi_i), \quad \xi_i \sim \mathcal{N}\left(0, (t \cdot \sigma_{\text{max}})^2\right).$$
 
-The time parameter is modulating the standard deviation of the Gaussian kernel, and the number of samples $N$ is used to approximate the expectation of the function at each point. As time goes to zero we approach the original function. Now applying an animation to this it is possible to see the stochastic homotopy in action.
+The time parameter modulates the standard deviation of the Gaussian kernel, and the number of samples $N$ is used to approximate the expectation of the function at each point. As time goes to zero, we approach the original function. By animating this process, it is possible to see the stochastic homotopy in action.
 
 ```{python}
 #| label: homotopy-animation
@@ -450,4 +450,4 @@ ani.save("imgs/homotopy_2d.gif", writer="imagemagick", fps=4)
 
 ## Conclusion
 
-This lecture has covered the theory behind homotopy, its action in the frequency and time domain, and its purpose in optimization. A scheme for continuation scheduling for the optimization along with the homotopy is a field of active research. A more detailed analysis to implement the technique in a practical setting can be understood from Lin et. al [@Lin2023].
+This lecture has covered the theory behind homotopy, its action in the frequency and time domains, and its purpose in optimization. The design of continuation schedules for the homotopy parameter remains an area of active research. A more detailed analysis of how to implement the technique in a practical setting can be found in Lin et al. [@Lin2023].

@@ -24,13 +24,13 @@ editor:
 
 ## Derivations of Linear Algebra Gradients
 
-Often times we wish to find the gradient of a multi-variable function that is formulated as a linear algebra operation. In this case there are some useful "vector" derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to vector $\mathbf{x}$ is generally denoted as $\nabla_{\mathbf{x}}$ or alternatively $\partial_{\mathbf{x}}$, somewhat of an abuse of notation.
+Often we wish to find the gradient of a multivariable function that is formulated as a linear algebra operation. In this case there are some useful "vector" derivatives and rules that can simplify the process of calculating more complex expressions. The gradient with respect to a vector $\mathbf{x}$ is generally denoted $\nabla_{\mathbf{x}}$, or alternatively $\partial_{\mathbf{x}}$ — somewhat of an abuse of notation.
 
 #### 1.  A Warmup
 
 $$\phi(x) = a^\top x = \sum_i a_i x_i$$
 
-This is a vector dotproduct and the gradient is simply the vector $a$. There is a subtlety here in that the vector is usually transposed to be a column vector, but this is not always the case. Some people in the field of statistics prefer to use row vector, this can cause some confusion. The general convention is a column vector.
+This is a vector dot product, and the gradient is simply the vector $a$. There is a subtlety here in that the gradient is usually shaped as a column vector, but this is not always the case: some authors, particularly in statistics, prefer the row-vector convention, which can cause confusion. The general convention is a column vector.
 
 $$\nabla_{\mathbf{x}} \phi = a$$
 
@@ -38,7 +38,7 @@ $$\nabla_{\mathbf{x}} \phi = a$$
 
 $$\phi(x) = Ax$$
 
-Based on the previous process we are expecting to potentially get $A^\top$ as the gradient, however the transpose does not occur in this case because we are not returning a vector that needs to be reshaped into a column form.
+Based on the previous example we might expect to get $A^\top$, however no transpose occurs in this case. Here $\phi$ is vector-valued, so the appropriate derivative is the Jacobian rather than a gradient, and each row of the Jacobian is the gradient of one output component — giving back $A$ itself.
 
 $$\nabla_{\mathbf{x}} \phi = A$$
 
@@ -47,29 +47,28 @@ $$\nabla_{\mathbf{x}} \phi = A$$
 Often we may encounter quadratic linear functions that are of the form:
 $$ \phi(x) = x^\top A x$$
 
-One way to determine the gradient is to expand the expression and evaluate for a single $\frac{\partial}{\partial x_i}$ term. This method can be found at [Mark Schmidt Notes](https://www.cs.ubc.ca/~schmidtm/Courses/340-F16/linearQuadraticGradients.pdf) Instead we can apply a chain rule for matrix differentiation that is based on the product rule for differentiation. The chain rule for matrix differentiation is as follows:
+One way to determine the gradient is to expand the expression and evaluate a single $\frac{\partial}{\partial x_i}$ term; this method can be found in [Mark Schmidt's notes](https://www.cs.ubc.ca/~schmidtm/Courses/340-F16/linearQuadraticGradients.pdf). Instead, we can apply a product rule for vector differentiation:
 
 $$\frac{d f(g,h)}{d x} = \frac{d (g(x)^\top)}{d x} \frac{\partial f(g,h)}{\partial g} + \frac{d (h(x)^\top)}{d x} \frac{\partial f(g,h)}{\partial h}$$
 
+Writing $\phi(x) = g^\top h$ with $g = x$ and $h = Ax$, we have $\frac{\partial \phi}{\partial g} = h$, $\frac{\partial \phi}{\partial h} = g$, $\frac{d (g^\top)}{dx} = I$, and $\frac{d (h^\top)}{dx} = A^\top$. Then:
+
 $$ \begin {align*}
 \phi(x) &= x^\top A x \\
-\nabla_{\mathbf{x}} \phi &= \nabla_{\mathbf{x}} (x^\top A x) \\
-&= \nabla_{\mathbf{x}} x^\top (A x) =  \nabla_{\mathbf{x}} x^\top y\\
-&= (\nabla_{\mathbf{x}} x) \nabla_{\mathbf{x}} x^\top y + \nabla_{\mathbf{x}} y^\top \nabla_{\mathbf{y}} x^\top y\\
-&= I y + \nabla_{\mathbf{x}} (x^\top A^\top) x\\
-&= (A x) + A^\top x\\
+\nabla_{\mathbf{x}} \phi &= \frac{d (x^\top)}{dx} (Ax) + \frac{d ((Ax)^\top)}{dx} \, x\\
+&= I (A x) + A^\top x\\
 &= (A + A^\top) x
 \end {align*}
 $$
 
-This fits with the generalization for a scalar quadratic form where we end up with $(cx^2)' = (c + c^\top)x = 2cx$ where $c$ is a scalar.
+This fits with the scalar quadratic form, where we end up with $(cx^2)' = (c + c^\top)x = 2cx$ for a scalar $c$.
 
 #### 4. Hadamard Product
 
-Another form of interest is the hadamard product of two vectors.
+Another form of interest is the Hadamard product of two vectors:
 $$\phi(x) = (Ax)^2 = Ax \odot Ax$$
 
-For this one let $y=Ax$ and we can index each element of the vector $y$ as $y_i = \sum_j A_{ij} x_j$. The hadamard product is a vector $z$ where $z_i = y_i^2$, we can compute the jacobian since now we are taking the gradient with respect to a vector.
+For this one, let $y = Ax$, so that each element of the vector $y$ is $y_i = \sum_j A_{ij} x_j$. The Hadamard product is a vector $z$ where $z_i = y_i^2$. Since the output is a vector, we compute the Jacobian rather than a gradient.
 
 The Jacobian will contain the partial derivatives:
 
@@ -79,16 +78,16 @@ $$\frac{d\vec{z}}{d\vec{x}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} 
 \frac{\partial z_n}{\partial x_1} & \frac{\partial z_n}{\partial x_2} & \cdots & \frac{\partial z_n}{\partial x_n} \end{bmatrix}
 $$
 
-If we can recover this then we have the gradient of the hadamard product.
+If we can recover this, then we have the derivative of the Hadamard product.
 
 $$
 \begin{align*}
 z_i &= y_i^2 = \left( \sum_j A_{ij} x_j \right)^2\\
 \frac{\partial}{\partial x_j} y_i^2 &= 2 y_i \frac{\partial y_i}{\partial x_j} = 2 y_i A_{ij}\\
-\frac{d\vec{z}}{d\vec{x}} &= 2 \begin{bmatrix} y_1 A_{1j} & y_1 A_{2j} & \cdots & y_1 A_{nj} \\
-y_2 A_{1j} & y_2 A_{2j} & \cdots & y_2 A_{nj} \\
+\frac{d\vec{z}}{d\vec{x}} &= 2 \begin{bmatrix} y_1 A_{11} & y_1 A_{12} & \cdots & y_1 A_{1n} \\
+y_2 A_{21} & y_2 A_{22} & \cdots & y_2 A_{2n} \\
 \vdots & \vdots & \ddots & \vdots \\
-y_n A_{1j} & y_n A_{2j} & \cdots & y_n A_{nj} \end{bmatrix}\\
+y_n A_{n1} & y_n A_{n2} & \cdots & y_n A_{nn} \end{bmatrix}\\
 &= 2 \cdot \text{diag}(\vec{y})A\\
 &= 2 \cdot \text{diag}(Ax)A
 \end{align*}
@@ -111,10 +110,9 @@ $$
 Returning to the first-order optimality condition we have:
 $$A^\top A x = A^\top b$$
 
-At which point it is in question if $A^\top A$ is invertible. The invertibility of $A^\top A$ is determined by the rank of $A$. The rank of A for a non-square matrix is the number of independent columns. If we examine $A^\top Ax = 0$ then we see that this is only true where the range of $A$ is in the nullspace of $A^\top$. But $N(A^\top) = R(A)^\perp$ so they are orthogonal subspaces and will never coincide unless $Ax=0$. So then $A^\top A x = 0$ implies that $Ax = 0$ which means that if the null space of $A=\{0\}$ then the null space of $A^\top A = \{0\}$ and $A^\top A$ is invertible. Since $A^\top A$ is symmetric and positive definite, it is invertible.
+At this point, the question is whether $A^\top A$ is invertible. The invertibility of $A^\top A$ is determined by the rank of $A$ — the number of independent columns. Suppose $A^\top A x = 0$ for some $x$. This requires $Ax$ to lie in the null space of $A^\top$; but $N(A^\top) = R(A)^\perp$ is orthogonal to the range, and $Ax \in R(A)$, so the only possibility is $Ax = 0$. Therefore $A^\top A x = 0$ implies $Ax = 0$, and $A^\top A$ has the same null space as $A$. If the null space of $A$ is $\{0\}$, then the null space of $A^\top A$ is also $\{0\}$, in which case $A^\top A$ is symmetric positive definite and invertible.
 
-
-$A^\top A$ is invertible $\iff$ $A$ is full rank, that is all the columns are independent. For non-square matrices, an $m>n$ matrix that is wide will trivially not satisfy this condition. A tall matrix $m<n$ will satisfy the condition if the columns are independent. 
+In summary, $A^\top A$ is invertible $\iff$ $A$ has full column rank, that is, all of its columns are independent. For a non-square $m \times n$ matrix, a wide matrix ($m < n$, more columns than rows) can never satisfy this condition. A tall matrix ($m > n$) satisfies the condition if its columns are independent.
 
 ## Gradient Descent Analysis
 
@@ -122,7 +120,7 @@ The standard form of the gradient descent algorithm comes from the field of opti
 
 $$ x_{k+1} = x_k - \alpha \nabla_x \phi(x_k)$$
 
-Where $\alpha$ is the learning rate, which can be dependent on the problem and the gradient. Substituting the gradient of the least squares problem we have:
+where $\alpha$ is the learning rate, which can depend on the problem and the gradient. Substituting the gradient of the least squares problem, we have:
 
 $$ \begin{align}
 x_{k+1} &= x_k - \alpha (A^\top A x_k - A^\top b)\\
@@ -131,19 +129,18 @@ x_{k+1} &= x_k - \alpha (A^\top A x_k - A^\top b)\\
 \end{align}
 $$
 
-This ODE is the continuous version of the gradient descent algorithm, also known as the *gradient flow*. Since this a linear first-order ODE we can solve it analytically. The general method for a linear system ODE would be to find the homogeneous solution and the particular solution:
+This ODE is the continuous version of the gradient descent algorithm, also known as the *gradient flow*. Since this is a linear first-order ODE, we can solve it analytically. The general method for a linear ODE system is to find the homogeneous solution and a particular solution. For the homogeneous equation we guess $x_h = v e^{\lambda t}$:
 
 $$ \begin{align}
 x' + A^\top A x &= A^\top b\\
-\text{Guess:} x &= v e^{\lambda t}\\
-\lambda v e^{\lambda t} + A^\top A v e^{\lambda t} &= A^\top b e^{\lambda t}\\
-\lambda v + A^\top A v &= 0 \qquad \text{Homogeneous}\\
+x_h' + A^\top A x_h &= 0 \qquad \text{Homogeneous}\\
+\lambda v e^{\lambda t} + A^\top A v e^{\lambda t} &= 0\\
 (\lambda I + A^\top A) v &= 0\\
-\lambda &= \text{eigenvalues of } A^\top A, \quad v = \text{eigenvectors of } A^\top A
+\lambda &= -\mu_i, \quad v = \text{eigenvectors of } A^\top A
 \end{align}
 $$
 
-Before continuing further with this line, we can see that the solutions will be closely related to the SVD because it contains the information on these eigenvalues and vectors. So we can try to solve the ODE with the SVD.
+where $\mu_i \geq 0$ are the eigenvalues of $A^\top A$. Before continuing further along this line, we can see that the solutions will be closely related to the SVD, because it contains the information on these eigenvalues and eigenvectors. So we can solve the ODE with the SVD.
 
 #### Solving the ODE with SVD
 
@@ -163,7 +160,7 @@ z' + \Sigma^2 z &= \Sigma \hat b\\
 \end{align}
 $$
 
-At this stage since everything has been diagonalized, all of the equations are decoupled and independent so we can solve for the $\lambda_i$ cases independently. We find the homogeneous $z_h$ and particular $z_p$ solutions:
+At this stage, since everything has been diagonalized, all of the equations are decoupled and independent, so we can solve each component separately. Writing $\lambda_i$ for the singular values on the diagonal of $\Sigma$ (so that $\Sigma^2$ has entries $\lambda_i^2$), we find the homogeneous $z_h$ and particular $z_p$ solutions for each component:
 
 $$
 \begin{align}
@@ -185,19 +182,17 @@ Supposing that we start at $x=0$ then we have $z=0$ at all elements and can solv
 
 $$c_i = -\frac{1}{\lambda_i} \hat b_i$$
 
-Then putting it all back together with all the equations we have that 
+Then, putting all of the equations back together, we have
 
-$$Z = \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) \hat b$$
+$$z = \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i^2 t)) \right) \hat b$$
 
-Substituting back in for $x$ and $b$ we get:
+Substituting back in for $x$ and $b$, we get:
 
-$$x = V \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) U^\top b$$
+$$x = V \, \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i^2 t)) \right) U^\top b$$
 
-If we stare at this long enough it begins to look a lot like the pseudoinverse of $A$ from earlier:
+If we stare at this long enough, it begins to look a lot like the pseudoinverse solution from earlier, $x = V \Sigma^{-1} U^\top b$, except that in this case there is a time dependence. In the limit as $t \rightarrow \infty$, the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be more interested in is what happens at earlier stages, since each decay term depends on its corresponding singular value.
 
-$x = V \Sigma^{-1} U^\top b$ except in this case there is a time dependence. At the limit as $t \rightarrow \infty$ we have that the exponential term goes to zero and we are left with the pseudoinverse solution. This is a nice way to see that the pseudoinverse is the limit of the gradient descent algorithm. What we may be interested in is what happens at earlier stages since each decay term is dependent on the eigenvalues.
-
-For a simple matrix problem we can create a matrix and plot out the time evolution of the diagonals of the matrix that are of interest. In a sense, we have singular values that are time evolving at different rates.
+For a simple matrix problem, we can create a matrix and plot the time evolution of the diagonal entries of interest. In a sense, we have inverse singular values that evolve in time at different rates.
 
 ```{python}
 import numpy as np
@@ -255,11 +250,11 @@ plt.savefig('imgs/pseudo_inverse_time_evolution.png')
 plt.show()
 ```
 
-So we can use early stopping to prevent the flow from reaching the optimal point, a very useful technique. When it comes to inverse theory, often we are not interested in the optimal solution, but more interested in getting somewhere close that is not too noisy. This method differs from the thresholded pseudoinverse from the previous lecture, in that it allows some blending of the the smaller singular values, but their propensity for blowing up is controlled by the time exponent and early stopping.
+So we can use early stopping to prevent the flow from reaching the optimal point — a very useful technique. When it comes to inverse theory, we are often not interested in the exact least squares solution, but rather in getting somewhere close that is not too noisy. This method differs from the thresholded pseudoinverse of the previous lecture in that it allows some blending of the smaller singular values, while their propensity for blowing up is controlled by the exponential decay term and early stopping.
 
 ### Example for Image Recovery using Analytic Solution
 
-Referring back to the problem of estimating the original image based on a noisy point spread function. We can monitor the time evolution of the estimate using gradient flow. Some code below defines the problem again, with recovery of the SVD decomposition for the 32x32 image, which will be used to solve the ODE for the gradient flow.
+Let us refer back to the problem of estimating the original image from a blurred and noisy observation. We can monitor the time evolution of the estimate using gradient flow. The code below defines the problem again, recovering the SVD for the $32 \times 32$ image, which will be used to solve the ODE for the gradient flow.
 
 ```{python}
 import matplotlib.pyplot as plt
@@ -375,13 +370,13 @@ U, S, V = torch.svd(Amat.to(torch.float64))
 b = Amv(x)
 ```
 
-Now that we have the matrix form of the forward operator `Amat` defined, along with the forward result `b` and the the decomposition `U, S, V` we can run the pseudo-inverse gradient flow method as before. So in this case we will be computing:
+Now that we have the matrix form of the forward operator `Amat` defined, along with the forward result `b` and the decomposition `U, S, V`, we can run the pseudoinverse gradient flow method as before. In this case we will be computing:
 
-$$ x = V \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i t)) \right) U^\top b$$
+$$ x = V \, \text{diag}\left( \lambda_i^{-1} (1 - \exp (-\lambda_i^2 t)) \right) U^\top b$$
 
-Since these represents an evolution over time, an animation can be created to show the time evolution of the image recovery, along with the effect of continuing into a region where noise is amplified and dominates.
+Since this represents an evolution over time, an animation can be created to show the time evolution of the image recovery, along with the effect of continuing into the regime where amplified noise dominates.
 
-Recalling the original and distorted images with a small amount of noise $\epsilon$ are as follows:
+Recall the original and distorted images, with a small amount of noise $\epsilon$ added:
 
 ```{python}
 plt.figure(figsize=(6, 3))
@@ -470,7 +465,7 @@ plt.close(fig)
 ```
 ![](imgs/gradient_flow.gif){width=600px}
 
-And we saved the best time that was discovered for the recovery (with prior knowledge of the ground truth). So we can inspect that image, this was the best that we could do with the gradient flow method.
+We also saved the best stopping time discovered during the recovery (using prior knowledge of the ground truth), so we can inspect that image — the best reconstruction achievable with the gradient flow method.
 
 ```{python}
 best_img = get_xhat(tracking['best_t']).reshape(dim, dim).detach().numpy()
@@ -484,24 +479,24 @@ plt.show()
 
 ## Recovery of the Adjoint Operator using Autograd
 
-In this case we were able to compute the matrix form of $A$ and use its transpose to compute the SVD, but in many cases this might be too expensive or there may not be a closed form analytic solution to the early stopping technique. In such cases we wish to recover the adjoint. The question then is how to recover the adjoint operator from the `Amv` operator? There are helpful tools available through the use of automatic differentiation to track the gradients of the forward operator and recover the adjoint operator. This is a very powerful tool that can be used to recover the adjoint operator in a very general way.
+In this case we were able to compute the matrix form of $A$ explicitly and take its SVD, but in many cases this is too expensive, or there is no closed-form analytic solution for the early stopping technique. In such cases we still wish to apply the adjoint. The question then is how to recover the adjoint operator from the `Amv` operator. Automatic differentiation provides a helpful tool: by tracking the gradients of the forward operator, we can recover the action of the adjoint in a very general way.
 
 By definition the adjoint has the property that:
 $$\langle Ax, v \rangle = \langle x, A^\top v \rangle$$
 
 ### Explicit Computation of the Adjoint
 
-We can compute the adjoint explicitly for the `Amv` operator based on its computation from earlier. The discrete fourier transform matrix operator $F$ has the property that $F^{-1} = F^\top$ so we can use this to compute the adjoint.
+We can compute the adjoint explicitly for the `Amv` operator based on its computation from earlier. The unitary discrete Fourier transform matrix $F$ has the property that $F^{-1} = F^*$, its conjugate transpose, so we can use this to compute the adjoint.
 
 $$
 \begin{align}
-A(x) &= \mathcal{F}^-1 \left( \mathcal{F}(P) \odot \mathcal{F}(x) \right)\\
-&= F^\top \left( \text{diag} (F(P)) F(x) \right)\\
-A^\top(v) &= F^\top \text{diag} (F(P))^* F v\\
+A(x) &= \mathcal{F}^{-1} \left( \mathcal{F}(P) \odot \mathcal{F}(x) \right)\\
+&= F^{*} \, \text{diag} (F(P)) \, F x\\
+A^\top(v) &= F^{*} \, \text{diag} (F(P))^* \, F v\\
 \end{align}
 $$
 
-Where the hadamard operation of the two vectors has been modified to a matrix form by diagonalizing the vector $F(P)$ that is the Fourier transform of the point spread function. From this form it is posible to take the adjoint of the operator by taking the complex conjugate of the transpose of the entire operation. 
+Here the Hadamard product of the two vectors has been recast in matrix form by diagonalizing the vector $F(P)$, the Fourier transform of the point spread function. From this form, the adjoint of the operator is obtained by taking the conjugate transpose of the entire operation; since $A$ is a real operator, its adjoint coincides with its transpose, and only the diagonal factor picks up a complex conjugate.
 
 ### Autograd Computation of the Adjoint
 
@@ -542,11 +537,11 @@ diff = torch.norm(Amat_adj - Amat.T)
 print(f'Norm of difference between adjoint and transpose: {diff:.2e}')
 ```
 
-So the difference is within the bounds of numerical precison and the code appears to be working correctly.
+The difference is within the bounds of numerical precision, and the code appears to be working correctly.
 
 ## Gradient Descent with Adjoint
 
-We can now use the defined operators (functions) from earlier to setup a simple gradient descent algorithm with a step size and early stopping to produce a recovery image that bypasses the need to compute the SVD decomposition, which may be very expensive for large matrices.
+We can now use the operators (functions) defined earlier to set up a simple gradient descent algorithm with a step size and early stopping. This produces a recovered image while bypassing the SVD computation, which may be very expensive for large matrices.
 
 ```{python}
 from tqdm import tqdm
@@ -619,6 +614,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-Note that torch does have the framework to run autograd on the least squares objective itself, but for this general method we are using the adjoint to compute the gradient (and indirectly invoking autograd). This framework is the most general for when there might not be explicit analytic solutions to the least squares problem, but we have the forward operator and its adjoint.
+Note that PyTorch does have the machinery to run autograd on the least squares objective itself, but in this general method we use the adjoint to compute the gradient (invoking autograd only indirectly). This framework is the most general for cases where there is no explicit analytic solution to the least squares problem, but we have access to the forward operator and its adjoint.
 
 

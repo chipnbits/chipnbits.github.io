@@ -32,7 +32,7 @@ pseudocode:
 
 ## Motivation
 
-In the previous lecture, we viewed different priors or regularizers and how they can be used to help solve inverse problems. A regularizer for least squares in the most general sense is given as:
+In the previous lecture, we examined different priors and regularizers and how they can be used to help solve inverse problems. Regularized least squares in the most general sense is given as:
 
 $$ \min_{u} \left\{ \frac{1}{2} \left\| Au(x) - b \right\|_2^2 + \lambda R(u) \right\} $$
 
@@ -59,33 +59,33 @@ The function $R$ in this case is a function defined for fixed $\theta$. The term
 
 - **$\sigma$**: Non-linear activation function applied element-wise to the affine transformation $Wu + a$. 
 
-So a single layer neural network can be seen as the affine transformation of the vector $u$ followed by a non-linear activation function and a weighting metric for the resultant vector.
+So a single-layer neural network can be seen as an affine transformation of the vector $u$, followed by a non-linear activation function, followed by a weighted sum of the resulting vector.
 
 This can be used as an approximator for the true regularizer $R(u) \approx R_T(u)$ in the inverse problem.
 
 Suppose that we have a known set of mappings $u_i \rightarrow y_i$, where $i = 1, \ldots, N$. For example we might have some information about the regularizer $R(u)$ for a set of $u$ values. One possible technique is to train an SLP to approximate the true regularizer $R_T(u)$.
 
-The function $y = R(u; \theta)$ returns a scalar, taking its transpose will not change the output:
+The function $y = R(u; \theta)$ returns a scalar, so taking its transpose will not change the output:
 
-$$y = w^T \sigma(Wu+a) = \sigma(u^TW + a)w$$
+$$y = w^T \sigma(Wu+a) = \sigma(u^TW^T + a^T)w$$
 
-Then using the squared loss function, we can define the loss function as:
+Then, using the squared loss, we can define the loss function as:
 
-$$\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u^TW + a)w - y_i \right \|^2$$
+$$\mathcal{L}(\theta) = \frac{1}{2} \sum_{i=1}^N \left \| \sigma(u_i^TW^T + a^T)w - y_i \right \|^2$$
 
-The summation is reorganized to get rid of the summation term where $U$ is a matrix with the $u_i^T$ as the columns, A is a matrix with $a$ as the columns, and $y$ is the vector of $y_i$ values.
+The summation can be reorganized to eliminate the summation term, where $U$ is a matrix with the $u_i$ as its columns, $A$ is a matrix with copies of $a^T$ as its rows, and $y$ is the vector of $y_i$ values:
 
-$$\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW + A)w - y \right \|^2$$
+$$\mathcal{L}(\theta) = \frac{1}{2} \left \| \sigma(U^TW^T + A)w - y \right \|^2$$
 
-For simplicity of this analysis, we can assume without loss of generality for the problem at hand that $A = 0$ and $\sigma$ is the identity operator. Then:
+For simplicity of this analysis, we can assume, without loss of generality for the problem at hand, that $A = 0$ and $\sigma$ is the identity operator. Then:
 
 $$\hat\theta = \min_{\theta} \mathcal{L}(\theta) = \min_{\hat w} \frac{1}{2} \left \| U^T\hat w - y \right \|^2.$$
 
-where $\hat w = Ww$.
+where $\hat w = W^T w$.
 
 ### Non-linearity Analysis
 
-This least squares problem will generally be ill-posed when the activation function is not present (the case with identity activation). $N>d$ means that there are more equations than there are unknowns, because $\hat w$ is of dimension $d$, so there could be infinite solutions.
+This least squares problem generally cannot be solved exactly when the non-linear activation function is absent (the case with identity activation). $N > d$ means that there are more equations than unknowns, because $\hat w$ is of dimension $d$, so in general the data cannot be fit exactly — the effective model is too limited.
 
 $$\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
 \underbrace{
@@ -99,10 +99,11 @@ $$\hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
 \underbrace{
 \begin{bmatrix}
 \ & \ & \ \\
-\ & W & \ \\
+\ & W^T & \ \\
 \ & \ & \ \\
 \end{bmatrix}
-}_{N \times k}
+}_{d \times k}
+w
 - y \right\|^2
 $$
 
@@ -110,18 +111,18 @@ $$
 
 **Idea 1:**
 
-If we can increase the rank of the $Z = U^TW$ matrix, then perhaps it is possible to solve the problem batter. We select for there to be a larger weights matrix $W$ that is $N \times m$ where $m > d$. In the resulting $z = U^TW$ matrix, the rank will still be $\text{rank}(Z) \le d$.
+If we can increase the rank of the $Z = U^TW^T$ matrix, then perhaps it is possible to solve the problem better. We select a larger weights matrix so that $W^T$ is $d \times m$ where $m > d$. However, in the resulting $Z = U^TW^T$ matrix, the rank will still be $\text{rank}(Z) \le d$.
 
 **Idea 2:**
 
-Use a non-linear activation function $\sigma$ that operates element-wise on the matrix $Z = U^TW$ to increase the rank of the matrix so that $\text{rank}(\sigma(Z)) = \min (N,m)$.
+Use a non-linear activation function $\sigma$ that operates element-wise on the matrix $Z = U^TW^T$ to increase the rank of the matrix, so that $\text{rank}(\sigma(Z)) = \min (N,m)$.
 
-In practice the exact activation function is not important. It may be the case that $\text{rank}(\sigma(Z)) = 3$ for example, but applying the activation function will increase the rank to the minimum dimension size of the weights matrix $W$. This can give a unique solution the least squares problem.
+In practice the exact choice of activation function is not important. It may be the case that $\text{rank}(Z) = 3$, for example, but applying the activation function will increase the rank to the minimum dimension of the matrix. This can give a unique solution to the least squares problem.
 
 $$
 \hat{\theta} = \min_{\theta} \frac{1}{2} \left\|
 \sigma \left( \underbrace{
-\begin{bmatrix} 
+\begin{bmatrix}
 \ & \ & \ \\
 \ & U^T & \ \\
 \ & \ & \ \\
@@ -131,10 +132,10 @@ $$
 \underbrace{
 \begin{bmatrix}
 \ & \ & \ & \ & \cdots & \ \\
-\ & W & \ & \ & \ & \ \\
+\ & W^T & \ & \ & \ & \ \\
 \ & \ & \ & \ & \ & \ \\
 \end{bmatrix}
-}_{N \times m}
+}_{d \times m}
 \right ) w
 -
 y \right\|^2
@@ -236,17 +237,17 @@ plt.show()
 
 #### Notes on Scaling
 
-The $W$ matrix will scale up in $O(N^2)$ so that with more data samples it can become too large to handle well. The problem however can be solved with a random $w$ and with $W$ alone under these conditions. A lower rank $W$ could help under conditions where the size of $N$ is large. 
+The $W$ matrix scales up in $O(N^2)$, so with more data samples it can become too large to handle well. A lower-rank $W$ can help when the size of $N$ is large:
 
 $$ W = Q Z^T $$
 
-where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product $U^TW$ for any particular sample $u_i$ will be giben by $\sigma((u_i^TQ)Z^T)$. This lower rank matrix leads to the topic of convolutional neural networks (CNNs) which make extensive use of a reduced rank matrix. The benefit is that it can improve the computational speed by exploiting a sparse structure in the matrix $W$.
+where $Q$ is a matrix of orthonormal columns and $Z$ is a matrix of size $d \times N$. In this case the product for any particular sample $u_i$ will be given by $\sigma((u_i^TQ)Z^T)$. This lower-rank structure leads to the topic of convolutional neural networks (CNNs), which make extensive use of reduced-rank, structured matrices. The benefit is improved computational speed, achieved by exploiting a sparse structure in the matrix $W$.
 
-This becomes more important when the layers of a SLP are combined into a deep neural network (DNN).  
+This becomes more important when the layers of an SLP are stacked into a deep neural network (DNN):
 
-$$y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)})) + a^{(L-1)}) + a^{(L)}$$
+$$y = R(u; \theta) = w^T \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) \cdots + a^{(L-1)}) + a^{(L)})$$
 
-where $L$ is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions and can be expensive to compute in the case where $N$ is large.
+where $L$ is the number of layers in the network. This is a chain of affine transformations followed by non-linear activation functions, and it can be expensive to compute when $N$ is large.
 
 ## Convolutional Neural Networks (CNNs)
 
@@ -266,7 +267,7 @@ It is also an operation defined in the continuous domain as:
 
 $$ (f \ast g)(x) = \int_{-\infty}^{\infty} f(y)g(x-y)dy $$
 
-The operation is one that is fundamental to mathematics and shows up in many different applications including, signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations where it is known as the Green's function, and in the solution of integral equations. Another such home that is has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI). 
+The operation is fundamental to mathematics and shows up in many different applications, including signal processing, image processing, control theory, probability theory, solutions to ordinary and partial differential equations — where the kernel is known as the Green's function — and the solution of integral equations. Another home it has found is in deep learning. The convolution has some intuitive properties that make it useful in any system that is linear and time/shift invariant (LTI).
 
 **Properties of Convolution**
 
@@ -276,13 +277,13 @@ The operation is one that is fundamental to mathematics and shows up in many dif
 
 Rather than explain convolution at length here, the interested reader is encouraged to look at the [Convolution Wikipedia page](https://en.wikipedia.org/wiki/Convolution) for some excellent properties and visual examples to build intuition. 
 
-In the context of image and data processing, the convolution is closely related to a correlation filter, the two only differe by a rotation of 180 in the convolutional kernel (the function being convolved with the input). This is an important consideration when it comes to working with learned convolutional kernels, since they can be equally interpreted as correlation filters.
+In the context of image and data processing, the convolution is closely related to a correlation filter: the two differ only by a $180°$ rotation of the convolutional kernel (the function being convolved with the input). This is an important consideration when working with learned convolutional kernels, since they can equally be interpreted as correlation filters.
 
-Another important property to know is that the convolution operation has a close relationship with the fourier transform. The convolution in the spatial domain is equivalent to a pointwise multiplication in the frequency domain. This is known as the convolution theorem:
+Another important property to know is that the convolution operation has a close relationship with the Fourier transform. Convolution in the spatial domain is equivalent to pointwise multiplication in the frequency domain. This is known as the convolution theorem:
 
 $$ \mathcal{F}(f \ast g) = \mathcal{F}(f) \cdot \mathcal{F}(g) $$
 
-When it comes to computing large convolutions for two function $f(x)$ and $g(x)$, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than the spatial domain.
+When it comes to computing large convolutions of two functions $f(x)$ and $g(x)$, the convolution theorem can be used to compute the convolution in the frequency domain, which is much faster than computing it directly in the spatial domain.
 
 $$ f \ast g = \mathcal{F}^{-1}(\mathcal{F}(f) \cdot \mathcal{F}(g)) $$
 
@@ -290,11 +291,11 @@ For more details with visual explanations, another good resource is the UBC CPSC
 
 ### Convolution in CNNs
 
-A convolutinal neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix $W$. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.
+A convolutional neural network (CNN) is a type of neural network where the linear mapping involves a convolution operation instead of a dense weight matrix $W$. The goal of this section is to define the 2D discrete convolution and show how it can be expressed as a sparse matrix.
 
 **Single Layer Perceptron (SLP) vs Convolutional Neural Network (CNN)**
 
-The single layer of a perceptron given earlier is of the form $y = w^T \sigma(Wu + a)$, where $W$ is the weights matrix, $w$ is the weights vector, $u$ is the input, and $a$ is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix. Replacing $W$ with a sparse convolutional matrix $C$.
+The single-layer perceptron given earlier is of the form $y = w^T \sigma(Wu + a)$, where $W$ is the weights matrix, $w$ is the weights vector, $u$ is the input, and $a$ is the bias vector. A convolutional network improves the efficiency of computation by exploiting a sparse structure with fewer parameters in the weights matrix, replacing $W$ with a sparse convolutional matrix $C$.
 
 ---
 
@@ -305,10 +306,9 @@ Let $\vec{u}$ be the flattened input image $\mathcal{I}$, and let $\mathcal{K}$ 
 $$ Y[s,t] = \mathcal{K} \ast \mathcal{I} = \sum_{i=-\infty}^{\infty} \sum_{j=-\infty}^{\infty} \mathcal{K}[i,j] \mathcal{I}[s-i,t-j]$$
 
   - $Y[s,t]$ is the output at position $(s,t)$
-  - $N$ and $M$ are the dimensions of the kernel $\mathcal{K}$
   - $\mathcal{K}[i,j]$ is the element in the $i$-th row and $j$-th column of the kernel
 
-The kernel slides across the input image, producing a weighted sum at each valid position to give output $Y$. The indices are clipped from infinity to the correct size depending on the padding, size of kernel, and the stride.
+The kernel slides across the input image, producing a weighted sum at each valid position to give the output $Y$. In practice, the infinite summation indices are clipped to a finite range depending on the padding, the size of the kernel, and the stride.
 
 It is a linear operation so that every element of $Y$ is a linear combination of the input and weights elements, indicating that it can be expressed as a matrix multiplication with the flattened image $\vec{u}$ and the flattened kernel $\vec{k}$. 
 
@@ -346,7 +346,7 @@ y_{3,1} & y_{3,2} & y_{3,3} \\
 \end{bmatrix}
 $$
 
-Note that the output indexing loses the first and last row and column because there is no padding. In cases with zero padding, then all undefined indices of the input are set to zero when using the convolution formula and reaching undefined indices.
+Note that the output loses a row and a column relative to the input because there is no padding. In cases with zero padding, all undefined indices of the input are treated as zero when the convolution formula reaches them.
 
 Each element $y_{s,t}$ of the output is given by:
 $$
@@ -396,9 +396,9 @@ k_{2,2} & k_{2,1} & 0      & 0      & k_{1,2} & k_{1,1} & 0      & 0      & 0   
 \end{bmatrix}
 $$
 
-Then using this matrix and the flattened input image, a flattened output vector can be computed as $$\text{flatten}\left(Y \right) = C \vec{u}$.
+Then, using this matrix and the flattened input image, a flattened output vector can be computed as $\text{flatten}\left(Y \right) = \mathbf{C} \vec{u}$.
 
-So the convolution operation gives a matrix that only has $4$ parameters out of the $9 \times 16 = 144$ total elements, with most of the entries being zero. This can be highly efficient for compuations in a neural network for spatially invariant features in the input data. The sparse structure of the matrix can also be exploited for efficient computation.
+So the convolution operation gives a matrix that has only $4$ distinct parameters among its $9 \times 16 = 144$ total elements, with most of the entries being zero. This makes computations in a neural network highly efficient for spatially invariant features in the input data, and the sparse structure of the matrix can also be exploited for efficient computation.
 
 #### Channels in Convolutional Neural Networks
 
@@ -422,7 +422,7 @@ $$
 
 The $W$ are the individual convolutional kernel maps for each input to output channel. The input is a flattened tensor of size $k \times H \times W$, and the output is a flattened tensor of size $l \times H \times W$.
 
-To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattned input data, where each column is a flattened input image. For a batch size of $N$, the input data is of size $N \times k \times H \times W \times N$ and the output data is of size $N \times l \times H \times W$.
+To extend the CNN structure to accept batches, the input data is pooled together into a matrix of flattened input data, where each column is a flattened input image. For a batch size of $N$, the input matrix is of size $(k \cdot H \cdot W) \times N$ and the output matrix is of size $(l \cdot H \cdot W) \times N$.
 
 $$ Y_{\text{batch}} = \begin{bmatrix}
 W_{1,1} & W_{1,2} & \cdots & W_{1,k} \\
@@ -440,15 +440,15 @@ $$
 
 #### Deep CNNs
 
-A deep CNN wil chain multiple convolutional layers together, including a non-linear activation function and bias after each later:
+A deep CNN chains multiple convolutional layers together, including a non-linear activation function and bias for each layer:
 
-$$ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) + a^{(L-1)}) + a^{(L)} $$
+$$ y = \sigma(W^{(L)} \sigma(W^{(L-1)} \cdots \sigma(W^{(1)}u + a^{(1)}) \cdots + a^{(L-1)}) + a^{(L)}) $$
 
-A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture [@Kaiming2015]. The ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypassed one or more layers. Each sequential layer in the architecture is to train a change in the residual rather than the entire output to the next layer.
+A famous implementation of a deep CNN that broke new ground in the world of image processing is the ResNet architecture [@Kaiming2015]. ResNet was able to train very deep networks with hundreds of layers by using skip connections that bypass one or more layers. Each sequential layer in the architecture learns a residual update rather than the entire mapping to the next layer:
 
 $$ u_{n+1} = u_n + h \sigma(W_n u_n + a_n) $$
 
-When $h$ becomes small, this resembles the Euler method for solving ordinary differential equations where $\frac{du}{dt} = \sigma(W_t u + a_t)$. Where the parameters are also time dependent.
+When $h$ becomes small, this resembles the Euler method for solving the ordinary differential equation $\frac{du}{dt} = \sigma(W_t u + a_t)$, where the parameters are also time-dependent.
 
 
 

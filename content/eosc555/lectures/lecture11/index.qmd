@@ -4,7 +4,7 @@ subtitle: "Score Matching and Diffusion"
 date: 2024-11-25
 author: "Simon Ghyselincks"
 description: >-
-    Score matching has been used in machine learning to estimate the parameters of a probability distribution from emiprical samples. This lecture will introduce the concept of score matching and its connection to diffusion models and generative AI.
+    Score matching has been used in machine learning to estimate the parameters of a probability distribution from empirical samples. This lecture introduces the concept of score matching and its connection to diffusion models and generative AI.
 categories:
   - Machine Learning
   - Neural Networks
@@ -33,7 +33,7 @@ pseudocode:
 
 ## Score Matching
 
-Previously in [Lecture 10](../lecture8/index.qmd#score-function), the concept of score as the gradient of the log-likelihood was introduced. 
+Previously, in [Lecture 10](../lecture10/index.qmd#score-function), the concept of the score as the gradient of the log-likelihood was introduced.
 
 For a probability distribution $\pi(x, \theta)$ parameterized by $\theta$, the distribution can be thought of as a potential function $\phi(x, \theta)$ which is normalized by the partition function $Z(\theta)$:
 
@@ -49,10 +49,10 @@ Score matching was first proposed by Hyvärinen in 2005 [@hyvarinen2005scorematc
 
 Hyvärinen suggested directly matching the score of the model to the score of the data by minimizing the expected squared difference between them:
 
-$$ \min_\theta \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}(x)} \right\|^2 \right] $$
+$$ \min_\theta \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right] $$
 
 
-#### Inuitive Explanation
+#### Intuitive Explanation
 
 1. If the gradients of two potential functions are equal, the functions themselves differ by at most a constant:
 
@@ -63,7 +63,7 @@ $$
 \end{align*}
 $$
 
-Where $C$ is a constant independent of $x$. This follows from the fundamental theorem of calculus and is analogous to the principle in physics where two potentials producing the same field differ by a constant.
+where $C$ is a constant independent of $x$. This follows from the fundamental theorem of calculus and is analogous to the principle in physics that two potentials producing the same field differ by a constant.
 
 2. Normalization by the partition function $Z(\theta)$ does not affect the relation between the potentials:
 
@@ -78,7 +78,7 @@ $$
 \end{align*}
 $$
 
-The relation between the two functions is preserved by the partition function, which differs by constant $e^{-C}$ for a difference in potential of $C$. The probability distributions must be equal, as shown above.
+The relation between the two functions is preserved by the partition function, which absorbs the constant factor $e^{-C}$ arising from a potential difference of $C$. The probability distributions must therefore be equal, as shown above.
 
 If we can match the score, then we indirectly match the probability distributions without needing to first compute the partition function. This is the idea behind score matching.
 
@@ -223,151 +223,152 @@ The score for the data $s_{\text{true}}$ is unknown, but it can be eliminated us
 
 $$
 \begin{align*}
-& \ \min_\theta \mathbb{E} \frac{1}{2} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}}(x) \right\|^2 \right] \\
-&= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) - s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
-&= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx + \frac{1}{2} \int_\Omega \left\| s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
+& \ \min_\theta \frac{1}{2} \mathbb{E} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right] \\
+&= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
+&= \min_\theta  \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx + \frac{1}{2} \int_\Omega \left\| s_{\text{true}}(x) \right\|^2 \pi(x) \, dx \\
 \end{align*}
 $$
 
-But $\|s_{\text{true}}\|$ is a constant since it is not a variable that can be changed, it can be discarded from the minimization problem:
+But the last term does not depend on $\theta$ — it cannot be changed by the optimization — so it can be discarded from the minimization problem:
 
 $$
 \begin{align*}
-&= \min_\theta \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x, \theta) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx \\
+&= \min_\theta \frac{1}{2}  \int_\Omega \left\| s_{\theta}(x) \right\|^2 \pi(x) \, dx - \int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx \\
 \end{align*}
 $$
 
-To eliminate $s_{\text{true}}$, the definition of score can be used to rewrite the term:
+To eliminate $s_{\text{true}}$, the definition of the score can be used to rewrite the term:
 
 $$
 \begin{align*}
-& \ -\int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx\\
-&= -\int_\Omega  \pi(x) \left(\nabla_x \log(\pi(x))\right)^\intercal  s_\theta(x; \theta) \, dx \\
-& = -\int_\Omega  \frac{\pi(x)}{\pi(x)}\left(\nabla_x \pi(x)\right)^\intercal  s_\theta(x; \theta) \, dx \\
-& = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x; \theta) \, dx \\
+& \ -\int_\Omega s_{\theta}(x)^\intercal s_{\text{true}}(x) \pi(x) \, dx\\
+&= -\int_\Omega  \pi(x) \left(\nabla_x \log(\pi(x))\right)^\intercal  s_\theta(x) \, dx \\
+& = -\int_\Omega  \frac{\pi(x)}{\pi(x)}\left(\nabla_x \pi(x)\right)^\intercal  s_\theta(x) \, dx \\
+& = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x) \, dx \\
 \end{align*}
 $$
 
-Integration by parts allows for the gradient term to be swapped to the score term. If we assume that the probability of the true distribution goes to zero $\pi(x) \rightarrow 0$ at the boundaries $\partial \Omega$, then the flux integral boundary term from integration by parts vanishes. When working with integration by parts in multivarible calculus, the gradient $\nabla$ and negative divergence $-\nabla \cdot$ opeartors are adjoints of each other, $\nabla = (-\nabla \cdot)^\intercal$. This allows for the gradient to be swapped to the score term:
+Integration by parts allows the derivative to be moved from $\pi$ onto the score term. If we assume that the probability of the true distribution goes to zero, $\pi(x) \rightarrow 0$, at the boundaries $\partial \Omega$, then the flux boundary term from integration by parts vanishes. When working with integration by parts in multivariable calculus, the gradient $\nabla$ and negative divergence $-\nabla \cdot$ operators are adjoints of each other, $\nabla = (-\nabla \cdot)^\intercal$. This allows the derivative to be moved onto the score term:
 
 $$
 \begin{align*}
-& = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x; \theta) \, dx \\
-&= -\int_{\partial \Omega} \pi(x) s_\theta(x; \theta) \cdot dx + \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x; \theta) \, dx \\
-&= \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x; \theta) \, dx \\
-\int_\Omega s_{\theta}(x, \theta)^\intercal s_{\text{true}}(x) \pi(x) \, dx &= \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
+& = -\int_\Omega  \nabla_x \pi(x)^\intercal  s_\theta(x) \, dx \\
+&= -\int_{\partial \Omega} \pi(x) s_\theta(x) \cdot dx + \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x) \, dx \\
+&= \int_\Omega  \pi(x) \nabla_x \cdot s_\theta(x) \, dx \\
+&= -\int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
 \end{align*}
 $$
 
-Back to the minimization problem, this term can be substituted back in:
+where the last equality uses $s_\theta = -\nabla_x \phi$, so $\nabla_x \cdot s_\theta = -\nabla_x^2 \phi$. Back in the minimization problem, this term can be substituted in:
 
 $$
 \begin{align*}
-& \ \min_\theta \mathbb{E}_{x \sim \pi(x)} \frac{1}{2} \left[ \left\| s_{\theta}(x, \theta) - s_{\text{true}(x)} \right\|^2 \right]\\
- &= \min \frac{1}{2}  \int_\Omega \left\| \nabla_x \phi(x;\theta) \right\|^2 \pi(x) \, dx + \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
- &= \min_{theta} \mathbb{E}_{x \sim \pi(x)} \left[ \left\| \nabla_x \phi(x;\theta) \right\|^2 + \nabla_x^2 \phi(x;\theta) \right] \\
+& \ \min_\theta \frac{1}{2} \mathbb{E}_{x \sim \pi(x)} \left[ \left\| s_{\theta}(x) - s_{\text{true}}(x) \right\|^2 \right]\\
+ &= \min_\theta \frac{1}{2}  \int_\Omega \left\| \nabla_x \phi(x;\theta) \right\|^2 \pi(x) \, dx - \int_\Omega  \pi(x) \nabla_x^2 \phi(x;\theta) \, dx \\
+ &= \min_{\theta} \mathbb{E}_{x \sim \pi(x)} \left[ \frac{1}{2} \left\| \nabla_x \phi(x;\theta) \right\|^2 - \nabla_x^2 \phi(x;\theta) \right] \\
 \end{align*}
 $$
 
 ## Evaluation of the Objective
 
-The minimization objective does not require using the true score which has been eliminated. The $\nabla_x^2 \phi(x;\theta)$ term can be evaluated as the trace of the Hessian matrix of the potential function $\phi(x;\theta)$:
+The minimization objective no longer requires the true score, which has been eliminated. The $\nabla_x^2 \phi(x;\theta)$ term denotes the Laplacian of the potential, which can be evaluated as the trace of the Hessian matrix of the potential function $\phi(x;\theta)$:
 
 $$
-\nabla_x^2 \phi(x;\theta) = \text{Tr} \left( \nabla_x^2 \phi(x;\theta) \right) = \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
+\nabla_x^2 \phi(x;\theta) = \text{Tr} \left( H_\phi(x;\theta) \right) = \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
 $$
 
-This component places a penalty on positive curvature in the potential function, preferring highly negative curvature in regions of high probability density, similar to a Gaussian or peaked distribution. It can be though of as a regularization term that prefers peaked distributions.
+The $-\nabla_x^2 \phi(x;\theta)$ component rewards positive curvature of the potential at the sample locations: minimizing it encourages the potential to curve upward, like a bowl, around regions of high data density, which corresponds to sharp peaks in the probability distribution. It can be thought of as a term that prefers peaked distributions.
 
-The $\left\| \nabla_x \phi(x;\theta) \right\|^2$ term is the squared norm of the gradient, which penalizes large gradients. With this term alone, the optimal distribution would be as flat as possible to make the gradient as small as possible. It is the opposition of the minimization objective of the two terms that leads to a balanced and matched distribution.
+The $\frac{1}{2}\left\| \nabla_x \phi(x;\theta) \right\|^2$ term is the squared norm of the gradient, which penalizes large gradients. With this term alone, the optimal potential would be as flat as possible to make the gradient as small as possible. It is the opposition between these two terms in the minimization objective that leads to a balanced, matched distribution.
 
-In practice, we can estimate the true expectation over all $x$ by sampling from the model distribution. Once such way is to use the empiral samples $\{x_1, x_2, \ldots, x_N\}$ to estimate the expectation. If they are assumed to be i.i.d. samples from the model distribution, the expectation can be approximated as:
+In practice, we can estimate the true expectation over all $x$ by sampling from the data distribution. One such way is to use the empirical samples $\{x_1, x_2, \ldots, x_N\}$ to estimate the expectation. If they are assumed to be i.i.d. samples from the data distribution, the expectation can be approximated as:
 
 $$
 \begin{align*}
-\mathbb{E}_{x \sim \pi(x)} \left[ \left\| \nabla_x \phi(x;\theta) \right\|^2 + \nabla_x^2 \phi(x;\theta) \right] &\approx \frac{1}{N} \sum_{i=1}^N \left\| \nabla_x \phi(x_i;\theta) \right\|^2 + \nabla_x^2 \phi(x_i;\theta) \\
+\mathbb{E}_{x \sim \pi(x)} \left[ \frac{1}{2} \left\| \nabla_x \phi(x;\theta) \right\|^2 - \nabla_x^2 \phi(x;\theta) \right] &\approx \frac{1}{N} \sum_{i=1}^N \left( \frac{1}{2} \left\| \nabla_x \phi(x_i;\theta) \right\|^2 - \nabla_x^2 \phi(x_i;\theta) \right) \\
 \end{align*}
 $$
 
-This can be applied to all samples, or batches of samples to get a gradient estimate for the minimization objective in $\theta$:
+This can be applied to all samples, or to batches of samples, to get a gradient estimate for the minimization objective in $\theta$:
 
 $$
 \begin{align*}
-g &\approx \nabla_\theta \left[ \frac{1}{N} \sum_{i=1}^N \left\| \nabla_x \phi(x_i;\theta) \right\|^2 + \nabla_x^2 \phi(x_i;\theta) \right] \\
+g &\approx \nabla_\theta \left[ \frac{1}{N} \sum_{i=1}^N \left( \frac{1}{2} \left\| \nabla_x \phi(x_i;\theta) \right\|^2 - \nabla_x^2 \phi(x_i;\theta) \right) \right] \\
 \end{align*}
 $$
 
 ### Computing the Laplacian
 
-The Laplacian of the potential function $\phi(x;\theta)$ can be computed as the trace of the Hessian matrix of the potential function:
+The Laplacian of the potential function $\phi(x;\theta)$ can be computed as the trace of its Hessian matrix:
 
 $$
 \begin{align*}
-\nabla_x^2 \phi(x;\theta) &= \text{tr} \left( \nabla_x^2 \phi(x;\theta) \right) \\
+\nabla_x^2 \phi(x;\theta) &= \text{tr} \left( H_\phi(x;\theta) \right) \\
 &= \sum_i \frac{\partial^2 \phi(x;\theta)}{\partial x_i^2}
 \end{align*}
 $$
 
-The trace of a matrix such as a Hessian which is a linear operator can be estimated without having to know the explicit matrix. For example the Hessian may be an operator that is too large to store in memory. Or the Hessian may not be explicitly known, but the operation $Hx$ can be computed for example. 
+The trace of a matrix such as the Hessian, which is a linear operator, can be estimated without knowing the explicit matrix. For example, the Hessian may be an operator that is too large to store in memory, or it may not be explicitly known even though the matrix-vector product $Hv$ can be computed.
 
-A process first proposed by Hutchinson [@Hutchinson1990], known as randomized linear algebra allows for computing the trace when only the $H(x)$ operation is known.  A random varible is used to sample as follows:
+A process first proposed by Hutchinson [@Hutchinson1990], an example of randomized linear algebra, allows for computing the trace when only the matrix-vector product is available. A random variable is used to sample as follows:
 
 $$
 \begin{align*}
 \text{tr} \left(A\right) &= \text{tr} \left(AI\right) \\
-&= \text{tr} \left( A \mathbb{E}_{x\sim\mathcal{N}(0,I)} x x^\intercal \right)\\
-&= \mathbb{E}_{x\sim\mathcal{N}(0,I)} \text{tr} \left( A x x^\intercal \right)\\
-&= \mathbb{E} \text{tr} \left(x^\intercal A x  \right)\\
+&= \text{tr} \left( A \, \mathbb{E}_{x\sim\mathcal{N}(0,I)} \left[ x x^\intercal \right] \right)\\
+&= \mathbb{E}_{x\sim\mathcal{N}(0,I)} \left[ \text{tr} \left( A x x^\intercal \right) \right]\\
+&= \mathbb{E} \left[ x^\intercal A x \right]\\
 &\approxeq \frac{1}{N} \sum_{i=1}^N x_i^\intercal A x_i
 \end{align*}
 $$
 
-The normal distribution by definition has a covariance matrix that is identity $I$ so the expectation of the outer product of the random variable $x$ is the identity matrix. Other random variables can be used as well, further details on the process can be found in Bai, Fahey, and Golub [@Bai1996].
+The standard normal distribution by definition has identity covariance $I$, so the expectation of the outer product of the random variable $x$ is the identity matrix. Other random variables can be used as well; further details on the process can be found in Bai, Fahey, and Golub [@Bai1996].
 
 ## Applications of Learned Score
 
 ### MAP Estimation
 
-Now that we have a method to learn the score of a distribution, it can be used as the regularization term of the gradient in MAP estimation. In [Lecture10](../lecture10/index.qmd), the score was used as part of the MAP minimization gradient.
+Now that we have a method to learn the score of a distribution, it can be used as the regularization term of the gradient in MAP estimation. In [Lecture 10](../lecture10/index.qmd), the score was used as part of the MAP minimization gradient.
 
 ::: {.callout-note icon=false}
-# MAP Estimation 
+# MAP Estimation
 **Objective:**
 $$\min_x \left( \frac{1}{2\sigma^2}\|F(x)-b\|^2 + \phi(x, \theta) \right)$$
 **Gradient:**
-$$ g = \frac{1}{\sigma^2} J^T(x) (F(x) - b) + s(x, \theta)$$
+$$ g = \frac{1}{\sigma^2} J^T(x) (F(x) - b) - s(x, \theta)$$
 **Gradient Descent:**
-$$ x_{k+1} = x_k - \mu J^T(x) (F(x) - b) - s(x, \theta)$$ 
+$$ x_{k+1} = x_k - \mu \left( \frac{1}{\sigma^2} J^T(x_k) (F(x_k) - b) - s(x_k, \theta) \right)$$
 :::
 
-So using many empirically drawn samples $x_i$, the $\pi(x)$ distribution can be indirectly estimated using score matching, learning the score $s(x, \theta)$. The learned score can then be used for the gradient of the MAP estimation problem, where it is representative of the regularization term, informed by the prior distribution $\pi(x)$. In the case of a matrix operator for the forward problem $F(x) = Ax$, its Jacobian $J(x)$ is the same as the matrix operator $J(x) = A$.
+So, using many empirically drawn samples $x_i$, the $\pi(x)$ distribution can be indirectly estimated using score matching, learning the score $s(x, \theta)$. The learned score can then be used in the gradient of the MAP estimation problem, where it represents the regularization term, informed by the prior distribution $\pi(x)$. In the case of a matrix operator for the forward problem, $F(x) = Ax$, the Jacobian is simply the matrix operator itself: $J(x) = A$.
 
 ### Diffusion Models and Homotopy
 
-In [Lecture 7](../lecture7/index.qmd), the concept of a homotopy beteween two functions was introduced. A homotopy provides a continuous path between an smoothing function $g(x)$ and a target function $f(x)$, parameterized by a scalar $t$. In the case of a gaussian smoothing function $g(x)$, $t$ acts as a variance parameter:
+In [Lecture 7](../lecture7/index.qmd), the concept of a homotopy between two functions was introduced. A homotopy provides a continuous path between a smoothing function $g(x)$ and a target function $f(x)$, parameterized by a scalar $t$ (note that the orientation of $t$ here is reversed relative to Lecture 7, with $t = 1$ now corresponding to the target):
 $$
 h(x, t) = t f(x) + (1-t) g(x)
 $$
 
 #### Proposition: Convolution of Random Variables
-The sum of two independent random variables is a convolution of their probability distributions. If $X \sim \pi_x(x)$ and $Y \sim \pi_y(y)$, then the sum $W = X + Y$ has a probability distribution $\pi_w(w)$ that is the convolution of the two distributions:
+The probability distribution of the sum of two independent random variables is the convolution of their probability distributions. If $X \sim \pi_x(x)$ and $Y \sim \pi_y(y)$, then the sum $W = X + Y$ has a probability distribution $\pi_w(w)$ that is the convolution of the two distributions:
 
 $$
 \begin{align*}
-\pi_w(w) &= \int \pi_x(x) \pi_y(z-x) \, dx \\
+\pi_w(w) &= \int \pi_x(x) \pi_y(w-x) \, dx \\
 \end{align*}
 $$
+
 ---
 
-For a dataset $x\sim \pi(x)$ and a latent variable $z\sim \mathcal{N}(0, I)$, then define a new random variable $x_t$ that is the sum of the two variables:
+For a dataset $x\sim \pi(x)$ and a latent variable $z\sim \mathcal{N}(0, I)$, define a new random variable $x_t$ that is a weighted sum of the two variables:
 
 $$
-x_t = \sqrt{t}x + \sqrt{1-t} z
+x_t = \sqrt{t}\,x + \sqrt{1-t}\, z
 $$
 
-The homotopy proceeds slightlt differently with the time scheduling but it still begins and ends with the starting and target distributions. This new random variable $x_t$ will be the convolution of the two distributions, such that $\pi_{x_t}(x_t)$ is the convolution of $t \pi(x)$ and $\mathcal{N}(0, (1-t)I)$:
+The homotopy proceeds slightly differently with this time scheduling, but it still begins and ends with the starting and target distributions. The density of this new random variable $x_t$ is the convolution of the two component densities — the density of $\sqrt{t}\,x$ convolved with $\mathcal{N}(0, (1-t)I)$:
 
-$$ \pi(x_t) = \int \pi(x-\frac{\xi}{t}) \exp\left(-\frac{\|\xi\|^2}{2(1-t)}\right) \, d\xi $$
+$$ \pi(x_t) \propto \int \pi\left(\frac{x_t-\xi}{\sqrt{t}}\right) \exp\left(-\frac{\|\xi\|^2}{2(1-t)}\right) \, d\xi $$
 
 
 

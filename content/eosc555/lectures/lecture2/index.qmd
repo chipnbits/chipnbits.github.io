@@ -4,7 +4,7 @@ subtitle: "Image Denoising with SVD"
 date: 2024-09-15
 author: "Simon Ghyselincks"
 description: >-
-    Image denoising and deblurring are important techniques in signal processing and recovery. I this coding exercise, we will explore the application of least squares, SVD, and the pseudoinverse to denoise and deblur images.
+    Image denoising and deblurring are important techniques in signal processing and recovery. In this coding exercise, we explore the application of least squares, the SVD, and the pseudoinverse to denoise and deblur images.
 categories:
   - Optimization
   - Inverse Theory
@@ -21,42 +21,42 @@ editor:
 
 # Image Denoising and Deblurring
 
-The motivation for the exercise comes from a real world problem. The Hubble space telescope when launched had a defect in its mirror. This defect caused the images to be blurred. The problem was initially addressed by using signal processing techniques to remove the aberrations from the images.
+The motivation for this exercise comes from a real-world problem. The Hubble Space Telescope, when launched, had a defect in its primary mirror that caused its images to be blurred. The problem was initially addressed by using signal processing techniques to remove the aberrations from the images.
 
 ### Point Spread Function
 
-For such an image processing problem, we can consider the continuous incoming light as striking a 2D mirror that distorts the light, followed by a 2D sensor that captures the light. In this context we suppose that we have a noise kernel or a point spread function (PSF) that describes the distortion of the light at the mirror. The point spread function, being a convolution kernel, behaves as a Green's function for the system in the continuous case:
+For such an image processing problem, we can consider the continuous incoming light as striking a 2D mirror that distorts the light, followed by a 2D sensor that captures it. In this context we suppose that we have a blurring kernel, or point spread function (PSF), that describes the distortion of the light at the mirror. The point spread function, being a convolution kernel, behaves as a Green's function for the system in the continuous case:
 
-$$ \vec{b}(x,y) = \int_{\mathcal{X}} \int_{\mathcal{Y}} \vec{G}(x - x', y - y') \vec{u}(x',y') \, dx' dy' $$
+$$ b(x,y) = \int_{\mathcal{X}} \int_{\mathcal{Y}} G(x - x', y - y') \, u(x',y') \, dx' \, dy' $$
 
-where $\vec{b}(x,y)$ is the blurred image data that is recovered at the sensor, $\vec{u}(x',y')$ is the true image data, and $\vec{G}(x,y)$ is the point spread function.
+where $b(x,y)$ is the blurred image data recovered at the sensor, $u(x',y')$ is the true image data, and $G(x,y)$ is the point spread function.
 
-In the special case that the point spread function is $\delta(x-x',y-y')$, then the image data is not distorted and the sensor captures the true image data. However our experiment is to consider cases where there could be even severe distortions and see how this impacts the proposition of recovering the true image data, $\vec{u}(x',y')$ from our sensor data, $\vec{b}(x,y)$.
+In the special case where the point spread function is $\delta(x,y)$, the image data is not distorted and the sensor captures the true image. However, our experiment is to consider cases with potentially severe distortions and see how this impacts the prospect of recovering the true image data $u(x',y')$ from our sensor data $b(x,y)$.
 
 #### Discrete PSF
 
-The discrete analog of the continuous PSF can be more conveniently treated with we essentially flatten the the 2D mesh into a 1D vector, a common operation for signal processing. The unflattened case we have:
+The discrete analog of the continuous PSF can be treated more conveniently if we flatten the 2D mesh into a 1D vector, a common operation in signal processing. In the unflattened case we have:
 
 $$ b_{ij} = \sum_{k=1}^{n} \sum_{l=1}^{m} \Delta x \Delta y G(x_i - x_k, y_j - y_l) u_{kl} $$
 
 
-where $b$ is the blurred image data at the sensor, $u$ is the true image data, and $G$ is the discrete point spread function. If we flatten the 2D mesh into a 1D vector we can represent this as a 1D convolution operation:
+where $b$ is the blurred image data at the sensor, $u$ is the true image data, and $G$ is the discrete point spread function. Treating the 2D arrays as a whole, we can write this compactly as a discrete convolution:
 $$ \vec{b} = \vec{G} * \vec{u} $$
 
-Since this is a convolution operation, we can process it much more quickly by leveraging the convolution theorem.
+Since this is a convolution operation, we can compute it much more quickly by leveraging the convolution theorem:
 
 $$\begin{align}
 \mathcal{F}(\vec{b}) &= \mathcal{F}(\vec{G} * \vec{u}) \\
-\mathcal{F}(\vec{b}) &= \mathcal{F}(\vec{G}) \mathcal{F}(\vec{u}) \\
-\vec{b} &= \mathcal{F}^{-1}(\mathcal{F}(\vec{G}) \odot \mathcal{F}(\vec{u}))
+\mathcal{F}(\vec{b}) &= \mathcal{F}(\vec{G}) \odot \mathcal{F}(\vec{u}) \\
+\vec{b} &= \mathcal{F}^{-1}\left(\mathcal{F}(\vec{G}) \odot \mathcal{F}(\vec{u})\right)
 \end{align}
 $$
 
-The $\odot$ hadamard product is element-wise multiplication, the discrete analog of multiplication of two functions except over an array.
+The symbol $\odot$ denotes the Hadamard product — element-wise multiplication of two arrays, the discrete analog of the pointwise multiplication of two functions.
 
 ### Matrix Representation of Convolution Operation
 
-If we flatten the data down into a 1D vector then it is possible to construct a matrix operator that performs the convolution. This is a Toeplitz matrix, a matrix where each descending diagonal from left to right is constant, so that the row vectors represent a sliding window of the convolution kernel. We can flatten out the PSF and construct the matrix using it as the first row entry and then shifting the PSF to the right to fill out the rest of the rows. 
+If we flatten the data down into a 1D vector, then it is possible to construct a matrix operator that performs the convolution. This is a Toeplitz matrix — a matrix where each descending diagonal from left to right is constant — so that the row vectors represent a sliding window of the convolution kernel. We can flatten out the PSF, use it as the first row of the matrix, and then shift it to the right to fill out the remaining rows. With periodic boundary conditions the shifts wrap around, making the matrix circulant.
 
 # Code Implementation
 
@@ -83,14 +83,14 @@ import numpy as np
 import torch.fft
 ```
 
-We start off by introducing a point spread function within the torch framework. In the case we work with a parameterized gaussian kernel.
+We start off by introducing a point spread function within the PyTorch framework. In this case we work with a parameterized Gaussian kernel.
 
 ### Gaussian Example
 
-The multivariate extension of the gaussian function is given by:
+The multivariate extension of the Gaussian function is given (up to normalization) by:
 $$f(x) = \exp\left(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)\right)$$
 
-where $\mu$ is the mean vector, $x$ is a position vector, and $\Sigma$ is the covariance matrix. The covariance matrix essentially encodes the eigenvectors and corresponding postive eigenvalues of the matrix. The covariance matrix is always symmetric and positive definite. In the context of the code, we are using $C$ as the inverse of the covariance matrix and working with a $\mu=0$ value. 
+where $\mu$ is the mean vector, $x$ is a position vector, and $\Sigma$ is the covariance matrix. The covariance matrix is always symmetric and positive definite, and it is characterized by its eigenvectors and corresponding positive eigenvalues. In the context of the code, we use $C$ as the inverse of the covariance matrix and work with $\mu = 0$.
 
 ```{python}
 #| label: mv-plot
@@ -188,7 +188,7 @@ plt.show()
 
 ### Extending to Combination of Gaussian and Derivative
 
-We can compute the MV gaussian from the inverse covariance matrix $C$ with a mean of $\mu=0$ along with a dimensional scaling metric $t$. For the purposes of forming interesting and varied PSFs, we include the linear combination of the gaussian and a Sobel operator to axpproximate the derivative of the gaussian.
+We can compute the multivariate Gaussian from the inverse covariance matrix $C$ with a mean of $\mu = 0$, along with a scaling parameter $t$. For the purpose of forming interesting and varied PSFs, we include a linear combination of the Gaussian and Sobel operators that approximate the derivatives of the Gaussian.
 
 $$\begin{align}
 S_x &= \frac{1}{4} \begin{bmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{bmatrix} \\
@@ -196,7 +196,7 @@ S_y &= \frac{1}{4} \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{b
 \end{align}
 $$
 
-These operators act like edge detection or derivatives. The $n_0$, $n_x$, and $n_y$ parameters in the code are used to scale the gaussian and the derivatives.
+These operators act as edge detectors, approximating spatial derivatives. The $n_0$, $n_x$, and $n_y$ parameters in the code are used to scale the Gaussian and its derivatives.
 
 ```{python}
 #| fig-cap: "Torch Module for Gaussian Convolution"
@@ -323,7 +323,7 @@ class gaussianConv(nn.Module):
 
 ### Creating a Toy Dataset
 
-Often in computational science we test our strategies on toy datasets, simplified data that allows for easier debugging and understanding of the problem at task. In this case, rather than use a real image, we construct a geometric image that will be easier to analyse visually for its correctness when it comes to denoising and deblurring. The dataset is also dimensioned to have a batch and color channel to follow some of the conventions for working with torch tensors, and later some machine learning frameworks. That is $B \times C \times H \times W$, with a single sample, single channel, and a 256x256 image having dimensions $1 \times 1 \times 256 \times 256$.
+Often in computational science we test our strategies on toy datasets — simplified data that allows for easier debugging and understanding of the problem at hand. In this case, rather than use a real image, we construct a geometric image that will be easier to analyze visually for correctness when it comes to denoising and deblurring. The dataset is also dimensioned with batch and color channels, following the conventions for working with PyTorch tensors and, later, machine learning frameworks. That is, $B \times C \times H \times W$: a single sample, a single channel, and a $256 \times 256$ image, giving dimensions $1 \times 1 \times 256 \times 256$.
 
 ```{python}
 #| label: toy-dataset
@@ -357,9 +357,9 @@ print()
 
 ### Forming a Convolution Matrix
 
-Back to the idea of forming a Toeplitz matrix, we first flatten the data to 1D and then recover the matrix in one of two ways. We can work in the spatial domain where the first row of the matrix is determined by the 1D convolution for the first element, then slide the row by one to form the matrix. The matrix can be quite large, since an $n\times m$ image will have $n \times m$ elements once flattened, requiring a $(n\times m) \times (n\times m)$ matrix. A reduction in dimension to the $32 \times 32$ image will help with the computation.
+Returning to the idea of forming a Toeplitz matrix, we first flatten the data to 1D and then recover the matrix in one of two ways. We can work in the spatial domain, where the first row of the matrix is determined by the 1D convolution for the first element, and then slide the row by one position to form each subsequent row. The matrix can be quite large: an $n \times m$ image has $nm$ elements once flattened, requiring an $nm \times nm$ matrix. Reducing the image to $32 \times 32$ will help with the computation.
 
-Note that we are working with a rolling PSF which has a strange effect in that it assumes a periodic boundary condition in both $x$ and $y$. When it comes to convolution, there are many different ways to treat the boundary condition, such as using zero padding or mirroring the boundary. Coding this by hand is a good exercise to understand the convolution operation, but not the purpose of this exercise. 
+Note that we are working with a rolling PSF, which implicitly assumes a periodic boundary condition in both $x$ and $y$. When it comes to convolution, there are many different ways to treat the boundary, such as zero padding or mirroring. Coding these by hand is a good way to understand the convolution operation, but it is not the purpose of this exercise.
 
 #### Direct Recovery of Convolution Matrix
 ```{python}
@@ -458,7 +458,7 @@ plt.subplot(1,3,3)
 plt.imshow(b_mat_linear.reshape(x.shape[-2:]))
 ```
 
-We can see that there are some differences between the two methods but in principle they should be the same, (Not sure where the difference is coming from). The important method is actually the one which extracts the columns, as it is more generalizable. So we will continue with that.
+We can see that there are some differences between the two methods, even though in principle they should agree. The discrepancy comes from the boundary handling: rolling the flattened kernel shifts entries across image-row boundaries, whereas the true 2D periodic convolution corresponds to a block-circulant matrix in which each row of the image wraps independently. The column-extraction method captures this structure exactly, and it is also more generalizable — it works for any linear operator, not just convolutions. So we will continue with that.
 
 ```{python}
 #| label: final-conv-matrix
@@ -469,7 +469,7 @@ Amat = A_conv_lin
 
 ## Least Squares Recovery with SVD and Pseudoinverse
 
-Now that we have a matrix operator recovered we can formulate the forward problem as $A\mathbf{x} = \mathbf{b}$ with our known $A$ and $\mathbf{b}$, and we want to recover $\mathbf{x}$. To do this we use the SVD decomposition to gather the pseudo inverse. We can decide to filter out some of the singular values that are very small to improve the conditioning on the matrix as well, using a cutoff value for example.
+Now that we have recovered a matrix operator, we can formulate the forward problem as $A\mathbf{x} = \mathbf{b}$ with known $A$ and $\mathbf{b}$, where we want to recover $\mathbf{x}$. To do this we use the SVD to construct the pseudoinverse. We can also decide to filter out singular values that are very small — using a cutoff value, for example — to improve the conditioning of the inversion.
 
 ### SVD Decomposition
 
@@ -478,7 +478,7 @@ U, S, V = torch.svd(Amat.to(torch.float64))
 b = Amv(x)
 ```
 
-Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the $10^{-6}$ mark. We can also asses what the frobenius norm of the difference between the original matrix and the reconstructed matrix is to get a sense of the error in the decomposition and reconstruction.
+Now we make a log plot of the singular values to see how they decay, noting that we lose numerical precision around the $10^{-6}$ mark. We can also assess the difference between the original matrix and its reconstruction from the SVD factors (here measured as a mean squared error) to get a sense of the error in the decomposition and reconstruction.
 
 ```{python}
 #| label: svd-decomposition
@@ -510,38 +510,38 @@ plt.imshow(x.reshape(x.shape[-2:]))
 plt.title('Original Image');
 ```
 
-Wow, not even close! This is because the matrix is so ill conditioned that it is effectively low rank and not invertible. We can improve the situation by filtering out the singular values that are very small.
+Wow, not even close! This is because the matrix is so ill-conditioned that it is effectively low rank and not invertible. We can improve the situation by filtering out the singular values that are very small.
 
 ### Pseudoinverse with Filtering
 
-We can filter out the poor conditioning singular values and exclude those values from the inversion. To get an idea of what the values are doing, we can plot the first few singular values and the corresponding singular vector that they project onto. In the case of the SVD the most important information about the matrix is captured in the left-most vectors of the matrix $U$.
+We can identify the singular values responsible for the poor conditioning and exclude them from the inversion. To get an idea of what the singular vectors look like, we can plot the first few modes. In the case of the SVD, the most important information about the matrix is captured in the left-most columns of $U$.
 
 ```{python}
-n= 5
+n = 5
 for i in range(n):
   plt.subplot(1,n,i+1)
-  plt.imshow(U[:,i+1].reshape(x.shape[-2:]))
+  plt.imshow(U[:,i].reshape(x.shape[-2:]))
   plt.title(f'Mode {i}')
 ```
 
-For the inverse problem, the most import singular values are conversely found in the left-most vectors of the matrix $V$. We can also check what the right-most vectors are doing, as they will blow up in value when inverting small singular values. They are high frequency modes of the image, creating the reconstruction issues when they are subjected to error in numerical precision.
+For the inverse problem, the dominant components of the reconstruction are correspondingly found in the left-most columns of $V$. We can also check what the right-most columns are doing, as their coefficients blow up when small singular values are inverted. They are high-frequency modes of the image, which create the reconstruction issues when subjected to numerical precision error.
 
 ```{python}
-n= 5
+n = 5
 for i in range(n):
   plt.subplot(1,n,i+1)
-  plt.imshow(V[:,i+1].reshape(x.shape[-2:]))
+  plt.imshow(V[:,i].reshape(x.shape[-2:]))
   plt.title(f'Mode {i}')
 plt.show()
 
 for i in range(n):
   plt.subplot(1,n,i+1)
   plt.imshow(V[:,-(i+1)].reshape(x.shape[-2:]))
-  plt.title(f'Mode {V.shape[1]-i}')
+  plt.title(f'Mode {V.shape[1]-1-i}')
 plt.show()
 ```
 
-These modes are the most important ones, as they contain the big-picture detail without the high frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.
+The leading modes are the most important ones, as they contain the big-picture detail without the high-frequency noise. We can now filter out the singular values that are very small and invert the matrix to recover the original image.
 
 ```{python}
 #| label: pseudoinverse-filter
@@ -583,11 +583,11 @@ plt.tight_layout()
 plt.show()
 ```
 
-Looking at the results, around the $10^{-7}$ mark we start to a peak level of recovery, as measured by the error in the Frobenius norm of the reconstruction. But what happens when we add noise to the data signal?
+Looking at the results, around the $10^{-7}$ mark we reach a peak level of recovery, as measured by the Frobenius-norm error of the reconstruction. But what happens when we add noise to the data signal?
 
 ### Adding Noise to the Signal
 
-Now we add some noise to the signal and try least squares again for the direct solution
+Now we add some noise to the signal and solve the (slightly regularized) normal equations directly:
 ```{python}
 #| label: pseudoinverse-filter-noised
 #| fig-cap: "Pseudoinverse Recovery of the Original Image with Noise."
@@ -610,7 +610,7 @@ plt.imshow(xhat.reshape(x.shape[-2:]))
 plt.title('Reconstructed Image');
 ```
 
-The reconstruction is not very good, the noise has been amplifed all over the image. We can try the pseudoinverse method again with the noise added to the signal.
+The reconstruction is not very good — the noise has been amplified all over the image. We can try the pseudoinverse method again with the noise added to the signal.
 
 ```{python}
 #| label: pseudoinverse-filter-noised-recovery
@@ -653,4 +653,4 @@ plt.tight_layout()
 plt.show()
 ```
 
-The small addition of noise is quite significant in the recovery threshold for reconstruction. Using a higher threshold for the singular values becomes important when dealing with noise in the signal. Previously numerical precision was the main issue, but now the measurement noise is the main issue.
+The small addition of noise significantly changes the optimal truncation threshold for reconstruction. Using a higher threshold for the singular values becomes important when dealing with noise in the signal: previously numerical precision was the main limitation, but now the measurement noise dominates.

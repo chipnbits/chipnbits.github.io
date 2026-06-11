@@ -58,29 +58,29 @@ where $F(x)$ is the forward operator, $b$ is the observed data, and $\epsilon$ r
 
 $$ \epsilon \sim \mathcal{N}(0, \Sigma) $$
 
-The probability of deviation of the observed data from the forward model in this case is given by:
+The probability density of the deviation of the observed data from the forward model in this case is given by:
 $$
 \pi(\epsilon) = \frac{1}{(2\pi)^{m/2}|\Sigma|^{1/2}} \exp\left(-\frac{1}{2}\epsilon^\intercal \Sigma^{-1} \epsilon\right)
 $$
 
-Without any prior information about the error, it is difficult to estimate the covariance matrix $\Sigma$. For the purpose of this analysis we can assume that it is a normal distriution with zero mean and a diagonal $\sigma^2 I$ covariance matrix. The likelihood function simplifies to:
+Without any prior information about the error, it is difficult to estimate the covariance matrix $\Sigma$. For the purpose of this analysis we can assume that it is a normal distribution with zero mean and a diagonal $\sigma^2 I$ covariance matrix. The likelihood function then simplifies to:
 
 $$ \pi(\epsilon) = \frac{1}{(2\pi \sigma^2)^{m/2}} \exp\left(-\frac{1}{2\sigma^2}\|b-F(x)\|^2 \right) $$
 
 To model the probability distribution of the inverse problem parameters $x$, we introduce a prior distribution $\pi(x)$. To ensure positivity of $\pi(x)$ over the entire domain and proper normalization, we define it using a **potential function** $\phi(x, \theta)$:
 $$\pi(x; \theta) = \frac{e^{-\phi(x, \theta)}}{Z(\theta)}$$
 
-Where the **partion function** $Z(\theta)$ is given by:
+where the **partition function** $Z(\theta)$ is given by:
 
 $$Z(\theta) = \int_\Omega e^{-\phi(x, \theta)} dx$$
 
-Note the partition function is required to make the probability distribution integrate to $1$. The exponential operator on the potential ensures that all $\pi(x)$ values are positve since $e^\phi > 0$ for all $z \in \mathbb{R}$. In practice, it is often intractable to directly compute the partition function when updating the model parameters $\theta$ for distributions that are more complex than a Gaussian. 
+Note that the partition function is required to make the probability distribution integrate to $1$. The exponential operator on the potential ensures that all $\pi(x)$ values are positive, since $e^{-\phi} > 0$ for all $\phi \in \mathbb{R}$. In practice, it is often intractable to directly compute the partition function when updating the model parameters $\theta$ for distributions more complex than a Gaussian.
 
-$\phi(x, \theta): \mathbb{R}^n \rightarrow \mathbb{R}$ maps $x$ to a scalar value, and $\theta$ are the parameters of the model. For example if we are modeling a Gaussian, the parameters might include the covariance matrix $\Sigma$. It has a physical interpretation as an energy of a system, where $\phi$ values correspond to low probability density regions. For this reason it is often called the **energy function** in physics-inspired models.
+$\phi(x, \theta): \mathbb{R}^n \rightarrow \mathbb{R}$ maps $x$ to a scalar value, and $\theta$ are the parameters of the model. For example, if we are modeling a Gaussian, the parameters might include the covariance matrix $\Sigma$. The potential has a physical interpretation as the energy of a system, where high $\phi$ values correspond to low probability density regions. For this reason it is often called the **energy function** in physics-inspired models.
 
 ### Maximum A Posteriori Estimation
 
-The goal of **maximum a posteriori (MAP)** estimation is to find the most likely $x$ given the observed data $b$ and model parameters $\theta$, maximize the posterior probability $\pi(x|b; \theta)$:
+The goal of **maximum a posteriori (MAP)** estimation is to find the most likely $x$ given the observed data $b$ and model parameters $\theta$, by maximizing the posterior probability $\pi(x|b; \theta)$:
 
 $$
 \begin{align*}
@@ -97,39 +97,39 @@ $$
 \end{align*}
 $$
 
-The logarithm is a monotonic function, we can maximize the log-likelihood instead of the likelihood with no loss of generality. $\max_x \pi(x) = \max_x \log(\pi(x))$. Intuitively, since the logarithim is always increasing in output, $\log(z) > \log(y)$ implies $z > y$. In addition the product of two exponentials is the same as the sum of the exponents, and the maximum of a function is the same as the minimum of the negative of the function. This allows us to rewrite the log-likelihood as:
+The logarithm is a monotonic function, so we can maximize the log of the posterior instead of the posterior itself with no loss of generality: $\arg\max_x \pi(x) = \arg\max_x \log(\pi(x))$. Intuitively, since the logarithm is always increasing, $\log(z) > \log(y)$ implies $z > y$. In addition, the log of a product of exponentials is the sum of the exponents, and the maximum of a function is the minimum of its negative. This allows us to rewrite the objective as:
 
 ::: {.callout-note icon=false}
 # Minimization Objective
 $$\max_x \log \pi(x|b; \theta) = \min_x \left( \frac{1}{2\sigma^2}\|b-F(x)\|^2 + \phi(x, \theta) \right)$$
 :::
 
-We have looked at methods previously of how to differentiate the forward operator $F$ and perform gradient descent. We take the gradient with respect to $x$ to find the minimum of the function. 
+We have previously looked at methods for differentiating the forward operator $F$ and performing gradient descent. We take the gradient with respect to $x$ to find the minimum of the function:
 
 $$
 \begin{align*}
-g &= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 - \phi(x, \theta)\right)\\
-&= \frac{1}{\sigma^2} \frac{\partial F}{\partial x} (F(x) - b) - \nabla_x \phi(x, \theta)\\
-&= \frac{1}{\sigma^2} J^T(x) (F(x) - b) + s(x, \theta)
+g &= \nabla_x \left(\frac{1}{2\sigma^2}\|b-F(x)\|^2 + \phi(x, \theta)\right)\\
+&= \frac{1}{\sigma^2} J^T(x) (F(x) - b) + \nabla_x \phi(x, \theta)\\
+&= \frac{1}{\sigma^2} J^T(x) (F(x) - b) - s(x, \theta)
 \end{align*}
 $$
 
-Using gradient descent, we can update the model parameters $\theta$ by taking steps in away from the direction of the gradient $g$:
+Using gradient descent, we can update the estimate of $x$ by taking steps away from the direction of the gradient $g$:
 
 $$x_{k+1} = x_k - \alpha g$$
 
 
 ## Score Function {#score-function}
 
-$s(x;\theta)$ is known as the **score function** of $\pi(x; theta)$. 
-$$s(x, \theta):= \nabla_x \log (\pi(x)) = - \nabla_x \phi(x, \theta) + C$$
+$s(x;\theta)$ is known as the **score function** of $\pi(x; \theta)$:
+$$s(x, \theta):= \nabla_x \log (\pi(x; \theta)) = - \nabla_x \phi(x, \theta)$$
 
-It is the negative gradient of the potential function $\phi(x, \theta)$ with respect to $x$. The score function is a generalization of the gradient of the log-likelihood function, and is described in more detail in Schervish's "Theory of Statistics"  [@Schervish2012-sk].
+where the $\log Z(\theta)$ term vanishes because it does not depend on $x$. The score is the negative gradient of the potential function $\phi(x, \theta)$ with respect to $x$. The score function generalizes the gradient of the log-likelihood function, and is described in more detail in Schervish's "Theory of Statistics" [@Schervish2012-sk].
 
-Score has a physical intution connected to energy potentials and fields. In physics, the electric field $\mathbf{E}$ is the negative gradient of the electric potential $V$:
+Score has a physical intuition connected to energy potentials and fields. In physics, the electric field $\mathbf{E}$ is the negative gradient of the electric potential $V$:
 $$ \mathbf{E} = -\nabla_x V(x)$$
 
-Simalarly, the score function is the negative gradient of the potential function $\phi(x, \theta)$ in the case where $\pi(x) = e^{-\phi(x, \theta)}$. The score function is the direction in which the probability distribution is most likely to change.
+Similarly, the score function is the negative gradient of the potential function $\phi(x, \theta)$ in the case where $\pi(x) \propto e^{-\phi(x, \theta)}$. The score function points in the direction of steepest increase of the log probability density.
 
 #### Example: 2D Gaussian Distribution
 
@@ -138,10 +138,10 @@ Consider a 2D Gaussian distribution with zero mean and covariance $\sigma^2 I$:
 | **Function**                                    | **Expression**                                                                                                                                   |
 |-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Probability Distribution**          | $\pi(x) = \frac{1}{2\pi \sigma^2}\exp\left( -\frac{1}{2\sigma^2} \| x \|^2 \right)$                                                               |
-| **Potential Function**      | $\phi(x, \theta) =  - \frac{1}{2\sigma^2} \| x \|^2 - \log(2\pi \sigma^2)$                                                                          |
-| **Score Function**  | $-\nabla_x \phi(x, \theta) = -\left( -\frac{x}{\sigma^2} x \right) = \frac{x}{\sigma^2}$                                                          |
+| **Potential Function**      | $\phi(x, \theta) =  \frac{1}{2\sigma^2} \| x \|^2 + \log(2\pi \sigma^2)$                                                                          |
+| **Score Function**  | $s(x, \theta) = -\nabla_x \phi(x, \theta) = -\frac{x}{\sigma^2}$                                                          |
 
-In regions of high probability density, the potential function is low becuase the relation $\pi(x) = e^{-\phi(x, \theta)}$ is monotonic in $\phi(x, \theta)$. The score funtion is always pointing in the local direction of the largest directional derivative of the probability distribution $\pi$. 
+In regions of high probability density, the potential function is low, because the relation $\pi(x) = e^{-\phi(x, \theta)}$ is monotonically decreasing in $\phi(x, \theta)$. The score function always points in the local direction of steepest increase of the log probability density — here, towards the center of the Gaussian.
 
 #### Visualization
 
@@ -169,7 +169,7 @@ def gaussian_pdf(x, y, sigma=1):
 
 # Define the potential function
 def potential_function(x, y, sigma=1):
-    return 0.5*(x**2 + y**2)/sigma**2 - np.log(2*np.pi*sigma**2)
+    return 0.5*(x**2 + y**2)/sigma**2 + np.log(2*np.pi*sigma**2)
 
 # Define the score function
 def score_function(x, y, sigma=1):
@@ -223,7 +223,7 @@ plt.show()
 
 ## Maximum Likelihood Estimate from Samples
 
-A common problem is estimating a probability distribution $\pi(x)$ based on a set of empirical samples $\{x_1, x_2, ..., x_N\}$. Often in statistical analysis, we are working with an unknown $\pi$ and attempting to make our best estimate from sampled data. If we assume that the drawn samples are independent and identically distributed (i.i.d.), then the **likelihood** of the samples is the product of the likelihood of each sample. Recalling that $Z(\theta) = \int_\Omega \pi(x) dx$, the likelihood of the samples is:
+A common problem is estimating a probability distribution $\pi(x)$ based on a set of empirical samples $\{x_1, x_2, ..., x_N\}$. Often in statistical analysis, we are working with an unknown $\pi$ and attempting to make our best estimate from sampled data. If we assume that the drawn samples are independent and identically distributed (i.i.d.), then the **likelihood** of the samples is the product of the likelihoods of each sample. Recalling that $Z(\theta) = \int_\Omega e^{-\phi(x, \theta)} dx$, the likelihood of the samples is:
 
 $$ 
 \begin{align*}
@@ -233,7 +233,7 @@ $$
 \end{align*}
 $$
 
-Since some $x$ are observed, the challenge is to find the potential function $\phi(x, \theta)$ that maximizes the likelihood of the samples, given the model parameters $\theta$ and a fixed family of $\phi(,;\theta)$ functions.
+Since some $x$ are observed, the challenge is to find the potential function $\phi(x, \theta)$ that maximizes the likelihood of the samples, by varying the model parameters $\theta$ within a fixed family of $\phi(\cdot\,; \theta)$ functions.
 
 The **Maximum Likelihood Estimation (MLE)** is the process of finding the parameters $\theta$ that maximize the likelihood of having observed the samples. Unlike the MAP estimate, there is no posterior and prior distribution. So in this case $\pi(x|\theta)$ is being directly maximized. This is equivalent to minimizing the negative log-likelihood as before:
 
@@ -245,7 +245,7 @@ $$
 \end{align*}
 $$
 
-However we again run into the problem of the partition function $Z(\theta)$ which for most distributions in higher dimensions is intractable to compute. For example we may be trying to solve an integral in $100$ dimensions with no analytical solution.
+However, we again run into the problem of the partition function $Z(\theta)$, which for most distributions in higher dimensions is intractable to compute. For example, we may be trying to solve an integral in $100$ dimensions with no analytical solution:
 
 $$ \int_{x_1} \int_{x_2} ... \int_{x_{100}} e^{-\phi(x, \theta)} dx_1 dx_2 ... dx_{100} $$
 
@@ -265,7 +265,7 @@ g &= \nabla_\theta \left( \log(Z(\theta)) + \frac{1}{N} \sum_{i=1}^N \phi(x_i, \
 \end{align*}
 $$
 
-The left side term can be further reduced by using the definition of the partion function $Z(\theta) =  \int_\Omega e^{-\phi(x, \theta)} dx$, the probability distribution $\pi_\theta(x) = e^{-\phi(x, \theta)}$:
+The left-hand term can be further reduced by using the definition of the partition function $Z(\theta) =  \int_\Omega e^{-\phi(x, \theta)} dx$ and the probability distribution $\pi_\theta(x) = e^{-\phi(x, \theta)}/Z(\theta)$:
 
 $$
 \begin{align*}
@@ -278,14 +278,14 @@ $$
 \end{align*}
 $$
 
-We estimate the value of $\nabla_\theta \log(Z(\theta))$ by taking the expectation value of the score function over the samples. This is a Monte Carlo approximation of the true integral using the available i.i.d. samples $\{ x_1, x_2, ..., x_N \}$. The gradient of the MLE objective is then:
+We estimate the value of $\nabla_\theta \log(Z(\theta))$ by taking the expectation of $-\nabla_\theta \phi$ over the model distribution. This is a Monte Carlo approximation of the true integral, using $M$ samples $\{ \tilde x_1, \tilde x_2, ..., \tilde x_M \}$ drawn from the current model distribution $\pi_\theta$. The gradient of the MLE objective is then:
 
 ::: {.callout-note icon=false}
 # Score Matching Gradient
 $$ g = \underbrace{-\frac{1}{M} \sum_{i=1}^M \nabla_\theta \phi(\tilde x_i, \theta)}_{\text{Synthesis}} + \underbrace{\frac{1}{N} \sum_{i=1}^N \nabla_\theta \phi(x_i, \theta)}_{\text{Analysis}}$$
 :::
 
-An optimal point is reached by first order optimality conditions, where the gradient is zero. The MLE objective is minimized when the **synthesis** and **analysis** terms are equal. This is known as **score matching** and is a method for estimating the parameters of a probability distribution from samples. The synthesis $\tilde x_i$ terms are drawn randomly from the proposed score $\phi(\tilde x_i, \theta)$ , while the analysis $x_i$ terms are taken over the samples $\{x_1, x_2, ..., x_N\}$.
+An optimal point is reached by first-order optimality conditions, where the gradient is zero. The MLE objective is minimized when the **synthesis** and **analysis** terms are equal. This is known as **score matching**, a method for estimating the parameters of a probability distribution from samples. The synthesis points $\tilde x_i$ are drawn randomly from the proposed model distribution $\pi_\theta$, while the analysis points $x_i$ are taken from the observed samples $\{x_1, x_2, ..., x_N\}$.
 
 As before gradient descent can be used to update the model parameters $\theta$:
 
@@ -301,13 +301,13 @@ The score function pushes samples towards regions of high probability density, s
 
 $$x_{k+1} = x_k - \underbrace{\Delta t \nabla_x \phi(x_k, \theta)}_\text{Score Term} + \underbrace{\sqrt{2 \Delta t} z_k}_\text{Stochastic Term}$$
 
-Where $z_k \sim \mathcal{N}(0,1)$ is a random sample from a normal distribution with zero mean and unit variance. 
+where $z_k \sim \mathcal{N}(0,1)$ is a random sample from a normal distribution with zero mean and unit variance.
 
-The score points in the same direciton as the gradient of the probability distribution, so at each time step, the score term moves the sample to a higher probability region. The stochastic term adds noise to the sample, providing randomness to the process.
+The score points in the same direction as the gradient of the log probability density, so at each time step the score term moves the sample towards a higher-probability region. The stochastic term adds noise to the sample, providing randomness to the process.
 
 ### Code Example
 
-Below is an example of Langevin Dynamics applied to a 2D Gaussian distribution. The score function is used to push the samples towards the center of the distribution, while the stochastic element adds noise and randomization to the process. The animation show an intial uniform sampling grid of points converging to the shape of the Gaussian distribution.
+Below is an example of Langevin Dynamics applied to a 2D Gaussian distribution. The score function is used to push the samples towards the center of the distribution, while the stochastic element adds noise and randomization to the process. The animation shows an initial uniform sampling grid of points converging to the shape of the Gaussian distribution.
 
 ```{python}
 #| label: fig-langevin
@@ -326,7 +326,7 @@ def gaussian_pdf(x, y, sigma=1):
 
 # Define the potential function
 def potential_function(x, y, sigma=1):
-    return 0.5*(x**2 + y**2)/sigma**2 - np.log(2*np.pi*sigma**2)
+    return 0.5*(x**2 + y**2)/sigma**2 + np.log(2*np.pi*sigma**2)
 
 # Define the score function
 def score_function(x, y, sigma=1):
@@ -348,7 +348,7 @@ X, Y = np.meshgrid(x, y)
 sigma = .5
 pdf = gaussian_pdf(X, Y, sigma)
 
-# Initialize samples on a 5x5 grid
+# Initialize samples on a 10x10 grid
 grid_size = 10
 grid_range = np.linspace(-2.5, 2.5, grid_size)
 initial_samples = np.array([[x, y] for x in grid_range for y in grid_range])
@@ -388,7 +388,7 @@ plt.close(fig)
 
 ## MAP Estimation with General Gaussian
 
-Revisitng the MAP estimation problem, we can consider a more general prior $\pi(x)$ with mean $\mu = 0$ and covariance $\Sigma$:
+Revisiting the MAP estimation problem, we can consider a more general prior $\pi(x)$ with mean $\mu = 0$ and covariance $\Sigma$:
 
 $$
 \begin{align*}
@@ -398,32 +398,29 @@ $$
 \end{align*}
 $$ 
 
-We now make a choice of which $pi_\theta(x)$ to use, as before this is a MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameters be $\theta = \Sigma^{-1}$, since the true $\Sigma$ is positive definite, it can be found by inverting this result. The partition function $Z(\theta)$ is known for the case of a Gaussian distribution, and so the MLE objective is:
+We now make a choice of which $\pi_\theta(x)$ to use; as before, this is an MLE based on the available empirical samples. For the purpose of finding the gradient, let the minimization parameter be $\theta = \Sigma^{-1}$; since the true $\Sigma$ is positive definite, it can be recovered by inverting the result. The partition function $Z(\theta)$ is known for the case of a Gaussian distribution, so the MLE objective is:
 
 $$
 \begin{align*}
-\pi(x) &= \max_\theta \Pi_{i=1}^N \pi_\theta(x_i)\\
-&= \max_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
-&= \min_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
-&= \min_\theta -\log((2\pi)^{n/2}|\Sigma|^{1/2}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
-&= \min_\theta -\frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
+\hat\theta &= \argmax_\theta \prod_{i=1}^N \pi_\theta(x_i)\\
+&= \argmax_\theta \frac{1}{Z(\theta)^N} \exp\left(-\sum_{i=1}^N \frac{1}{2}x_i^\intercal \Sigma^{-1} x_i\right)\\
+&= \argmin_\theta N \log(Z(\theta)) + \frac{1}{2} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&= \argmin_\theta \log\left((2\pi)^{n/2}|\Sigma|^{1/2}\right) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i\\
+&= \argmin_\theta \frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i
 \end{align*}
 $$
 
+where the constant $\frac{n}{2}\log(2\pi)$ has been dropped, as it does not affect the minimizer.
 
 #### Finding the Gradient
 
 **Left Term:**
-To find the min using gradient descent we take the gradient of each term with respect to $\Sigma^{-1}$. The gradient of a log determinant can be found in the matrix cookbook [@Petersen2012] formula (57):
+To find the minimum, we take the gradient of each term with respect to $\Sigma^{-1}$. The gradient of a log determinant can be found in the Matrix Cookbook [@Petersen2012], formula (57):
 $$ \nabla_{A} \log(|A|) = (A^{-1})^\intercal $$
 
-This can be rewritten as:
+Writing the left term in terms of $A = \Sigma^{-1}$, using $\log(|\Sigma|) = -\log(|A|)$:
 
-$$ \nabla_A \log(|A^{-1}|) = A^\intercal$$
-
-Applying this to the left term we get:
-
-$$ \nabla_{\Sigma^{-1}} \left( -\frac{1}{2}\log(|\Sigma|) \right) = -\frac{1}{2} \Sigma$$
+$$ \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|) \right) = \nabla_A \left( -\frac{1}{2}\log(|A|) \right) = -\frac{1}{2} (A^{-1})^\intercal = -\frac{1}{2} \Sigma^\intercal$$
 
 **Right Term:**
 The gradient of the second term is found by reformulating it as a trace of a new matrix $X = \sum x_i x_i^\intercal$:
@@ -446,21 +443,21 @@ $$ \nabla_{\Sigma^{-1}} \left( \frac{1}{2N} \sum x_i^\intercal \Sigma^{-1} x_i \
 
 **Combined Result:**
 
-Combining the two terms we get the gradient of the MLE objective with respect to $\Sigma^{-1}$:
+Combining the two terms, we get the gradient of the MLE objective with respect to $\Sigma^{-1}$:
 $$
 \begin{align*}
-g &= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|^{-1}) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
-&= \frac{1}{2} \Sigma^\intercal - \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
+g &= \nabla_{\Sigma^{-1}} \left( \frac{1}{2}\log(|\Sigma|) + \frac{1}{2N} \sum_{i=1}^N x_i^\intercal \Sigma^{-1} x_i \right)\\
+&= -\frac{1}{2} \Sigma^\intercal + \frac{1}{2N} \sum_{i=1}^N x_i x_i^\intercal
 \end{align*}
 $$
 
-Solving for where the gradient is zero, we find the optimal value of $\Sigma$, since $\Sigma = \Sigma^\intercal$:
+Solving for where the gradient is zero, and using the symmetry $\Sigma = \Sigma^\intercal$, we find the optimal value of $\Sigma$:
 
 $$ \Sigma = \frac{1}{N} \sum_{i=1}^N x_i x_i^\intercal$$
 
-This is the maximum likelihood estimate of the covariance matrix $\Sigma$ given the samples $\{x_1, x_2, ..., x_N\}$, which can be interpreted as the expectation value of the outer product of the samples. The estimated covariance matrix is the actual true covariance matrix of the sampled data. This is a common result in statistics, where the sample mean is the MLE of the true mean of the distribution.
+This is the maximum likelihood estimate of the covariance matrix $\Sigma$ given the samples $\{x_1, x_2, ..., x_N\}$, which can be interpreted as the empirical expectation of the outer product of the samples — that is, the sample covariance of the data. This is a common pattern in statistics, analogous to the sample mean being the MLE of the true mean of a distribution.
 
-Unfortunately, estimating parameters can be very difficult to do for non-Gaussian $\pi_\theta$ due to the partition function $Z(\theta)$ being intractable. 
+Unfortunately, estimating parameters can be very difficult for non-Gaussian $\pi_\theta$ due to the partition function $Z(\theta)$ being intractable.
 
 ## Conclusion
 

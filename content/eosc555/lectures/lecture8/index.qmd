@@ -28,7 +28,7 @@ pseudocode:
 
 ## Motivation
 
-Revisiting the structure of some inverse problems we have seen so far we generalize the problem as follows. We have some model:
+Revisiting the structure of some inverse problems we have seen so far, we generalize the problem as follows. We have some model:
 $$u(x) \rightarrow \text{model}$$
 
 and also a forward process that may not be perfect or have some noise in it that produces the observed data:
@@ -79,7 +79,7 @@ ax.spines['bottom'].set_position('zero')
 plt.show()
 ```
 
-Since the real world generally is measured via sampling, the $u(x_i)$ are a sample space that estimate the continuous function $u(x)$. Usually there are a huge number of $x_i$ for which we want to estimate $u(x)$, such that there are far more unknowns in $u$ than there are data points in $b$. This gives the least square problem an infinite number of solutions.
+Since the real world is generally measured via sampling, the $u(x_i)$ are samples that estimate the continuous function $u(x)$. Usually there are a huge number of $x_i$ at which we want to estimate $u(x)$, such that there are far more unknowns in $u$ than there are data points in $b$. This gives the least squares problem an infinite number of solutions.
 
 ## Simple Regularization
 
@@ -91,7 +91,7 @@ An example of this could be using the $L_2$ norm of the solution as the regulari
 
 $$R(u) = \frac{1}{2}\|u\|^2$$
 
-The new metric favours solutions where $u$ is small, but it actually includes an even more explicit probabilistic interpretation which can be derived from the Bayesian perspective.
+The new metric favours solutions where $u$ is small, but it also admits an explicit probabilistic interpretation, which can be derived from the Bayesian perspective.
 
 ### Bayesian Inference
 
@@ -107,11 +107,11 @@ Similarly, we can assume a prior distribution on the model parameters $u$:
 
 $$p(u) \propto \exp\left(-\frac{\|u\|^2}{2\beta}\right)$$
 
-where $\beta$ is the amount of standard deviation that we assume to be present in the prior.
+where $\beta$ is the variance that we assume for the prior.
 
-### Maximum Likelyhood Estimation
+### Maximum Likelihood Estimation
 
-In maximum likelihood estimation (MLE), the objective is to find the model that gives the highest likehood for seeing the data that was observed. Note that the function $\log (.)$ is a monotonic function so it preserves the ordering of values, so maximizing the likelihood is equivalent to maximizing the log likelihood. The MLE is then:
+In maximum likelihood estimation (MLE), the objective is to find the model that gives the highest likelihood of seeing the data that was observed. Note that $\log(\cdot)$ is a monotonic function and preserves the ordering of values, so maximizing the likelihood is equivalent to maximizing the log likelihood. The MLE is then:
 
 $$
 \begin{align*}
@@ -121,11 +121,11 @@ $$
 &= \arg\min_u \|A(u) - b\|^2.
 \end{align*}
 $$
-Giving the unregularized least squares problem.
+This gives the unregularized least squares problem.
 
 ### Maximum A Posteriori Estimation
 
-In maximum a posteriori estimation (MAP), the objective is to find the model that gives the highest likelihood for seeing the data that was observed given the prior information. The reason is that it is unintuitive to ask to fit parameters to maximize likelihood of data measured. The driver of the model should be the data itself which is independent of the model. This reverses the probabilistic objective-- find the model parameters that are most likely given the observed data. Bayes' theorem states that:
+In maximum a posteriori estimation (MAP), the objective is to find the model that is most probable given the observed data and the prior information. The motivation is that it is somewhat unintuitive to fit parameters by maximizing the likelihood of data that has already been measured; the data itself should drive the inference. This reverses the probabilistic objective — find the model parameters that are most likely given the observed data. Bayes' theorem states that:
 
 $$p(u|b) = \frac{p(b|u)p(u)}{p(b)}$$
 
@@ -133,7 +133,7 @@ where $p(b)$ is the marginal likelihood of the data. The value of $p(b)$ is a co
 
 $$\underbrace{p(u|b)}_{\text{posterior}} \propto \underbrace{p(b|u)}_{\text{likelihood}} \underbrace{p(u)}_{\text{prior}}$$
 
-As in the MLE, the log likelihood is maximized to find the MAP:
+As in the MLE, the logarithm of the posterior is maximized to find the MAP estimate:
 
 $$
 \begin{align*}
@@ -154,7 +154,7 @@ The choice of the regularization parameter $\alpha$ is a statistical statement o
 
 In the Bayesian perspective, the regularization term is grounded in a probabilistic approach that will blindly pick the solution that is most likely given the data and the prior information. The maximum may not always be the best choice when considering the robustness of the solution to noise. The initial choice to regularize with the $L_2$ norm $\|u\|^2$ does not make any claims on the likelihood of the model parameters while still yielding the same results.
 
-Probabilistic approaches to inverse problems with complex distributions are becoming more reliable now with the advent of generative models that learn an underlying probability distribution. While the Gaussian prior is easier to work with, it is simplistic and may not always be the best choice. For example the underlying parameters of a forward model could be the density of a material, or its conductivity, in which case the prior distribution could be something very different from a Gaussian. The choice of prior can be enhanced using a neural network for examples.
+Probabilistic approaches to inverse problems with complex distributions are becoming more reliable with the advent of generative models that learn an underlying probability distribution. While the Gaussian prior is easier to work with, it is simplistic and may not always be the best choice. For example, the underlying parameters of a forward model could be the density of a material, or its conductivity, in which case the prior distribution could be something very different from a Gaussian. The choice of prior can be enhanced using a neural network, for example.
 
 ## Choice of Regularizer {#choice-of-regularizer}
 
@@ -165,14 +165,19 @@ $$\min_u \frac{1}{2}\|A u - b\|^2 + \alpha R(u)$$
 For the case of the $L_2$ norm, the problem becomes:
 
 $$
+\hat u = \arg\min_u \frac{1}{2}\|A u - b\|^2 + \frac{\alpha}{2}\|u\|^2
+$$
+
+Setting the gradient to zero gives the first-order optimality condition:
+
+$$
 \begin{align*}
-\hat u =& \min_u \frac{1}{2}\|A u - b\|^2 + \frac{\alpha}{2}\|u\|^2\\
-=& A^T(Au - b) + \alpha u = 0\\
-=& (A^TA + \alpha I)u = A^Tb
+A^T(Au - b) + \alpha u &= 0\\
+(A^TA + \alpha I)u &= A^Tb
 \end{align*}
 $$
 
-There are many other choices for the regularization term though.
+There are many other choices for the regularization term, though.
 
 Some common choices for the regularization term $R(u)$ include:
 
@@ -187,7 +192,7 @@ Some common choices for the regularization term $R(u)$ include:
 2. **Slope Penalty**:
 
    $$
-   R(u) = \int_{\mathcal{X}} \frac{1}{2}\|\nabla_x u\|^2 \, dx = \int_{\mathcal{X}} \frac{1}{2}\Big( \frac{\partial u}{\partial x_1}^2 + \frac{\partial u}{\partial x_2}^2 \Big) \, dx
+   R(u) = \int_{\mathcal{X}} \frac{1}{2}\|\nabla_x u\|^2 \, dx = \int_{\mathcal{X}} \frac{1}{2}\Bigg( \Big(\frac{\partial u}{\partial x_1}\Big)^2 + \Big(\frac{\partial u}{\partial x_2}\Big)^2 \Bigg) \, dx
    $$
 
    Recalling that $u$ is a function across a domain $\mathcal{X}$, the slope penalty penalizes the squared magnitude of the gradient of $u$. It encourages flatness in the solution by penalizing rapid changes in $u$.
@@ -195,7 +200,7 @@ Some common choices for the regularization term $R(u)$ include:
 3. **Smoothness Penalty**:
 
    $$
-   R(u) = \int_{\mathcal{X}} \frac{1}{2}\|\nabla^2 u\|^2 \, dx = \int_{\mathcal{X}} \frac{1}{2}\Big( \frac{\partial^2 u}{\partial x_1^2} + \frac{\partial^2 u}{\partial x_2^2} \Big) \, dx
+   R(u) = \int_{\mathcal{X}} \frac{1}{2}\|\nabla^2 u\|^2 \, dx = \int_{\mathcal{X}} \frac{1}{2}\Big( \frac{\partial^2 u}{\partial x_1^2} + \frac{\partial^2 u}{\partial x_2^2} \Big)^2 \, dx
    $$
 
     The smoothness penalty promotes smoothness in the solution by penalizing changes in the slope of $u$ across the domain. 
@@ -213,9 +218,9 @@ Some common choices for the regularization term $R(u)$ include:
    $$
   R(u) = \text{TV}(u) = \int |\nabla u| \, dx = \int \sqrt{\left| \frac{\partial u}{\partial x_1} \right|^2 + \left| \frac{\partial u}{\partial x_2} \right|^2} \, dx   $$
 
-   Total Variation (TV) regularization penalizes the total amount of variation in \( u \) without squaring the gradient. It preserves sharp edges while removing noise.
+   Total Variation (TV) regularization penalizes the total amount of variation in $u$ without squaring the gradient. It preserves sharp edges while removing noise.
 
-A demonstration of the effects of the regularizer are given below for a case of denoising an image. Note that the operator $A$ is the identity matrix in this case which is a simplification of the problem.
+A demonstration of the effects of the regularizers is given below for the case of denoising an image. Note that the operator $A$ is the identity matrix in this case, which is a simplification of the problem.
 ```{python}
 #| label: fig-regularization-effects
 #| fig-cap: "A comparison of different regularization effects on a noisy image reconstruction."
@@ -333,7 +338,7 @@ plt.imshow(recovered_tv, cmap="gray")
 plt.title("Total Variation Regularization")
 plt.axis("off")
 
-# Save recontructions
+# Save reconstructions
 plt.savefig("imgs/regularization_effects.png")
 
 plt.show()
@@ -341,7 +346,7 @@ plt.show()
 
 ### Closing Notes
 
-Another note to be made is that the regularization space itself can be changed by working in a latent space where $u = Dz$ and $D$ is a dictionary or basis that maps the latent space $z$ to the model space $u$. This is somewhat similar to PCA.
+One further note: the regularization space itself can be changed by working in a latent space, where $u = Dz$ and $D$ is a dictionary or basis that maps the latent variable $z$ to the model space $u$. This is somewhat similar to PCA.
 
 $$\frac{1}{2} \|A(Dz) - b\|^2 + \alpha R(z)$$
 
